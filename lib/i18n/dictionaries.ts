@@ -57,7 +57,7 @@ const tr: Messages = {
   },
   carousel: {
     eyebrow: "Koleksiyon",
-    headline_prefix: "Bir his, dokuz ",
+    headline_prefix: "Bir his, beş ",
     headline_accent: "edisyon",
     headline_suffix: ".",
     drag_hint: "Sürükle  →",
@@ -108,7 +108,7 @@ const tr: Messages = {
   collection_note: {
     eyebrow: "Bir Not",
     body:
-      "Koleksiyonumuz dokuz edisyondan oluşur — biri modern, biri kır, biri akşam yalısı, biri suluboya bir ",
+      "Koleksiyonumuz beş edisyondan oluşur — biri modern, biri kır, biri akşam yalısı, biri suluboya bir ",
     body_accent: "peoni",
     bottom_strip: "Modern · Kır · Yalı · Botanik",
   },
@@ -394,7 +394,7 @@ const en: Messages = {
   },
   carousel: {
     eyebrow: "The Collection",
-    headline_prefix: "One feeling, nine ",
+    headline_prefix: "One feeling, five ",
     headline_accent: "editions",
     headline_suffix: ".",
     drag_hint: "Drag  →",
@@ -445,7 +445,7 @@ const en: Messages = {
   collection_note: {
     eyebrow: "A Note",
     body:
-      "Our collection holds nine editions — one modern, one rural, one evening yalı, one a watercolour ",
+      "Our collection holds five editions — one modern, one rural, one evening yalı, one a watercolour ",
     body_accent: "peony",
     bottom_strip: "Modern · Rural · Yalı · Botanical",
   },
@@ -738,7 +738,7 @@ const sr: Messages = {
   },
   carousel: {
     eyebrow: "Kolekcija",
-    headline_prefix: "Jedan osećaj, devet ",
+    headline_prefix: "Jedan osećaj, pet ",
     headline_accent: "izdanja",
     headline_suffix: ".",
     drag_hint: "Povuci  →",
@@ -789,7 +789,7 @@ const sr: Messages = {
   collection_note: {
     eyebrow: "Beleška",
     body:
-      "Naša kolekcija ima devet izdanja — jedno moderno, jedno seosko, jedno večernji yalı, jedno akvarelni ",
+      "Naša kolekcija ima pet izdanja — jedno moderno, jedno seosko, jedno večernji yalı, jedno akvarelni ",
     body_accent: "božur",
     bottom_strip: "Moderno · Seosko · Yalı · Botaničko",
   },
