@@ -909,13 +909,13 @@ function AtelierInkArt({ theme }: { theme: InvitationTheme }) {
    are coded from scratch — no traced reference assets. */
 
 function CinematicArchArt({ theme }: { theme: InvitationTheme }) {
-  // Falling particles — deterministic seeds, sin-wave sway path
-  const particles = Array.from({ length: 18 }).map((_, i) => ({
-    x: ((i * 17) % 92) + 4,
-    delay: (i * 0.45) % 6,
-    duration: 7 + (i % 4),
-    size: 2 + (i % 3),
-    drift: (i % 2 === 0 ? 1 : -1) * (10 + (i % 5) * 4),
+  // Falling particles — denser field, bigger sparkles, larger sway
+  const particles = Array.from({ length: 36 }).map((_, i) => ({
+    x: ((i * 13) % 96) + 2,
+    delay: (i * 0.22) % 5,
+    duration: 6 + (i % 5),
+    size: 2.5 + (i % 4) * 0.6,
+    drift: (i % 2 === 0 ? 1 : -1) * (14 + (i % 6) * 5),
   }));
 
   return (
@@ -961,56 +961,69 @@ function CinematicArchArt({ theme }: { theme: InvitationTheme }) {
           {/* Sky stripe behind arch */}
           <rect x="280" y="200" width="240" height="640" fill={theme.spark} opacity="0.06" />
 
-          {/* Left column */}
-          <g stroke={theme.spark} strokeWidth="2.4" fill="none" opacity="0.75">
-            <rect x="170" y="320" width="62" height="560" fill={theme.storyBg} fillOpacity="0.45" />
+          {/* Left column — bolder strokes, deeper fill so it reads against cream */}
+          <g stroke={theme.accent} strokeWidth="3" fill="none" opacity="1">
+            <rect x="170" y="320" width="62" height="560" fill={theme.accent} fillOpacity="0.18" />
             {/* Capital */}
-            <rect x="160" y="296" width="82" height="26" fill={theme.spark} fillOpacity="0.2" />
-            <rect x="155" y="282" width="92" height="14" fill={theme.spark} fillOpacity="0.25" />
+            <rect x="160" y="296" width="82" height="26" fill={theme.accent} fillOpacity="0.42" />
+            <rect x="155" y="282" width="92" height="14" fill={theme.accent} fillOpacity="0.55" />
             {/* Base */}
-            <rect x="160" y="876" width="82" height="22" fill={theme.spark} fillOpacity="0.22" />
+            <rect x="160" y="876" width="82" height="22" fill={theme.accent} fillOpacity="0.42" />
             {/* Fluting hairlines */}
-            <line x1="190" y1="328" x2="190" y2="870" strokeWidth="0.6" opacity="0.55" />
-            <line x1="200" y1="328" x2="200" y2="870" strokeWidth="0.6" opacity="0.55" />
-            <line x1="210" y1="328" x2="210" y2="870" strokeWidth="0.6" opacity="0.55" />
+            <line x1="190" y1="328" x2="190" y2="870" strokeWidth="1" opacity="0.85" />
+            <line x1="200" y1="328" x2="200" y2="870" strokeWidth="1" opacity="0.85" />
+            <line x1="210" y1="328" x2="210" y2="870" strokeWidth="1" opacity="0.85" />
           </g>
 
           {/* Right column (mirrored) */}
-          <g stroke={theme.spark} strokeWidth="2.4" fill="none" opacity="0.75" transform="translate(800 0) scale(-1 1)">
-            <rect x="170" y="320" width="62" height="560" fill={theme.storyBg} fillOpacity="0.45" />
-            <rect x="160" y="296" width="82" height="26" fill={theme.spark} fillOpacity="0.2" />
-            <rect x="155" y="282" width="92" height="14" fill={theme.spark} fillOpacity="0.25" />
-            <rect x="160" y="876" width="82" height="22" fill={theme.spark} fillOpacity="0.22" />
-            <line x1="190" y1="328" x2="190" y2="870" strokeWidth="0.6" opacity="0.55" />
-            <line x1="200" y1="328" x2="200" y2="870" strokeWidth="0.6" opacity="0.55" />
-            <line x1="210" y1="328" x2="210" y2="870" strokeWidth="0.6" opacity="0.55" />
+          <g stroke={theme.accent} strokeWidth="3" fill="none" opacity="1" transform="translate(800 0) scale(-1 1)">
+            <rect x="170" y="320" width="62" height="560" fill={theme.accent} fillOpacity="0.18" />
+            <rect x="160" y="296" width="82" height="26" fill={theme.accent} fillOpacity="0.42" />
+            <rect x="155" y="282" width="92" height="14" fill={theme.accent} fillOpacity="0.55" />
+            <rect x="160" y="876" width="82" height="22" fill={theme.accent} fillOpacity="0.42" />
+            <line x1="190" y1="328" x2="190" y2="870" strokeWidth="1" opacity="0.85" />
+            <line x1="200" y1="328" x2="200" y2="870" strokeWidth="1" opacity="0.85" />
+            <line x1="210" y1="328" x2="210" y2="870" strokeWidth="1" opacity="0.85" />
           </g>
 
-          {/* Arch — semicircle on top of the columns */}
-          <g stroke={theme.spark} strokeWidth="3" fill="none" opacity="0.85">
+          {/* Arch — thick semicircle on top of the columns, baked gold rim */}
+          <g stroke={theme.accent} strokeWidth="4" fill="none" opacity="1">
             <path
               d="M 232 282 A 168 168 0 0 1 568 282"
-              fill={theme.storyBg}
-              fillOpacity="0.35"
+              fill={theme.accent}
+              fillOpacity="0.10"
+              strokeLinecap="round"
             />
             {/* Inner arch ring */}
             <path
               d="M 252 282 A 148 148 0 0 1 548 282"
-              strokeWidth="1.4"
+              strokeWidth="1.8"
+              opacity="0.75"
+              stroke={theme.spark}
+            />
+            {/* Outer scallop ring */}
+            <path
+              d="M 220 282 A 180 180 0 0 1 580 282"
+              strokeWidth="1.2"
               opacity="0.55"
+              stroke={theme.spark}
             />
           </g>
 
-          {/* Keystone medallion at arch apex */}
-          <g transform="translate(400 130)" opacity="0.85">
+          {/* Keystone medallion at arch apex — heraldic shield, gilded */}
+          <g transform="translate(400 130)" opacity="1">
             <path
-              d="M -22 0 Q -22 -16, 0 -22 Q 22 -16, 22 0 L 18 28 L 0 38 L -18 28 Z"
-              fill={theme.spark}
-              fillOpacity="0.45"
+              d="M -28 -4 Q -28 -20, 0 -28 Q 28 -20, 28 -4 L 24 32 L 0 46 L -24 32 Z"
+              fill={theme.accent}
+              fillOpacity="0.85"
               stroke={theme.spark}
-              strokeWidth="1.4"
+              strokeWidth="2"
             />
-            <circle cx="0" cy="6" r="6" fill={theme.spark} fillOpacity="0.8" />
+            {/* Inner emblem */}
+            <circle cx="0" cy="6" r="8" fill={theme.spark} stroke={theme.accent} strokeWidth="1.2" />
+            <path d="M -4 6 L 0 12 L 6 0" stroke={theme.accent} strokeWidth="1.6" fill="none" strokeLinecap="round" />
+            {/* Drop pendant below */}
+            <circle cx="0" cy="38" r="2.5" fill={theme.spark} />
           </g>
 
           {/* Interior gate — vertical bars + central decorative curl */}
@@ -1174,15 +1187,18 @@ function FloralCluster({
       animate={{ rotate: [-1.5, 1.5, -1.5], y: [0, -3, 0] }}
       transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
     >
-      {/* Sage leaves — pointed ellipses radiating from cluster base */}
+      {/* Sage leaves — denser fan of pointed ellipses */}
       {[
-        { cx: 30, cy: 90, r: -20, w: 10, h: 32 },
-        { cx: 55, cy: 60, r: -45, w: 8, h: 26 },
-        { cx: 80, cy: 80, r: 10, w: 9, h: 28 },
-        { cx: 15, cy: 130, r: -55, w: 11, h: 34 },
-        { cx: 90, cy: 140, r: 35, w: 9, h: 30 },
-        { cx: 40, cy: 200, r: -25, w: 10, h: 30 },
-        { cx: 70, cy: 220, r: 20, w: 9, h: 28 },
+        { cx: 30, cy: 90, r: -20, w: 12, h: 38 },
+        { cx: 55, cy: 60, r: -45, w: 10, h: 32 },
+        { cx: 80, cy: 80, r: 10, w: 11, h: 34 },
+        { cx: 15, cy: 130, r: -55, w: 13, h: 40 },
+        { cx: 90, cy: 140, r: 35, w: 11, h: 36 },
+        { cx: 40, cy: 200, r: -25, w: 12, h: 36 },
+        { cx: 70, cy: 220, r: 20, w: 11, h: 34 },
+        { cx: 110, cy: 100, r: 50, w: 10, h: 32 },
+        { cx: 5, cy: 70, r: -70, w: 9, h: 30 },
+        { cx: 50, cy: 250, r: 0, w: 11, h: 36 },
       ].map((l, i) => (
         <ellipse
           key={i}
@@ -1192,7 +1208,7 @@ function FloralCluster({
           ry={l.h}
           transform={`rotate(${l.r} ${l.cx} ${l.cy})`}
           fill={leafTint}
-          opacity={0.55}
+          opacity={0.85}
         />
       ))}
       {/* Lily flower — trumpet shape from 3 curved petals */}
