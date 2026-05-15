@@ -24,6 +24,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const meta = getTemplateMeta(params.slug);
   if (!meta) return { title: "Şablon bulunamadı" };
 
+  // Deprecated slugs are kept routable (so existing /i/<slug> URLs
+  // don't break) but they must not show up in search engines — the
+  // canonical edition is what we want indexed instead.
+  const isDeprecated = meta.deprecated === true;
+
   return {
     title: meta.name,
     description: meta.description,
@@ -32,6 +37,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: meta.description,
       images: [meta.thumb],
     },
+    ...(isDeprecated && {
+      robots: {
+        index: false,
+        follow: false,
+        googleBot: { index: false, follow: false },
+      },
+    }),
   };
 }
 
