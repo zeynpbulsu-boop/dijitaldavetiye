@@ -33,8 +33,10 @@ export default function OrderEditorPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const templateSlug = params?.slug ?? "blush-reverie";
-  const queryTier = searchParams?.get("tier");
-  const initialTier: TierSlug = isTierSlug(queryTier) ? queryTier : "klasik";
+  // Flat pricing (Faz 20): only one tier. Query param ignored.
+  void searchParams;
+  const initialTier: TierSlug = "standard";
+  void isTierSlug; // type still used in import for callers
 
   const [draft, setDraft] = useState<DraftStore | null>(null);
   const [bootError, setBootError] = useState<string | null>(null);
@@ -317,26 +319,28 @@ export default function OrderEditorPage() {
             </Field>
           </Section>
 
-          {/* Tier picker */}
-          <Section label="Paket">
-            <div className="grid grid-cols-3 gap-3">
-              {(["sade", "klasik", "premium"] as const).map((slug) => (
-                <button
-                  key={slug}
-                  type="button"
-                  onClick={() => setTier(slug)}
-                  className={`rounded-[8px] border px-4 py-3 text-left text-[13px] transition ${
-                    tier === slug
-                      ? "border-brand-cognac bg-brand-cognac/10 text-brand-ink"
-                      : "border-brand-ink/20 text-brand-ink/75 hover:border-brand-cognac/60"
-                  }`}
-                >
-                  <span className="font-display text-[18px] capitalize">
-                    {slug}
-                  </span>
-                </button>
-              ))}
+          {/* Flat pricing — every NUVE invitation is €39.99 regardless of edition */}
+          <Section label="Toplam">
+            <div className="flex items-baseline gap-3 rounded-[8px] border border-brand-cognac/40 bg-brand-cognac/5 px-5 py-4">
+              <span className="font-display text-[34px] leading-none text-brand-ink">
+                €39,99
+              </span>
+              <span className="text-[12px] uppercase tracking-[0.22em] text-brand-ink/60">
+                tek seferlik · 1 yıl yayın
+              </span>
             </div>
+            <p className="mt-2 text-[12px] text-brand-ink/55">
+              Hangi tasarımı seçersen seç, fiyat sabit. KDV ve banka komisyonu Dodo Payments tarafında dahil edilir.
+            </p>
+            <button
+              type="button"
+              onClick={() => setTier("standard")}
+              className="hidden"
+              aria-hidden
+            >
+              {/* keeps the tier state referenced; UI is hidden */}
+              standard
+            </button>
           </Section>
 
           {/* Pay CTA */}

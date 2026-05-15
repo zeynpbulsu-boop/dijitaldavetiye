@@ -2,14 +2,18 @@
  * Client-side helper that asks our /api/checkout route to mint a Dodo
  * Checkout Session and then redirects the browser to the hosted URL.
  *
- * Usage from any client component:
+ * Pricing is now flat €39.99 per invitation — no tier parameter needed.
+ * The tier field is kept as an optional argument for back-compat with
+ * older call sites; if omitted, the server defaults to the standard tier.
+ *
  *   import { startCheckout } from "@/lib/payments/checkout-client";
- *   <button onClick={() => startCheckout({ tier: "klasik" })}>Öde</button>
+ *   <button onClick={() => startCheckout({ invitationId })}>Öde</button>
  */
 import type { TierSlug } from "./products";
 
 type StartCheckoutArgs = {
-  tier: TierSlug;
+  /** Optional; defaults to "standard" on the server. */
+  tier?: TierSlug;
   email?: string;
   name?: string;
   invitationId?: string;

@@ -6,7 +6,10 @@
  * we hand-maintain for now to keep the dep surface small.)
  */
 
-export type TierSlug = "sade" | "klasik" | "premium";
+// Flat pricing (Faz 20) — only "standard" remains. Legacy values still
+// kept in the union briefly so historic paid rows from migration 001 don't
+// fail strict type-checks; new inserts always use "standard".
+export type TierSlug = "standard" | "sade" | "klasik" | "premium";
 export type InvitationStatus =
   | "draft"
   | "paid"
@@ -78,9 +81,12 @@ export interface WebhookEvent {
   raw_payload: unknown;
 }
 
-/** Days each tier stays live after payment, matching the dictionary copy. */
+/** Days each tier stays live after payment. Flat-pricing model (Faz 20)
+ *  ships everything as `standard` for 365 days. Legacy keys retained
+ *  so old paid rows still type-check. */
 export const TIER_DAYS: Record<TierSlug, number> = {
-  sade: 180, // 6 months
-  klasik: 365, // 12 months
-  premium: 730, // 24 months
+  standard: 365, // 12 months — every NUVE invitation
+  sade: 180,
+  klasik: 365,
+  premium: 730,
 };
