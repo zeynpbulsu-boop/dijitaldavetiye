@@ -65,6 +65,9 @@ const config: Config = {
         "ed-long":  "1200ms",
       },
       transitionTimingFunction: {
+        /* Legacy alias — preserved so existing components compile */
+        editorial: "cubic-bezier(0.16, 1, 0.3, 1)",
+        /* FAZ 1 motion vocab */
         silk:   "cubic-bezier(0.22, 1, 0.36, 1)",
         vellum: "cubic-bezier(0.16, 1, 0.30, 1)",
         snap:   "cubic-bezier(0.40, 0.00, 0.20, 1)",
@@ -113,9 +116,6 @@ const config: Config = {
         "ed-xl":  "20px",
         "ed-2xl": "32px",
         "ed-pill": "9999px",
-      },
-      transitionTimingFunction: {
-        editorial: "cubic-bezier(0.16, 1, 0.3, 1)",
       },
       keyframes: {
         marquee: {
