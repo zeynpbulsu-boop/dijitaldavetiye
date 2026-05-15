@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import { Inter_Tight, Cormorant_Garamond } from "next/font/google";
+import {
+  Inter_Tight,
+  Cormorant_Garamond,
+  Playfair_Display,
+  DM_Serif_Display,
+  Tenor_Sans,
+  Fraunces,
+  Caveat,
+  DM_Sans,
+} from "next/font/google";
 import "./globals.css";
 import { CursorRing } from "@/components/effects/cursor-ring";
 import { LocaleProvider } from "@/lib/i18n/provider";
 
 /**
- * Body: Inter Tight — modern grotesk with tighter optical sizing than regular Inter.
- * More designed, less "system default".
+ * Body: Inter Tight — modern grotesk, default body across NUVE.
  */
 const inter = Inter_Tight({
   subsets: ["latin", "latin-ext"],
@@ -15,15 +23,72 @@ const inter = Inter_Tight({
 });
 
 /**
- * Display: Cormorant Garamond — traditional, decorative, romantic.
- * Picked over Fraunces for the bizevleniyoruz.net editorial feel — slower,
- * more ornate, with the airy italic that the brand wants for accents.
+ * Default editorial display — Cormorant Garamond.
+ * Drives the brand chrome (nav, hero, landing). Editions can override
+ * via their own --font-edition variable in [data-edition="..."] scope.
  */
 const cormorant = Cormorant_Garamond({
   subsets: ["latin", "latin-ext"],
   variable: "--font-display",
   weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+/* ─── Edition-specific display fonts ───────────────────────────────
+ * Each loads its own CSS variable so editions opt in via globals.css
+ * [data-edition="..."] scope. Subset hint stays at latin+latin-ext for
+ * Turkish coverage. font-display: swap so layout never blocks.
+ */
+
+// Atelier Indigo — traditional luxury serif, art-deco letterpress
+const playfair = Playfair_Display({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-atelier",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+// Mansion Lights — Didot stand-in, high-contrast neo-classical
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-mansion",
+  weight: ["400"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+// Bodrum Blue — Aegean clean serif (Ogg stand-in)
+const tenor = Tenor_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-bodrum",
+  weight: ["400"],
+  display: "swap",
+});
+
+// Aurora display — Fraunces variable, soft optical scaling
+const fraunces = Fraunces({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-aurora",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+// Aurora body — DM Sans, modern grotesk
+const dmSans = DM_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-aurora-body",
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+// Olive Grove — signature handwriting (used sparingly for couple names)
+const caveat = Caveat({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-signature",
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -87,7 +152,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr" className={`${inter.variable} ${cormorant.variable}`}>
+    <html
+      lang="tr"
+      className={[
+        inter.variable,
+        cormorant.variable,
+        playfair.variable,
+        dmSerif.variable,
+        tenor.variable,
+        fraunces.variable,
+        dmSans.variable,
+        caveat.variable,
+      ].join(" ")}
+    >
       <body>
         <LocaleProvider>
           <CursorRing />
