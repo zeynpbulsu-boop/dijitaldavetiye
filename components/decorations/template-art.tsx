@@ -88,122 +88,219 @@ function Frame({
 }
 
 /* ────────────────────────────────────────────────────────────────── */
-/* 1) Magnolia — Klasik Botanik                                      */
+/* 1) Magnolia — Bahçenin Eşiği (bespoke v2)                         */
 /* ────────────────────────────────────────────────────────────────── */
-/* Two magnolia branches in opposite corners. Petals slow-breathe;
-   gold dust shimmer between them. */
-
+/* Three-layer composition rivalling CinematicArchArt:
+ *   layer 1 — bloom-warm radial backdrop
+ *   layer 2 — twin branch arch converging into a heart-gateway
+ *   layer 3 — central 8-petal bloom mandala + falling petals + buds
+ */
 function MagnoliaArt({ theme }: { theme: InvitationTheme }) {
   return (
     <Frame>
-      {/* Top-left magnolia branch */}
+      {/* ─── Layer 1: bloom-warm radial wash ─────────────────────── */}
+      <motion.div
+        aria-hidden
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2.4, ease: SOFT_EASE }}
+        style={{
+          background: `radial-gradient(70% 60% at 50% 42%, ${theme.spark}22 0%, ${theme.spark}0F 35%, transparent 70%)`,
+        }}
+      />
+
+      {/* ─── Layer 2: twin branch arch converging into heart ─────── */}
       <motion.svg
-        initial={{ opacity: 0, scale: 0.94, rotate: -3 }}
-        animate={{ opacity: 0.65, scale: 1, rotate: 0 }}
-        transition={{ duration: 2.2, delay: 0.4, ease: SOFT_EASE }}
-        viewBox="0 0 220 280"
-        className="absolute -top-6 -left-4"
-        width="280"
-        height="360"
+        viewBox="0 0 1000 700"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.85 }}
+        transition={{ duration: 2.6, delay: 0.3, ease: SOFT_EASE }}
         style={{ color: theme.accent }}
       >
-        {/* Branch stem */}
-        <path
-          d="M 10 12 C 40 60, 80 100, 130 150 C 150 170, 170 200, 188 240"
+        {/* Left arching branch */}
+        <motion.path
+          d="M 70 640 C 140 460, 220 320, 360 220 C 430 168, 480 152, 500 150"
           stroke="currentColor"
-          strokeWidth="1.2"
+          strokeWidth="1.4"
           fill="none"
-          opacity="0.55"
+          opacity="0.7"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 3.4, delay: 0.5, ease: SLOW_EASE }}
         />
-        {/* Side stems */}
-        <path d="M 70 80 C 80 100, 90 120, 100 130" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.45" />
-        <path d="M 140 160 C 150 170, 162 180, 170 195" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.45" />
-        {/* Leaves */}
+        {/* Right arching branch */}
+        <motion.path
+          d="M 930 640 C 860 460, 780 320, 640 220 C 570 168, 520 152, 500 150"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          fill="none"
+          opacity="0.7"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 3.4, delay: 0.7, ease: SLOW_EASE }}
+        />
+
+        {/* Branch leaves (slow sway) */}
         {[
-          { x: 60, y: 80, r: -30 },
-          { x: 105, y: 130, r: 25 },
-          { x: 100, y: 75, r: 40 },
-          { x: 158, y: 195, r: -15 },
-          { x: 175, y: 175, r: 30 },
+          { x: 160, y: 480, r: -32, d: 0.6 },
+          { x: 220, y: 380, r: -12, d: 0.9 },
+          { x: 300, y: 300, r: 18, d: 1.2 },
+          { x: 380, y: 240, r: 28, d: 1.5 },
+          { x: 700, y: 300, r: -18, d: 1.8 },
+          { x: 780, y: 380, r: 12, d: 2.1 },
+          { x: 840, y: 480, r: 32, d: 2.4 },
         ].map((l, i) => (
-          <g key={i} transform={`translate(${l.x} ${l.y}) rotate(${l.r})`}>
+          <motion.g
+            key={i}
+            transform={`translate(${l.x} ${l.y}) rotate(${l.r})`}
+            animate={{ rotate: [l.r - 3, l.r + 3, l.r - 3] }}
+            transition={{ duration: 6 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: l.d }}
+            style={{ transformOrigin: "center" }}
+          >
             <path
-              d="M 0 0 C 6 -10, 18 -10, 22 0 C 18 10, 6 10, 0 0 Z"
+              d="M 0 0 C 8 -14, 26 -14, 32 0 C 26 14, 8 14, 0 0 Z"
               fill="currentColor"
-              opacity="0.32"
+              opacity="0.38"
             />
-          </g>
+            <line x1="0" y1="0" x2="32" y2="0" stroke="currentColor" strokeWidth="0.6" opacity="0.45" />
+          </motion.g>
         ))}
-        {/* Magnolia flower (5 petals) */}
-        <motion.g
-          transform="translate(40 38)"
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "center" }}
-        >
-          {[0, 72, 144, 216, 288].map((deg, i) => (
-            <ellipse
-              key={i}
-              cx="0"
-              cy="-18"
-              rx="11"
-              ry="22"
-              transform={`rotate(${deg})`}
-              fill={theme.monogramFill}
-              opacity="0.42"
-            />
-          ))}
-          <circle cx="0" cy="0" r="6" fill={theme.spark} opacity="0.7" />
-        </motion.g>
-        {/* Second smaller magnolia */}
-        <motion.g
-          transform="translate(150 175)"
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
-          style={{ transformOrigin: "center" }}
-        >
-          {[0, 72, 144, 216, 288].map((deg, i) => (
-            <ellipse
-              key={i}
-              cx="0"
-              cy="-12"
-              rx="7"
-              ry="14"
-              transform={`rotate(${deg})`}
-              fill={theme.monogramFill}
-              opacity="0.35"
-            />
-          ))}
-        </motion.g>
       </motion.svg>
 
-      {/* Bottom-right magnolia branch (mirrored) */}
-      <motion.svg
-        initial={{ opacity: 0, scale: 0.94, rotate: 3 }}
-        animate={{ opacity: 0.55, scale: 1, rotate: 0 }}
-        transition={{ duration: 2.2, delay: 0.7, ease: SOFT_EASE }}
-        viewBox="0 0 220 280"
-        className="absolute -bottom-6 -right-4 scale-x-[-1]"
-        width="280"
-        height="360"
-        style={{ color: theme.accent }}
+      {/* ─── Layer 3a: center bloom mandala (8 petals + halo) ────── */}
+      <motion.div
+        className="absolute left-1/2 top-[22%] -translate-x-1/2"
+        initial={{ opacity: 0, scale: 0.85, y: -10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 2.6, delay: 1.2, ease: SOFT_EASE }}
       >
-        <path d="M 10 12 C 40 60, 80 100, 130 150 C 150 170, 170 200, 188 240" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.5" />
-        <path d="M 70 80 C 80 100, 90 120, 100 130" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.4" />
-        <motion.g
-          transform="translate(40 38)"
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          style={{ transformOrigin: "center" }}
-        >
-          {[0, 72, 144, 216, 288].map((deg, i) => (
-            <ellipse key={i} cx="0" cy="-16" rx="10" ry="20" transform={`rotate(${deg})`} fill={theme.monogramFill} opacity="0.36" />
-          ))}
-        </motion.g>
-      </motion.svg>
+        <svg viewBox="0 0 240 240" width="240" height="240" style={{ color: theme.accent }}>
+          {/* Outer halo */}
+          <motion.circle
+            cx="120"
+            cy="120"
+            r="100"
+            stroke="currentColor"
+            strokeWidth="0.5"
+            strokeDasharray="2 6"
+            fill="none"
+            opacity="0.55"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+            style={{ transformOrigin: "120px 120px" }}
+          />
+          {/* 8-petal bloom */}
+          <motion.g
+            transform="translate(120 120)"
+            animate={{ scale: [1, 1.06, 1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            style={{ transformOrigin: "center" }}
+          >
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => (
+              <ellipse
+                key={i}
+                cx="0"
+                cy="-44"
+                rx="20"
+                ry="48"
+                transform={`rotate(${deg})`}
+                fill={theme.monogramFill}
+                opacity={i % 2 === 0 ? 0.52 : 0.42}
+              />
+            ))}
+            {/* Inner ring of smaller petals */}
+            {[0, 60, 120, 180, 240, 300].map((deg, i) => (
+              <ellipse
+                key={`in-${i}`}
+                cx="0"
+                cy="-22"
+                rx="10"
+                ry="24"
+                transform={`rotate(${deg + 30})`}
+                fill={theme.monogramFill}
+                opacity="0.62"
+              />
+            ))}
+            {/* Stamen core */}
+            <circle cx="0" cy="0" r="11" fill={theme.spark} opacity="0.85" />
+            <circle cx="0" cy="0" r="5" fill={theme.accent} opacity="0.6" />
+          </motion.g>
+        </svg>
+      </motion.div>
 
-      {/* Gold dust shimmer particles */}
-      <GoldDust count={14} accent={theme.spark} />
+      {/* ─── Layer 3b: falling petals (infinite drift) ───────────── */}
+      {[
+        { x: "18%", delay: 0, dur: 13, sway: 12 },
+        { x: "32%", delay: 2.4, dur: 16, sway: -10 },
+        { x: "48%", delay: 4.2, dur: 14, sway: 8 },
+        { x: "64%", delay: 1.6, dur: 17, sway: -14 },
+        { x: "78%", delay: 3.4, dur: 15, sway: 10 },
+      ].map((p, i) => (
+        <motion.div
+          key={`pet-${i}`}
+          className="absolute"
+          style={{ left: p.x, top: "-6%" }}
+          initial={{ y: 0, opacity: 0, rotate: 0 }}
+          animate={{
+            y: ["-6vh", "110vh"],
+            opacity: [0, 0.55, 0.55, 0],
+            rotate: [0, 180, 360, 540],
+            x: [0, p.sway, -p.sway, 0],
+          }}
+          transition={{
+            duration: p.dur,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: "linear",
+            times: [0, 0.1, 0.9, 1],
+          }}
+        >
+          <svg width="22" height="32" viewBox="0 0 22 32">
+            <ellipse cx="11" cy="16" rx="7" ry="15" fill={theme.monogramFill} opacity="0.55" />
+            <ellipse cx="11" cy="16" rx="3" ry="12" fill={theme.spark} opacity="0.35" />
+          </svg>
+        </motion.div>
+      ))}
+
+      {/* ─── Layer 3c: corner buds (gentle bob) ──────────────────── */}
+      {[
+        { left: "8%", top: "78%", scale: 1, delay: 0.8 },
+        { left: "86%", top: "82%", scale: 0.85, delay: 1.4 },
+        { left: "12%", top: "18%", scale: 0.75, delay: 0.4 },
+        { left: "84%", top: "22%", scale: 0.8, delay: 1.0 },
+      ].map((b, i) => (
+        <motion.div
+          key={`bud-${i}`}
+          className="absolute"
+          style={{ left: b.left, top: b.top }}
+          animate={{ y: [-4, 4, -4], rotate: [-3, 3, -3] }}
+          transition={{ duration: 9 + i, repeat: Infinity, ease: "easeInOut", delay: b.delay }}
+        >
+          <svg width="70" height="70" viewBox="0 0 70 70" style={{ color: theme.accent, transform: `scale(${b.scale})` }}>
+            <g transform="translate(35 35)">
+              {[0, 72, 144, 216, 288].map((deg, j) => (
+                <ellipse
+                  key={j}
+                  cx="0"
+                  cy="-14"
+                  rx="8"
+                  ry="18"
+                  transform={`rotate(${deg})`}
+                  fill={theme.monogramFill}
+                  opacity="0.48"
+                />
+              ))}
+              <circle cx="0" cy="0" r="5" fill={theme.spark} opacity="0.8" />
+            </g>
+          </svg>
+        </motion.div>
+      ))}
+
+      {/* Ambient sparkle field */}
+      <GoldDust count={22} accent={theme.spark} />
     </Frame>
   );
 }
@@ -546,87 +643,319 @@ function ModernArt({ theme }: { theme: InvitationTheme }) {
 }
 
 /* ────────────────────────────────────────────────────────────────── */
-/* 5) Bordeaux — Atelier Indigo / Verde-Borgogna                     */
+/* 5) Bordeaux — Heraldic Crest (bespoke v2)                         */
 /* ────────────────────────────────────────────────────────────────── */
-/* Gold filigree corners + scattered shimmer dots */
-
+/* Three-layer composition:
+ *   layer 1 — deep wine vignette + diagonal damask hatching
+ *   layer 2 — twin laurel wreath + filigree corners + central shield
+ *   layer 3 — ribbon banner + drifting embers + quill cross
+ */
 function BordeauxArt({ theme }: { theme: InvitationTheme }) {
   return (
     <Frame>
-      {/* Top-left filigree corner */}
+      {/* ─── Layer 1: wine vignette + damask hatching ────────────── */}
+      <motion.div
+        aria-hidden
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2.6, ease: SOFT_EASE }}
+        style={{
+          background: `radial-gradient(80% 70% at 50% 50%, transparent 0%, ${theme.accent}1A 60%, ${theme.accent}33 100%)`,
+        }}
+      />
+      <svg
+        aria-hidden
+        className="absolute inset-0 h-full w-full opacity-[0.07]"
+        style={{ color: theme.accent }}
+      >
+        <defs>
+          <pattern id="bordeauxHatch" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="14" stroke="currentColor" strokeWidth="0.5" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#bordeauxHatch)" />
+      </svg>
+
+      {/* ─── Layer 2a: filigree top-left corner ──────────────────── */}
       <motion.svg
-        viewBox="0 0 140 140"
-        width="200"
-        height="200"
-        className="absolute top-2 left-2"
+        viewBox="0 0 200 200"
+        width="240"
+        height="240"
+        className="absolute top-3 left-3"
         initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 0.7, scale: 1 }}
+        animate={{ opacity: 0.85, scale: 1 }}
         transition={{ duration: 2.2, ease: SOFT_EASE, delay: 0.4 }}
         style={{ color: theme.accent }}
       >
         <motion.path
-          d="M 12 12 C 40 14, 80 16, 120 18 M 12 12 C 14 40, 16 80, 18 120 M 24 24 C 36 30, 50 38, 60 50 M 24 24 C 30 36, 38 50, 50 60"
+          d="M 16 16 C 60 18, 120 20, 180 22 M 16 16 C 18 60, 20 120, 22 180 M 30 30 C 50 38, 70 52, 84 72 M 30 30 C 38 50, 52 72, 72 86"
           stroke="currentColor"
-          strokeWidth="0.8"
+          strokeWidth="1.0"
           fill="none"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 3, ease: SLOW_EASE, delay: 0.6 }}
+          transition={{ duration: 3.4, ease: SLOW_EASE, delay: 0.6 }}
         />
-        {/* Decorative curl */}
         <motion.path
-          d="M 18 18 Q 28 12, 38 22 Q 32 32, 22 28 Q 14 22, 18 18 Z"
+          d="M 22 22 Q 36 14, 50 28 Q 42 42, 28 36 Q 18 28, 22 22 Z"
           stroke="currentColor"
-          strokeWidth="0.6"
+          strokeWidth="0.8"
           fill="currentColor"
-          fillOpacity="0.18"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          fillOpacity="0.22"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, delay: 2.0 }}
+          style={{ transformOrigin: "30px 30px" }}
         />
-        <motion.circle
-          cx="14" cy="14" r="2.5"
-          fill="currentColor"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.9 }}
-          transition={{ duration: 1.4, delay: 2.4 }}
-        />
+        <motion.circle cx="18" cy="18" r="3" fill="currentColor"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4, delay: 2.4 }} />
       </motion.svg>
 
-      {/* Bottom-right filigree corner (mirrored) */}
+      {/* ─── Layer 2b: filigree bottom-right corner (mirrored) ───── */}
       <motion.svg
-        viewBox="0 0 140 140"
-        width="200"
-        height="200"
-        className="absolute bottom-2 right-2 scale-x-[-1] scale-y-[-1]"
+        viewBox="0 0 200 200"
+        width="240"
+        height="240"
+        className="absolute bottom-3 right-3 scale-x-[-1] scale-y-[-1]"
         initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 0.6, scale: 1 }}
+        animate={{ opacity: 0.8, scale: 1 }}
         transition={{ duration: 2.2, ease: SOFT_EASE, delay: 0.6 }}
         style={{ color: theme.accent }}
       >
         <motion.path
-          d="M 12 12 C 40 14, 80 16, 120 18 M 12 12 C 14 40, 16 80, 18 120 M 24 24 C 36 30, 50 38, 60 50"
+          d="M 16 16 C 60 18, 120 20, 180 22 M 16 16 C 18 60, 20 120, 22 180 M 30 30 C 50 38, 70 52, 84 72"
           stroke="currentColor"
-          strokeWidth="0.8"
+          strokeWidth="1.0"
           fill="none"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 3, ease: SLOW_EASE, delay: 0.8 }}
+          transition={{ duration: 3.4, ease: SLOW_EASE, delay: 0.8 }}
         />
         <motion.path
-          d="M 18 18 Q 28 12, 38 22 Q 32 32, 22 28 Q 14 22, 18 18 Z"
+          d="M 22 22 Q 36 14, 50 28 Q 42 42, 28 36 Q 18 28, 22 22 Z"
           stroke="currentColor"
-          strokeWidth="0.6"
+          strokeWidth="0.8"
           fill="currentColor"
-          fillOpacity="0.18"
+          fillOpacity="0.22"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.4, delay: 2.2 }}
         />
       </motion.svg>
 
-      {/* Gold shimmer dots */}
-      <GoldDust count={20} accent={theme.spark} />
+      {/* ─── Layer 2c: central heraldic shield + laurel wreath ───── */}
+      <motion.div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        initial={{ opacity: 0, scale: 0.85 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.4, delay: 1.0, ease: SOFT_EASE }}
+      >
+        <svg viewBox="0 0 360 360" width="320" height="320" style={{ color: theme.accent }}>
+          {/* Laurel wreath — left arc */}
+          <motion.g
+            initial={{ opacity: 0, x: -6 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 2.4, delay: 1.6, ease: SOFT_EASE }}
+          >
+            <path
+              d="M 180 60 C 130 80, 95 130, 90 200 C 88 240, 102 280, 130 305"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              fill="none"
+              opacity="0.85"
+            />
+            {[
+              { x: 168, y: 78, r: -42 },
+              { x: 148, y: 100, r: -52 },
+              { x: 128, y: 128, r: -62 },
+              { x: 112, y: 160, r: -75 },
+              { x: 100, y: 196, r: -90 },
+              { x: 98, y: 232, r: -100 },
+              { x: 106, y: 264, r: -110 },
+              { x: 122, y: 292, r: -120 },
+            ].map((lf, i) => (
+              <g key={`lL-${i}`} transform={`translate(${lf.x} ${lf.y}) rotate(${lf.r})`}>
+                <path
+                  d="M 0 0 C 5 -8, 16 -8, 20 0 C 16 8, 5 8, 0 0 Z"
+                  fill="currentColor"
+                  opacity="0.55"
+                />
+                <line x1="0" y1="0" x2="20" y2="0" stroke="currentColor" strokeWidth="0.4" opacity="0.7" />
+              </g>
+            ))}
+          </motion.g>
+          {/* Laurel wreath — right arc (mirror) */}
+          <motion.g
+            initial={{ opacity: 0, x: 6 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 2.4, delay: 1.8, ease: SOFT_EASE }}
+          >
+            <path
+              d="M 180 60 C 230 80, 265 130, 270 200 C 272 240, 258 280, 230 305"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              fill="none"
+              opacity="0.85"
+            />
+            {[
+              { x: 192, y: 78, r: 42 },
+              { x: 212, y: 100, r: 52 },
+              { x: 232, y: 128, r: 62 },
+              { x: 248, y: 160, r: 75 },
+              { x: 260, y: 196, r: 90 },
+              { x: 262, y: 232, r: 100 },
+              { x: 254, y: 264, r: 110 },
+              { x: 238, y: 292, r: 120 },
+            ].map((lf, i) => (
+              <g key={`lR-${i}`} transform={`translate(${lf.x} ${lf.y}) rotate(${lf.r})`}>
+                <path
+                  d="M 0 0 C 5 -8, 16 -8, 20 0 C 16 8, 5 8, 0 0 Z"
+                  fill="currentColor"
+                  opacity="0.55"
+                />
+                <line x1="0" y1="0" x2="20" y2="0" stroke="currentColor" strokeWidth="0.4" opacity="0.7" />
+              </g>
+            ))}
+          </motion.g>
+
+          {/* Central heraldic shield */}
+          <motion.path
+            d="M 180 110 L 230 122 L 230 200 C 230 245, 210 275, 180 290 C 150 275, 130 245, 130 200 L 130 122 Z"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            fill={theme.spark}
+            fillOpacity="0.16"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 2.2, delay: 1.4, ease: SLOW_EASE }}
+          />
+          {/* Shield hatching */}
+          <motion.g
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.4 }}
+            transition={{ duration: 1.6, delay: 2.8 }}
+          >
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <line
+                key={i}
+                x1={138 + i * 16}
+                y1="130"
+                x2={138 + i * 16 - 30}
+                y2="280"
+                stroke="currentColor"
+                strokeWidth="0.4"
+              />
+            ))}
+          </motion.g>
+          {/* Shield monogram */}
+          <motion.text
+            x="180"
+            y="218"
+            textAnchor="middle"
+            fontFamily="serif"
+            fontStyle="italic"
+            fontSize="60"
+            fill={theme.spark}
+            opacity="0.92"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 0.92, scale: 1 }}
+            transition={{ duration: 1.6, delay: 2.4, ease: SOFT_EASE }}
+            style={{ transformOrigin: "180px 218px" }}
+          >
+            N
+          </motion.text>
+          {/* Wreath crown — tied bow at top */}
+          <motion.path
+            d="M 168 64 Q 180 50, 192 64 Q 186 72, 180 70 Q 174 72, 168 64 Z"
+            stroke="currentColor"
+            strokeWidth="1"
+            fill="currentColor"
+            fillOpacity="0.35"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, delay: 2.2 }}
+          />
+        </svg>
+      </motion.div>
+
+      {/* ─── Layer 3a: ribbon banner across shield base ──────────── */}
+      <motion.svg
+        viewBox="0 0 600 80"
+        width="320"
+        height="44"
+        className="absolute left-1/2 top-[56%] -translate-x-1/2"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 0.9, y: 0 }}
+        transition={{ duration: 2, delay: 3.0, ease: SOFT_EASE }}
+        style={{ color: theme.accent }}
+      >
+        <path
+          d="M 30 40 L 60 20 L 540 20 L 570 40 L 540 60 L 60 60 Z"
+          fill={theme.spark}
+          fillOpacity="0.18"
+          stroke="currentColor"
+          strokeWidth="0.8"
+        />
+        <path d="M 0 60 L 30 40 L 60 60 L 30 75 Z" fill="currentColor" fillOpacity="0.45" />
+        <path d="M 600 60 L 570 40 L 540 60 L 570 75 Z" fill="currentColor" fillOpacity="0.45" />
+        <text
+          x="300"
+          y="46"
+          textAnchor="middle"
+          fontFamily="serif"
+          fontStyle="italic"
+          fontSize="18"
+          fill={theme.accent}
+          opacity="0.95"
+          letterSpacing="6"
+        >
+          MMXXVI
+        </text>
+      </motion.svg>
+
+      {/* ─── Layer 3b: drifting embers (warm dust) ───────────────── */}
+      {[
+        { left: "14%", delay: 0, dur: 11 },
+        { left: "26%", delay: 1.8, dur: 14 },
+        { left: "40%", delay: 0.6, dur: 12 },
+        { left: "58%", delay: 2.4, dur: 15 },
+        { left: "72%", delay: 1.2, dur: 13 },
+        { left: "86%", delay: 0.9, dur: 16 },
+      ].map((e, i) => (
+        <motion.span
+          key={`ember-${i}`}
+          aria-hidden
+          className="absolute h-[3px] w-[3px] rounded-full"
+          style={{ left: e.left, bottom: "-2%", background: theme.spark, boxShadow: `0 0 6px ${theme.spark}` }}
+          initial={{ y: 0, opacity: 0 }}
+          animate={{
+            y: ["0vh", "-110vh"],
+            opacity: [0, 0.85, 0.85, 0],
+            x: [0, i % 2 ? 14 : -14, 0],
+          }}
+          transition={{ duration: e.dur, delay: e.delay, repeat: Infinity, ease: "linear", times: [0, 0.1, 0.9, 1] }}
+        />
+      ))}
+
+      {/* ─── Layer 3c: quill cross over shield (subtle) ──────────── */}
+      <motion.svg
+        viewBox="0 0 200 200"
+        width="180"
+        height="180"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-50"
+        initial={{ opacity: 0, rotate: -8 }}
+        animate={{ opacity: 0.5, rotate: 0 }}
+        transition={{ duration: 2.4, delay: 3.2, ease: SOFT_EASE }}
+        style={{ color: theme.accent }}
+      >
+        <path d="M 40 160 L 160 40" stroke="currentColor" strokeWidth="1" fill="none" strokeDasharray="3 3" opacity="0.6" />
+        <path d="M 160 40 L 156 50 L 168 44 Z" fill="currentColor" opacity="0.6" />
+        <path d="M 40 160 L 44 150 L 32 156 Z" fill="currentColor" opacity="0.6" />
+      </motion.svg>
+
+      {/* Ambient shimmer */}
+      <GoldDust count={26} accent={theme.spark} />
     </Frame>
   );
 }

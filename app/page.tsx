@@ -1,6 +1,7 @@
 import { Nav } from "./_sections/nav";
 import { ScrollProgress } from "./_sections/scroll-progress";
-import { FloatingMotifs } from "@/components/ornaments/floating-motifs";import { Hero } from "./_sections/hero";
+import { FloatingMotifs } from "@/components/ornaments/floating-motifs";
+import { Hero } from "./_sections/hero";
 import { TemplateCarousel } from "./_sections/template-carousel";
 import { HowItWorks } from "./_sections/how-it-works";
 import { MusicBlock } from "./_sections/music-block";
@@ -38,7 +39,8 @@ import { Footer } from "./_sections/footer";
 export default function HomePage() {
   return (
     <>
-      <ScrollProgress />      <FloatingMotifs />
+      <ScrollProgress />
+      <FloatingMotifs />
       <Nav />
       <main>
         <Hero />
