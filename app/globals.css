@@ -44,6 +44,113 @@
   }
 }
 
+/* ──────────────────────────────────────────────────────────────────
+ * NUVE Edition tokens — FAZ 1
+ *
+ * Each edition (Atelier Indigo, Timeless, Olive Grove, Mansion Lights,
+ * Bodrum Blue, Aurora) scopes its own 5-stop palette + display font
+ * via the `data-edition` attribute. Mount with:
+ *   <html data-edition="atelier-indigo">   (full-page swap)
+ *   <div data-edition="aurora">           (slot scope, e.g. /i/[slug])
+ *
+ * `--edition-*` resolve to NUVE neutrals when no edition is active,
+ * so existing components stay visually unchanged.
+ * ────────────────────────────────────────────────────────────────── */
+:root {
+  /* NUVE base palette (single source of truth) */
+  --nuve-cream:      #F6F1EA;
+  --nuve-cream-alt:  #EFE6DA;
+  --nuve-brown:      #6E4A2E;
+  --nuve-gold:       #B8895A;
+  --nuve-ink:        #1F1B17;
+  --nuve-ink-soft:   #7A6A5D;
+
+  /* Default edition resolves to NUVE neutrals — landing chrome */
+  --edition-bg:        var(--nuve-cream);
+  --edition-bg-alt:    var(--nuve-cream-alt);
+  --edition-ink:       var(--nuve-ink);
+  --edition-ink-soft:  var(--nuve-ink-soft);
+  --edition-accent:    var(--nuve-gold);
+  --edition-deep:      var(--nuve-brown);
+  --edition-hairline:  rgba(31, 27, 23, 0.12);
+  --edition-display:   var(--font-display);
+  --edition-body:      var(--font-sans);
+  --edition-signature: var(--font-signature);
+}
+
+/* Atelier Indigo — karanlık bordo + altın filigree, art deco letterpress */
+[data-edition="atelier-indigo"] {
+  --edition-bg:        #1B0C0C;
+  --edition-bg-alt:    #2A1414;
+  --edition-ink:       #F2E8D8;
+  --edition-ink-soft:  rgba(242, 232, 216, 0.72);
+  --edition-accent:    #D4A158;
+  --edition-deep:      #8C2828;
+  --edition-hairline:  rgba(212, 161, 88, 0.32);
+  --edition-display:   var(--font-atelier);
+}
+
+/* Timeless — saf ivory + grafit, geniş margin editorial */
+[data-edition="timeless"] {
+  --edition-bg:        #FBF8F2;
+  --edition-bg-alt:    #F5EFE3;
+  --edition-ink:       #2A2622;
+  --edition-ink-soft:  rgba(42, 38, 34, 0.62);
+  --edition-accent:    #6E4A2E;
+  --edition-deep:      #1F1B17;
+  --edition-hairline:  rgba(31, 27, 23, 0.18);
+  --edition-display:   var(--font-display); /* Cormorant */
+}
+
+/* Olive Grove — Akdeniz krem keten + zeytin yeşili */
+[data-edition="olive-grove"] {
+  --edition-bg:        #F2EFE0;
+  --edition-bg-alt:    #E6E0CB;
+  --edition-ink:       #2D3320;
+  --edition-ink-soft:  rgba(45, 51, 32, 0.68);
+  --edition-accent:    #67784E;
+  --edition-deep:      #3D4528;
+  --edition-hairline:  rgba(103, 120, 78, 0.28);
+  --edition-display:   var(--font-display); /* Cormorant; Caveat via --edition-signature for names */
+}
+
+/* Mansion Lights — akşam yalısı, koyu yeşil + şampanya altın */
+[data-edition="mansion-lights"] {
+  --edition-bg:        #11261E;
+  --edition-bg-alt:    #1A3329;
+  --edition-ink:       #F2EAD3;
+  --edition-ink-soft:  rgba(242, 234, 211, 0.76);
+  --edition-accent:    #D9B36A;
+  --edition-deep:      #8A6F32;
+  --edition-hairline:  rgba(217, 179, 106, 0.34);
+  --edition-display:   var(--font-mansion);
+}
+
+/* Bodrum Blue — Ege mavisi + kireç beyazı + zeytin */
+[data-edition="bodrum-blue"] {
+  --edition-bg:        #F4F1EA;
+  --edition-bg-alt:    #E0EAEE;
+  --edition-ink:       #1F3848;
+  --edition-ink-soft:  rgba(31, 56, 72, 0.65);
+  --edition-accent:    #4A7E94;
+  --edition-deep:      #1E3D5C;
+  --edition-hairline:  rgba(74, 126, 148, 0.30);
+  --edition-display:   var(--font-bodrum);
+}
+
+/* Aurora — off-white + grafit + tek aksan, modernist minimal */
+[data-edition="aurora"] {
+  --edition-bg:        #F8F7F4;
+  --edition-bg-alt:    #ECEAE4;
+  --edition-ink:       #161510;
+  --edition-ink-soft:  rgba(22, 21, 16, 0.62);
+  --edition-accent:    #5C4ED0;
+  --edition-deep:      #2A2270;
+  --edition-hairline:  rgba(22, 21, 16, 0.14);
+  --edition-display:   var(--font-aurora);
+  --edition-body:      var(--font-aurora-body);
+}
+
 @layer base {
   * {
     @apply border-line;
