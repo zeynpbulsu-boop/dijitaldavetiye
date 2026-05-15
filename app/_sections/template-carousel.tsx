@@ -249,35 +249,24 @@ function TemplateCard({
     >
       {/* Card frame */}
       <div className="relative aspect-[3/4] overflow-hidden rounded-[6px] shadow-[0_1px_2px_rgba(43,30,22,0.08)] transition-shadow duration-500 group-hover:shadow-[0_20px_40px_-12px_rgba(43,30,22,0.25)]">
-        {/* Gradient placeholder backdrop */}
-        <div
-          className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.06]"
-          style={{
-            background: `linear-gradient(155deg, ${card.bg.from} 0%, ${card.bg.to} 100%)`,
-          }}
-        />
-
-        {/* Bespoke per-slug art preview — matches the full TemplateDecorations
-            layer that renders on /i/[slug]. So a Magnolia card actually shows
-            magnolia flowers, Mansion Lights shows a chandelier, etc.
-            Sits in front of the gradient + monogram so the bespoke motif is
-            unmistakable at a glance. Dark backdrops swap to a luminous palette. */}
-        <div
-          className={`absolute inset-0 flex items-center justify-center ${
-            parseInt(card.bg.from.slice(1), 16) < 0x808080 ? "" : "mix-blend-multiply"
-          }`}
-        >
-          <TemplateCardArt
-            slug={card.slug}
-            dark={parseInt(card.bg.from.slice(1), 16) < 0x808080}
-          />
+        {/* Bespoke painterly scene — each template gets its own illustrated
+            backdrop (moonlit mansion, chinoiserie ginger jar, olive arch, etc.).
+            The scene component owns its own background palette + composition. */}
+        <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.06]">
+          <TemplateCardArt slug={card.slug} />
         </div>
 
-        {/* Cognac wash on hover */}
-        <div className="absolute inset-0 bg-brand-cognac/0 transition-colors duration-500 group-hover:bg-brand-cognac/15" />
+        {/* Subtle hover wash — adds depth on hover without obscuring art */}
+        <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-brand-ink/10" />
 
         {/* Vertical edge label */}
-        <span className="absolute left-3 top-3 text-[9px] font-medium uppercase tracking-[0.3em] text-brand-ink/45">
+        <span className="absolute left-3 top-3 text-[9px] font-medium uppercase tracking-[0.3em]"
+          style={{
+            color: card.bg.from.toLowerCase().startsWith("#1") || card.bg.from.toLowerCase().startsWith("#2") || card.bg.from.toLowerCase().startsWith("#0")
+              ? "rgba(245, 232, 217, 0.65)"
+              : "rgba(43, 30, 22, 0.55)",
+          }}
+        >
           NUVE · ED. № {String(index + 1).padStart(2, "0")}
         </span>
 
@@ -288,24 +277,6 @@ function TemplateCard({
             {newBadge}
           </span>
         )}
-
-        {/* Center monogram — italic N (subtle, lets the bespoke art breathe) */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <span
-            className="font-display italic"
-            style={{
-              fontSize: "clamp(90px, 14vw, 140px)",
-              lineHeight: 1,
-              letterSpacing: "-0.04em",
-              color: card.bg.from.toLowerCase().startsWith("#1") || card.bg.from.toLowerCase().startsWith("#2")
-                ? "rgba(245, 232, 217, 0.22)"
-                : "rgba(43, 30, 22, 0.10)",
-            }}
-            aria-hidden
-          >
-            N
-          </span>
-        </div>
 
         {/* Bottom name plate */}
         <div className="absolute inset-x-0 bottom-0 p-4 lg:p-5">

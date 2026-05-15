@@ -1636,36 +1636,586 @@ function BottomFloralBorder({ tint, leafTint }: { tint: string; leafTint: string
 /* Same visual DNA as the full TemplateDecorations but at card scale. */
 
 export function TemplateCardArt({ slug, dark = false }: { slug: string; dark?: boolean }) {
-  const ink = dark ? "rgba(245, 232, 217, 0.6)" : "rgba(43, 30, 22, 0.26)";
-  const accent = dark ? "rgba(245, 219, 160, 0.8)" : "rgba(140, 90, 60, 0.62)";
-  const soft = dark ? "rgba(232, 200, 178, 0.5)" : "rgba(176, 122, 92, 0.42)";
+  void dark;
 
+  // Each slug maps to its own painterly scene with bespoke palette.
   switch (slug) {
     case "magnolia":
-      return <CardMagnolia ink={ink} accent={accent} soft={soft} />;
+    case "blush-garden":
+      return <SceneMagnoliaArch />;
     case "mansion-lights":
-      return <CardChandelier ink={ink} accent={accent} />;
+    case "verde-borgogna":
+      return <SceneMoonlitMansion />;
     case "timeless":
-      return <CardTimeless ink={ink} accent={accent} />;
+    case "elegant-ivory":
+      return <SceneChinoiserie />;
     case "modern":
-      return <CardModern ink={ink} accent={accent} />;
+    case "black-ink":
+      return <SceneBlackInk />;
     case "bordeaux":
     case "atelier-indigo":
-    case "verde-borgogna":
-      return <CardFiligree ink={ink} accent={accent} />;
+      return <SceneBordeauxCrest />;
     case "olive-grove":
     case "botanical":
-      return <CardEucalyptus ink={ink} accent={accent} soft={soft} />;
+      return <SceneOliveArch />;
     case "blush-reverie":
-    case "blush-garden":
     case "dream":
-      return <CardPetals soft={soft} accent={accent} />;
+      return <SceneBlushRose />;
     case "lavender":
     case "kir-bahcesi":
-      return <CardWildflowers ink={ink} accent={accent} soft={soft} />;
+    case "egee-blue":
+      return <SceneLavenderField />;
     default:
-      return <CardFiligree ink={ink} accent={accent} />;
+      return <SceneMagnoliaArch />;
   }
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Scene 1 — Magnolia / Blush Garden
+ * Watercolor cream wash + tall white archway + cascading magnolia
+ * blooms + dust particles. Painterly, romantic.
+ * ────────────────────────────────────────────────────────────────── */
+function SceneMagnoliaArch() {
+  return (
+    <div className="absolute inset-0 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #FBF6EE 0%, #F5E8D9 60%, #E8D2BB 100%)" }}>
+      {/* watercolor radial wash */}
+      <div className="absolute inset-0"
+        style={{ background: "radial-gradient(60% 50% at 50% 35%, rgba(255,255,255,0.75) 0%, transparent 70%)" }} />
+      <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+        {/* Distant misty trees */}
+        <g opacity="0.18">
+          <ellipse cx="30" cy="220" rx="40" ry="60" fill="#A39A85" />
+          <ellipse cx="170" cy="220" rx="40" ry="60" fill="#A39A85" />
+          <ellipse cx="60" cy="240" rx="35" ry="50" fill="#8C826E" />
+          <ellipse cx="140" cy="240" rx="35" ry="50" fill="#8C826E" />
+        </g>
+        {/* Stone archway */}
+        <g>
+          <path d="M 50 90 Q 50 50, 100 50 Q 150 50, 150 90 L 150 230 L 50 230 Z"
+            fill="rgba(255,253,247,0.85)" stroke="#B89968" strokeWidth="0.7" />
+          {/* arch interior (sky) */}
+          <path d="M 60 95 Q 60 60, 100 60 Q 140 60, 140 95 L 140 220 L 60 220 Z"
+            fill="rgba(232,210,187,0.45)" />
+          {/* keystone */}
+          <ellipse cx="100" cy="52" rx="8" ry="3" fill="#B89968" opacity="0.5" />
+        </g>
+        {/* Floral garlands left + right cascading */}
+        <g opacity="0.85">
+          {/* Left vine */}
+          <path d="M 48 80 Q 30 110, 28 150 Q 32 200, 42 240"
+            stroke="#7A8B72" strokeWidth="0.8" fill="none" opacity="0.65" />
+          {[
+            { x: 35, y: 105, s: 1 },
+            { x: 28, y: 135, s: 1.1 },
+            { x: 25, y: 175, s: 0.9 },
+            { x: 32, y: 215, s: 1 },
+          ].map((p, i) => (
+            <g key={`L-${i}`} transform={`translate(${p.x} ${p.y}) scale(${p.s})`}>
+              {[0, 72, 144, 216, 288].map((deg, j) => (
+                <ellipse key={j} cx="0" cy="-6" rx="4" ry="9"
+                  transform={`rotate(${deg})`} fill="#F5E1D8" opacity="0.85" />
+              ))}
+              <circle cx="0" cy="0" r="2" fill="#D9A294" />
+            </g>
+          ))}
+          {/* Right vine (mirror) */}
+          <path d="M 152 80 Q 170 110, 172 150 Q 168 200, 158 240"
+            stroke="#7A8B72" strokeWidth="0.8" fill="none" opacity="0.65" />
+          {[
+            { x: 165, y: 105, s: 1 },
+            { x: 172, y: 135, s: 1.1 },
+            { x: 175, y: 175, s: 0.9 },
+            { x: 168, y: 215, s: 1 },
+          ].map((p, i) => (
+            <g key={`R-${i}`} transform={`translate(${p.x} ${p.y}) scale(${p.s})`}>
+              {[0, 72, 144, 216, 288].map((deg, j) => (
+                <ellipse key={j} cx="0" cy="-6" rx="4" ry="9"
+                  transform={`rotate(${deg})`} fill="#F5E1D8" opacity="0.85" />
+              ))}
+              <circle cx="0" cy="0" r="2" fill="#D9A294" />
+            </g>
+          ))}
+        </g>
+        {/* Foreground floor petals */}
+        {Array.from({ length: 9 }).map((_, i) => {
+          const x = 30 + (i * 19) % 140;
+          const y = 248 + ((i * 7) % 10);
+          return <ellipse key={i} cx={x} cy={y} rx="3.5" ry="1.5" fill="#D9A294" opacity="0.55" />;
+        })}
+      </svg>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Scene 2 — Moonlit Mansion (Mansion Lights / Verde-Borgogna)
+ * Deep midnight blue sky + crescent moon + mansion silhouette with
+ * golden window glows + sparse stars. Cinematic evening.
+ * ────────────────────────────────────────────────────────────────── */
+function SceneMoonlitMansion() {
+  return (
+    <div className="absolute inset-0 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #1A1530 0%, #2D2440 55%, #1F1A2E 100%)" }}>
+      <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+        {/* Stars */}
+        {Array.from({ length: 18 }).map((_, i) => {
+          const x = (i * 53) % 200;
+          const y = (i * 13) % 110;
+          const r = 0.6 + (i % 2) * 0.4;
+          return <circle key={i} cx={x} cy={y} r={r} fill="#E8D8AC" opacity="0.7" />;
+        })}
+        {/* Crescent moon */}
+        <g transform="translate(150 50)">
+          <circle r="18" fill="#F3E1A8" opacity="0.95" />
+          <circle cx="6" cy="-4" r="18" fill="#1A1530" />
+          <circle r="22" fill="none" stroke="#F3E1A8" strokeWidth="0.4" opacity="0.4" />
+        </g>
+        {/* Distant tree line */}
+        <g opacity="0.7">
+          <path d="M 0 195 L 10 180 L 20 188 L 30 175 L 40 185 L 50 170 L 60 182 L 70 178 L 80 172 L 90 184 L 100 175 L 110 180 L 120 173 L 130 182 L 140 177 L 150 184 L 160 175 L 170 180 L 180 174 L 190 182 L 200 178 L 200 220 L 0 220 Z"
+            fill="#0F0C1E" />
+        </g>
+        {/* Mansion silhouette */}
+        <g transform="translate(60 130)">
+          {/* main body */}
+          <rect x="0" y="20" width="80" height="65" fill="#0A0712" />
+          {/* roof */}
+          <path d="M -8 22 L 40 -2 L 88 22 Z" fill="#0A0712" />
+          {/* central tower */}
+          <rect x="32" y="-2" width="16" height="22" fill="#0A0712" />
+          <path d="M 28 -2 L 40 -14 L 52 -2 Z" fill="#0A0712" />
+          <circle cx="40" cy="-14" r="1.2" fill="#E8D8AC" />
+          {/* side wings */}
+          <rect x="-12" y="38" width="14" height="47" fill="#0A0712" />
+          <rect x="78" y="38" width="14" height="47" fill="#0A0712" />
+          {/* windows — golden grid */}
+          {[
+            { x: 6, y: 30 }, { x: 18, y: 30 }, { x: 30, y: 30 }, { x: 50, y: 30 }, { x: 62, y: 30 }, { x: 74, y: 30 },
+            { x: 6, y: 48 }, { x: 18, y: 48 }, { x: 30, y: 48 }, { x: 50, y: 48 }, { x: 62, y: 48 }, { x: 74, y: 48 },
+            { x: 6, y: 66 }, { x: 30, y: 66 }, { x: 50, y: 66 }, { x: 74, y: 66 },
+            { x: 36, y: 8 }, // tower window
+          ].map((w, i) => (
+            <g key={i}>
+              <rect x={w.x} y={w.y} width="5" height="7" fill="#F3D87F" opacity={0.65 + (i % 3) * 0.1} />
+              <rect x={w.x - 1} y={w.y - 1} width="7" height="9" fill="#F3D87F" opacity="0.15" />
+            </g>
+          ))}
+          {/* central grand entrance */}
+          <path d="M 36 70 Q 36 60, 40 60 Q 44 60, 44 70 L 44 85 L 36 85 Z" fill="#F3D87F" opacity="0.7" />
+        </g>
+        {/* Foreground hedgerow */}
+        <ellipse cx="40" cy="245" rx="50" ry="15" fill="#0A0712" opacity="0.9" />
+        <ellipse cx="160" cy="245" rx="50" ry="15" fill="#0A0712" opacity="0.9" />
+        <ellipse cx="100" cy="262" rx="120" ry="20" fill="#080510" />
+      </svg>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Scene 3 — Chinoiserie (Timeless / Elegant Ivory)
+ * Ivory background + tall ginger jar in blue-and-white porcelain
+ * + cherry blossom branch arching across. Eastern classical heirloom.
+ * ────────────────────────────────────────────────────────────────── */
+function SceneChinoiserie() {
+  return (
+    <div className="absolute inset-0 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #FBF8F2 0%, #F5EFE3 100%)" }}>
+      <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+        {/* Cherry blossom branch — arches across top right */}
+        <g>
+          <path d="M 200 30 Q 150 50, 120 75 Q 90 100, 70 130 Q 50 165, 35 200"
+            stroke="#5C3A2A" strokeWidth="1.4" fill="none" />
+          {/* Side branches */}
+          <path d="M 150 50 Q 145 35, 158 25" stroke="#5C3A2A" strokeWidth="0.9" fill="none" />
+          <path d="M 120 75 Q 112 60, 122 50" stroke="#5C3A2A" strokeWidth="0.9" fill="none" />
+          <path d="M 90 100 Q 78 85, 88 78" stroke="#5C3A2A" strokeWidth="0.8" fill="none" />
+          <path d="M 70 130 Q 56 124, 50 115" stroke="#5C3A2A" strokeWidth="0.8" fill="none" />
+          {/* Blossoms — clusters of 5-petal flowers */}
+          {[
+            { x: 178, y: 35, s: 1 }, { x: 162, y: 22, s: 0.85 },
+            { x: 148, y: 48, s: 1.1 }, { x: 138, y: 60, s: 0.9 },
+            { x: 122, y: 50, s: 1 }, { x: 110, y: 80, s: 0.85 },
+            { x: 92, y: 78, s: 1 }, { x: 80, y: 105, s: 0.9 },
+            { x: 62, y: 120, s: 1 }, { x: 48, y: 110, s: 0.85 },
+            { x: 50, y: 160, s: 0.95 }, { x: 38, y: 185, s: 1 },
+          ].map((b, i) => (
+            <g key={i} transform={`translate(${b.x} ${b.y}) scale(${b.s})`}>
+              {[0, 72, 144, 216, 288].map((deg, j) => (
+                <ellipse key={j} cx="0" cy="-3.5" rx="2.5" ry="4.5"
+                  transform={`rotate(${deg})`} fill="#FDE8E0" stroke="#D9A6A0" strokeWidth="0.3" />
+              ))}
+              <circle cx="0" cy="0" r="1.2" fill="#B89968" />
+            </g>
+          ))}
+        </g>
+        {/* Ginger jar (blue-and-white) */}
+        <g transform="translate(100 175)">
+          {/* Shadow */}
+          <ellipse cx="0" cy="78" rx="30" ry="3" fill="#2B1E16" opacity="0.15" />
+          {/* Body */}
+          <path d="M -28 -10 Q -34 0, -32 30 Q -30 55, -20 70 L 20 70 Q 30 55, 32 30 Q 34 0, 28 -10 Z"
+            fill="#FFFDF8" stroke="#1E3D5C" strokeWidth="1" />
+          {/* Lid */}
+          <ellipse cx="0" cy="-12" rx="20" ry="3" fill="#FFFDF8" stroke="#1E3D5C" strokeWidth="0.9" />
+          <path d="M -14 -12 Q -14 -22, 0 -22 Q 14 -22, 14 -12 Z"
+            fill="#FFFDF8" stroke="#1E3D5C" strokeWidth="0.9" />
+          <circle cx="0" cy="-24" r="2.5" fill="#1E3D5C" />
+          {/* Pattern bands */}
+          <path d="M -32 0 Q -32 -2, -28 -3 L 28 -3 Q 32 -2, 32 0" stroke="#1E3D5C" strokeWidth="0.6" fill="none" />
+          <path d="M -32 55 Q -32 57, -28 58 L 28 58 Q 32 57, 32 55" stroke="#1E3D5C" strokeWidth="0.6" fill="none" />
+          {/* Central motif — chinoiserie inspired peony */}
+          <g transform="translate(0 28)">
+            {[0, 60, 120, 180, 240, 300].map((deg, j) => (
+              <ellipse key={j} cx="0" cy="-7" rx="3.5" ry="8"
+                transform={`rotate(${deg})`} fill="#1E3D5C" opacity="0.85" />
+            ))}
+            <circle cx="0" cy="0" r="2.5" fill="#1E3D5C" />
+            {/* Side leaves */}
+            <path d="M -14 4 Q -22 0, -22 10 Q -16 12, -14 4 Z" fill="#1E3D5C" opacity="0.7" />
+            <path d="M 14 4 Q 22 0, 22 10 Q 16 12, 14 4 Z" fill="#1E3D5C" opacity="0.7" />
+          </g>
+          {/* Decorative dots */}
+          {[-22, -10, 10, 22].map((dx, i) => (
+            <circle key={i} cx={dx} cy={50} r="1.2" fill="#1E3D5C" opacity="0.8" />
+          ))}
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Scene 4 — Black Ink (Modern / Black Ink)
+ * Pure black canvas with single sweeping gold botanical sumi-ink stroke
+ * + tiny scattered gold flecks. Bold, sharp, sumi-e inspired.
+ * ────────────────────────────────────────────────────────────────── */
+function SceneBlackInk() {
+  return (
+    <div className="absolute inset-0 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #0E0B08 0%, #1A1410 100%)" }}>
+      <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+        {/* Sweeping ink stroke spine */}
+        <path d="M 50 30 Q 80 90, 110 130 Q 140 175, 155 240"
+          stroke="#C9A961" strokeWidth="1.8" fill="none" opacity="0.95" />
+        {/* Sub-branches */}
+        <path d="M 78 78 Q 60 76, 50 60" stroke="#C9A961" strokeWidth="1" fill="none" opacity="0.85" />
+        <path d="M 105 122 Q 130 110, 145 95" stroke="#C9A961" strokeWidth="1.1" fill="none" opacity="0.85" />
+        <path d="M 130 168 Q 105 175, 88 195" stroke="#C9A961" strokeWidth="1" fill="none" opacity="0.8" />
+        {/* Leaves — long ellipses */}
+        {[
+          { x: 50, y: 60, r: -55 },
+          { x: 78, y: 78, r: 30 },
+          { x: 105, y: 122, r: -50 },
+          { x: 130, y: 168, r: 35 },
+          { x: 145, y: 95, r: 60 },
+          { x: 88, y: 195, r: -25 },
+          { x: 155, y: 240, r: 50 },
+        ].map((l, i) => (
+          <ellipse key={i} cx={l.x} cy={l.y} rx="14" ry="3.5"
+            transform={`rotate(${l.r} ${l.x} ${l.y})`} fill="#C9A961" opacity="0.78" />
+        ))}
+        {/* Gold flecks scattered */}
+        {Array.from({ length: 14 }).map((_, i) => {
+          const x = (i * 41) % 200;
+          const y = (i * 23) % 280;
+          const r = 0.8 + (i % 2);
+          return <circle key={i} cx={x} cy={y} r={r} fill="#E8C8A7" opacity="0.45" />;
+        })}
+        {/* Bottom monogram square — minimal */}
+        <g transform="translate(100 245)">
+          <rect x="-12" y="-12" width="24" height="24" stroke="#C9A961" strokeWidth="0.8" fill="none" opacity="0.7" />
+          <text x="0" y="6" textAnchor="middle" fontFamily="serif" fontStyle="italic"
+            fontSize="16" fill="#C9A961" opacity="0.95">N</text>
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Scene 5 — Bordeaux Crest (Bordeaux / Atelier Indigo)
+ * Deep burgundy bg + filigree corners + central wax seal monogram
+ * + gold ember flecks. Old-world heraldic.
+ * ────────────────────────────────────────────────────────────────── */
+function SceneBordeauxCrest() {
+  return (
+    <div className="absolute inset-0 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #2B0F0F 0%, #4A1818 55%, #2B0F0F 100%)" }}>
+      {/* Vignette */}
+      <div className="absolute inset-0"
+        style={{ background: "radial-gradient(70% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.45) 100%)" }} />
+      <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+        {/* Filigree corners */}
+        {[
+          { x: 0, y: 0, sx: 1, sy: 1 },
+          { x: 200, y: 0, sx: -1, sy: 1 },
+          { x: 0, y: 280, sx: 1, sy: -1 },
+          { x: 200, y: 280, sx: -1, sy: -1 },
+        ].map((c, i) => (
+          <g key={i} transform={`translate(${c.x} ${c.y}) scale(${c.sx} ${c.sy})`}>
+            <path d="M 8 8 C 32 10, 62 12, 90 14 M 8 8 C 10 32, 12 62, 14 90 M 18 18 C 30 24, 42 32, 50 44"
+              stroke="#C9A961" strokeWidth="0.7" fill="none" opacity="0.85" />
+            <path d="M 14 14 Q 24 8, 32 18 Q 26 26, 18 22 Q 10 18, 14 14 Z"
+              fill="#C9A961" opacity="0.4" />
+            <circle cx="10" cy="10" r="1.5" fill="#E8C8A7" />
+          </g>
+        ))}
+        {/* Wax seal — center */}
+        <g transform="translate(100 140)">
+          {/* Drip shadow */}
+          <ellipse cx="0" cy="42" rx="36" ry="4" fill="#000" opacity="0.4" />
+          {/* Wax body — irregular circle */}
+          <path d="M -40 -2 Q -42 -32, -10 -38 Q 18 -42, 38 -22 Q 44 4, 32 26 Q 16 42, -8 38 Q -34 32, -40 -2 Z"
+            fill="#8C2828" />
+          {/* Highlight */}
+          <path d="M -34 -10 Q -32 -28, -8 -32 Q 12 -30, 18 -18"
+            stroke="#D86060" strokeWidth="1.5" fill="none" opacity="0.65" strokeLinecap="round" />
+          {/* Inner stamp ring */}
+          <circle r="26" fill="none" stroke="#5A1010" strokeWidth="1" opacity="0.7" />
+          <circle r="22" fill="none" stroke="#5A1010" strokeWidth="0.6" opacity="0.5" />
+          {/* Monogram letter */}
+          <text x="0" y="8" textAnchor="middle" fontFamily="serif" fontStyle="italic"
+            fontSize="32" fill="#3A0A0A" opacity="0.95">N</text>
+          {/* Tiny stars around */}
+          {[0, 90, 180, 270].map((deg, i) => (
+            <g key={i} transform={`rotate(${deg}) translate(0 -20)`}>
+              <circle r="0.8" fill="#3A0A0A" opacity="0.6" />
+            </g>
+          ))}
+        </g>
+        {/* Bottom ribbon banner */}
+        <g transform="translate(100 220)">
+          <path d="M -45 0 L -30 -8 L 30 -8 L 45 0 L 30 8 L -30 8 Z"
+            fill="#5A1010" stroke="#C9A961" strokeWidth="0.5" opacity="0.9" />
+          <path d="M -55 8 L -45 0 L -35 8 L -45 14 Z" fill="#3A0A0A" />
+          <path d="M 55 8 L 45 0 L 35 8 L 45 14 Z" fill="#3A0A0A" />
+          <text x="0" y="3" textAnchor="middle" fontFamily="serif" fontStyle="italic"
+            fontSize="6" fill="#C9A961" letterSpacing="2">MMXXVI</text>
+        </g>
+        {/* Gold embers scattered */}
+        {Array.from({ length: 10 }).map((_, i) => {
+          const x = (i * 47) % 200;
+          const y = (i * 31) % 280;
+          const r = 0.8 + (i % 2) * 0.6;
+          return <circle key={i} cx={x} cy={y} r={r} fill="#E8C8A7" opacity="0.5" />;
+        })}
+      </svg>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Scene 6 — Olive Arch (Olive Grove / Botanical)
+ * Warm cream wash + olive branches forming archway + golden gate
+ * silhouette in distance. Mediterranean afternoon.
+ * ────────────────────────────────────────────────────────────────── */
+function SceneOliveArch() {
+  return (
+    <div className="absolute inset-0 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #F2EFE0 0%, #D6CC9F 70%, #B6A877 100%)" }}>
+      {/* sun glow */}
+      <div className="absolute inset-0"
+        style={{ background: "radial-gradient(40% 30% at 50% 35%, rgba(243,216,127,0.55) 0%, transparent 65%)" }} />
+      <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+        {/* Background olive grove silhouette */}
+        <g opacity="0.4">
+          <ellipse cx="40" cy="170" rx="25" ry="38" fill="#7A8B5C" />
+          <ellipse cx="160" cy="170" rx="25" ry="38" fill="#7A8B5C" />
+          <ellipse cx="20" cy="190" rx="20" ry="30" fill="#67784E" />
+          <ellipse cx="180" cy="190" rx="20" ry="30" fill="#67784E" />
+        </g>
+        {/* Distant golden gate */}
+        <g opacity="0.75" transform="translate(100 195)">
+          <path d="M -16 0 L -16 -40 Q -16 -46, -10 -46 L 10 -46 Q 16 -46, 16 -40 L 16 0 Z"
+            fill="none" stroke="#B89968" strokeWidth="1.2" />
+          {/* Vertical bars */}
+          {[-12, -6, 0, 6, 12].map((x) => (
+            <line key={x} x1={x} y1="-40" x2={x} y2="0" stroke="#B89968" strokeWidth="0.5" opacity="0.8" />
+          ))}
+          {/* Top arch ornament */}
+          <circle cx="0" cy="-46" r="3" fill="#B89968" />
+        </g>
+        {/* Olive branches forming archway */}
+        <g>
+          {/* Left branch */}
+          <path d="M 0 60 Q 30 80, 60 100 Q 85 120, 100 135"
+            stroke="#5E6A3E" strokeWidth="1.4" fill="none" />
+          {[
+            { x: 10, y: 65, r: 30 }, { x: 22, y: 72, r: -45 },
+            { x: 35, y: 82, r: 25 }, { x: 48, y: 90, r: -40 },
+            { x: 60, y: 100, r: 30 }, { x: 72, y: 110, r: -35 },
+            { x: 86, y: 122, r: 30 },
+          ].map((l, i) => (
+            <ellipse key={`OL-${i}`} cx={l.x} cy={l.y} rx="6" ry="2.4"
+              transform={`rotate(${l.r} ${l.x} ${l.y})`} fill="#67784E" />
+          ))}
+          {/* Right branch (mirrored) */}
+          <path d="M 200 60 Q 170 80, 140 100 Q 115 120, 100 135"
+            stroke="#5E6A3E" strokeWidth="1.4" fill="none" />
+          {[
+            { x: 190, y: 65, r: -30 }, { x: 178, y: 72, r: 45 },
+            { x: 165, y: 82, r: -25 }, { x: 152, y: 90, r: 40 },
+            { x: 140, y: 100, r: -30 }, { x: 128, y: 110, r: 35 },
+            { x: 114, y: 122, r: -30 },
+          ].map((l, i) => (
+            <ellipse key={`OR-${i}`} cx={l.x} cy={l.y} rx="6" ry="2.4"
+              transform={`rotate(${l.r} ${l.x} ${l.y})`} fill="#67784E" />
+          ))}
+          {/* Olive berries cluster at top */}
+          <circle cx="98" cy="130" r="2" fill="#3D4528" />
+          <circle cx="103" cy="132" r="2" fill="#3D4528" />
+          <circle cx="100" cy="138" r="1.8" fill="#3D4528" />
+        </g>
+        {/* Foreground grass */}
+        <g opacity="0.55">
+          {Array.from({ length: 14 }).map((_, i) => {
+            const x = 8 + i * 14;
+            const h = 6 + ((i * 3) % 10);
+            return <line key={i} x1={x} y1={265} x2={x + (i % 2 ? 2 : -2)} y2={265 - h}
+              stroke="#5E6A3E" strokeWidth="0.7" />;
+          })}
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Scene 7 — Blush Rose (Blush Reverie / Dream)
+ * Peach watercolor wash + cluster of layered rose blooms + dust
+ * specks. Soft, romantic, dreamy.
+ * ────────────────────────────────────────────────────────────────── */
+function SceneBlushRose() {
+  return (
+    <div className="absolute inset-0 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #FDF1E8 0%, #F8D4C2 60%, #E0A89A 100%)" }}>
+      <div className="absolute inset-0"
+        style={{ background: "radial-gradient(50% 40% at 50% 60%, rgba(255,255,255,0.45) 0%, transparent 70%)" }} />
+      <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+        {/* Background watercolor blooms */}
+        <g opacity="0.5">
+          <ellipse cx="40" cy="80" rx="40" ry="30" fill="#F0B5A8" />
+          <ellipse cx="170" cy="180" rx="36" ry="28" fill="#E89C92" />
+          <ellipse cx="100" cy="240" rx="50" ry="22" fill="#D9847E" />
+        </g>
+        {/* Rose cluster — 5 layered roses of varying sizes */}
+        {[
+          { x: 65, y: 120, s: 1.0 },
+          { x: 130, y: 100, s: 0.85 },
+          { x: 100, y: 155, s: 1.15 },
+          { x: 55, y: 175, s: 0.78 },
+          { x: 145, y: 180, s: 0.92 },
+        ].map((r, idx) => (
+          <g key={idx} transform={`translate(${r.x} ${r.y}) scale(${r.s})`}>
+            {/* outer petals */}
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => (
+              <ellipse key={i} cx="0" cy="-12" rx="9" ry="14"
+                transform={`rotate(${deg})`} fill="#E8A395" opacity={0.75 + (i % 2) * 0.15} />
+            ))}
+            {/* inner petals */}
+            {[0, 60, 120, 180, 240, 300].map((deg, i) => (
+              <ellipse key={`in-${i}`} cx="0" cy="-6" rx="5" ry="8"
+                transform={`rotate(${deg + 20})`} fill="#D9847E" opacity="0.92" />
+            ))}
+            {/* center */}
+            <circle cx="0" cy="0" r="3" fill="#A85850" />
+          </g>
+        ))}
+        {/* Sage leaves */}
+        {[
+          { x: 35, y: 145, r: -40 }, { x: 165, y: 145, r: 40 },
+          { x: 85, y: 95, r: -20 }, { x: 115, y: 200, r: 25 },
+        ].map((l, i) => (
+          <g key={`leaf-${i}`} transform={`translate(${l.x} ${l.y}) rotate(${l.r})`}>
+            <path d="M 0 0 C 5 -14, 18 -14, 22 0 C 18 14, 5 14, 0 0 Z" fill="#9CA77E" opacity="0.7" />
+            <line x1="0" y1="0" x2="22" y2="0" stroke="#7A8B62" strokeWidth="0.6" opacity="0.85" />
+          </g>
+        ))}
+        {/* dust */}
+        {Array.from({ length: 12 }).map((_, i) => {
+          const x = (i * 43) % 200;
+          const y = (i * 29) % 280;
+          return <circle key={i} cx={x} cy={y} r={0.7 + (i % 2) * 0.4} fill="#F8F2E8" opacity="0.7" />;
+        })}
+      </svg>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Scene 8 — Lavender Field (Lavender / Kir Bahcesi / Egee Blue)
+ * Pale lavender-blue watercolor + tall lavender stalks + butterfly
+ * + horizon haze. Provençal/Aegean coastal field.
+ * ────────────────────────────────────────────────────────────────── */
+function SceneLavenderField() {
+  return (
+    <div className="absolute inset-0 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #E3E0EB 0%, #C7B8D2 55%, #9A85AF 100%)" }}>
+      <div className="absolute inset-0"
+        style={{ background: "radial-gradient(50% 35% at 50% 30%, rgba(255,255,255,0.5) 0%, transparent 70%)" }} />
+      <svg viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+        {/* Horizon haze */}
+        <rect x="0" y="120" width="200" height="14" fill="#FBF4E6" opacity="0.35" />
+        {/* Distant hills */}
+        <ellipse cx="60" cy="135" rx="60" ry="14" fill="#B5A2C5" opacity="0.6" />
+        <ellipse cx="160" cy="138" rx="60" ry="12" fill="#A492B6" opacity="0.55" />
+        {/* Field rows — receding lavender lines */}
+        {[
+          { y: 165, opacity: 0.45 }, { y: 175, opacity: 0.55 },
+          { y: 188, opacity: 0.65 }, { y: 205, opacity: 0.75 },
+          { y: 225, opacity: 0.85 }, { y: 250, opacity: 0.95 },
+        ].map((row, i) => (
+          <g key={i}>
+            {Array.from({ length: 12 }).map((_, j) => {
+              const x = 5 + j * 17;
+              return <ellipse key={j} cx={x} cy={row.y} rx="6" ry="2.2"
+                fill="#7E5A92" opacity={row.opacity} />;
+            })}
+          </g>
+        ))}
+        {/* Foreground lavender stalks (closer, larger) */}
+        {[
+          { x: 30, h: 60 }, { x: 60, h: 75 }, { x: 95, h: 90 },
+          { x: 130, h: 70 }, { x: 165, h: 80 },
+        ].map((s, i) => (
+          <g key={`st-${i}`}>
+            <line x1={s.x} y1="270" x2={s.x} y2={270 - s.h}
+              stroke="#5E6A3E" strokeWidth="1" />
+            {/* Flower head — series of small ellipses up the stalk */}
+            {Array.from({ length: 5 }).map((_, j) => {
+              const y = 270 - s.h + j * 6;
+              return <ellipse key={j} cx={s.x} cy={y} rx="3" ry="2.5"
+                fill="#6B4A85" opacity={0.85 - j * 0.08} />;
+            })}
+            {/* Top bud */}
+            <circle cx={s.x} cy={270 - s.h - 4} r="2" fill="#4A3068" />
+            {/* Leaves at base */}
+            <path d={`M ${s.x - 3} 270 Q ${s.x - 6} 265, ${s.x - 4} 260 Z`}
+              fill="#5E6A3E" opacity="0.7" />
+            <path d={`M ${s.x + 3} 270 Q ${s.x + 6} 265, ${s.x + 4} 260 Z`}
+              fill="#5E6A3E" opacity="0.7" />
+          </g>
+        ))}
+        {/* Butterfly */}
+        <g transform="translate(140 90)">
+          <path d="M 0 0 Q -10 -12, -16 -2 Q -10 6, 0 0 Q 10 6, 16 -2 Q 10 -12, 0 0 Z"
+            fill="#F3D87F" stroke="#7E5A92" strokeWidth="0.5" />
+          <line x1="0" y1="-5" x2="0" y2="5" stroke="#4A3068" strokeWidth="0.8" />
+          <circle cx="-1" cy="-6" r="0.6" fill="#4A3068" />
+          <circle cx="1" cy="-6" r="0.6" fill="#4A3068" />
+        </g>
+        {/* Drifting petals */}
+        {Array.from({ length: 6 }).map((_, i) => {
+          const x = (i * 37) % 200;
+          const y = 30 + (i * 23) % 120;
+          return <ellipse key={i} cx={x} cy={y} rx="2" ry="1" fill="#7E5A92" opacity="0.55"
+            transform={`rotate(${i * 30} ${x} ${y})`} />;
+        })}
+      </svg>
+    </div>
+  );
 }
 
 function CardMagnolia({ ink, accent, soft }: { ink: string; accent: string; soft: string }) {
