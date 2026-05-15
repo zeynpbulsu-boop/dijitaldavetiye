@@ -265,8 +265,14 @@ function TemplateCard({
 
         {/* Bespoke per-slug art preview — matches the full TemplateDecorations
             layer that renders on /i/[slug]. So a Magnolia card actually shows
-            magnolia flowers, Mansion Lights shows a chandelier, etc. */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-90 mix-blend-multiply">
+            magnolia flowers, Mansion Lights shows a chandelier, etc.
+            Sits in front of the gradient + monogram so the bespoke motif is
+            unmistakable at a glance. Dark backdrops swap to a luminous palette. */}
+        <div
+          className={`absolute inset-0 flex items-center justify-center ${
+            parseInt(card.bg.from.slice(1), 16) < 0x808080 ? "" : "mix-blend-multiply"
+          }`}
+        >
           <TemplateCardArt
             slug={card.slug}
             dark={parseInt(card.bg.from.slice(1), 16) < 0x808080}
@@ -289,14 +295,17 @@ function TemplateCard({
           </span>
         )}
 
-        {/* Center monogram — italic N */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        {/* Center monogram — italic N (subtle, lets the bespoke art breathe) */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <span
-            className="font-display italic text-brand-ink/14"
+            className="font-display italic"
             style={{
-              fontSize: "clamp(110px, 18vw, 180px)",
+              fontSize: "clamp(90px, 14vw, 140px)",
               lineHeight: 1,
               letterSpacing: "-0.04em",
+              color: card.bg.from.toLowerCase().startsWith("#1") || card.bg.from.toLowerCase().startsWith("#2")
+                ? "rgba(245, 232, 217, 0.22)"
+                : "rgba(43, 30, 22, 0.10)",
             }}
             aria-hidden
           >
