@@ -1,4 +1,5 @@
-import type { Template, TemplateMeta } from "./types";
+import type { ComponentType } from "react";
+import type { Template, TemplateComponentProps, TemplateMeta } from "./types";
 import { BlushReverie } from "@/components/templates/blush-reverie";
 import { Bordeaux } from "@/components/templates/bordeaux";
 import { EgeeBlue } from "@/components/templates/egee-blue";
@@ -7,6 +8,32 @@ import { BlackInk } from "@/components/templates/black-ink";
 import { BlushGarden } from "@/components/templates/blush-garden";
 import { VerdeBorgogna } from "@/components/templates/verde-borgogna";
 import { ElegantIvory } from "@/components/templates/elegant-ivory";
+
+/* ──────────────────────────────────────────────────────────────────
+ * DEPRECATION POLICY (FAZ 2A)
+ *
+ * Slugs marked `deprecated: true` stay routable for existing
+ * invitation links (/i/<slug>) but are hidden from listings
+ * (`listTemplates()` filters them out by default).
+ *
+ * When a deprecated slug is requested, `resolveSlug()` returns the
+ * superseding edition's component — the customer's URL stays intact,
+ * but the visual rendering picks up the new edition. SEO is locked
+ * down via `robots: { index: false }` on the detail page so search
+ * engines index the canonical edition.
+ *
+ * Why this matters: customers may have shared their /i/<slug> link
+ * with guests before we renamed an edition. Breaking that link
+ * damages brand trust. Deprecation keeps the URL alive while we
+ * roll the visual layer forward.
+ *
+ * Currently deprecated:
+ *   - black-ink      → aurora       (Aurora arrives in FAZ 2D;
+ *                                     temporarily falls back to
+ *                                     elegant-ivory until then)
+ *   - blush-reverie  → elegant-ivory (placeholder until Magnolia)
+ *   - blush-garden   → elegant-ivory (placeholder until Magnolia)
+ * ────────────────────────────────────────────────────────────────── */
 
 /**
  * Metadata-only entries used by the public Themes gallery, sitemap, etc.
@@ -30,6 +57,9 @@ export const templateMeta: TemplateMeta[] = [
     hasEnvelope: true,
     priceTry: 899,
     priceWasTry: 1299,
+    listed: false,
+    deprecated: true,
+    supersededBy: "elegant-ivory",
   },
   {
     slug: "bordeaux",
@@ -95,6 +125,9 @@ export const templateMeta: TemplateMeta[] = [
     pages: 4,
     hasEnvelope: false,
     priceTry: 899,
+    listed: false,
+    deprecated: true,
+    supersededBy: "elegant-ivory", // → aurora once it ships in FAZ 2D
   },
   {
     slug: "blush-garden",
@@ -111,6 +144,9 @@ export const templateMeta: TemplateMeta[] = [
     pages: 4,
     hasEnvelope: true,
     priceTry: 899,
+    listed: false,
+    deprecated: true,
+    supersededBy: "elegant-ivory", // → magnolia once it ships
   },
   {
     slug: "verde-borgogna",
@@ -152,7 +188,7 @@ export const templateMeta: TemplateMeta[] = [
  * route falls back to a "coming soon" view when the slug exists in
  * `templateMeta` but not in this map.
  */
-const componentBySlug = {
+const componentBySlug: Record<string, ComponentType<TemplateComponentProps>> = {
   "blush-reverie": BlushReverie,
   bordeaux: Bordeaux,
   "egee-blue": EgeeBlue,
@@ -161,7 +197,7 @@ const componentBySlug = {
   "blush-garden": BlushGarden,
   "verde-borgogna": VerdeBorgogna,
   "elegant-ivory": ElegantIvory,
-} as const;
+};
 
 export const templateComponents: Record<string, Template> = Object.fromEntries(
   templateMeta
@@ -170,7 +206,7 @@ export const templateComponents: Record<string, Template> = Object.fromEntries(
       meta.slug,
       {
         ...meta,
-        Component: componentBySlug[meta.slug as keyof typeof componentBySlug],
+        Component: componentBySlug[meta.slug],
       },
     ]),
 );
@@ -183,6 +219,67 @@ export function getTemplate(slug: string): Template | undefined {
   return templateComponents[slug];
 }
 
-export function listTemplates(): TemplateMeta[] {
-  return templateMeta;
+/**
+ * Returns visible templates. Pass `{ includeDeprecated: true }` to also
+ * return slugs flagged `deprecated` (e.g. for an admin tool or sitemap
+ * that wants to keep old URLs in the index).
+ *
+ * Default behaviour hides anything marked `listed: false` so the public
+ * carousel + gallery only shows the canonical 8 (or 6 once FAZ 2D
+ * lands).
+ */
+export function listTemplates(
+  options: { includeDeprecated?: boolean } = {},
+): TemplateMeta[] {
+  if (options.includeDeprecated) return templateMeta;
+  return templateMeta.filter((m) => m.listed !== false);
+}
+
+/* ── resolveSlug ────────────────────────────────────────────────── *
+ * Single entry point for translating any request slug — including
+ * legacy / deprecated ones — into the canonical slug, metadata, and
+ * React component that should render.
+ *
+ * Returns `null` when the slug doesn't exist anywhere in the registry
+ * (the dynamic route then calls `notFound()`).
+ */
+export interface ResolvedSlug {
+  /** Slug the user requested (may be deprecated) */
+  requested: string;
+  /** Slug whose metadata + component this resolution serves */
+  canonical: string;
+  /** Visible meta — always the canonical's, never the deprecated one */
+  meta: TemplateMeta;
+  /** React component to render (canonical's) */
+  Component?: ComponentType<TemplateComponentProps>;
+  /** True when the requested slug was a deprecated alias */
+  isDeprecated: boolean;
+  /** When deprecated, the canonical slug we routed to */
+  supersededBy?: string;
+}
+
+export function resolveSlug(slug: string): ResolvedSlug | null {
+  const requestedMeta = getTemplateMeta(slug);
+  if (!requestedMeta) return null;
+
+  const isDeprecated = requestedMeta.deprecated === true;
+  const canonicalSlug =
+    isDeprecated && requestedMeta.supersededBy
+      ? requestedMeta.supersededBy
+      : slug;
+
+  // If the canonical slug doesn't have its own metadata yet (e.g. Aurora
+  // isn't built until FAZ 2D), fall back to the requested meta so the
+  // page still renders something instead of 404'ing on a deprecated URL.
+  const canonicalMeta = getTemplateMeta(canonicalSlug) ?? requestedMeta;
+  const Component = componentBySlug[canonicalSlug] ?? componentBySlug[slug];
+
+  return {
+    requested: slug,
+    canonical: canonicalMeta.slug,
+    meta: canonicalMeta,
+    Component,
+    isDeprecated,
+    supersededBy: isDeprecated ? requestedMeta.supersededBy : undefined,
+  };
 }

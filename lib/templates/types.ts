@@ -65,6 +65,31 @@ export interface TemplateMeta {
   priceTry: number;
   /** Optional "was" price for strike-through display */
   priceWasTry?: number;
+
+  /* ── Lifecycle / SEO flags (FAZ 2A) ─────────────────────────── */
+
+  /**
+   * Show this template in the public gallery + carousel?
+   * `listTemplates()` defaults to filtering by `listed === true`.
+   * Deprecated templates set this to `false` so their existing
+   * /i/[slug] invitation URLs keep resolving but they don't appear
+   * in new browsing UI.
+   */
+  listed?: boolean;
+
+  /**
+   * Marks the slug as superseded. Older invitations on this slug
+   * still resolve via `resolveSlug()` but the detail page emits
+   * `robots: { index: false }` and the gallery hides the card.
+   */
+  deprecated?: boolean;
+
+  /**
+   * If `deprecated`, points at the slug that replaces this one.
+   * `resolveSlug()` uses this to choose which React component to
+   * render so the legacy slug visually adopts the new edition.
+   */
+  supersededBy?: string;
 }
 
 /** Full template entry combining metadata with the React component that renders it */
