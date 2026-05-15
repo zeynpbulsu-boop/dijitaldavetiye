@@ -883,6 +883,257 @@ function AtelierInkArt({ theme }: { theme: InvitationTheme }) {
 }
 
 /* ────────────────────────────────────────────────────────────────── */
+/* TemplateCardArt — miniature preview for the carousel cards         */
+/* ────────────────────────────────────────────────────────────────── */
+/* Same visual DNA as the full TemplateDecorations but at card scale. */
+
+export function TemplateCardArt({ slug, dark = false }: { slug: string; dark?: boolean }) {
+  const ink = dark ? "rgba(245, 232, 217, 0.6)" : "rgba(43, 30, 22, 0.26)";
+  const accent = dark ? "rgba(245, 219, 160, 0.8)" : "rgba(140, 90, 60, 0.62)";
+  const soft = dark ? "rgba(232, 200, 178, 0.5)" : "rgba(176, 122, 92, 0.42)";
+
+  switch (slug) {
+    case "magnolia":
+      return <CardMagnolia ink={ink} accent={accent} soft={soft} />;
+    case "mansion-lights":
+      return <CardChandelier ink={ink} accent={accent} />;
+    case "timeless":
+      return <CardTimeless ink={ink} accent={accent} />;
+    case "modern":
+      return <CardModern ink={ink} accent={accent} />;
+    case "bordeaux":
+    case "atelier-indigo":
+    case "verde-borgogna":
+      return <CardFiligree ink={ink} accent={accent} />;
+    case "olive-grove":
+    case "botanical":
+      return <CardEucalyptus ink={ink} accent={accent} soft={soft} />;
+    case "blush-reverie":
+    case "blush-garden":
+    case "dream":
+      return <CardPetals soft={soft} accent={accent} />;
+    case "lavender":
+    case "kir-bahcesi":
+      return <CardWildflowers ink={ink} accent={accent} soft={soft} />;
+    default:
+      return <CardFiligree ink={ink} accent={accent} />;
+  }
+}
+
+function CardMagnolia({ ink, accent, soft }: { ink: string; accent: string; soft: string }) {
+  return (
+    <svg viewBox="0 0 200 260" className="h-[80%] w-auto">
+      <path
+        d="M 30 40 C 60 80, 100 120, 130 170 C 145 195, 160 220, 170 240"
+        stroke={ink}
+        strokeWidth="1"
+        fill="none"
+      />
+      <g transform="translate(60 80)">
+        {[0, 72, 144, 216, 288].map((deg, i) => (
+          <ellipse
+            key={i}
+            cx="0"
+            cy="-22"
+            rx="14"
+            ry="28"
+            transform={`rotate(${deg})`}
+            fill={soft}
+            opacity="0.65"
+          />
+        ))}
+        <circle cx="0" cy="0" r="7" fill={accent} />
+      </g>
+      <g transform="translate(135 175)">
+        {[0, 72, 144, 216, 288].map((deg, i) => (
+          <ellipse
+            key={i}
+            cx="0"
+            cy="-14"
+            rx="9"
+            ry="17"
+            transform={`rotate(${deg})`}
+            fill={soft}
+            opacity="0.5"
+          />
+        ))}
+      </g>
+      {[
+        { x: 75, y: 50, r: -20 },
+        { x: 110, y: 130, r: 30 },
+        { x: 145, y: 215, r: -10 },
+      ].map((l, i) => (
+        <g key={i} transform={`translate(${l.x} ${l.y}) rotate(${l.r})`}>
+          <path d="M 0 0 C 7 -12, 22 -12, 28 0 C 22 12, 7 12, 0 0 Z" fill={soft} opacity="0.55" />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function CardChandelier({ ink, accent }: { ink: string; accent: string }) {
+  return (
+    <svg viewBox="0 0 200 260" className="h-[78%] w-auto">
+      <line x1="100" y1="20" x2="100" y2="78" stroke={ink} strokeWidth="0.8" />
+      <ellipse cx="100" cy="82" rx="14" ry="3" fill="none" stroke={ink} strokeWidth="1.2" />
+      <line x1="100" y1="86" x2="62" y2="140" stroke={ink} strokeWidth="1" />
+      <line x1="100" y1="86" x2="138" y2="140" stroke={ink} strokeWidth="1" />
+      <line x1="100" y1="86" x2="100" y2="150" stroke={ink} strokeWidth="1" />
+      <line x1="100" y1="86" x2="40" y2="120" stroke={ink} strokeWidth="0.8" />
+      <line x1="100" y1="86" x2="160" y2="120" stroke={ink} strokeWidth="0.8" />
+      {[
+        { x: 62, y: 140 }, { x: 138, y: 140 }, { x: 100, y: 150 },
+        { x: 40, y: 120 }, { x: 160, y: 120 }, { x: 100, y: 86 },
+      ].map((b, i) => (
+        <g key={i}>
+          <circle cx={b.x} cy={b.y} r="6" fill={accent} opacity="0.5" />
+          <circle cx={b.x} cy={b.y} r="3" fill={accent} />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function CardTimeless({ ink, accent }: { ink: string; accent: string }) {
+  return (
+    <svg viewBox="0 0 200 260" className="h-[80%] w-auto">
+      <line x1="30" y1="50" x2="170" y2="50" stroke={ink} strokeWidth="1" />
+      <line x1="50" y1="58" x2="150" y2="58" stroke={ink} strokeWidth="0.6" opacity="0.6" />
+      <line x1="30" y1="210" x2="170" y2="210" stroke={ink} strokeWidth="1" />
+      <line x1="50" y1="202" x2="150" y2="202" stroke={ink} strokeWidth="0.6" opacity="0.6" />
+      <text
+        x="100"
+        y="155"
+        textAnchor="middle"
+        fontFamily="Cormorant Garamond, serif"
+        fontStyle="italic"
+        fontSize="120"
+        fill={accent}
+        opacity="0.8"
+      >
+        &amp;
+      </text>
+    </svg>
+  );
+}
+
+function CardModern({ ink, accent }: { ink: string; accent: string }) {
+  return (
+    <svg viewBox="0 0 200 260" className="h-[82%] w-auto">
+      <path d="M 200 100 A 100 100 0 0 0 100 0" stroke={ink} strokeWidth="1.2" fill="none" />
+      <path d="M 200 130 A 70 70 0 0 0 130 60" stroke={ink} strokeWidth="0.6" fill="none" opacity="0.6" />
+      <circle cx="100" cy="160" r="58" stroke={ink} strokeWidth="0.6" fill="none" opacity="0.4" />
+      <circle cx="100" cy="160" r="42" stroke={ink} strokeWidth="0.4" fill="none" opacity="0.3" />
+      <polyline points="40,240 100,170 160,240" stroke={ink} strokeWidth="1" fill="none" />
+      <circle cx="100" cy="160" r="3" fill={accent} />
+    </svg>
+  );
+}
+
+function CardFiligree({ ink, accent }: { ink: string; accent: string }) {
+  return (
+    <svg viewBox="0 0 200 260" className="h-[82%] w-auto">
+      <g stroke={ink} strokeWidth="0.7" fill="none">
+        <path d="M 30 30 C 60 32, 100 34, 140 36" />
+        <path d="M 30 30 C 32 60, 34 100, 36 140" />
+        <path d="M 40 40 C 55 48, 70 58, 80 70" />
+      </g>
+      <path d="M 40 40 Q 56 28, 70 42 Q 60 56, 46 50 Q 34 44, 40 40 Z" fill={accent} opacity="0.4" />
+      <circle cx="30" cy="30" r="3" fill={accent} />
+      <g stroke={ink} strokeWidth="0.7" fill="none" transform="rotate(180 100 130)">
+        <path d="M 30 30 C 60 32, 100 34, 140 36" />
+        <path d="M 30 30 C 32 60, 34 100, 36 140" />
+      </g>
+      {Array.from({ length: 14 }).map((_, i) => {
+        const x = 50 + (i * 27) % 100;
+        const y = 70 + ((i * 17) % 120);
+        return <circle key={i} cx={x} cy={y} r={1 + (i % 2)} fill={accent} opacity="0.6" />;
+      })}
+    </svg>
+  );
+}
+
+function CardEucalyptus({ ink, accent, soft }: { ink: string; accent: string; soft: string }) {
+  void accent;
+  return (
+    <svg viewBox="0 0 200 260" className="h-[82%] w-auto">
+      <path d="M 100 10 C 96 70, 104 130, 100 190 C 96 220, 104 240, 100 260" stroke={ink} strokeWidth="0.9" fill="none" />
+      {Array.from({ length: 12 }).map((_, i) => {
+        const y = 30 + i * 18;
+        const side = i % 2 === 0 ? 1 : -1;
+        return (
+          <ellipse
+            key={i}
+            cx={100 + side * 28}
+            cy={y}
+            rx="18"
+            ry="9"
+            transform={`rotate(${side * 28} ${100 + side * 28} ${y})`}
+            fill={soft}
+            opacity="0.65"
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+function CardPetals({ soft, accent }: { soft: string; accent: string }) {
+  void accent;
+  return (
+    <svg viewBox="0 0 200 260" className="h-[80%] w-auto">
+      {[
+        { x: 60, y: 50, r: 15 },
+        { x: 130, y: 80, r: -20 },
+        { x: 90, y: 130, r: 35 },
+        { x: 50, y: 170, r: -10 },
+        { x: 150, y: 180, r: 12 },
+        { x: 100, y: 220, r: -25 },
+      ].map((p, i) => (
+        <g key={i} transform={`translate(${p.x} ${p.y}) rotate(${p.r})`}>
+          <path d="M 0 -22 C -14 -8, -14 12, 0 22 C 14 12, 14 -8, 0 -22 Z" fill={soft} opacity="0.7" />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function CardWildflowers({ ink, accent, soft }: { ink: string; accent: string; soft: string }) {
+  return (
+    <svg viewBox="0 0 200 260" className="h-[88%] w-auto">
+      {[
+        { x: 40, h: 110 },
+        { x: 80, h: 140 },
+        { x: 120, h: 130 },
+        { x: 160, h: 100 },
+      ].map((s, i) => (
+        <g key={i}>
+          <line x1={s.x} y1="240" x2={s.x} y2={240 - s.h} stroke={ink} strokeWidth="0.8" />
+          {[0, 60, 120, 180, 240, 300].map((deg) => (
+            <ellipse
+              key={deg}
+              cx={s.x}
+              cy={240 - s.h}
+              rx="3"
+              ry="7"
+              transform={`rotate(${deg} ${s.x} ${240 - s.h})`}
+              fill={soft}
+              opacity="0.7"
+            />
+          ))}
+          <circle cx={s.x} cy={240 - s.h} r="2.5" fill={accent} />
+        </g>
+      ))}
+      {/* Tiny butterfly */}
+      <g transform="translate(150 80)">
+        <path d="M 0 0 Q -10 -10, -14 0 Q -8 6, 0 0 Q 8 6, 14 0 Q 10 -10, 0 0 Z" fill={accent} opacity="0.85" />
+        <line x1="0" y1="-4" x2="0" y2="4" stroke={ink} strokeWidth="0.8" />
+      </g>
+    </svg>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────── */
 /* Shared gold dust shimmer field                                     */
 /* ────────────────────────────────────────────────────────────────── */
 

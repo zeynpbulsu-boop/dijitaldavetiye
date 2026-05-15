@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect } from "react";
 import { TiltCard } from "@/components/effects/tilt-card";
 import { useT } from "@/lib/i18n/provider";
+import { TemplateCardArt } from "@/components/decorations/template-art";
 
 /**
  * Template Carousel — horizontal snap rail of portrait cards.
@@ -262,9 +263,14 @@ function TemplateCard({
           }}
         />
 
-        {/* Ornament SVG layer */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-80 mix-blend-multiply">
-          <CardOrnament motif={card.ornament} />
+        {/* Bespoke per-slug art preview — matches the full TemplateDecorations
+            layer that renders on /i/[slug]. So a Magnolia card actually shows
+            magnolia flowers, Mansion Lights shows a chandelier, etc. */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-90 mix-blend-multiply">
+          <TemplateCardArt
+            slug={card.slug}
+            dark={parseInt(card.bg.from.slice(1), 16) < 0x808080}
+          />
         </div>
 
         {/* Cognac wash on hover */}
