@@ -1,3 +1,5 @@
+"use client";
+
 import type { TemplateComponentProps } from "@/lib/templates/types";
 import { EditorialBase } from "../_shared/editorial-base";
 import type { EditorialTheme } from "../_shared/theme";
