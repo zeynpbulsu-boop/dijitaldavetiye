@@ -77,9 +77,9 @@ export function Hero() {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   className="inline-block"
+                  style={{ marginRight: i < line1Words.length - 1 ? "0.28em" : 0 }}
                 >
                   {w}
-                  {i < line1Words.length - 1 && " "}
                 </motion.span>
               ))}
             </span>
@@ -99,9 +99,9 @@ export function Hero() {
                       ? "inline-block italic text-brand-cognac"
                       : "inline-block"
                   }
+                  style={{ marginRight: i < line2Final.length - 1 ? "0.28em" : 0 }}
                 >
                   {w.text}
-                  {i < line2Final.length - 1 && " "}
                 </motion.span>
               ))}
             </span>
