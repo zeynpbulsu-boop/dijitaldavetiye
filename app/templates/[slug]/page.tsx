@@ -9,7 +9,6 @@ import {
   listTemplates,
 } from "@/lib/templates/registry";
 import { turkishSample } from "@/lib/templates/sample-data";
-import { formatPriceTry } from "@/lib/format";
 import { themeForSlug } from "@/lib/templates/themes";
 import { PhoneFrame } from "./_phone-frame";
 
@@ -122,31 +121,14 @@ export default function TemplateDetailPage({ params }: PageProps) {
                 letterSpacing: "-0.025em",
               }}
             >
-              {formatPriceTry(meta.priceTry)}
+              €39,99
             </div>
-            {meta.priceWasTry && (
-              <div
-                className="text-[16px] line-through"
-                style={{ color: theme.inkSoft }}
-              >
-                {formatPriceTry(meta.priceWasTry)}
-              </div>
-            )}
-            {meta.priceWasTry && (
-              <div
-                className="rounded px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.15em]"
-                style={{
-                  background: theme.spark + "33",
-                  color: theme.spark,
-                }}
-              >
-                %
-                {Math.round(
-                  ((meta.priceWasTry - meta.priceTry) / meta.priceWasTry) * 100,
-                )}{" "}
-                indirim
-              </div>
-            )}
+            <div
+              className="text-[11px] font-semibold uppercase tracking-[0.22em]"
+              style={{ color: theme.inkSoft }}
+            >
+              Tek seferlik · 1 yıl yayın · KDV dahil
+            </div>
           </div>
 
           {/* Palette */}
