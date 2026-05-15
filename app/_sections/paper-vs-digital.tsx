@@ -70,7 +70,7 @@ export function PaperVsDigital() {
             className="mx-auto mt-5 max-w-[520px] text-brand-ink/70"
             style={{ fontSize: "15px", lineHeight: 1.6 }}
           >
-            100 davetli için ortalama maliyet. Aynı para ile NUVE'yi 10 yıl
+            100 davetli için ortalama maliyet. Aynı para ile NUVE&apos;yi 10 yıl
             yayında tutabilirsin.
           </p>
         </motion.div>
