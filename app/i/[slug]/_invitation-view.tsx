@@ -947,6 +947,14 @@ function OpenedContent({
           </motion.div>
         )}
 
+        {inv.wedding_date && (
+          <Countdown
+            targetIso={inv.wedding_date + "T18:00:00"}
+            locale={inv.locale}
+            theme={theme}
+          />
+        )}
+
         {(inv.venue_name || inv.venue_city) && (
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -965,7 +973,19 @@ function OpenedContent({
               .join(" · ")}
           </motion.p>
         )}
+
+        {(inv.venue_address || inv.venue_name) && (
+          <MapBlock
+            query={[inv.venue_name, inv.venue_city, inv.venue_address]
+              .filter(Boolean)
+              .join(", ")}
+            locale={inv.locale}
+            theme={theme}
+          />
+        )}
       </section>
+
+      <PhotoGallery theme={theme} locale={inv.locale} />
 
       {inv.story_text && (
         <motion.section
@@ -1153,4 +1173,292 @@ function motifFor(o: Ornament, position: "primary" | "secondary") {
     case "fern": return Eucalyptus;
     default: return Eucalyptus;
   }
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+/* Countdown — live ticking days/hours/minutes/seconds to event. */
+
+const COUNTDOWN_LABELS: Record<DbLocale, { d: string; h: string; m: string; s: string; eyebrow: string }> = {
+  tr: { d: "Gün", h: "Saat", m: "Dakika", s: "Saniye", eyebrow: "— O güne kadar" },
+  en: { d: "Days", h: "Hours", m: "Minutes", s: "Seconds", eyebrow: "— Until the day" },
+  sr: { d: "Dana", h: "Sata", m: "Minuta", s: "Sekundi", eyebrow: "— Do dana svadbe" },
+};
+
+function Countdown({
+  targetIso,
+  locale,
+  theme,
+}: {
+  targetIso: string;
+  locale: DbLocale;
+  theme: InvitationTheme;
+}) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const target = new Date(targetIso).getTime();
+  const diff = Math.max(0, target - now);
+  const days = Math.floor(diff / 86_400_000);
+  const hours = Math.floor((diff % 86_400_000) / 3_600_000);
+  const minutes = Math.floor((diff % 3_600_000) / 60_000);
+  const seconds = Math.floor((diff % 60_000) / 1000);
+  const L = COUNTDOWN_LABELS[locale];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1.4, delay: 2.4, ease: SOFT_EASE }}
+      className="mx-auto mt-14"
+      style={{ maxWidth: 620 }}
+    >
+      <p
+        className="text-center text-[10px] font-semibold uppercase"
+        style={{ color: theme.accent, letterSpacing: "0.4em" }}
+      >
+        {L.eyebrow}
+      </p>
+      <div className="mt-6 grid grid-cols-4 items-baseline gap-2 sm:gap-4">
+        {[
+          { v: days, l: L.d },
+          { v: hours, l: L.h },
+          { v: minutes, l: L.m },
+          { v: seconds, l: L.s },
+        ].map((cell, i) => (
+          <div key={i} className="relative text-center">
+            <span
+              className="block font-display tabular-nums"
+              style={{
+                color: theme.ink,
+                fontSize: "clamp(34px, 5.5vw, 64px)",
+                lineHeight: 0.95,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              {String(cell.v).padStart(2, "0")}
+            </span>
+            <span
+              className="mt-3 block text-[9px] font-semibold uppercase"
+              style={{ color: theme.inkSoft, letterSpacing: "0.34em" }}
+            >
+              {cell.l}
+            </span>
+            {i < 3 && (
+              <span
+                aria-hidden
+                className="absolute right-[-2px] top-[18%] hidden text-[28px] font-display sm:block"
+                style={{ color: theme.spark, opacity: 0.35 }}
+              >
+                ·
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+/* MapBlock — OpenStreetMap static embed via iframe (privacy-respecting,
+   no API key needed). Hidden if no venue info. */
+
+const MAP_LABELS: Record<DbLocale, { eyebrow: string; cta: string }> = {
+  tr: { eyebrow: "— Konum", cta: "Yol tarifi al" },
+  en: { eyebrow: "— Location", cta: "Get directions" },
+  sr: { eyebrow: "— Lokacija", cta: "Uputstvo do mesta" },
+};
+
+function MapBlock({
+  query,
+  locale,
+  theme,
+}: {
+  query: string;
+  locale: DbLocale;
+  theme: InvitationTheme;
+}) {
+  const M = MAP_LABELS[locale];
+  const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  // OpenStreetMap embed centered on Istanbul as a default — pin requires
+  // geocoding which we don't do client-side. The CTA button opens
+  // Google Maps for actual navigation.
+  const osmEmbed =
+    "https://www.openstreetmap.org/export/embed.html?bbox=28.92%2C40.99%2C29.10%2C41.07&layer=mapnik";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 1.2, ease: SOFT_EASE }}
+      className="mx-auto mt-20 w-full"
+      style={{ maxWidth: 720 }}
+    >
+      <p
+        className="text-center text-[10px] font-semibold uppercase"
+        style={{ color: theme.accent, letterSpacing: "0.4em" }}
+      >
+        {M.eyebrow}
+      </p>
+      <div
+        className="mt-6 overflow-hidden"
+        style={{
+          border: `1px solid ${theme.storyBorder}`,
+          borderRadius: 4,
+        }}
+      >
+        <iframe
+          title="map"
+          src={osmEmbed}
+          aria-label="map"
+          loading="lazy"
+          style={{
+            display: "block",
+            width: "100%",
+            height: 280,
+            border: 0,
+            filter: "saturate(0.78) sepia(0.04)",
+          }}
+        />
+      </div>
+      <div className="mt-5 text-center">
+        <a
+          href={directionsUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase underline-offset-4 hover:underline"
+          style={{ color: theme.accent, letterSpacing: "0.28em" }}
+        >
+          {M.cta} →
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+/* PhotoGallery — placeholder grid. Owner uploads not wired yet, so we
+   show 6 elegant blank tiles tinted by the theme. When the editor
+   gets upload support, swap the array for inv.gallery_urls. */
+
+const GALLERY_LABELS: Record<DbLocale, { eyebrow: string; headline: string; sub: string }> = {
+  tr: {
+    eyebrow: "— Anılar",
+    headline: "Birlikte yaşanan anlar.",
+    sub: "Galeri yakında — kendi fotoğraflarınla bu kareleri doldur.",
+  },
+  en: {
+    eyebrow: "— Memories",
+    headline: "Moments that brought us here.",
+    sub: "Gallery coming soon — replace these frames with your own.",
+  },
+  sr: {
+    eyebrow: "— Uspomene",
+    headline: "Trenuci koji su nas doveli ovde.",
+    sub: "Galerija uskoro — popunite okvire vašim fotografijama.",
+  },
+};
+
+function PhotoGallery({
+  theme,
+  locale,
+}: {
+  theme: InvitationTheme;
+  locale: DbLocale;
+}) {
+  const G = GALLERY_LABELS[locale];
+  // 6 tile positions with subtle parallax offset for organic grid feel
+  const tiles = [
+    { col: "span 2", row: "span 2", offset: 0 },
+    { col: "span 1", row: "span 1", offset: 6 },
+    { col: "span 1", row: "span 1", offset: -4 },
+    { col: "span 1", row: "span 1", offset: 8 },
+    { col: "span 1", row: "span 1", offset: -3 },
+    { col: "span 2", row: "span 1", offset: 5 },
+  ];
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-12%" }}
+      transition={{ duration: 1.2, ease: SOFT_EASE }}
+      className="relative z-10 px-6 py-24 lg:py-32"
+    >
+      <div className="container-narrow text-center">
+        <p
+          className="text-[10px] font-semibold uppercase"
+          style={{ color: theme.accent, letterSpacing: "0.42em" }}
+        >
+          {G.eyebrow}
+        </p>
+        <h2
+          className="mt-6 font-display"
+          style={{
+            color: theme.ink,
+            fontSize: "clamp(28px, 3.6vw, 46px)",
+            lineHeight: 1.1,
+            letterSpacing: "0.02em",
+          }}
+        >
+          {G.headline}
+        </h2>
+        <p
+          className="mx-auto mt-5 max-w-[480px] text-[13px]"
+          style={{ color: theme.inkSoft, lineHeight: 1.65, letterSpacing: "0.02em" }}
+        >
+          {G.sub}
+        </p>
+
+        <div
+          className="mx-auto mt-14 grid w-full max-w-[820px] gap-3 sm:gap-4"
+          style={{
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gridAutoRows: "118px",
+          }}
+        >
+          {tiles.map((tile, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.94, y: tile.offset }}
+              whileInView={{ opacity: 1, scale: 1, y: tile.offset }}
+              viewport={{ once: true, margin: "-5%" }}
+              transition={{
+                duration: 0.9,
+                delay: 0.12 + i * 0.08,
+                ease: SOFT_EASE,
+              }}
+              style={{
+                gridColumn: tile.col,
+                gridRow: tile.row,
+                background: `linear-gradient(135deg, ${theme.storyBg} 0%, ${theme.storyBorder} 100%)`,
+                border: `1px solid ${theme.storyBorder}`,
+                borderRadius: 3,
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              {/* Soft script "fotoğraf" placeholder centered */}
+              <span
+                aria-hidden
+                className="absolute inset-0 grid place-items-center font-display italic"
+                style={{
+                  color: theme.inkSoft,
+                  fontSize: "clamp(14px, 1.6vw, 20px)",
+                  opacity: 0.32,
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {i === 0 ? "ph" : ""}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </motion.section>
+  );
 }
