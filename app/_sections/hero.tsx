@@ -128,10 +128,17 @@ export function Hero() {
             className="mt-10 flex flex-wrap items-center gap-3 sm:gap-4"
           >
             <Link
-              href="#themes"
-              className="group inline-flex items-center gap-2 rounded-full border border-brand-ink/22 px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-ink transition-all duration-300 hover:border-brand-cognac hover:bg-brand-cream-alt hover:text-brand-cognac"
+              href="/i/elif-mert-elegant"
+              target="_blank"
+              rel="noopener"
+              data-cursor="cta"
+              className="group inline-flex items-center gap-2 rounded-full border border-brand-cognac/60 bg-brand-cream-alt/40 px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-cognac transition-all duration-300 hover:border-brand-cognac hover:bg-brand-cognac hover:text-brand-cream"
             >
-              <span>{t.hero.cta_secondary}</span>
+              <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-brand-cognac transition-all duration-300 group-hover:bg-brand-cream" />
+              <span>Canlı demo</span>
+              <svg width="13" height="9" viewBox="0 0 14 10" fill="none" aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+                <path d="M1 5H13M13 5L9 1M13 5L9 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </Link>
 
             <Magnetic strength={0.32} radius={140}>
