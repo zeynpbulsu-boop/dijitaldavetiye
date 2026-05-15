@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect } from "react";
 import { TiltCard } from "@/components/effects/tilt-card";
 import { useT } from "@/lib/i18n/provider";
-import { TemplateCardArt } from "@/components/decorations/template-art";
+import { getTemplateMeta } from "@/lib/templates/registry";
 
 /**
  * Template Carousel — horizontal snap rail of portrait cards.
@@ -240,6 +241,7 @@ function TemplateCard({
   actionLabel: string;
 }) {
   const href = card.exists ? `/templates/${card.slug}` : "#themes";
+  const meta = getTemplateMeta(card.slug);
   return (
     <Link
       href={href}
@@ -248,25 +250,35 @@ function TemplateCard({
       className="group relative block w-[260px] flex-shrink-0 select-none sm:w-[290px] lg:w-[320px]"
     >
       {/* Card frame */}
-      <div className="relative aspect-[3/4] overflow-hidden rounded-[6px] shadow-[0_1px_2px_rgba(43,30,22,0.08)] transition-shadow duration-500 group-hover:shadow-[0_20px_40px_-12px_rgba(43,30,22,0.25)]">
-        {/* Bespoke painterly scene — each template gets its own illustrated
-            backdrop (moonlit mansion, chinoiserie ginger jar, olive arch, etc.).
-            The scene component owns its own background palette + composition. */}
-        <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.06]">
-          <TemplateCardArt slug={card.slug} />
-        </div>
+      <div className="relative aspect-[3/4] overflow-hidden rounded-[6px] shadow-[0_2px_8px_rgba(43,30,22,0.12)] transition-shadow duration-500 group-hover:shadow-[0_24px_50px_-12px_rgba(43,30,22,0.35)]">
+        {/* Real wedding photography backdrop — Unsplash-curated per template.
+            Falls back to soft gradient if registry thumb missing. */}
+        {meta?.thumb ? (
+          <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.08]">
+            <Image
+              src={meta.thumb}
+              alt={`${card.name} — ${meta.tagline}`}
+              fill
+              sizes="(max-width: 768px) 280px, 320px"
+              className="object-cover"
+              priority={index < 4}
+            />
+          </div>
+        ) : (
+          <div
+            className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.08]"
+            style={{ background: `linear-gradient(155deg, ${card.bg.from} 0%, ${card.bg.to} 100%)` }}
+          />
+        )}
 
-        {/* Subtle hover wash — adds depth on hover without obscuring art */}
-        <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-brand-ink/10" />
+        {/* Soft warmth wash — slight gradient overlay so name plate stays legible */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
+
+        {/* Hover deepen */}
+        <div className="absolute inset-0 bg-brand-ink/0 transition-colors duration-500 group-hover:bg-brand-ink/15" />
 
         {/* Vertical edge label */}
-        <span className="absolute left-3 top-3 text-[9px] font-medium uppercase tracking-[0.3em]"
-          style={{
-            color: card.bg.from.toLowerCase().startsWith("#1") || card.bg.from.toLowerCase().startsWith("#2") || card.bg.from.toLowerCase().startsWith("#0")
-              ? "rgba(245, 232, 217, 0.65)"
-              : "rgba(43, 30, 22, 0.55)",
-          }}
-        >
+        <span className="absolute left-3 top-3 text-[9px] font-medium uppercase tracking-[0.3em] text-brand-cream/85">
           NUVE · ED. № {String(index + 1).padStart(2, "0")}
         </span>
 
