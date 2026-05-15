@@ -17,7 +17,8 @@
  * picks up its bespoke palette.
  */
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import type { InvitationTheme } from "@/lib/templates/themes";
 
 const SOFT_EASE = [0.22, 1, 0.36, 1] as const;
@@ -59,14 +60,28 @@ export function TemplateDecorations({ slug, theme }: Props) {
 /* Shared wrapper                                                    */
 /* ────────────────────────────────────────────────────────────────── */
 
-function Frame({ children }: { children: React.ReactNode }) {
+function Frame({
+  children,
+  sparkle,
+}: {
+  children: React.ReactNode;
+  /** Optional ambient sparkle field — gets applied on top of slug-specific art. */
+  sparkle?: { color: string; count?: number };
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["-3%", "5%"]);
+
   return (
-    <div
+    <motion.div
+      ref={ref}
       aria-hidden
       className="pointer-events-none absolute inset-0 z-[1] overflow-hidden"
+      style={{ y }}
     >
       {children}
-    </div>
+      {sparkle && <GoldDust count={sparkle.count ?? 10} accent={sparkle.color} />}
+    </motion.div>
   );
 }
 
