@@ -105,6 +105,17 @@ export function TemplateCarousel() {
   const inView = useInView(ref, { once: true, margin: "-15%" });
   const railRef = useRef<HTMLDivElement>(null);
 
+  // Hide deprecated entries from the public carousel. The hardcoded
+  // `cards` array still contains every historical slug so legacy
+  // /templates/[slug] URLs keep resolving (URL stability) — but here
+  // we filter out anything the registry has marked deprecated.
+  // `originalIndex` is preserved so the i18n category dictionary
+  // (keyed by position in the source array) keeps pointing at the
+  // right label.
+  const visibleCards = cards
+    .map((c, originalIndex) => ({ c, originalIndex }))
+    .filter(({ c }) => !getTemplateMeta(c.slug)?.deprecated);
+
   // Click-and-drag horizontal pan for desktop.
   useEffect(() => {
     const rail = railRef.current;
@@ -188,7 +199,7 @@ export function TemplateCarousel() {
         style={{ paddingInline: "max(1.25rem, calc(50vw - 660px))" }}
       >
         <div className="flex gap-5 pb-4 pr-5 lg:gap-7">
-          {cards.map((card, i) => (
+          {visibleCards.map(({ c: card, originalIndex }, i) => (
             <motion.div
               key={card.slug + i}
               initial={{ opacity: 0, y: 28 }}
@@ -204,7 +215,7 @@ export function TemplateCarousel() {
                 <TemplateCard
                   card={card}
                   index={i}
-                  categoryLabel={t.carousel.card_categories[i] ?? card.category}
+                  categoryLabel={t.carousel.card_categories[originalIndex] ?? card.category}
                   newBadge={t.carousel.badge_new}
                   actionLabel={t.carousel.card_action}
                 />
