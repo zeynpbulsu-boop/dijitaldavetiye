@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* NUVE — warm editorial palette (Spec v2, May 2026)
+       Cream + rose-taupe + cognac. Traditional, slow, romantic.
+       Source HEX values mapped to HSL components for shadcn compatibility:
+         #F2EEE6 → 40 32% 93%   bg            (cream)
+         #EFE6DA → 34 40% 90%   bg-alt        (alt cream block)
+         #2B1E16 → 23 32% 13%   ink           (kahve-siyah)
+         #7A6A5D → 27 14% 42%   ink-soft      (warm gray)
+         #B98E78 → 20 32% 60%   accent        (rose-taupe)
+         #8C5A3C → 23 40% 39%   accent-deep   (cognac — CTA fill) */
+    --bg: 40 32% 93%;
+    --bg-alt: 34 40% 90%;
+    --paper: 0 0% 100%;
+    --ink: 23 32% 13%;
+    --ink-soft: 27 14% 42%;
+    --muted: 27 15% 60%;
+    --line: 36 25% 80%;
+
+    /* Primary accent — rose-taupe + cognac (CTA fills) */
+    --accent: 20 32% 60%;
+    --accent-deep: 23 40% 39%;
+
+    /* Secondary accents — used sparingly, retuned for warmer palette */
+    --gold: 40 50% 58%;
+    --sage: 95 12% 50%;
+    --sage-deep: 95 14% 36%;
+
+    /* shadcn compatibility */
+    --background: var(--bg);
+    --foreground: var(--ink);
+    --primary: var(--ink);
+    --primary-foreground: var(--paper);
+    --secondary: var(--bg-alt);
+    --secondary-foreground: var(--ink);
+    --border: var(--line);
+    --input: var(--line);
+    --ring: var(--accent-deep);
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-line;
+  }
+  html {
+    scroll-behavior: smooth;
+    /* hide scrollbar but keep functionality */
+  }
+  body {
+    @apply bg-bg text-ink antialiased;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-feature-settings: "ss01" 1, "cv11" 1, "calt" 1;
+  }
+  /* Fraunces variable-font sizing tweaks */
+  .font-display {
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+  }
+  .font-display-tight {
+    font-feature-settings: "ss01" 1;
+    font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 0;
+    letter-spacing: -0.035em;
+  }
+  ::selection {
+    @apply bg-accent/25 text-ink;
+  }
+  /* Hide horizontal scrollbar on snap rails */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}
+
+@layer components {
+  /* Editorial label / tag */
+  .label {
+    @apply inline-block text-[11px] font-medium uppercase tracking-[0.18em] text-ink-soft;
+  }
+  .label-mono {
+    @apply inline-block text-[11px] tracking-[0.18em] uppercase text-muted;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  /* Display sizes — built around the variable serif's opsz axis */
+  .h-hero {
+    @apply font-display font-normal text-ink;
+    font-size: clamp(56px, 10vw, 144px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+  }
+  .h-display {
+    @apply font-display font-normal text-ink;
+    font-size: clamp(40px, 5.5vw, 80px);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    font-variation-settings: "opsz" 120, "SOFT" 50;
+  }
+  /* Renamed from .h-1 / .h-2 to avoid collision with Tailwind height utilities.
+     Old names (.h-1 = height: 0.25rem, .h-2 = height: 0.5rem) were silently
+     winning the cascade and collapsing real headings to a few pixels. */
+  .heading-1 {
+    @apply font-display font-normal text-ink;
+    font-size: clamp(32px, 4vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    font-variation-settings: "opsz" 96, "SOFT" 50;
+  }
+  .heading-2 {
+    @apply font-display font-normal text-ink;
+    font-size: clamp(24px, 3vw, 36px);
+    line-height: 1.1;
+    letter-spacing: -0.018em;
+    font-variation-settings: "opsz" 72, "SOFT" 50;
+  }
+
+  /* Italic display — uses Fraunces italic for emphasis spans */
+  .italic-display {
+    @apply font-display italic font-normal;
+    font-variation-settings: "opsz" 96, "SOFT" 100, "WONK" 1;
+  }
+
+  /* Body sizes */
+  .body-lg {
+    @apply text-[19px] leading-[1.55] text-ink-soft;
+    letter-spacing: -0.005em;
+  }
+  .body {
+    @apply text-[16px] leading-[1.6] text-ink-soft;
+  }
+
+  /* Editorial link — fine underline that thickens on hover */
+  .link-line {
+    @apply relative inline-block text-ink transition-colors;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: hsl(var(--line));
+  }
+  .link-line:hover {
+    text-decoration-color: hsl(var(--accent-deep));
+    text-decoration-thickness: 2px;
+  }
+
+  .container-wide {
+    @apply mx-auto w-full max-w-[1320px] px-5 lg:px-8;
+  }
+  .container-narrow {
+    @apply mx-auto w-full max-w-[900px] px-5 lg:px-8;
+  }
+}
+
+@layer utilities {
+  /* Subtle paper grain — used on sections that want texture */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.45;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.55, 0 0 0 0 0.45, 0 0 0 0 0.35, 0 0 0 0.1 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+    background-size: 200px 200px;
+  }
+}

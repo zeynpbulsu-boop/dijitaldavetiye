@@ -1,0 +1,41 @@
+# Build artefacts
+.next
+out
+dist
+
+# Local development
+.env*.local
+.env.local
+
+# Dependencies (re-installed inside the deps stage)
+node_modules
+npm-debug.log*
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+*.swp
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+*.log
+README.md
+LICENSE
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Documentation
+docs
+
+# Vercel-specific
+.vercel

@@ -1,0 +1,86 @@
+/**
+ * Hand-maintained DB types mirroring supabase/migrations/001_init.sql.
+ * When the schema changes, update this file too.
+ *
+ * (You can also generate this with `supabase gen types typescript` —
+ * we hand-maintain for now to keep the dep surface small.)
+ */
+
+export type TierSlug = "sade" | "klasik" | "premium";
+export type InvitationStatus =
+  | "draft"
+  | "paid"
+  | "live"
+  | "archived"
+  | "refunded";
+export type RsvpAttendance = "yes" | "no" | "maybe";
+export type DbLocale = "tr" | "en" | "sr";
+
+export interface Invitation {
+  id: string;
+  slug: string;
+  template_slug: string;
+  tier: TierSlug;
+  status: InvitationStatus;
+
+  partner_one_name: string | null;
+  partner_two_name: string | null;
+  wedding_date: string | null; // ISO date "YYYY-MM-DD"
+  venue_name: string | null;
+  venue_city: string | null;
+  venue_address: string | null;
+
+  story_text: string | null;
+  music_url: string | null;
+  music_track_id: string | null;
+  monogram_initials: string | null;
+  locale: DbLocale;
+
+  owner_email: string | null;
+  owner_phone: string | null;
+
+  admin_token: string;
+
+  dodo_session_id: string | null;
+  dodo_payment_id: string | null;
+
+  created_at: string;
+  updated_at: string;
+  paid_at: string | null;
+  live_until: string | null;
+}
+
+export type InvitationInsert = Partial<Invitation> &
+  Pick<Invitation, "slug" | "template_slug" | "tier">;
+
+export interface Rsvp {
+  id: string;
+  invitation_id: string;
+  guest_name: string;
+  guest_email: string | null;
+  attendance: RsvpAttendance;
+  plus_one: boolean;
+  plus_one_name: string | null;
+  menu_choice: string | null;
+  allergies: string | null;
+  note: string | null;
+  created_at: string;
+}
+
+export type RsvpInsert = Omit<Rsvp, "id" | "created_at">;
+
+export interface WebhookEvent {
+  webhook_id: string;
+  event_type: string;
+  payment_id: string | null;
+  invitation_id: string | null;
+  received_at: string;
+  raw_payload: unknown;
+}
+
+/** Days each tier stays live after payment, matching the dictionary copy. */
+export const TIER_DAYS: Record<TierSlug, number> = {
+  sade: 180, // 6 months
+  klasik: 365, // 12 months
+  premium: 730, // 24 months
+};
