@@ -51,6 +51,8 @@ export function TemplateDecorations({ slug, theme }: Props) {
     case "atelier-indigo":
     case "verde-borgogna":
       return <AtelierInkArt theme={theme} />;
+    case "elegant-ivory":
+      return <CinematicArchArt theme={theme} />;
     default:
       return null;
   }
@@ -894,6 +896,392 @@ function AtelierInkArt({ theme }: { theme: InvitationTheme }) {
         />
       </motion.svg>
     </Frame>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+/* 10) CinematicArchArt — Elegant Ivory (architectural opening)       */
+/* ────────────────────────────────────────────────────────────────── */
+/* Three-layer composition: faint sky/vignette backdrop, a stylised
+   stone arch flanked by simple columns mid-plane, dense floral
+   border + falling gold particles in front. Camera zooms 1 → 1.18
+   over 8s, layers move at different rates for parallax. All paths
+   are coded from scratch — no traced reference assets. */
+
+function CinematicArchArt({ theme }: { theme: InvitationTheme }) {
+  // Falling particles — deterministic seeds, sin-wave sway path
+  const particles = Array.from({ length: 18 }).map((_, i) => ({
+    x: ((i * 17) % 92) + 4,
+    delay: (i * 0.45) % 6,
+    duration: 7 + (i % 4),
+    size: 2 + (i % 3),
+    drift: (i % 2 === 0 ? 1 : -1) * (10 + (i % 5) * 4),
+  }));
+
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-[1] overflow-hidden"
+    >
+      {/* Initial blur opens, whole scene slow-zooms in */}
+      <motion.div
+        className="absolute inset-0"
+        initial={{ filter: "blur(4px)", scale: 1.02 }}
+        animate={{ filter: "blur(0px)", scale: 1.18 }}
+        transition={{ duration: 8, ease: [0.32, 0, 0.32, 1] }}
+      >
+        {/* LAYER 1 — Background haze + vignette (slowest parallax) */}
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.05 }}
+          transition={{ duration: 8, ease: [0.32, 0, 0.32, 1] }}
+          style={{
+            background: `radial-gradient(ellipse at 50% 38%, rgba(255,253,247,0.92) 0%, transparent 55%), radial-gradient(circle at 50% 100%, rgba(168,137,108,0.10) 0%, transparent 60%)`,
+          }}
+        />
+        {/* Corner vignette */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, transparent 55%, rgba(43,36,24,0.10) 100%)",
+          }}
+        />
+
+        {/* LAYER 2 — Mid-plane: arch + columns + interior gate */}
+        <motion.svg
+          viewBox="0 0 800 1200"
+          preserveAspectRatio="xMidYMid slice"
+          className="absolute inset-0 h-full w-full"
+          initial={{ scale: 0.98, opacity: 0 }}
+          animate={{ scale: 1.15, opacity: 0.85 }}
+          transition={{ duration: 8, ease: [0.32, 0, 0.32, 1] }}
+        >
+          {/* Sky stripe behind arch */}
+          <rect x="280" y="200" width="240" height="640" fill={theme.spark} opacity="0.06" />
+
+          {/* Left column */}
+          <g stroke={theme.spark} strokeWidth="2.4" fill="none" opacity="0.75">
+            <rect x="170" y="320" width="62" height="560" fill={theme.storyBg} fillOpacity="0.45" />
+            {/* Capital */}
+            <rect x="160" y="296" width="82" height="26" fill={theme.spark} fillOpacity="0.2" />
+            <rect x="155" y="282" width="92" height="14" fill={theme.spark} fillOpacity="0.25" />
+            {/* Base */}
+            <rect x="160" y="876" width="82" height="22" fill={theme.spark} fillOpacity="0.22" />
+            {/* Fluting hairlines */}
+            <line x1="190" y1="328" x2="190" y2="870" strokeWidth="0.6" opacity="0.55" />
+            <line x1="200" y1="328" x2="200" y2="870" strokeWidth="0.6" opacity="0.55" />
+            <line x1="210" y1="328" x2="210" y2="870" strokeWidth="0.6" opacity="0.55" />
+          </g>
+
+          {/* Right column (mirrored) */}
+          <g stroke={theme.spark} strokeWidth="2.4" fill="none" opacity="0.75" transform="translate(800 0) scale(-1 1)">
+            <rect x="170" y="320" width="62" height="560" fill={theme.storyBg} fillOpacity="0.45" />
+            <rect x="160" y="296" width="82" height="26" fill={theme.spark} fillOpacity="0.2" />
+            <rect x="155" y="282" width="92" height="14" fill={theme.spark} fillOpacity="0.25" />
+            <rect x="160" y="876" width="82" height="22" fill={theme.spark} fillOpacity="0.22" />
+            <line x1="190" y1="328" x2="190" y2="870" strokeWidth="0.6" opacity="0.55" />
+            <line x1="200" y1="328" x2="200" y2="870" strokeWidth="0.6" opacity="0.55" />
+            <line x1="210" y1="328" x2="210" y2="870" strokeWidth="0.6" opacity="0.55" />
+          </g>
+
+          {/* Arch — semicircle on top of the columns */}
+          <g stroke={theme.spark} strokeWidth="3" fill="none" opacity="0.85">
+            <path
+              d="M 232 282 A 168 168 0 0 1 568 282"
+              fill={theme.storyBg}
+              fillOpacity="0.35"
+            />
+            {/* Inner arch ring */}
+            <path
+              d="M 252 282 A 148 148 0 0 1 548 282"
+              strokeWidth="1.4"
+              opacity="0.55"
+            />
+          </g>
+
+          {/* Keystone medallion at arch apex */}
+          <g transform="translate(400 130)" opacity="0.85">
+            <path
+              d="M -22 0 Q -22 -16, 0 -22 Q 22 -16, 22 0 L 18 28 L 0 38 L -18 28 Z"
+              fill={theme.spark}
+              fillOpacity="0.45"
+              stroke={theme.spark}
+              strokeWidth="1.4"
+            />
+            <circle cx="0" cy="6" r="6" fill={theme.spark} fillOpacity="0.8" />
+          </g>
+
+          {/* Interior gate — vertical bars + central decorative curl */}
+          <g stroke={theme.spark} strokeWidth="1.2" fill="none" opacity="0.55">
+            {/* Vertical bars */}
+            {Array.from({ length: 12 }).map((_, i) => {
+              const x = 280 + i * 21;
+              return <line key={i} x1={x} y1="310" x2={x} y2="900" />;
+            })}
+            {/* Horizontal cross-rails */}
+            <line x1="280" y1="370" x2="520" y2="370" />
+            <line x1="280" y1="840" x2="520" y2="840" />
+            {/* Central decorative curl — simple S-scroll, original drawing */}
+            <path
+              d="M 360 540 Q 380 520, 400 540 Q 420 560, 440 540 M 360 600 Q 380 580, 400 600 Q 420 620, 440 600 M 380 540 L 380 600 M 420 540 L 420 600"
+              strokeWidth="1.0"
+              opacity="0.75"
+            />
+            {/* Center medallion */}
+            <circle cx="400" cy="570" r="22" strokeWidth="1.4" />
+            <circle cx="400" cy="570" r="6" fill={theme.spark} fillOpacity="0.5" stroke="none" />
+          </g>
+
+          {/* Tiered fountain in front of gate */}
+          <g stroke={theme.spark} strokeWidth="1.6" fill="none" opacity="0.7">
+            {/* Top bowl */}
+            <ellipse cx="400" cy="740" rx="42" ry="8" fill={theme.storyBg} fillOpacity="0.5" />
+            <line x1="400" y1="700" x2="400" y2="740" />
+            {/* Mid bowl */}
+            <ellipse cx="400" cy="800" rx="68" ry="10" fill={theme.storyBg} fillOpacity="0.5" />
+            <line x1="400" y1="748" x2="400" y2="800" strokeWidth="2" />
+            {/* Bottom bowl */}
+            <ellipse cx="400" cy="870" rx="96" ry="14" fill={theme.storyBg} fillOpacity="0.5" />
+          </g>
+        </motion.svg>
+
+        {/* LAYER 3 — Foreground botanicals (fastest parallax) */}
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 0.92, opacity: 0 }}
+          animate={{ scale: 1.25, opacity: 1 }}
+          transition={{ duration: 8, ease: [0.32, 0, 0.32, 1] }}
+        >
+          <FloralCluster
+            x="-2%"
+            y="2%"
+            tint={theme.spark}
+            leafTint={theme.accent}
+            mirrored={false}
+          />
+          <FloralCluster
+            x="78%"
+            y="2%"
+            tint={theme.spark}
+            leafTint={theme.accent}
+            mirrored
+          />
+          <FloralCluster
+            x="-3%"
+            y="34%"
+            tint={theme.spark}
+            leafTint={theme.accent}
+            mirrored={false}
+            scale={0.85}
+          />
+          <FloralCluster
+            x="80%"
+            y="36%"
+            tint={theme.spark}
+            leafTint={theme.accent}
+            mirrored
+            scale={0.85}
+          />
+
+          {/* Dense bottom floral border */}
+          <BottomFloralBorder tint={theme.spark} leafTint={theme.accent} />
+        </motion.div>
+
+        {/* Particle field — gold dust falling continuously */}
+        {particles.map((p, i) => (
+          <motion.span
+            key={i}
+            className="absolute block rounded-full"
+            style={{
+              left: `${p.x}%`,
+              top: -10,
+              width: p.size,
+              height: p.size,
+              background: theme.spark,
+              boxShadow: `0 0 ${p.size * 3}px ${theme.spark}`,
+            }}
+            initial={{ y: -10, opacity: 0 }}
+            animate={{
+              y: "115vh",
+              opacity: [0, 0.6, 0.7, 0],
+              x: [0, p.drift, -p.drift * 0.6, p.drift * 0.4, 0],
+            }}
+            transition={{
+              duration: p.duration,
+              delay: 2 + p.delay,
+              repeat: Infinity,
+              ease: "linear",
+              times: [0, 0.15, 0.85, 1],
+            }}
+          />
+        ))}
+
+        {/* Fountain glow halo — pulses once timeline hits 2.5s */}
+        <motion.div
+          className="absolute left-1/2 -translate-x-1/2"
+          style={{
+            top: "63%",
+            width: 320,
+            height: 320,
+            marginLeft: -160,
+            marginTop: -160,
+            background: `radial-gradient(circle, ${theme.spark}33 0%, transparent 65%)`,
+            borderRadius: "50%",
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.4, 0.7, 0.4, 0.6] }}
+          transition={{
+            duration: 4,
+            delay: 2.5,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+        />
+      </motion.div>
+    </div>
+  );
+}
+
+function FloralCluster({
+  x,
+  y,
+  tint,
+  leafTint,
+  mirrored = false,
+  scale = 1,
+}: {
+  x: string;
+  y: string;
+  tint: string;
+  leafTint: string;
+  mirrored?: boolean;
+  scale?: number;
+}) {
+  return (
+    <motion.svg
+      viewBox="0 0 200 280"
+      width={220 * scale}
+      height={300 * scale}
+      className="absolute"
+      style={{
+        left: x,
+        top: y,
+        transform: mirrored ? "scaleX(-1)" : "none",
+      }}
+      animate={{ rotate: [-1.5, 1.5, -1.5], y: [0, -3, 0] }}
+      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+    >
+      {/* Sage leaves — pointed ellipses radiating from cluster base */}
+      {[
+        { cx: 30, cy: 90, r: -20, w: 10, h: 32 },
+        { cx: 55, cy: 60, r: -45, w: 8, h: 26 },
+        { cx: 80, cy: 80, r: 10, w: 9, h: 28 },
+        { cx: 15, cy: 130, r: -55, w: 11, h: 34 },
+        { cx: 90, cy: 140, r: 35, w: 9, h: 30 },
+        { cx: 40, cy: 200, r: -25, w: 10, h: 30 },
+        { cx: 70, cy: 220, r: 20, w: 9, h: 28 },
+      ].map((l, i) => (
+        <ellipse
+          key={i}
+          cx={l.cx}
+          cy={l.cy}
+          rx={l.w}
+          ry={l.h}
+          transform={`rotate(${l.r} ${l.cx} ${l.cy})`}
+          fill={leafTint}
+          opacity={0.55}
+        />
+      ))}
+      {/* Lily flower — trumpet shape from 3 curved petals */}
+      <g transform="translate(70 110)">
+        <path d="M 0 0 Q -16 -18, -10 -38 Q 0 -32, 6 -38 Q 14 -18, 0 0 Z" fill="#FFFCF4" stroke={tint} strokeWidth="1" opacity="0.92" />
+        <path d="M 0 0 Q -22 -8, -28 -22 Q -18 -18, -10 -22 Q -6 -10, 0 0 Z" fill="#FFFCF4" stroke={tint} strokeWidth="1" opacity="0.92" />
+        <path d="M 0 0 Q 22 -8, 28 -22 Q 18 -18, 10 -22 Q 6 -10, 0 0 Z" fill="#FFFCF4" stroke={tint} strokeWidth="1" opacity="0.92" />
+        {/* Pistil */}
+        <line x1="0" y1="0" x2="0" y2="-32" stroke={tint} strokeWidth="1" />
+        <circle cx="0" cy="-34" r="2" fill={tint} />
+      </g>
+      {/* Rose — 5-petal stylised */}
+      <g transform="translate(45 175)">
+        {[0, 72, 144, 216, 288].map((deg, i) => (
+          <ellipse
+            key={i}
+            cx="0"
+            cy="-12"
+            rx="8"
+            ry="14"
+            transform={`rotate(${deg})`}
+            fill="#FFF8EE"
+            stroke={tint}
+            strokeWidth="0.7"
+            opacity={0.85}
+          />
+        ))}
+        <circle cx="0" cy="0" r="4" fill={tint} fillOpacity="0.5" />
+      </g>
+      {/* Small gold filigree accent */}
+      <path
+        d="M 100 240 Q 110 230, 120 240 Q 115 250, 105 245 Q 95 250, 100 240 Z"
+        fill={tint}
+        opacity="0.45"
+      />
+    </motion.svg>
+  );
+}
+
+function BottomFloralBorder({ tint, leafTint }: { tint: string; leafTint: string }) {
+  return (
+    <svg
+      viewBox="0 0 1200 240"
+      preserveAspectRatio="xMidYEnd slice"
+      className="absolute bottom-0 left-0 right-0 w-full"
+      style={{ height: 260 }}
+    >
+      {/* Soft gold wash band */}
+      <rect x="0" y="160" width="1200" height="80" fill={tint} opacity="0.12" />
+
+      {/* Lilies arranged across the bottom */}
+      {[120, 280, 460, 640, 820, 1000, 1140].map((x, i) => (
+        <motion.g
+          key={i}
+          transform={`translate(${x} 180)`}
+          animate={{ rotate: [-1.4, 1.4, -1.4] }}
+          transition={{ duration: 3 + (i % 3) * 0.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.15 }}
+          style={{ transformOrigin: `${x}px 230px` }}
+        >
+          {/* Stem */}
+          <line x1="0" y1="58" x2="0" y2="0" stroke={leafTint} strokeWidth="1.4" opacity="0.7" />
+          {/* Leaves at base */}
+          <ellipse cx="-22" cy="50" rx="20" ry="9" transform="rotate(-30 -22 50)" fill={leafTint} opacity="0.65" />
+          <ellipse cx="22" cy="50" rx="20" ry="9" transform="rotate(30 22 50)" fill={leafTint} opacity="0.65" />
+          {/* Lily trumpet */}
+          <g transform="scale(1.15)">
+            <path d="M 0 0 Q -18 -22, -12 -46 Q 0 -38, 8 -46 Q 18 -22, 0 0 Z" fill="#FFFCF4" stroke={tint} strokeWidth="1" opacity="0.95" />
+            <path d="M 0 0 Q -26 -10, -32 -28 Q -22 -22, -12 -28 Q -8 -12, 0 0 Z" fill="#FFFCF4" stroke={tint} strokeWidth="1" opacity="0.95" />
+            <path d="M 0 0 Q 26 -10, 32 -28 Q 22 -22, 12 -28 Q 8 -12, 0 0 Z" fill="#FFFCF4" stroke={tint} strokeWidth="1" opacity="0.95" />
+            <line x1="0" y1="0" x2="0" y2="-36" stroke={tint} strokeWidth="1" />
+            <circle cx="0" cy="-40" r="2.5" fill={tint} />
+          </g>
+        </motion.g>
+      ))}
+
+      {/* Scattered small leaves between lilies */}
+      {[60, 200, 380, 540, 720, 920, 1080].map((x, i) => (
+        <ellipse
+          key={i}
+          cx={x}
+          cy="218"
+          rx="14"
+          ry="6"
+          transform={`rotate(${i % 2 === 0 ? -20 : 18} ${x} 218)`}
+          fill={leafTint}
+          opacity="0.55"
+        />
+      ))}
+    </svg>
   );
 }
 
