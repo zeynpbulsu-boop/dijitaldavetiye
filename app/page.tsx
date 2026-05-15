@@ -9,6 +9,7 @@ import { Seal } from "./_sections/seal";
 import { Ceremonies } from "./_sections/ceremonies";
 import { Manifesto } from "./_sections/manifesto";
 import { Testimonials } from "./_sections/testimonials";
+import { PaperVsDigital } from "./_sections/paper-vs-digital";
 import { Pricing } from "./_sections/pricing";
 import { Faq } from "./_sections/faq";
 import { ClosingCta } from "./_sections/closing-cta";
@@ -49,6 +50,7 @@ export default function HomePage() {
         <Ceremonies />
         <Manifesto />
         <Testimonials />
+        <PaperVsDigital />
         <Pricing />
         <Faq />
         <ClosingCta />
