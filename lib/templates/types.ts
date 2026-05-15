@@ -29,6 +29,16 @@ export interface InvitationData {
   storyParagraphs?: string[];
   /** Public site slug (e.g. "ali-ve-zeynep") */
   slug?: string;
+
+  /* ── Gift (hediye) — surfaced by the default gift slot ─────── */
+  /** Account holder name on the gift account (e.g. "Ali Yılmaz") */
+  giftAccountHolder?: string;
+  /** IBAN string. Display formatting handled by the slot. */
+  giftIban?: string;
+  /** Bank name shown alongside the IBAN, e.g. "Garanti BBVA" */
+  giftBank?: string;
+  /** Optional short message to accompany the gift block. */
+  giftMessage?: string;
 }
 
 export type TemplateCategory =
