@@ -21,6 +21,7 @@ import type { Messages } from "@/lib/i18n/types";
 import { RsvpForm } from "./_rsvp-form";
 import { SvgFilters } from "./_svg-filters";
 import { BackgroundAsset } from "./_background-asset";
+import { TemplateDecorations } from "@/components/decorations/template-art";
 
 /**
  * Public invitation view — entrance ceremony + content.
@@ -760,6 +761,10 @@ function OpenedContent({
       {/* User-supplied watercolor background — sits behind everything.
           Silently hides if no file at /illustrations/[slug]/hero.{jpg|png|webp} */}
       <BackgroundAsset templateSlug={inv.template_slug} opacity={0.55} />
+
+      {/* Bespoke per-template art layer (NUVE-original SVG + framer-motion).
+          Renders 3-layer composition tailored to each edition's identity. */}
+      <TemplateDecorations slug={inv.template_slug} theme={theme} />
 
       <motion.div
         aria-hidden
