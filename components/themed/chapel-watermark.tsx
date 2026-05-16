@@ -1,11 +1,9 @@
 "use client";
 
 /**
- * ChapelWatermark — FAZ 5.11.1 (background-blend-mode FIX)
+ * ChapelWatermark — FAZ 5.11.2 (gerçek alpha PNG)
  *
- * Fal.ai chapel vignette'i tema zeminine %5-8 opacity ile yedirir.
- * background-blend-mode: multiply ile beyaz BG silinir, sadece
- * çizim kalır. Stacking context'ten bağımsız çalışır.
+ * PNG'nin beyaz BG'si Pillow ile transparent. Direkt <img> kullan.
  */
 
 interface ChapelWatermarkProps {
@@ -14,7 +12,7 @@ interface ChapelWatermarkProps {
   alignment?: "center" | "top" | "bottom" | "left" | "right";
   className?: string;
   maxWidth?: number;
-  /** Tema zemin rengi — beyaz pikseller bu rengin içinde "yutulur". */
+  /** Geriye uyumluluk — kullanılmıyor. */
   bgColor?: string;
 }
 
@@ -24,7 +22,6 @@ export function ChapelWatermark({
   alignment = "center",
   className = "",
   maxWidth = 1100,
-  bgColor = "#F2EEE4",
 }: ChapelWatermarkProps) {
   const alignStyle: Record<string, string> = {
     center: "items-center justify-center",
@@ -40,18 +37,16 @@ export function ChapelWatermark({
       className={`pointer-events-none ${position} inset-0 flex ${alignStyle[alignment]} overflow-hidden ${className}`}
       style={{ zIndex: 0 }}
     >
-      <div
+      <img
+        src="/aethel/chapel-vignette.png"
+        alt=""
+        draggable={false}
         style={{
           width: "100%",
           maxWidth,
-          aspectRatio: "4 / 3",
-          backgroundImage: "url(/aethel/chapel-vignette.png)",
-          backgroundColor: bgColor,
-          backgroundBlendMode: "multiply",
-          backgroundSize: "contain",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+          height: "auto",
           opacity,
+          userSelect: "none",
         }}
       />
     </div>

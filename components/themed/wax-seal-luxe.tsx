@@ -1,34 +1,27 @@
 "use client";
 
 /**
- * WaxSealLuxe — FAZ 5.11.1 (background-blend-mode FIX)
+ * WaxSealLuxe — FAZ 5.11.2 (gerçek alpha PNG)
  *
- * Fal.ai'den gelen pure-white-BG wax seal PNG'yi tema zeminine
- * şeffaf oturtur. background-blend-mode: multiply kullanıyoruz
- * (mix-blend-mode framer-motion transform stacking context'inde
- * çalışmıyor — background-blend-mode element'in kendi BG color'ı
- * ile blend olur, stacking context'ten bağımsızdır).
- *
- * Formül: backgroundImage × backgroundColor (cream/sage/etc)
- *   - White pikseller × cream = cream → görünmez
- *   - Sage+altın pikseller → koyulaşır (daha derin) → editorial
+ * PNG'nin beyaz BG'si Pillow ile transparent yapıldı — artık blend
+ * mode tricks gerekmiyor. Direkt <img> kullan, herhangi bir zemine
+ * (cream / dark sage / navy) sorunsuz otur.
  */
 
 import { motion } from "framer-motion";
 
 interface WaxSealLuxeProps {
-  /** Tema zemini — beyaz BG'nin "yutulacağı" renk. Default cream. */
-  bgColor?: string;
   size?: number;
   rotate?: number;
   delay?: number;
   className?: string;
-  /** Hafif aura halo rengi — sage green default. */
+  /** Geriye uyumluluk — kullanılmıyor, alpha gerçek transparency. */
+  bgColor?: string;
+  /** Hafif aura halo rengi. */
   haloColor?: string;
 }
 
 export function WaxSealLuxe({
-  bgColor = "#F2EEE4",
   size = 220,
   rotate = -6,
   delay = 0,
@@ -42,12 +35,12 @@ export function WaxSealLuxe({
       transition={{
         delay,
         duration: 1.6,
-        ease: [0.34, 1.56, 0.64, 1], // mühür basıldı gibi yaslanır
+        ease: [0.34, 1.56, 0.64, 1],
       }}
       className={`relative inline-block ${className}`}
       style={{ width: size, height: size }}
     >
-      {/* Aura halo — radyal gradient yumuşak ışıma */}
+      {/* Aura halo */}
       <motion.div
         aria-hidden
         className="pointer-events-none absolute -inset-10 rounded-full"
@@ -61,19 +54,16 @@ export function WaxSealLuxe({
         transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* Wax seal — background-blend-mode ile beyaz BG silinir */}
-      <div
-        role="img"
-        aria-label="Mühür — Defne & Aras"
+      <img
+        src="/aethel/wax-seal-luxe.png"
+        alt="Mühür — Defne & Aras"
+        width={size}
+        height={size}
+        draggable={false}
         style={{
           width: size,
           height: size,
-          backgroundImage: "url(/aethel/wax-seal-luxe.png)",
-          backgroundColor: bgColor,
-          backgroundSize: "contain",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundBlendMode: "multiply",
+          userSelect: "none",
           filter: "drop-shadow(0 18px 32px rgba(60, 70, 50, 0.20))",
         }}
       />
