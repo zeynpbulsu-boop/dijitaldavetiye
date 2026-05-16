@@ -23,6 +23,9 @@
  */
 
 import type { InvitationData } from "@/lib/templates/types";
+import type { Invitation, DbLocale } from "@/lib/db/types";
+import type { InvitationTheme } from "@/lib/templates/themes";
+import type { Messages } from "@/lib/i18n/types";
 import type { EditionComposition } from "./composition";
 import { DEFAULT_SLOTS } from "./default-slots";
 
@@ -31,12 +34,32 @@ export interface EditionRendererProps {
   data: InvitationData;
   /** Demo banner when previewing template without real invitation. */
   isPreview?: boolean;
+
+  /* ── Optional live-invitation enrichment (FAZ 2C) ──────────────── *
+   * When mounted from /i/[slug] (real invitation) these arrive
+   * pre-resolved by the server component and get fanned out to every
+   * slot. Preview/demo callers omit them; slots gracefully degrade.
+   */
+  invitation?: Invitation;
+  theme?: InvitationTheme;
+  locale?: DbLocale;
+  messages?: Messages;
+  dateLine?: string | null;
+  weekday?: string | null;
+  monogram?: string;
 }
 
 export function EditionRenderer({
   composition,
   data,
   isPreview,
+  invitation,
+  theme,
+  locale,
+  messages,
+  dateLine,
+  weekday,
+  monogram,
 }: EditionRendererProps) {
   return (
     <div
@@ -70,6 +93,13 @@ export function EditionRenderer({
             data={data}
             isPreview={isPreview}
             editionSlug={composition.slug}
+            invitation={invitation}
+            theme={theme}
+            locale={locale}
+            messages={messages}
+            dateLine={dateLine}
+            weekday={weekday}
+            monogram={monogram}
           />
         );
       })}

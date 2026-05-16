@@ -32,6 +32,9 @@
 
 import type { ComponentType } from "react";
 import type { InvitationData } from "@/lib/templates/types";
+import type { Invitation, DbLocale } from "@/lib/db/types";
+import type { InvitationTheme } from "@/lib/templates/themes";
+import type { Messages } from "@/lib/i18n/types";
 
 export const SLOT_NAMES = [
   "cover",
@@ -84,6 +87,28 @@ export interface SlotProps {
    * theme propagation.
    */
   editionSlug: string;
+
+  /* ── Optional live-invitation enrichment (FAZ 2C) ──────────────── *
+   * When the renderer is mounted from /i/[slug] (a real customer
+   * invitation), these fields carry the rich DB row + theme + i18n
+   * strings so slots can render exact data. When rendered from
+   * /templates/[slug] preview, they're absent — slots should treat
+   * `data` (InvitationData) as the source of truth and degrade
+   * gracefully (skip parts that need richer fields).
+   */
+
+  /** Full DB row when rendering a real invitation. */
+  invitation?: Invitation;
+  /** Per-edition visual theme (palette + ornament motif). */
+  theme?: InvitationTheme;
+  /** Active locale ("tr" | "en" | "sr") — drives weekday/dateLine. */
+  locale?: DbLocale;
+  /** i18n messages bundle for the active locale. */
+  messages?: Messages;
+  /** Derived display strings — pre-formatted by the route. */
+  dateLine?: string | null;
+  weekday?: string | null;
+  monogram?: string;
 }
 
 export type SlotComponent = ComponentType<SlotProps>;
