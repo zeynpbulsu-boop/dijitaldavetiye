@@ -10,6 +10,10 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'res.cloudinary.com' },
+      // FAZ 4 — fal.ai CDN (bespoke Flux Pro 1.1 cover renders)
+      { protocol: 'https', hostname: 'v3b.fal.media' },
+      { protocol: 'https', hostname: 'v3.fal.media' },
+      { protocol: 'https', hostname: 'fal.media' },
     ],
   },
 };
