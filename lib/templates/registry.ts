@@ -8,6 +8,7 @@ import { BlackInk } from "@/components/templates/black-ink";
 import { BlushGarden } from "@/components/templates/blush-garden";
 import { VerdeBorgogna } from "@/components/templates/verde-borgogna";
 import { ElegantIvory } from "@/components/templates/elegant-ivory";
+import { AethelChapel } from "@/components/templates/aethel-chapel";
 
 /* ──────────────────────────────────────────────────────────────────
  * DEPRECATION POLICY (FAZ 2A)
@@ -180,6 +181,22 @@ export const templateMeta: TemplateMeta[] = [
     hasEnvelope: false,
     priceTry: 899,
   },
+  {
+    slug: "aethel-chapel",
+    name: "Aethel's Chapel",
+    tagline: "Masalsı · Antik",
+    description:
+      "Sarmaşıklar ve mor salkımlar arasına gizlenmiş taş duvarlı antik şapel. Sızan güneş ışınları, havada toz zerreleri.",
+    thumb:
+      "https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?auto=format&fit=crop&w=800&q=85",
+    palette: ["#EDE9DD", "#7A8A6E", "#5C6450", "#9F84B5", "#2F3527"],
+    category: "classic",
+    mood: "romantic",
+    languages: ["TR", "EN"],
+    pages: 4,
+    hasEnvelope: true,
+    priceTry: 899,
+  },
 ];
 
 /**
@@ -197,6 +214,7 @@ const componentBySlug: Record<string, ComponentType<TemplateComponentProps>> = {
   "blush-garden": BlushGarden,
   "verde-borgogna": VerdeBorgogna,
   "elegant-ivory": ElegantIvory,
+  "aethel-chapel": AethelChapel,
 };
 
 export const templateComponents: Record<string, Template> = Object.fromEntries(

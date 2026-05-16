@@ -97,6 +97,15 @@ const cards: Card[] = [
     ornament: "burst",
     exists: true,
   },
+  {
+    slug: "aethel-chapel",
+    name: "Aethel's Chapel",
+    category: "Masalsı · Antik",
+    bg: { from: "#EDE9DD", to: "#7A8A6E" },
+    ornament: "leaf",
+    isNew: true,
+    exists: true,
+  },
 ];
 
 export function TemplateCarousel() {

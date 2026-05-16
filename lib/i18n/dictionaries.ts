@@ -57,7 +57,7 @@ const tr: Messages = {
   },
   carousel: {
     eyebrow: "Koleksiyon",
-    headline_prefix: "Bir his, beş ",
+    headline_prefix: "Bir his, altı ",
     headline_accent: "edisyon",
     headline_suffix: ".",
     drag_hint: "Sürükle  →",
@@ -394,7 +394,7 @@ const en: Messages = {
   },
   carousel: {
     eyebrow: "The Collection",
-    headline_prefix: "One feeling, five ",
+    headline_prefix: "One feeling, six ",
     headline_accent: "editions",
     headline_suffix: ".",
     drag_hint: "Drag  →",
@@ -738,7 +738,7 @@ const sr: Messages = {
   },
   carousel: {
     eyebrow: "Kolekcija",
-    headline_prefix: "Jedan osećaj, pet ",
+    headline_prefix: "Jedan osećaj, šest ",
     headline_accent: "izdanja",
     headline_suffix: ".",
     drag_hint: "Povuci  →",
