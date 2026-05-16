@@ -323,6 +323,23 @@
   }
 }
 
+/* ── FAZ 5.9 — Premium animasyon keyframes ──────────────────────── */
+@keyframes shimmerSweep {
+  0%   { transform: translateX(-100%); }
+  60%  { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes inkPulse {
+  0%, 100% { opacity: 0.42; }
+  50%      { opacity: 0.85; }
+}
+
+@keyframes silkGlow {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 0.85; }
+  50%      { box-shadow: 0 0 24px 4px currentColor; opacity: 1; }
+}
+
 @layer utilities {
   /* Subtle paper grain — used on sections that want texture */
   .grain {
