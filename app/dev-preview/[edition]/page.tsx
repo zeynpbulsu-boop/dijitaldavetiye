@@ -21,13 +21,20 @@ import { elegantIvoryComposition } from "@/components/templates/elegant-ivory/co
  * harness, not a customer-facing page.
  */
 
-export const dynamic = "force-static";
-
 const COMPOSITIONS = {
   "elegant-ivory": elegantIvoryComposition,
 } as const;
 
 type EditionKey = keyof typeof COMPOSITIONS;
+
+/** Pre-render every known edition at build time. Without this, the
+ *  dynamic [edition] segment 404s under Next.js standalone mode
+ *  (force-static + no generateStaticParams swallows the route). */
+export function generateStaticParams() {
+  return (Object.keys(COMPOSITIONS) as EditionKey[]).map((edition) => ({
+    edition,
+  }));
+}
 
 /** Hardcoded sample invitation that mirrors a typical /i/[slug] row.
  *  Locked to elegant-ivory's slug + Turkish locale so the composition
