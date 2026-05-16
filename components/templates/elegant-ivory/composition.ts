@@ -17,16 +17,24 @@
 
 import { buildComposition } from "../_shared/composition";
 import { ElegantIvoryCoverSlot } from "./_slots/cover-slot";
+import { ElegantIvoryStorySlot } from "./_slots/story-slot";
+import { ElegantIvoryRsvpSlot } from "./_slots/rsvp-slot";
+import { ElegantIvoryThanksSlot } from "./_slots/thanks-slot";
 
 export const elegantIvoryComposition = buildComposition({
   slug: "elegant-ivory",
   name: "Elegant Ivory",
 
-  // Migration in progress. Future order (FAZ 2C complete):
-  //   ["envelope", "cover", "gallery", "story", "rsvp", "thanks"]
-  order: ["cover"],
+  // Envelope ceremony (wax-seal opening) stays in the legacy
+  // monolith for now because it manages cross-slot stage state
+  // (sealed → breaking → opening → opened). Will fold in once
+  // a stage-aware orchestrator slot lands.
+  order: ["cover", "story", "rsvp", "thanks"],
 
   slots: {
     cover: ElegantIvoryCoverSlot,
+    story: ElegantIvoryStorySlot,
+    rsvp: ElegantIvoryRsvpSlot,
+    thanks: ElegantIvoryThanksSlot,
   },
 });
