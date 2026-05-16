@@ -107,7 +107,7 @@ export function Nav() {
               href="/order/blush-reverie"
               data-cursor="cta"
               aria-label={t.nav.cta_aria}
-              className="group inline-flex items-center gap-1.5 rounded-full bg-brand-cognac px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-cream shadow-[0_1px_2px_rgba(43,30,22,0.18)] transition-all duration-300 hover:bg-brand-ink hover:shadow-[0_4px_12px_rgba(43,30,22,0.22)] md:px-5 md:py-2.5 md:text-[12px] md:tracking-[0.18em]"
+              className="btn-couture group"
             >
               <span>{t.nav.cta_short}</span>
               <svg

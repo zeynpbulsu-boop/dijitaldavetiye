@@ -161,8 +161,36 @@
   }
   body {
     @apply bg-bg text-ink antialiased;
-    font-family: var(--font-sans), system-ui, sans-serif;
-    font-feature-settings: "ss01" 1, "cv11" 1, "calt" 1;
+    /* FAZ 3.1 — Cormorant Garamond Light 300, ferah whitespace
+       Lüks brand chrome: tek font ailesi, ince ağırlık, açık tracking */
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    font-feature-settings: "ss01" 1, "cv11" 1, "calt" 1, "liga" 1, "dlig" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* FAZ 3.1 — Tüm display başlıklar Light 300, asla bold değil */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 300;
+    letter-spacing: 0.015em;
+  }
+  /* Bold/extrabold sınıflarını yumuşak override —
+     dekoratif eyebrow'lar (label, uppercase) sapasağlam kalır;
+     başlık-yapısı font-bold kullanımları light'a düşer */
+  .font-display.font-bold,
+  .font-display.font-extrabold,
+  .font-display.font-black,
+  .font-display.font-semibold,
+  h1.font-bold, h2.font-bold, h3.font-bold,
+  h1.font-semibold, h2.font-semibold, h3.font-semibold {
+    font-weight: 300 !important;
+  }
+  /* Eyebrow / label utility — daha lüks tracking */
+  .uppercase {
+    letter-spacing: 0.24em;
   }
   /* Fraunces variable-font sizing tweaks */
   .font-display {
@@ -257,6 +285,41 @@
   }
   .container-narrow {
     @apply mx-auto w-full max-w-[900px] px-5 lg:px-8;
+  }
+
+  /* ─── FAZ 3.1 — Couture button system (ince çerçeve, ferah whitespace) ─── *
+   * Lüks markaların (Hermès, Cartier, Aman) butonu hep aynı:
+   * ince outline + cömert padding + ferah letter-spacing + asla bold.
+   * Mevcut "devasa" CTA'lar bu sınıfla ezildiğinde otomatik incelir.
+   * Tek dokunuş: btn-couture class'ını mevcut button'a ekle.
+   */
+  .btn-couture {
+    @apply inline-flex items-center justify-center gap-3 transition-all;
+    background: transparent !important;
+    border: 1px solid currentColor;
+    border-radius: 0 !important;        /* asla pill değil */
+    padding: 14px 32px;
+    font-family: var(--font-display), Georgia, serif;
+    font-size: 11px;
+    font-weight: 300 !important;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: hsl(var(--ink));
+    cursor: pointer;
+  }
+  .btn-couture:hover {
+    background: hsl(var(--ink)) !important;
+    color: hsl(var(--bg)) !important;
+    border-color: hsl(var(--ink));
+    letter-spacing: 0.36em;             /* tracking yumuşak açılır */
+  }
+  .btn-couture--inverse {
+    color: hsl(var(--bg));
+    border-color: hsl(var(--bg) / 0.45);
+  }
+  .btn-couture--inverse:hover {
+    background: hsl(var(--bg)) !important;
+    color: hsl(var(--ink)) !important;
   }
 }
 
