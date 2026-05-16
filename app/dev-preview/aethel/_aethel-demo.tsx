@@ -89,7 +89,7 @@ export function AethelChapelDemo() {
         }}
       >
         {/* Sayfa boyunca chapel watermark (fixed) — gözü yormayan doku */}
-        <ChapelWatermark position="fixed" opacity={0.045} maxWidth={1200} />
+        <ChapelWatermark position="fixed" opacity={0.045} maxWidth={1200} bgColor={CREAM_BG} />
 
         <FloatingControls />
 
@@ -256,10 +256,10 @@ export function AethelChapelDemo() {
           style={{ background: "#E8E3D5", color: INK }}
         >
           {/* Chapel watermark biraz daha güçlü burada — kapanış vurgusu */}
-          <ChapelWatermark position="absolute" opacity={0.08} maxWidth={1100} alignment="bottom" />
+          <ChapelWatermark position="absolute" opacity={0.08} maxWidth={1100} alignment="bottom" bgColor="#E8E3D5" />
 
           <div className="relative z-10 flex justify-center">
-            <WaxSealLuxe size={170} haloColor={SAGE} rotate={-4} />
+            <WaxSealLuxe size={170} haloColor={SAGE} rotate={-4} bgColor="#E8E3D5" />
           </div>
           <div
             className="relative z-10 mt-14"
@@ -320,7 +320,7 @@ export function AethelChapelDemo() {
         style={{ background: CREAM_BG, color: INK }}
       >
         {/* Hero-içi büyük watermark — chapel ön planda zarif */}
-        <ChapelWatermark position="absolute" opacity={0.09} maxWidth={1000} />
+        <ChapelWatermark position="absolute" opacity={0.09} maxWidth={1000} bgColor={CREAM_BG} />
 
         <div className="relative z-10 flex w-full flex-col items-center text-center">
           {/* Eyebrow */}
@@ -345,7 +345,7 @@ export function AethelChapelDemo() {
             transition={{ duration: 1.6, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="mt-14"
           >
-            <WaxSealLuxe size={210} haloColor={SAGE} rotate={-6} delay={1.0} />
+            <WaxSealLuxe size={210} haloColor={SAGE} rotate={-6} delay={1.0} bgColor={CREAM_BG} />
           </motion.div>
 
           {/* Calligraphy isim — geniş nefes */}

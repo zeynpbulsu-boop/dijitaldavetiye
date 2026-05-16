@@ -1,16 +1,24 @@
 "use client";
 
 /**
- * WaxSealLuxe — FAZ 5.11
+ * WaxSealLuxe — FAZ 5.11.1 (background-blend-mode FIX)
  *
  * Fal.ai'den gelen pure-white-BG wax seal PNG'yi tema zeminine
- * şeffaf oturtur. mix-blend-mode: multiply → beyaz pikseller görünmez,
- * sage+altın kabartmalı seal kalır. Hover ile yumuşak sallanma + halo.
+ * şeffaf oturtur. background-blend-mode: multiply kullanıyoruz
+ * (mix-blend-mode framer-motion transform stacking context'inde
+ * çalışmıyor — background-blend-mode element'in kendi BG color'ı
+ * ile blend olur, stacking context'ten bağımsızdır).
+ *
+ * Formül: backgroundImage × backgroundColor (cream/sage/etc)
+ *   - White pikseller × cream = cream → görünmez
+ *   - Sage+altın pikseller → koyulaşır (daha derin) → editorial
  */
 
 import { motion } from "framer-motion";
 
 interface WaxSealLuxeProps {
+  /** Tema zemini — beyaz BG'nin "yutulacağı" renk. Default cream. */
+  bgColor?: string;
   size?: number;
   rotate?: number;
   delay?: number;
@@ -20,6 +28,7 @@ interface WaxSealLuxeProps {
 }
 
 export function WaxSealLuxe({
+  bgColor = "#F2EEE4",
   size = 220,
   rotate = -6,
   delay = 0,
@@ -52,19 +61,20 @@ export function WaxSealLuxe({
         transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* Wax seal görseli — mix-blend-mode: multiply ile beyaz BG silinir */}
-      <img
-        src="/aethel/wax-seal-luxe.png"
-        alt=""
-        width={size}
-        height={size}
-        draggable={false}
+      {/* Wax seal — background-blend-mode ile beyaz BG silinir */}
+      <div
+        role="img"
+        aria-label="Mühür — Defne & Aras"
         style={{
           width: size,
           height: size,
-          mixBlendMode: "multiply",
-          userSelect: "none",
-          filter: "drop-shadow(0 14px 28px rgba(60, 70, 50, 0.18))",
+          backgroundImage: "url(/aethel/wax-seal-luxe.png)",
+          backgroundColor: bgColor,
+          backgroundSize: "contain",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundBlendMode: "multiply",
+          filter: "drop-shadow(0 18px 32px rgba(60, 70, 50, 0.20))",
         }}
       />
     </motion.div>
