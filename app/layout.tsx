@@ -8,6 +8,8 @@ import {
   Fraunces,
   Caveat,
   DM_Sans,
+  Pinyon_Script,
+  Great_Vibes,
 } from "next/font/google";
 import "./globals.css";
 import { CursorRing } from "@/components/effects/cursor-ring";
@@ -92,6 +94,23 @@ const caveat = Caveat({
   display: "swap",
 });
 
+// FAZ 5 — Calligraphy script for couple names (Pinyon Script + Great Vibes)
+// Used in stroke-by-stroke SVG name animation. Romantic, formal wedding
+// calligraphy — completely different from signature handwriting (Caveat).
+const pinyon = Pinyon_Script({
+  subsets: ["latin"],
+  variable: "--font-calligraphy",
+  weight: ["400"],
+  display: "swap",
+});
+
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  variable: "--font-calligraphy-alt",
+  weight: ["400"],
+  display: "swap",
+});
+
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuve.co";
 
 export const metadata: Metadata = {
@@ -163,6 +182,8 @@ export default function RootLayout({
         fraunces.variable,
         dmSans.variable,
         caveat.variable,
+        pinyon.variable,
+        greatVibes.variable,
       ].join(" ")}
     >
       <body>
