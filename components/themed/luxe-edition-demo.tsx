@@ -33,7 +33,9 @@ import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
 import { CountdownLuxe } from "@/components/themed/countdown-luxe";
 import { RsvpForm } from "@/app/i/[slug]/_rsvp-form";
+import { luxeStrings, type LuxeLocale } from "@/lib/i18n/luxe-strings";
 import type { EditionMeta } from "@/lib/design/tokens";
+import type { EventType } from "@/lib/db/types";
 
 export interface LuxeEditionTheme {
   /** EditionMeta türü — sadece calligraphyFont ve separator için gerekli. */
@@ -85,23 +87,43 @@ export interface LuxeEditionTheme {
    * önce inline RSVP formu render edilir. Demo modunda boş.
    */
   rsvpSlug?: string;
-  /** RSVP form yerel dili — 'tr' | 'en' | 'sr'. Default 'tr'. */
-  rsvpLocale?: "tr" | "en" | "sr";
+  /**
+   * Demo + RSVP form yerel dili — 'tr' | 'en' | 'sr'. Default 'tr'.
+   * Tüm section başlıkları, SCHEDULE, FAQ, countdown etiketleri ve
+   * RSVP formu bu dilden besleniyor.
+   */
+  locale?: LuxeLocale;
+  /** Geriye uyumluluk alias'ı — kaldırılacak; locale tercih edilir. */
+  rsvpLocale?: LuxeLocale;
+  /**
+   * Etkinlik tipi (migration 004). 'wedding' default; 'engagement',
+   * 'henna', 'save_the_date' için section başlıkları override edilir.
+   */
+  eventType?: EventType;
 }
 
-const SCHEDULE = [
-  { time: "16:00", title: "Tören · Şapelde", desc: "Sevgiyi taş duvarların arasında mühürleyeceğiz", icon: "bell" },
-  { time: "17:30", title: "Aperitivo · Bahçede", desc: "Prosecco, mevsim çiçekleri arasında", icon: "glass" },
-  { time: "19:30", title: "Akşam Yemeği · Loggia'da", desc: "Mum ışığında, yıldızların altında", icon: "plate" },
-  { time: "22:00", title: "Dans · Sarmaşıkların Altında", desc: "Sabaha kadar bizimle kalın", icon: "star" },
-] as const;
-
-const FAQ = [
-  { q: "Mekana nasıl ulaşırız?", a: "Detaylı yol tarifini RSVP onayından sonra paylaşacağız." },
-  { q: "Ne giymeli?", a: "Bahçe-şık. Topuklu yerine alçak topuk veya zarif sandalet öneririz." },
-  { q: "Çocuklar gelebilir mi?", a: "Elbette — küçük misafirler için ayrı bir alan ve aktivite planımız var." },
-  { q: "Konaklama önerisi?", a: "Yakındaki 3 boutique otel ile özel kontenjan ayırdık." },
-];
+/* Event-type label overrides. Wedding base'inden farklı olanları
+   sadece üzerine bin; eşleşmeyenler base'i kullanır. */
+const EVENT_OVERRIDES_TR: Record<
+  Exclude<EventType, "wedding">,
+  { rsvp?: { title: string }; countdown?: { title: string }; pastLabel?: string }
+> = {
+  engagement: {
+    rsvp: { title: "Nişanımızda yanımızda olur musun?" },
+    countdown: { title: "Nişanımıza" },
+    pastLabel: "Nişan günü geldi.",
+  },
+  henna: {
+    rsvp: { title: "Kınamızda yanımızda olur musun?" },
+    countdown: { title: "Kınamıza" },
+    pastLabel: "Kına günü geldi.",
+  },
+  save_the_date: {
+    rsvp: { title: "Tarihimizi not eder misin?" },
+    countdown: { title: "Bizim günümüze" },
+    pastLabel: "Gün geldi.",
+  },
+};
 
 export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
   const [opened, setOpened] = useState(false);
@@ -109,6 +131,21 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
   const [day, setDay] = useState(initDate.day);
   const [month, setMonth] = useState(initDate.month);
   const [year, setYear] = useState(initDate.year);
+
+  /* Locale-aware string'ler (TR/EN/SR). rsvpLocale legacy alias. */
+  const locale: LuxeLocale = theme.locale ?? theme.rsvpLocale ?? "tr";
+  const i18n = luxeStrings(locale);
+
+  /* Event type override'ları (engagement/henna/save_the_date). Sadece
+     TR'de override seti var; en/sr için override yok → base i18n. */
+  const ev = theme.eventType ?? "wedding";
+  const evOverride =
+    locale === "tr" && ev !== "wedding" ? EVENT_OVERRIDES_TR[ev] : undefined;
+  const rsvpTitle = evOverride?.rsvp?.title ?? i18n.sections.rsvp.title;
+  const countdownTitle =
+    evOverride?.countdown?.title ?? i18n.sections.countdown.title;
+  const countdownPastLabel =
+    evOverride?.pastLabel ?? i18n.countdownPastLabel;
 
   const themeForSep = {
     ...theme.meta,
@@ -157,19 +194,28 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
         <FloatingControls bg={theme.bg} ink={theme.ink} />
 
-        <Hero theme={theme} day={day} month={month} year={year} />
+        <Hero
+          theme={theme}
+          day={day}
+          month={month}
+          year={year}
+          heroCtaFallback={rsvpTitle}
+        />
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
 
         {/* SLOT MACHINE */}
         <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
-          <SectionHeader theme={theme} eyebrow="— Tarihi Değiştirin" title="Kendi gününüzü seçin" />
+          <SectionHeader
+            theme={theme}
+            eyebrow={i18n.sections.slotMachine.eyebrow}
+            title={i18n.sections.slotMachine.title}
+          />
           <p
             className="mx-auto mt-8 max-w-[480px] px-2 text-center text-[13px]"
             style={{ color: theme.inkSoft, lineHeight: 1.8, fontWeight: 300 }}
           >
-            Slot makinesini çevirin — yukarıdaki tarih anında güncellensin.
-            Demo modundadır; gerçek davetiyenizde editörden ayarlarsınız.
+            {i18n.sections.slotMachine.helper}
           </p>
 
           <div className="mx-auto mt-12 grid max-w-[560px] grid-cols-3 gap-3 sm:mt-16 sm:gap-8">
@@ -206,13 +252,19 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         {theme.weddingDateISO && (
           <>
             <section className="relative px-5 py-16 sm:px-6 sm:py-20 lg:py-24">
-              <SectionHeader theme={theme} eyebrow="— Geri Sayım" title="Birlikteliğimize" />
+              <SectionHeader
+                theme={theme}
+                eyebrow={i18n.sections.countdown.eyebrow}
+                title={countdownTitle}
+              />
               <div className="mt-10 sm:mt-12">
                 <CountdownLuxe
                   to={theme.weddingDateISO}
                   accent={theme.accent}
                   ink={theme.ink}
                   inkSoft={theme.inkSoft}
+                  labels={i18n.countdownLabels}
+                  pastLabel={countdownPastLabel}
                 />
               </div>
             </section>
@@ -222,9 +274,13 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
         {/* SCHEDULE */}
         <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
-          <SectionHeader theme={theme} eyebrow="— O Günün Akışı" title="Programımız" />
+          <SectionHeader
+            theme={theme}
+            eyebrow={i18n.sections.schedule.eyebrow}
+            title={i18n.sections.schedule.title}
+          />
           <ul className="mx-auto mt-12 max-w-[760px] space-y-4 sm:mt-20 sm:space-y-6">
-            {SCHEDULE.map((item, i) => (
+            {i18n.schedule.map((item, i) => (
               <motion.li
                 key={i}
                 initial={{ opacity: 0, x: -16 }}
@@ -307,7 +363,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                   fontWeight: 300,
                 }}
               >
-                Google Takvim
+                {i18n.sections.calendarGoogle}
               </a>
               <a
                 href={theme.addToCalendar.ics}
@@ -319,7 +375,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                   fontWeight: 300,
                 }}
               >
-                Apple / Outlook (.ics)
+                {i18n.sections.calendarIcs}
               </a>
             </div>
           )}
@@ -329,7 +385,11 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
         {/* MUSIC */}
         <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
-          <SectionHeader theme={theme} eyebrow="— Bizim Müziğimiz" title="O Anın Sesi" />
+          <SectionHeader
+            theme={theme}
+            eyebrow={i18n.sections.music.eyebrow}
+            title={i18n.sections.music.title}
+          />
           <div className="mt-10 flex justify-center sm:mt-14">
             <MusicWaveformPlayer
               trackLabel={theme.musicTrack ?? "Clair de Lune · Claude Debussy"}
@@ -346,9 +406,13 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         {theme.rsvpSlug && (
           <>
             <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-32">
-              <SectionHeader theme={theme} eyebrow="— Yanıt" title="Bizimle olur musun?" />
+              <SectionHeader
+                theme={theme}
+                eyebrow={i18n.sections.rsvp.eyebrow}
+                title={rsvpTitle}
+              />
               <div className="mx-auto mt-10 max-w-[680px] sm:mt-14">
-                <RsvpForm slug={theme.rsvpSlug} locale={theme.rsvpLocale ?? "tr"} />
+                <RsvpForm slug={theme.rsvpSlug} locale={locale} />
               </div>
             </section>
             <ThemedSeparator theme={themeForSep} lineLength={100} />
@@ -357,9 +421,13 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
         {/* FAQ */}
         <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
-          <SectionHeader theme={theme} eyebrow="— Sıkça Sorulanlar" title="Aklındaki Sorular" />
+          <SectionHeader
+            theme={theme}
+            eyebrow={i18n.sections.faq.eyebrow}
+            title={i18n.sections.faq.title}
+          />
           <ul className="mx-auto mt-10 max-w-[760px] space-y-2 sm:mt-16">
-            {FAQ.map((f, i) => (
+            {i18n.faq.map((f, i) => (
               <motion.li
                 key={i}
                 initial={{ opacity: 0, y: 12 }}
@@ -464,7 +532,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
               fontWeight: 300,
             }}
           >
-            {theme.footerNote ?? "Bizimle olmanız bizi onurlandırır"}
+            {theme.footerNote ?? i18n.footerFallback}
           </p>
 
           {/* FAZ D.8 — thin legal line under the editorial close */}
@@ -509,11 +577,13 @@ function Hero({
   day,
   month,
   year,
+  heroCtaFallback,
 }: {
   theme: LuxeEditionTheme;
   day: string;
   month: string;
   year: string;
+  heroCtaFallback: string;
 }) {
   return (
     <section
@@ -640,7 +710,7 @@ function Hero({
               animation: "shimmerSweep 5s ease-in-out infinite",
             }}
           />
-          <span className="relative">{theme.heroCta ?? "Bizimle olur musun?"}</span>
+          <span className="relative">{theme.heroCta ?? heroCtaFallback}</span>
         </motion.button>
 
         <motion.div

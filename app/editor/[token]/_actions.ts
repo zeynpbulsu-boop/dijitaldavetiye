@@ -15,7 +15,7 @@
 
 import { revalidatePath } from "next/cache";
 import { adminDb } from "@/lib/db/supabase";
-import type { Invitation } from "@/lib/db/types";
+import type { DbLocale, EventType, Invitation } from "@/lib/db/types";
 
 /** Trimmed text → null when empty (so DB nulls fall back to luxe presets). */
 function trimOrNull(v: FormDataEntryValue | null): string | null {
@@ -29,6 +29,23 @@ function isoDateOrNull(v: FormDataEntryValue | null): string | null {
   const s = trimOrNull(v);
   if (!s) return null;
   return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null;
+}
+
+const ALLOWED_LOCALES: DbLocale[] = ["tr", "en", "sr"];
+const ALLOWED_EVENT_TYPES: EventType[] = [
+  "wedding",
+  "engagement",
+  "henna",
+  "save_the_date",
+];
+
+function pickEnum<T extends string>(
+  value: FormDataEntryValue | null,
+  allowed: readonly T[],
+  fallback: T,
+): T {
+  if (typeof value !== "string") return fallback;
+  return (allowed as readonly string[]).includes(value) ? (value as T) : fallback;
 }
 
 export interface SaveResult {
@@ -63,6 +80,16 @@ export async function saveInvitation(
   }
 
   const patch: Partial<Invitation> = {
+    /* Etkinlik tipi + dil (migration 004 + 001). Enum guard ile
+       beklenmeyen değerleri reddediyoruz; CHECK constraint zaten DB
+       seviyesinde de koruyor. */
+    event_type: pickEnum(
+      formData.get("event_type"),
+      ALLOWED_EVENT_TYPES,
+      "wedding",
+    ),
+    locale: pickEnum(formData.get("locale"), ALLOWED_LOCALES, "tr"),
+
     /* Couple + venue + date — already in the schema since 001_init.sql */
     partner_one_name: trimOrNull(formData.get("partner_one_name")),
     partner_two_name: trimOrNull(formData.get("partner_two_name")),

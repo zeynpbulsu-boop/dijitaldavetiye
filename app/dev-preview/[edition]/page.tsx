@@ -69,6 +69,8 @@ const SAMPLE_INVITATION: Invitation = {
   envelope_cta: null,
   footer_note: null,
   music_track: null,
+  /* Migration 004 — etkinlik tipi default wedding. */
+  event_type: "wedding",
 
   owner_email: null,
   owner_phone: null,

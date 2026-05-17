@@ -37,6 +37,7 @@ function baseInvitation(overrides: Partial<Invitation> = {}): Invitation {
     envelope_cta: null,
     footer_note: null,
     music_track: null,
+    event_type: "wedding",
     owner_email: null,
     owner_phone: null,
     admin_token: "tok",

@@ -140,7 +140,10 @@ export function luxeThemeFromInvitation(
     /* RSVP embed (FAZ B.1). The slug routes to the existing
        /api/rsvp endpoint via _rsvp-form.tsx. */
     rsvpSlug: inv.slug,
-    rsvpLocale: inv.locale,
+    /* Locale + event type (migration 004). Multi-language dictionary
+     + event_type label overrides. */
+    locale: inv.locale,
+    eventType: inv.event_type,
     /* Editable copy overrides (migration 003). Each column is nullable;
        falls back to the preset when the editor hasn't set it. */
     greeting: inv.greeting ?? preset.greeting,

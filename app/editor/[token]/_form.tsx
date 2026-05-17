@@ -50,6 +50,34 @@ export function EditorForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-12">
+      <Group title="Etkinlik" eyebrow="— Tip & Dil">
+        <Row>
+          <Select
+            label="Etkinlik tipi"
+            name="event_type"
+            defaultValue={invitation.event_type}
+            options={[
+              { value: "wedding", label: "Düğün" },
+              { value: "engagement", label: "Nişan" },
+              { value: "henna", label: "Kına Gecesi" },
+              { value: "save_the_date", label: "Save the Date" },
+            ]}
+            hint="Davetiyenin başlıkları ve geri sayım metni buna göre değişir."
+          />
+          <Select
+            label="Dil"
+            name="locale"
+            defaultValue={invitation.locale}
+            options={[
+              { value: "tr", label: "Türkçe" },
+              { value: "en", label: "English" },
+              { value: "sr", label: "Srpski" },
+            ]}
+            hint="Davetiyenin tüm metinleri bu dilde gösterilir."
+          />
+        </Row>
+      </Group>
+
       <Group title="Çift" eyebrow="— Kimlik">
         <Row>
           <Field
@@ -218,6 +246,46 @@ function Group({
 
 function Row({ children }: { children: React.ReactNode }) {
   return <div className="grid gap-5 sm:grid-cols-2">{children}</div>;
+}
+
+function Select({
+  label,
+  name,
+  defaultValue,
+  options,
+  hint,
+}: {
+  label: string;
+  name: string;
+  defaultValue?: string;
+  options: { value: string; label: string }[];
+  hint?: string;
+}) {
+  const id = `field-${name}`;
+  return (
+    <label htmlFor={id} className="block space-y-1.5">
+      <span className="block text-[11px] font-medium uppercase tracking-[0.2em] text-brand-ink">
+        {label}
+      </span>
+      <select
+        id={id}
+        name={name}
+        defaultValue={defaultValue}
+        className="block w-full rounded-md border border-brand-ink/15 bg-white px-3 py-2.5 text-[14px] text-brand-ink shadow-ed-sm transition focus:border-brand-cognac focus:outline-none focus:ring-2 focus:ring-brand-cognac/30"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      {hint && (
+        <span className="block text-[11px] leading-[1.5] text-brand-mute">
+          {hint}
+        </span>
+      )}
+    </label>
+  );
 }
 
 function Field({
