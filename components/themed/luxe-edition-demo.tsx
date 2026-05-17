@@ -233,8 +233,15 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                 transition={{ duration: 0.9, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 className="flex items-center gap-4 px-4 py-4 sm:gap-8 sm:px-8 sm:py-6"
                 style={{
-                  background: "rgba(255, 255, 255, 0.18)",
-                  border: `0.5px solid ${theme.inkMuted}40`,
+                  /* FAZ D.3 — dark themes get a softer wash + accent-tinted
+                     hairline so cards actually read against the deep bg.
+                     Light themes keep the existing 18% white wash. */
+                  background: isDarkColor(theme.bg)
+                    ? "rgba(255, 255, 255, 0.05)"
+                    : "rgba(255, 255, 255, 0.18)",
+                  border: `0.5px solid ${
+                    isDarkColor(theme.bg) ? `${theme.accent}55` : `${theme.inkMuted}40`
+                  }`,
                   borderRadius: 2,
                   backdropFilter: "blur(2px)",
                 }}
@@ -448,6 +455,27 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
           >
             {theme.footerNote ?? "Bizimle olmanız bizi onurlandırır"}
           </p>
+
+          {/* FAZ D.8 — thin legal line under the editorial close */}
+          <div
+            className="relative z-10 mt-12 border-t pt-6 text-[9px]"
+            style={{
+              borderColor: `${theme.inkMuted}30`,
+              color: `${theme.inkMuted}DD`,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              fontWeight: 300,
+            }}
+          >
+            © {new Date().getFullYear()} NUVE ·{" "}
+            <a href="/kvkk" className="hover:underline">
+              KVKK
+            </a>{" "}
+            ·{" "}
+            <a href="/gizlilik" className="hover:underline">
+              Gizlilik
+            </a>
+          </div>
         </footer>
 
         <LiveRsvpCounter

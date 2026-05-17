@@ -62,6 +62,40 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* FAZ C.8 — Focus-visible ring on every interactive element. The
+   default browser ring is suppressed on hover/click but kept on
+   keyboard navigation so screen-reader users can locate the cursor.
+   Color uses an editorial cognac so it reads on every luxe bg. */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid rgba(184, 137, 90, 0.85);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* FAZ C.8 — Skip link. Hidden until keyboard-focused; jumps the
+   tab order past the chrome straight into <main>. */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -110%);
+  z-index: 100;
+  background: #1F1B17;
+  color: #F6F1EA;
+  padding: 12px 22px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: 0 0 6px 6px;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.skip-link:focus-visible {
+  transform: translate(-50%, 0);
+  outline: none;
+}
+
 /* ──────────────────────────────────────────────────────────────────
  * NUVE Edition tokens — FAZ 1
  *

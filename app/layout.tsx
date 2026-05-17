@@ -197,6 +197,10 @@ export default function RootLayout({
       ].join(" ")}
     >
       <body>
+        {/* FAZ C.8 — skip link for keyboard users. Hidden until focused. */}
+        <a href="#main" className="skip-link">
+          Ana içeriğe atla
+        </a>
         <LocaleProvider>
           <CursorRing />
           {children}
