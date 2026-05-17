@@ -58,6 +58,14 @@ export function LiveRsvpCounter({
     return () => window.clearInterval(id);
   }, []);
 
+  /* FAZ A.1 — Bottom variant clears FloatingControls pills on mobile by
+     stacking ~4.5rem up; on sm+ it sits at the standard 1.5rem inset.
+     Both variants honour the iOS safe-area inset. */
+  const positionClasses =
+    position === "bottom"
+      ? "bottom-[calc(env(safe-area-inset-bottom,0px)+4.5rem)] sm:bottom-[calc(env(safe-area-inset-bottom,0px)+1.5rem)]"
+      : "top-[calc(env(safe-area-inset-top,0px)+1.5rem)]";
+
   return (
     <motion.aside
       role="status"
@@ -65,13 +73,10 @@ export function LiveRsvpCounter({
       initial={{ opacity: 0, y: position === "bottom" ? 20 : -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 2.5, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
-      className={`pointer-events-none fixed left-1/2 z-40 -translate-x-1/2 ${className}`}
-      style={{
-        [position]: 24,
-      }}
+      className={`pointer-events-none fixed left-1/2 z-40 -translate-x-1/2 px-3 ${positionClasses} ${className}`}
     >
       <div
-        className="pointer-events-auto flex items-center gap-3 px-5 py-3 backdrop-blur-md"
+        className="pointer-events-auto flex max-w-[calc(100vw-1.5rem)] items-center gap-2 px-3 py-2.5 backdrop-blur-md sm:gap-3 sm:px-5 sm:py-3"
         style={{
           background: "rgba(255, 250, 240, 0.78)",
           border: `1px solid ${accentColor}`,
@@ -80,9 +85,10 @@ export function LiveRsvpCounter({
           color: inkColor,
           fontFamily: "var(--font-display), Georgia, serif",
           fontWeight: 300,
-          fontSize: 13,
-          letterSpacing: "0.15em",
+          fontSize: "clamp(10px, 3vw, 13px)",
+          letterSpacing: "0.13em",
           textTransform: "uppercase",
+          whiteSpace: "nowrap",
         }}
       >
         {/* Pulsing dot — canlı sinyal */}

@@ -45,6 +45,24 @@
 }
 
 /* ──────────────────────────────────────────────────────────────────
+ * FAZ A.1 — Mobile safe-area + tap-highlight
+ *
+ * iOS notch/home-indicator avoidance. Used by floating UI (FloatingControls,
+ * LiveRsvpCounter) and any bottom-sticky element. Falls back to 0 outside
+ * iOS so behaviour stays identical on desktop.
+ * ────────────────────────────────────────────────────────────────── */
+:root {
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ──────────────────────────────────────────────────────────────────
  * NUVE Edition tokens — FAZ 1
  *
  * Each edition (Atelier Indigo, Timeless, Olive Grove, Mansion Lights,
@@ -338,6 +356,19 @@
 @keyframes silkGlow {
   0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 0.85; }
   50%      { box-shadow: 0 0 24px 4px currentColor; opacity: 1; }
+}
+
+/* FAZ A.1 — prefers-reduced-motion: silence brand-chrome keyframes.
+   Framer-motion components opt out via useReducedMotion() individually. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @layer utilities {

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Inter_Tight,
   Cormorant_Garamond,
@@ -163,6 +163,16 @@ export const metadata: Metadata = {
       "en-US": `${BASE_URL}/en`,
     },
   },
+};
+
+/* FAZ A.1 — viewport-fit=cover so iOS extends content behind the
+   home indicator / notch; safe-area-inset-* vars then drive padding
+   on bottom-sticky UI (FloatingControls, LiveRsvpCounter). */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#F6F1EA",
 };
 
 export default function RootLayout({

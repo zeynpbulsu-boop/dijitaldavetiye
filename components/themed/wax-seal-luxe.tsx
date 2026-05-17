@@ -13,7 +13,14 @@ interface WaxSealLuxeProps {
   /** PNG path — default Aethel sage seal. */
   src?: string;
   alt?: string;
+  /** Desktop / maximum render size (px). */
   size?: number;
+  /**
+   * Mobile / minimum render size (px). When provided and < size, the seal
+   * scales fluidly via CSS clamp(minSize, 35vw, size). Defaults to size for
+   * backwards-compat (no fluid scaling).
+   */
+  minSize?: number;
   rotate?: number;
   delay?: number;
   className?: string;
@@ -27,11 +34,17 @@ export function WaxSealLuxe({
   src = "/aethel/wax-seal-luxe.png",
   alt = "Mühür",
   size = 220,
+  minSize,
   rotate = -6,
   delay = 0,
   className = "",
   haloColor = "#9EAA8E",
 }: WaxSealLuxeProps) {
+  const sizeCss =
+    minSize != null && minSize < size
+      ? `clamp(${minSize}px, 35vw, ${size}px)`
+      : `${size}px`;
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.7, rotate: rotate - 14 }}
@@ -42,7 +55,7 @@ export function WaxSealLuxe({
         ease: [0.34, 1.56, 0.64, 1],
       }}
       className={`relative inline-block ${className}`}
-      style={{ width: size, height: size }}
+      style={{ width: sizeCss, height: sizeCss }}
     >
       <motion.div
         aria-hidden
@@ -64,8 +77,8 @@ export function WaxSealLuxe({
         height={size}
         draggable={false}
         style={{
-          width: size,
-          height: size,
+          width: "100%",
+          height: "100%",
           userSelect: "none",
           filter: "drop-shadow(0 18px 32px rgba(20, 20, 20, 0.25))",
         }}

@@ -149,17 +149,17 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         <ThemedSeparator theme={themeForSep} lineLength={100} />
 
         {/* SLOT MACHINE */}
-        <section className="relative px-6 py-32 lg:py-40">
+        <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
           <SectionHeader theme={theme} eyebrow="— Tarihi Değiştirin" title="Kendi gününüzü seçin" />
           <p
-            className="mx-auto mt-8 max-w-[480px] text-center text-[13px]"
+            className="mx-auto mt-8 max-w-[480px] px-2 text-center text-[13px]"
             style={{ color: theme.inkSoft, lineHeight: 1.8, fontWeight: 300 }}
           >
             Slot makinesini çevirin — yukarıdaki tarih anında güncellensin.
             Demo modundadır; gerçek davetiyenizde editörden ayarlarsınız.
           </p>
 
-          <div className="mx-auto mt-16 grid max-w-[560px] grid-cols-3 gap-8">
+          <div className="mx-auto mt-12 grid max-w-[560px] grid-cols-3 gap-3 sm:mt-16 sm:gap-8">
             <SlotPicker
               label="Gün"
               options={slotOptions.days}
@@ -190,9 +190,9 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         <ThemedSeparator theme={themeForSep} lineLength={100} />
 
         {/* SCHEDULE */}
-        <section className="relative px-6 py-32 lg:py-40">
+        <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
           <SectionHeader theme={theme} eyebrow="— O Günün Akışı" title="Programımız" />
-          <ul className="mx-auto mt-20 max-w-[760px] space-y-6">
+          <ul className="mx-auto mt-12 max-w-[760px] space-y-4 sm:mt-20 sm:space-y-6">
             {SCHEDULE.map((item, i) => (
               <motion.li
                 key={i}
@@ -200,7 +200,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-12%" }}
                 transition={{ duration: 0.9, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="flex items-center gap-8 px-8 py-6"
+                className="flex items-center gap-4 px-4 py-4 sm:gap-8 sm:px-8 sm:py-6"
                 style={{
                   background: "rgba(255, 255, 255, 0.18)",
                   border: `0.5px solid ${theme.inkMuted}40`,
@@ -209,7 +209,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                 }}
               >
                 <span
-                  className="flex h-14 w-14 flex-shrink-0 items-center justify-center"
+                  className="flex h-12 w-12 flex-shrink-0 items-center justify-center sm:h-14 sm:w-14"
                   style={{
                     background: `${theme.accent}12`,
                     border: `0.5px solid ${theme.accent}55`,
@@ -219,7 +219,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                 >
                   <ScheduleIcon name={item.icon} />
                 </span>
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                   <div
                     className="text-[10px] uppercase"
                     style={{ color: theme.accent, letterSpacing: "0.42em", fontWeight: 300 }}
@@ -227,8 +227,13 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                     {item.time}
                   </div>
                   <h3
-                    className="mt-2 text-[19px] italic"
-                    style={{ color: theme.ink, lineHeight: 1.3, fontWeight: 300 }}
+                    className="mt-2 italic"
+                    style={{
+                      color: theme.ink,
+                      lineHeight: 1.3,
+                      fontWeight: 300,
+                      fontSize: "clamp(16px, 4.4vw, 19px)",
+                    }}
                   >
                     {item.title}
                   </h3>
@@ -247,9 +252,9 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         <ThemedSeparator theme={themeForSep} lineLength={100} />
 
         {/* MUSIC */}
-        <section className="relative px-6 py-32 lg:py-40">
+        <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
           <SectionHeader theme={theme} eyebrow="— Bizim Müziğimiz" title="O Anın Sesi" />
-          <div className="mt-14 flex justify-center">
+          <div className="mt-10 flex justify-center sm:mt-14">
             <MusicWaveformPlayer
               trackLabel={theme.musicTrack ?? "Clair de Lune · Claude Debussy"}
               color={theme.accent}
@@ -262,9 +267,9 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         <ThemedSeparator theme={themeForSep} lineLength={100} />
 
         {/* FAQ */}
-        <section className="relative px-6 py-32 lg:py-40">
+        <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
           <SectionHeader theme={theme} eyebrow="— Sıkça Sorulanlar" title="Aklındaki Sorular" />
-          <ul className="mx-auto mt-16 max-w-[760px] space-y-2">
+          <ul className="mx-auto mt-10 max-w-[760px] space-y-2 sm:mt-16">
             {FAQ.map((f, i) => (
               <motion.li
                 key={i}
@@ -272,18 +277,25 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-10%" }}
                 transition={{ duration: 0.8, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="border-b py-7"
+                className="border-b py-5 sm:py-7"
                 style={{ borderColor: `${theme.inkMuted}40` }}
               >
                 <details className="group">
                   <summary
-                    className="flex cursor-pointer items-center justify-between text-[17px]"
-                    style={{ color: theme.ink, fontWeight: 300, letterSpacing: "0.01em" }}
+                    className="flex cursor-pointer items-center justify-between gap-3"
+                    style={{
+                      color: theme.ink,
+                      fontWeight: 300,
+                      letterSpacing: "0.01em",
+                      fontSize: "clamp(15px, 4vw, 17px)",
+                      minHeight: 44,
+                    }}
                   >
-                    {f.q}
+                    <span className="flex-1">{f.q}</span>
                     <span
-                      className="ml-4 text-[20px] transition-transform group-open:rotate-45"
+                      className="ml-2 flex h-6 w-6 flex-shrink-0 items-center justify-center text-[20px] transition-transform group-open:rotate-45"
                       style={{ color: theme.accent, fontWeight: 200 }}
+                      aria-hidden
                     >
                       +
                     </span>
@@ -302,7 +314,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
         {/* FOOTER */}
         <footer
-          className="relative px-6 py-32 text-center"
+          className="relative px-5 py-20 text-center sm:px-6 sm:py-28 lg:py-32"
           style={{ background: theme.footerBg, color: theme.ink }}
         >
           <ChapelWatermark
@@ -318,16 +330,17 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
             <WaxSealLuxe
               src={theme.waxSealSrc}
               size={170}
+              minSize={120}
               haloColor={theme.haloColor}
               rotate={-4}
               bgColor={theme.footerBg}
             />
           </div>
           <div
-            className="relative z-10 mt-14"
+            className="relative z-10 mt-10 sm:mt-14"
             style={{
               fontFamily: theme.meta.calligraphyFont,
-              fontSize: "clamp(46px, 5.5vw, 72px)",
+              fontSize: "clamp(38px, 7.2vw, 72px)",
               color: theme.ink,
               letterSpacing: "0.005em",
               lineHeight: 1.1,
@@ -336,21 +349,21 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
             {theme.coupleName}
           </div>
           <p
-            className="relative z-10 mt-5 text-[10px]"
+            className="relative z-10 mt-5 px-2 text-[10px]"
             style={{
               color: theme.inkSoft,
-              letterSpacing: "0.46em",
+              letterSpacing: "0.42em",
               textTransform: "uppercase",
               fontWeight: 300,
             }}
           >
             {day} {month} {year} · {theme.venue}
           </p>
-          <div className="relative z-10 mt-16 flex justify-center">
+          <div className="relative z-10 mt-12 flex justify-center sm:mt-16">
             <Lovebirds size={84} color={`${theme.ink}66`} delay={0.4} />
           </div>
           <p
-            className="relative z-10 mt-12 text-[10px]"
+            className="relative z-10 mt-10 px-2 text-[10px] sm:mt-12"
             style={{
               color: theme.inkMuted,
               letterSpacing: "0.32em",
@@ -390,7 +403,7 @@ function Hero({
 }) {
   return (
     <section
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-32"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 py-20 sm:px-6 lg:py-32"
       style={{ background: theme.bg, color: theme.ink }}
     >
       <ChapelWatermark
@@ -420,11 +433,12 @@ function Hero({
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.6, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-14"
+          className="mt-10 sm:mt-14"
         >
           <WaxSealLuxe
             src={theme.waxSealSrc}
             size={210}
+            minSize={140}
             haloColor={theme.haloColor}
             rotate={-6}
             delay={1.0}
@@ -432,7 +446,7 @@ function Hero({
           />
         </motion.div>
 
-        <div className="mt-16">
+        <div className="mt-12 sm:mt-16">
           <CalligraphyName
             text={theme.coupleName}
             size={130}
@@ -446,29 +460,30 @@ function Hero({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 5.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-16 flex items-center gap-6"
+          className="mt-12 flex items-center gap-3 sm:mt-16 sm:gap-6"
         >
-          <span aria-hidden className="h-px w-20" style={{ background: `${theme.ink}40` }} />
+          <span aria-hidden className="h-px w-10 sm:w-20" style={{ background: `${theme.ink}40` }} />
           <span
             key={`${day}-${month}-${year}`}
             style={{
               color: theme.ink,
-              fontSize: 14,
+              fontSize: "clamp(12px, 3.2vw, 14px)",
               letterSpacing: "0.42em",
               textTransform: "uppercase",
               fontWeight: 300,
               animation: "inkPulse 1.2s ease-out",
+              whiteSpace: "nowrap",
             }}
           >
             {day} {month} {year}
           </span>
-          <span aria-hidden className="h-px w-20" style={{ background: `${theme.ink}40` }} />
+          <span aria-hidden className="h-px w-10 sm:w-20" style={{ background: `${theme.ink}40` }} />
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.75 }}
           transition={{ delay: 6.0, duration: 1 }}
-          className="mt-4 text-[11px] italic"
+          className="mt-4 px-4 text-[11px] italic"
           style={{ color: theme.inkSoft, letterSpacing: "0.08em", fontWeight: 300 }}
         >
           {theme.venue}
@@ -478,7 +493,7 @@ function Hero({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 6.6, duration: 1.2 }}
-          className="mt-14"
+          className="mt-10 sm:mt-14"
         >
           <Lovebirds size={94} color={`${theme.ink}66`} delay={6.8} />
         </motion.div>
@@ -488,7 +503,7 @@ function Hero({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 7.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
           type="button"
-          className="relative mt-16 inline-flex items-center justify-center overflow-hidden px-16 py-4 transition-all hover:tracking-[0.48em]"
+          className="relative mt-12 inline-flex min-h-[44px] items-center justify-center overflow-hidden px-10 py-3.5 transition-all hover:tracking-[0.48em] sm:mt-16 sm:px-16 sm:py-4"
           style={{
             border: `0.5px solid ${theme.ink}55`,
             color: theme.ink,
@@ -577,13 +592,17 @@ function FloatingControls({ bg, ink }: { bg: string; ink: string }) {
   const isDark = isDarkColor(bg);
   const pillBg = isDark ? "#FFFFFF" : "#FFFFFF";
   const pillInk = isDark ? "#1F1B17" : ink;
+  /* FAZ A.1 — bottom respects iOS home-indicator safe-area. Floor at
+     1.5rem so desktop layout is unchanged. */
+  const bottom = "max(1.5rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem))";
   return (
     <>
       <button
         type="button"
         aria-label="Dil"
-        className="fixed bottom-6 left-6 z-40 flex h-11 w-11 items-center justify-center rounded-full transition-transform hover:scale-110"
+        className="fixed left-4 z-40 flex h-11 w-11 items-center justify-center rounded-full transition-transform hover:scale-110 sm:left-6"
         style={{
+          bottom,
           background: pillBg,
           color: pillInk,
           fontFamily: "var(--font-display), Georgia, serif",
@@ -599,8 +618,9 @@ function FloatingControls({ bg, ink }: { bg: string; ink: string }) {
       <button
         type="button"
         aria-label="Sesi aç/kapat"
-        className="fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-full transition-transform hover:scale-110"
+        className="fixed right-4 z-40 flex h-11 w-11 items-center justify-center rounded-full transition-transform hover:scale-110 sm:right-6"
         style={{
+          bottom,
           background: pillBg,
           color: pillInk,
           fontSize: 16,
