@@ -60,6 +60,16 @@ const SAMPLE_INVITATION: Invitation = {
   monogram_initials: "E&M",
   locale: "tr",
 
+  /* FAZ A.3 luxe copy overrides — null so the bridge falls back to
+     the preset in lib/design/luxe-themes.ts when this preview hits
+     a luxe slug. */
+  greeting: null,
+  hero_eyebrow: null,
+  hero_cta: null,
+  envelope_cta: null,
+  footer_note: null,
+  music_track: null,
+
   owner_email: null,
   owner_phone: null,
   admin_token: "preview",

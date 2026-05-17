@@ -39,6 +39,16 @@ export interface Invitation {
   monogram_initials: string | null;
   locale: DbLocale;
 
+  /* FAZ A.3 — luxe edition copy overrides (migration 003).
+     Null when the editor hasn't set them; the luxe-bridge then falls
+     back to the preset in lib/design/luxe-themes.ts. */
+  greeting: string | null;
+  hero_eyebrow: string | null;
+  hero_cta: string | null;
+  envelope_cta: string | null;
+  footer_note: string | null;
+  music_track: string | null;
+
   owner_email: string | null;
   owner_phone: string | null;
 
