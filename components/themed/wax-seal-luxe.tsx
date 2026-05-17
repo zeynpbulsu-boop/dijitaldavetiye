@@ -1,13 +1,19 @@
 "use client";
 
 /**
- * WaxSealLuxe — FAZ 5.12 (per-edition src)
+ * WaxSealLuxe — FAZ 5.12 (per-edition src) / FAZ A.2 (Next/Image)
  *
  * PNG'nin beyaz BG'si Pillow ile transparent yapıldı (alpha channel).
  * Her edisyon kendi wax seal asset'ini geçirir.
+ *
+ * Image: Next/Image fill mode emits AVIF/WebP srcsets at the imageSizes
+ * tier defined in next.config.mjs. Parent wrapper is the sized box
+ * (clamp(minSize,35vw,size)) — Image fills it and the browser picks
+ * the closest srcset (120/200/320/420 covers our use cases).
  */
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface WaxSealLuxeProps {
   /** PNG path — default Aethel sage seal. */
@@ -26,6 +32,11 @@ interface WaxSealLuxeProps {
   className?: string;
   /** Hafif aura halo rengi. */
   haloColor?: string;
+  /**
+   * Hero placement gets priority (LCP candidate). Default false; pass true
+   * on the first wax seal above the fold so Next/Image preloads it.
+   */
+  priority?: boolean;
   /** Geriye uyumluluk — kullanılmıyor. */
   bgColor?: string;
 }
@@ -39,11 +50,15 @@ export function WaxSealLuxe({
   delay = 0,
   className = "",
   haloColor = "#9EAA8E",
+  priority = false,
 }: WaxSealLuxeProps) {
-  const sizeCss =
-    minSize != null && minSize < size
-      ? `clamp(${minSize}px, 35vw, ${size}px)`
-      : `${size}px`;
+  const isFluid = minSize != null && minSize < size;
+  const sizeCss = isFluid ? `clamp(${minSize}px, 35vw, ${size}px)` : `${size}px`;
+  /* Next/Image sizes hint — drives which AVIF/WebP variant the browser
+     picks. Mobile renders at `minSize`, desktop at `size`. */
+  const sizesAttr = isFluid
+    ? `(max-width: 640px) ${minSize}px, ${size}px`
+    : `${size}px`;
 
   return (
     <motion.div
@@ -70,17 +85,17 @@ export function WaxSealLuxe({
         transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      <img
+      <Image
         src={src}
         alt={alt}
-        width={size}
-        height={size}
+        fill
+        sizes={sizesAttr}
+        priority={priority}
         draggable={false}
         style={{
-          width: "100%",
-          height: "100%",
           userSelect: "none",
           filter: "drop-shadow(0 18px 32px rgba(20, 20, 20, 0.25))",
+          objectFit: "contain",
         }}
       />
     </motion.div>
