@@ -31,6 +31,8 @@ import { ChapelWatermark } from "@/components/themed/chapel-watermark";
 import { EnvelopeCeremony } from "@/components/themed/envelope-ceremony";
 import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
+import { CountdownLuxe } from "@/components/themed/countdown-luxe";
+import { RsvpForm } from "@/app/i/[slug]/_rsvp-form";
 import type { EditionMeta } from "@/lib/design/tokens";
 
 export interface LuxeEditionTheme {
@@ -72,8 +74,19 @@ export interface LuxeEditionTheme {
   musicTrack?: string;
   /** Footer alt-metin. */
   footerNote?: string;
-  /** Varsayılan tarih. */
+  /** Varsayılan tarih (hero + slot makinesi gösterimi için). */
   defaultDate?: { day: string; month: string; year: string };
+  /** Geri sayım için ISO tarih (YYYY-MM-DD). Yoksa countdown gizlenir. */
+  weddingDateISO?: string;
+  /** Takvime ekle linkleri (FAZ B.7). Yoksa buton gizlenir. */
+  addToCalendar?: { ics: string; google: string };
+  /**
+   * Yayındaki davetiyenin slug'ı (FAZ B.1). Set edildiğinde FAQ'tan
+   * önce inline RSVP formu render edilir. Demo modunda boş.
+   */
+  rsvpSlug?: string;
+  /** RSVP form yerel dili — 'tr' | 'en' | 'sr'. Default 'tr'. */
+  rsvpLocale?: "tr" | "en" | "sr";
 }
 
 const SCHEDULE = [
@@ -189,6 +202,24 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
 
+        {/* COUNTDOWN — FAZ B.2 — only when an ISO date is available */}
+        {theme.weddingDateISO && (
+          <>
+            <section className="relative px-5 py-16 sm:px-6 sm:py-20 lg:py-24">
+              <SectionHeader theme={theme} eyebrow="— Geri Sayım" title="Birlikteliğimize" />
+              <div className="mt-10 sm:mt-12">
+                <CountdownLuxe
+                  to={theme.weddingDateISO}
+                  accent={theme.accent}
+                  ink={theme.ink}
+                  inkSoft={theme.inkSoft}
+                />
+              </div>
+            </section>
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+          </>
+        )}
+
         {/* SCHEDULE */}
         <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
           <SectionHeader theme={theme} eyebrow="— O Günün Akışı" title="Programımız" />
@@ -247,6 +278,37 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
               </motion.li>
             ))}
           </ul>
+
+          {theme.addToCalendar && (
+            <div className="mx-auto mt-10 flex max-w-[760px] flex-wrap items-center justify-center gap-3 sm:mt-12 sm:gap-5">
+              <a
+                href={theme.addToCalendar.google}
+                target="_blank"
+                rel="noopener"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full px-6 py-2 text-[10px] uppercase transition-all hover:tracking-[0.32em]"
+                style={{
+                  border: `0.5px solid ${theme.ink}55`,
+                  color: theme.ink,
+                  letterSpacing: "0.28em",
+                  fontWeight: 300,
+                }}
+              >
+                Google Takvim
+              </a>
+              <a
+                href={theme.addToCalendar.ics}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full px-6 py-2 text-[10px] uppercase transition-all hover:tracking-[0.32em]"
+                style={{
+                  border: `0.5px solid ${theme.ink}55`,
+                  color: theme.ink,
+                  letterSpacing: "0.28em",
+                  fontWeight: 300,
+                }}
+              >
+                Apple / Outlook (.ics)
+              </a>
+            </div>
+          )}
         </section>
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
@@ -265,6 +327,19 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         </section>
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
+
+        {/* RSVP — FAZ B.1 — only on the live invitation, not in demos */}
+        {theme.rsvpSlug && (
+          <>
+            <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-32">
+              <SectionHeader theme={theme} eyebrow="— Yanıt" title="Bizimle olur musun?" />
+              <div className="mx-auto mt-10 max-w-[680px] sm:mt-14">
+                <RsvpForm slug={theme.rsvpSlug} locale={theme.rsvpLocale ?? "tr"} />
+              </div>
+            </section>
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+          </>
+        )}
 
         {/* FAQ */}
         <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">

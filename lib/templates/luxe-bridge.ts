@@ -69,6 +69,47 @@ function venueText(inv: Invitation): string | null {
   return parts.length ? parts.join(" · ") : null;
 }
 
+/** Compact YYYYMMDD for Google Calendar URLs. */
+function googleDateRange(iso: string): { dates: string } | null {
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const start = `${m[1]}${m[2]}${m[3]}`;
+  const next = new Date(
+    Date.UTC(parseInt(m[1]), parseInt(m[2]) - 1, parseInt(m[3]) + 1),
+  );
+  const end =
+    next.getUTCFullYear().toString() +
+    String(next.getUTCMonth() + 1).padStart(2, "0") +
+    String(next.getUTCDate()).padStart(2, "0");
+  return { dates: `${start}/${end}` };
+}
+
+function buildAddToCalendar(inv: Invitation): {
+  ics: string;
+  google: string;
+} | null {
+  if (!inv.wedding_date) return null;
+  const range = googleDateRange(inv.wedding_date);
+  if (!range) return null;
+
+  const couple = coupleName(inv) ?? "Düğün";
+  const location = [inv.venue_name, inv.venue_address, inv.venue_city]
+    .filter(Boolean)
+    .join(", ");
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: couple,
+    dates: range.dates,
+    details: `https://nuve.co/i/${inv.slug}`,
+  });
+  if (location) params.set("location", location);
+
+  return {
+    ics: `/api/calendar/${encodeURIComponent(inv.slug)}`,
+    google: `https://calendar.google.com/calendar/render?${params.toString()}`,
+  };
+}
+
 /**
  * Build a `LuxeEditionTheme` from an Invitation row, or return `null`
  * if the template_slug isn't a luxe edition.
@@ -89,6 +130,17 @@ export function luxeThemeFromInvitation(
     monogram: inv.monogram_initials ?? preset.monogram,
     venue: venue ?? preset.venue,
     defaultDate: date ?? preset.defaultDate,
+    /* Countdown timer (FAZ B.2) wants a real ISO date. Demos pass
+       nothing; production rows pass the saved wedding_date. */
+    weddingDateISO: inv.wedding_date ?? preset.weddingDateISO,
+    /* Add-to-calendar links (FAZ B.7). Only rendered when wedding_date
+       is set — the Google deep link and /api/calendar/[slug] both
+       require a date. */
+    addToCalendar: buildAddToCalendar(inv) ?? preset.addToCalendar,
+    /* RSVP embed (FAZ B.1). The slug routes to the existing
+       /api/rsvp endpoint via _rsvp-form.tsx. */
+    rsvpSlug: inv.slug,
+    rsvpLocale: inv.locale,
     /* Editable copy overrides (migration 003). Each column is nullable;
        falls back to the preset when the editor hasn't set it. */
     greeting: inv.greeting ?? preset.greeting,
