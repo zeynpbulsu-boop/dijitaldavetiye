@@ -162,6 +162,11 @@ const EVENT_OVERRIDES_TR: Record<
     countdown: { title: "Bizim günümüze" },
     pastLabel: "Gün geldi.",
   },
+  birthday: {
+    rsvp: { title: "Doğum günümüzde yanımda olur musun?" },
+    countdown: { title: "Doğum günüme" },
+    pastLabel: "Doğum günü geldi.",
+  },
 };
 
 export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {

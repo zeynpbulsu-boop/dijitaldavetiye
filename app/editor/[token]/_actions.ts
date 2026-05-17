@@ -61,6 +61,7 @@ const ALLOWED_EVENT_TYPES: EventType[] = [
   "engagement",
   "henna",
   "save_the_date",
+  "birthday",
 ];
 
 function pickEnum<T extends string>(

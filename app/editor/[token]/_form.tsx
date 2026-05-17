@@ -61,6 +61,7 @@ export function EditorForm({
               { value: "engagement", label: "Nişan" },
               { value: "henna", label: "Kına Gecesi" },
               { value: "save_the_date", label: "Save the Date" },
+              { value: "birthday", label: "Doğum Günü" },
             ]}
             hint="Davetiyenin başlıkları ve geri sayım metni buna göre değişir."
           />
