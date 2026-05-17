@@ -129,6 +129,78 @@ export function paymentReceivedEmail(args: {
   };
 }
 
+/** Guest → confirmation that their RSVP was received (FAZ C.6) */
+export function guestRsvpConfirmationEmail(args: {
+  to: string;
+  guestName: string;
+  attendance: "yes" | "no" | "maybe";
+  coupleLine: string;
+  weddingDate?: string | null;
+  venue?: string | null;
+  publicUrl: string;
+}): SendArgs {
+  const attendanceLabel =
+    args.attendance === "yes"
+      ? "Geliyorum"
+      : args.attendance === "no"
+        ? "Gelemiyorum"
+        : "Belki";
+
+  const subject =
+    args.attendance === "yes"
+      ? `${args.coupleLine} — yanıtın bize ulaştı`
+      : `${args.coupleLine} — yanıtın için teşekkürler`;
+
+  const headlineBody =
+    args.attendance === "yes"
+      ? `Görüşmek için sabırsızlanıyoruz, <strong>${escapeHtml(args.guestName)}</strong>.`
+      : args.attendance === "no"
+        ? `Yanıtın için teşekkürler, <strong>${escapeHtml(args.guestName)}</strong>. Bizim için orada olmasan da yanımızdasın.`
+        : `Yanıtın için teşekkürler, <strong>${escapeHtml(args.guestName)}</strong>. Kararını netleştirdiğinde haber verebilirsin.`;
+
+  const detailsBlock = [
+    args.weddingDate ? `<strong>Tarih:</strong> ${escapeHtml(args.weddingDate)}` : "",
+    args.venue ? `<strong>Mekan:</strong> ${escapeHtml(args.venue)}` : "",
+  ]
+    .filter(Boolean)
+    .join("<br />");
+
+  return {
+    to: args.to,
+    subject,
+    html: wrap(`
+      <p style="font-family:Georgia,serif;font-size:22px;line-height:1.35;color:${ink};margin:0 0 16px;">
+        Yanıtın kaydedildi.<br />
+        <span style="font-style:italic;color:${cognac};">${escapeHtml(attendanceLabel)}.</span>
+      </p>
+      <p style="font-family:Inter,Arial,sans-serif;font-size:14px;line-height:1.7;color:rgba(43,30,22,0.78);margin:0 0 18px;">
+        ${headlineBody}
+      </p>
+      ${
+        detailsBlock
+          ? `<div style="background:${cream};border-radius:6px;padding:14px 18px;margin:18px 0;font-family:Inter,Arial,sans-serif;font-size:13px;line-height:1.7;color:rgba(43,30,22,0.78);">
+              ${detailsBlock}
+            </div>`
+          : ""
+      }
+      <p style="font-family:Inter,Arial,sans-serif;font-size:13px;line-height:1.65;color:rgba(43,30,22,0.78);margin:18px 0 8px;">
+        Davetiyeyi tekrar görmek istersen:
+      </p>
+      <p style="margin:0;"><a href="${args.publicUrl}" style="font-family:Inter,Arial,sans-serif;font-size:13px;color:${cognac};word-break:break-all;">${args.publicUrl}</a></p>
+    `),
+    text: [
+      `Yanitin kaydedildi - ${attendanceLabel}`,
+      `${args.coupleLine}`,
+      args.weddingDate ? `Tarih: ${args.weddingDate}` : "",
+      args.venue ? `Mekan: ${args.venue}` : "",
+      "",
+      `Davetiye: ${args.publicUrl}`,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  };
+}
+
 /** Couple → notify of a new RSVP */
 export function rsvpReceivedEmail(args: {
   to: string;

@@ -1,7 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { adminDb } from "@/lib/db/supabase";
 import type { RsvpAttendance } from "@/lib/db/types";
-import { sendEmail, rsvpReceivedEmail } from "@/lib/email/send";
+import {
+  sendEmail,
+  rsvpReceivedEmail,
+  guestRsvpConfirmationEmail,
+} from "@/lib/email/send";
 
 /**
  * POST /api/rsvp
@@ -60,7 +64,9 @@ export async function POST(req: NextRequest) {
   // 1 — Verify the invitation exists and is live
   const { data: inv, error: invErr } = await supabase
     .from("invitations")
-    .select("id, status, owner_email, admin_token")
+    .select(
+      "id, status, owner_email, admin_token, partner_one_name, partner_two_name, wedding_date, venue_name, venue_city",
+    )
     .eq("slug", slug)
     .single();
   if (invErr || !inv) {
@@ -101,13 +107,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Fire-and-forget owner notification — graceful no-op if no RESEND_API_KEY.
-  // We don't await this in a blocking way; if Resend is slow the RSVP
-  // already succeeded and the guest gets their thank-you screen.
+  // Fire-and-forget e-postaları — RESEND_API_KEY yoksa graceful no-op.
+  // RSVP zaten kaydedildi; Resend yavaş olsa bile misafir teşekkür
+  // ekranını anında görüyor.
+  const base = (
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuve.app"
+  ).replace(/\/+$/, "");
+
   if (inv.owner_email) {
-    const base = (
-      process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuve.app"
-    ).replace(/\/+$/, "");
     sendEmail(
       rsvpReceivedEmail({
         to: inv.owner_email,
@@ -115,7 +122,30 @@ export async function POST(req: NextRequest) {
         attendance,
         adminUrl: `${base}/admin/${encodeURIComponent(inv.admin_token)}`,
       }),
-    ).catch((err) => console.warn("[rsvp] email send error:", err));
+    ).catch((err) => console.warn("[rsvp] owner email error:", err));
+  }
+
+  // FAZ C.6 — misafire onay e-postası, e-posta verildiyse
+  const guestEmail = stringOrNull(body.guest_email);
+  if (guestEmail) {
+    const coupleLine =
+      inv.partner_one_name && inv.partner_two_name
+        ? `${inv.partner_one_name} & ${inv.partner_two_name}`
+        : "Düğün";
+    const venueLine = [inv.venue_name, inv.venue_city]
+      .filter(Boolean)
+      .join(" · ") || null;
+    sendEmail(
+      guestRsvpConfirmationEmail({
+        to: guestEmail,
+        guestName,
+        attendance,
+        coupleLine,
+        weddingDate: inv.wedding_date,
+        venue: venueLine,
+        publicUrl: `${base}/i/${slug}`,
+      }),
+    ).catch((err) => console.warn("[rsvp] guest email error:", err));
   }
 
   return NextResponse.json({ id: data.id }, { status: 201 });
