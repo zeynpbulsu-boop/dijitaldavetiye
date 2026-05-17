@@ -48,6 +48,7 @@ function baseInvitation(overrides: Partial<Invitation> = {}): Invitation {
     hotels: [],
     venue_lat: null,
     venue_lng: null,
+    enable_scratch_reveal: false,
     owner_email: null,
     owner_phone: null,
     admin_token: "tok",

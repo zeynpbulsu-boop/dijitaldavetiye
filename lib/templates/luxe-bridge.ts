@@ -171,6 +171,8 @@ export function luxeThemeFromInvitation(
       : inv.venue_lng != null
         ? parseFloat(String(inv.venue_lng))
         : null,
+    /* Migration 008 — scratch reveal */
+    enableScratch: Boolean(inv.enable_scratch_reveal),
     /* Editable copy overrides (migration 003). Each column is nullable;
        falls back to the preset when the editor hasn't set it. */
     greeting: inv.greeting ?? preset.greeting,
