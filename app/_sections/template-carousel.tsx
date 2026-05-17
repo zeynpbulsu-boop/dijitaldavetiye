@@ -183,7 +183,7 @@ export function TemplateCarousel() {
               href={`/dev-preview/${card.slug}`}
               className="group block w-[280px] flex-shrink-0 snap-start sm:w-[320px] lg:w-[380px]"
             >
-              <TiltCard tilt={6} scaleOnHover={1.02}>
+              <TiltCard max={6}>
                 <article
                   className="relative aspect-[3/4] overflow-hidden rounded-md shadow-ed-md transition-shadow group-hover:shadow-ed-lg"
                   style={{
