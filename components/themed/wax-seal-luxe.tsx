@@ -37,6 +37,12 @@ interface WaxSealLuxeProps {
    * on the first wax seal above the fold so Next/Image preloads it.
    */
   priority?: boolean;
+  /**
+   * Migration 005 — couple'ın seçtiği wax seal tint rengi (hex).
+   * Verildiğinde PNG'nin üstüne mix-blend-multiply overlay ile bindirir.
+   * Null/undefined ise preset (PNG'nin kendi rengi) geçerli.
+   */
+  tintColor?: string | null;
   /** Geriye uyumluluk — kullanılmıyor. */
   bgColor?: string;
 }
@@ -51,6 +57,7 @@ export function WaxSealLuxe({
   className = "",
   haloColor = "#9EAA8E",
   priority = false,
+  tintColor = null,
 }: WaxSealLuxeProps) {
   const isFluid = minSize != null && minSize < size;
   const sizeCss = isFluid ? `clamp(${minSize}px, 35vw, ${size}px)` : `${size}px`;
@@ -98,6 +105,29 @@ export function WaxSealLuxe({
           objectFit: "contain",
         }}
       />
+
+      {/* Migration 005 — wax seal tint overlay. mix-blend-multiply
+          PNG'nin desenini koruyarak rengi değiştirir; alpha kanalı
+          maskeleyici görevi görür (PNG'nin transparent kısmı tint'i
+          de görünmez yapar). */}
+      {tintColor && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: tintColor,
+            mixBlendMode: "multiply",
+            WebkitMaskImage: `url(${src})`,
+            WebkitMaskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskImage: `url(${src})`,
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+      )}
     </motion.div>
   );
 }

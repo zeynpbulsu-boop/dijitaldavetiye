@@ -5,6 +5,7 @@ import type { Invitation } from "@/lib/db/types";
 import { isLuxeSlug } from "@/lib/templates/luxe-bridge";
 import { EditorForm } from "./_form";
 import { GuestList } from "./_guest-list";
+import { MediaSection } from "./_media";
 
 /**
  * /editor/[token] — couple-facing editor — FAZ A.4.
@@ -97,6 +98,14 @@ export default async function EditorPage({
           token={token}
           invitation={inv}
           showLuxeFields={showLuxeFields}
+        />
+
+        <hr className="my-14 border-brand-ink/12" />
+
+        <MediaSection
+          token={token}
+          heroMediaUrl={inv.hero_media_url}
+          photos={Array.isArray(inv.photos) ? inv.photos : []}
         />
 
         <hr className="my-14 border-brand-ink/12" />

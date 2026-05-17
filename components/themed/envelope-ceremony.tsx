@@ -24,6 +24,8 @@ interface EnvelopeCeremonyProps {
   haloColor?: string;
   /** Per-edition wax seal PNG path. */
   waxSealSrc?: string;
+  /** Migration 005 — couple-set wax seal tint (hex). */
+  waxSealTint?: string | null;
   /** Per-edition watermark PNG path. */
   watermarkSrc?: string;
   onOpened: () => void;
@@ -38,6 +40,7 @@ export function EnvelopeCeremony({
   inkColor,
   haloColor = "#9EAA8E",
   waxSealSrc,
+  waxSealTint = null,
   watermarkSrc,
   onOpened,
 }: EnvelopeCeremonyProps) {
@@ -120,7 +123,7 @@ export function EnvelopeCeremony({
               : { duration: 6, repeat: Infinity, ease: "easeInOut" }
           }
         >
-          <WaxSealLuxe size={260} minSize={180} priority haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} />
+          <WaxSealLuxe size={260} minSize={180} priority haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} tintColor={waxSealTint} />
         </motion.div>
 
         {/* Breaking burst — soft halo patlaması */}
