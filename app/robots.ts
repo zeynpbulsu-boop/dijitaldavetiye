@@ -8,7 +8,10 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/", "/order/"],
+        /* FAZ C.7 — token-gated routes (/admin, /editor) and personal
+           invitations (/i) must not be indexed. /api and /order are
+           server endpoints that don't serve crawlable HTML. */
+        disallow: ["/admin/", "/editor/", "/i/", "/api/", "/order/", "/checkout/"],
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,

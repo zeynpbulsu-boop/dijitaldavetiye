@@ -19,6 +19,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  /* FAZ D.8 — legal pages must be crawlable so the KVKK footer link
+     gets indexed instead of orphaned. */
+  const legalUrls: MetadataRoute.Sitemap = ["kvkk", "gizlilik"].map((slug) => ({
+    url: `${BASE_URL}/${slug}`,
+    lastModified: now,
+    changeFrequency: "yearly" as const,
+    priority: 0.3,
+  }));
+
   return [
     {
       url: BASE_URL,
@@ -27,5 +36,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     ...templateUrls,
+    ...legalUrls,
   ];
 }
