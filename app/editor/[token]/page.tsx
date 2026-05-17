@@ -4,6 +4,7 @@ import { adminDb } from "@/lib/db/supabase";
 import type { Invitation } from "@/lib/db/types";
 import { isLuxeSlug } from "@/lib/templates/luxe-bridge";
 import { EditorForm } from "./_form";
+import { GuestList } from "./_guest-list";
 
 /**
  * /editor/[token] — couple-facing editor — FAZ A.4.
@@ -97,6 +98,10 @@ export default async function EditorPage({
           invitation={inv}
           showLuxeFields={showLuxeFields}
         />
+
+        <hr className="my-14 border-brand-ink/12" />
+
+        <GuestList token={token} />
       </div>
     </main>
   );

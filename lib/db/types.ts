@@ -18,6 +18,14 @@ export type InvitationStatus =
   | "refunded";
 export type RsvpAttendance = "yes" | "no" | "maybe";
 export type DbLocale = "tr" | "en" | "sr";
+/** Migration 004 — invitations.event_type CHECK enum. */
+export type EventType =
+  | "wedding"
+  | "engagement"
+  | "henna"
+  | "save_the_date";
+/** Migration 004 — guests.status CHECK enum. */
+export type GuestStatus = "invited" | "confirmed" | "declined" | "maybe";
 
 export interface Invitation {
   id: string;
@@ -48,6 +56,11 @@ export interface Invitation {
   envelope_cta: string | null;
   footer_note: string | null;
   music_track: string | null;
+
+  /* Migration 004 — etkinlik tipi (wedding / engagement / henna /
+     save_the_date). LuxeEditionDemo etiket overrideları bu kolona
+     bakar; not-null default 'wedding' yani geçmiş satırlar etkilenmez. */
+  event_type: EventType;
 
   owner_email: string | null;
   owner_phone: string | null;
@@ -81,6 +94,26 @@ export interface Rsvp {
 }
 
 export type RsvpInsert = Omit<Rsvp, "id" | "created_at">;
+
+/** Migration 004 — public.guests row. */
+export interface Guest {
+  id: string;
+  invitation_id: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  status: GuestStatus;
+  plus_one: boolean;
+  plus_one_name: string | null;
+  dietary_notes: string | null;
+  internal_note: string | null;
+  rsvp_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type GuestInsert = Partial<Guest> &
+  Pick<Guest, "invitation_id" | "name">;
 
 export interface WebhookEvent {
   webhook_id: string;

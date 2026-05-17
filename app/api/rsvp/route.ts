@@ -107,6 +107,53 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  /* Migration 004 — eşleşen guest varsa statüsünü ve rsvp_id'sini
+     güncelle. Eşleşme önce email (case-insensitive), olmazsa isim
+     (case-insensitive) üzerinden. Bulunamazsa walk-in olarak sadece
+     rsvps tablosunda kalır. */
+  const guestEmailNormalized = stringOrNull(body.guest_email)?.toLowerCase();
+  const guestNameNormalized = guestName.toLowerCase();
+  const attendanceToStatus = (a: RsvpAttendance) =>
+    a === "yes" ? "confirmed" : a === "no" ? "declined" : "maybe";
+
+  try {
+    let matched: { id: string } | null = null;
+    if (guestEmailNormalized) {
+      const { data: byEmail } = await supabase
+        .from("guests")
+        .select("id")
+        .eq("invitation_id", inv.id)
+        .ilike("email", guestEmailNormalized)
+        .limit(1)
+        .maybeSingle<{ id: string }>();
+      matched = byEmail ?? null;
+    }
+    if (!matched) {
+      const { data: byName } = await supabase
+        .from("guests")
+        .select("id")
+        .eq("invitation_id", inv.id)
+        .ilike("name", guestNameNormalized)
+        .limit(1)
+        .maybeSingle<{ id: string }>();
+      matched = byName ?? null;
+    }
+    if (matched) {
+      await supabase
+        .from("guests")
+        .update({
+          status: attendanceToStatus(attendance),
+          rsvp_id: data.id,
+          plus_one: Boolean(body.plus_one),
+          plus_one_name: stringOrNull(body.plus_one_name),
+          dietary_notes: stringOrNull(body.allergies),
+        })
+        .eq("id", matched.id);
+    }
+  } catch (err) {
+    console.warn("[rsvp] guest auto-link failed:", err);
+  }
+
   // Fire-and-forget e-postaları — RESEND_API_KEY yoksa graceful no-op.
   // RSVP zaten kaydedildi; Resend yavaş olsa bile misafir teşekkür
   // ekranını anında görüyor.
