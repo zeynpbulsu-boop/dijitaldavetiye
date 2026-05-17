@@ -439,6 +439,7 @@ function Hero({
             src={theme.waxSealSrc}
             size={210}
             minSize={140}
+            priority
             haloColor={theme.haloColor}
             rotate={-6}
             delay={1.0}

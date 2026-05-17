@@ -120,7 +120,7 @@ export function EnvelopeCeremony({
               : { duration: 6, repeat: Infinity, ease: "easeInOut" }
           }
         >
-          <WaxSealLuxe size={260} minSize={180} haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} />
+          <WaxSealLuxe size={260} minSize={180} priority haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} />
         </motion.div>
 
         {/* Breaking burst — soft halo patlaması */}

@@ -357,7 +357,7 @@ export function AethelChapelDemo() {
             transition={{ duration: 1.6, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="mt-10 sm:mt-14"
           >
-            <WaxSealLuxe size={210} minSize={140} haloColor={SAGE} rotate={-6} delay={1.0} bgColor={CREAM_BG} />
+            <WaxSealLuxe size={210} minSize={140} priority haloColor={SAGE} rotate={-6} delay={1.0} bgColor={CREAM_BG} />
           </motion.div>
 
           {/* Calligraphy isim — geniş nefes */}
