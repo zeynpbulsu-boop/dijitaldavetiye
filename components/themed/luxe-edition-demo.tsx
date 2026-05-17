@@ -21,7 +21,7 @@
  */
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { CalligraphyName } from "@/components/themed/calligraphy-name";
 import { ThemedSeparator } from "@/components/themed/themed-separator";
 import { LiveRsvpCounter } from "@/components/themed/live-rsvp-counter";
@@ -231,6 +231,13 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-12%" }}
                 transition={{ duration: 0.9, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                /* FAZ D.5 — hover'da hafif scale + soft shadow */
+                whileHover={{
+                  scale: 1.01,
+                  boxShadow: isDarkColor(theme.bg)
+                    ? "0 8px 24px rgba(0, 0, 0, 0.28)"
+                    : "0 8px 24px rgba(31, 27, 23, 0.10)",
+                }}
                 className="flex items-center gap-4 px-4 py-4 sm:gap-8 sm:px-8 sm:py-6"
                 style={{
                   /* FAZ D.3 — dark themes get a softer wash + accent-tinted
@@ -364,14 +371,17 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
               >
                 <details className="group">
                   <summary
-                    className="flex cursor-pointer items-center justify-between gap-3"
+                    /* FAZ D.5 — hover'da yumuşak bir vurgu (accent ile underline) */
+                    className="flex cursor-pointer items-center justify-between gap-3 transition-colors hover:text-[--faq-hover-ink]"
                     style={{
                       color: theme.ink,
                       fontWeight: 300,
                       letterSpacing: "0.01em",
                       fontSize: "clamp(15px, 4vw, 17px)",
                       minHeight: 44,
-                    }}
+                      // CSS var: hover'da accent rengine yumuşak geç
+                      ["--faq-hover-ink" as unknown as string]: theme.accent,
+                    } as CSSProperties}
                   >
                     <span className="flex-1">{f.q}</span>
                     <span
@@ -442,7 +452,8 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
             {day} {month} {year} · {theme.venue}
           </p>
           <div className="relative z-10 mt-12 flex justify-center sm:mt-16">
-            <Lovebirds size={84} color={`${theme.ink}66`} delay={0.4} />
+            {/* FAZ D.7 — accent rengine geç ki ornament tema kimliğini taşısın */}
+            <Lovebirds size={84} color={`${theme.accent}AA`} delay={0.4} />
           </div>
           <p
             className="relative z-10 mt-10 px-2 text-[10px] sm:mt-12"
@@ -599,7 +610,8 @@ function Hero({
           transition={{ delay: 6.6, duration: 1.2 }}
           className="mt-10 sm:mt-14"
         >
-          <Lovebirds size={94} color={`${theme.ink}66`} delay={6.8} />
+          {/* FAZ D.7 — hero lovebirds da accent renginde */}
+          <Lovebirds size={94} color={`${theme.accent}AA`} delay={6.8} />
         </motion.div>
 
         <motion.button

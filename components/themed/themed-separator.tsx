@@ -34,6 +34,10 @@ export function ThemedSeparator({
 }: ThemedSeparatorProps) {
   const iconSize = size === "lg" ? 20 : size === "sm" ? 10 : 14;
   const lineHeight = size === "lg" ? 1.5 : 1;
+  /* FAZ D.4 — mobile separator çizgileri 60px değil ~38px olsun ki
+     ornament daha öne çıksın, kompozisyon dağılmasın. Desktop'ta
+     orijinal lineLength korunur. */
+  const lineCss = `clamp(${Math.round(lineLength * 0.6)}px, 14vw, ${lineLength}px)`;
 
   return (
     <motion.div
@@ -42,13 +46,13 @@ export function ThemedSeparator({
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: "-15%" }}
       transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`flex items-center justify-center gap-4 py-12 ${className}`}
+      className={`flex items-center justify-center gap-3 py-10 sm:gap-4 sm:py-12 ${className}`}
     >
       <span
         className="block"
         style={{
           height: lineHeight,
-          width: lineLength,
+          width: lineCss,
           background: theme.ornamentColor,
           opacity: 0.4,
         }}
@@ -58,7 +62,7 @@ export function ThemedSeparator({
         className="block"
         style={{
           height: lineHeight,
-          width: lineLength,
+          width: lineCss,
           background: theme.ornamentColor,
           opacity: 0.4,
         }}
