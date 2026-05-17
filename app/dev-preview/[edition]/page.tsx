@@ -84,6 +84,8 @@ const SAMPLE_INVITATION: Invitation = {
   /* Migration 007 — venue coords */
   venue_lat: null,
   venue_lng: null,
+  /* Migration 008 — scratch toggle */
+  enable_scratch_reveal: false,
 
   owner_email: null,
   owner_phone: null,

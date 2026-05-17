@@ -25,6 +25,7 @@ export interface LuxeStrings {
     gifts: { eyebrow: string; title: string; intro: string; copyLabel: string; copyDone: string; accountHolder: string; bank: string };
     hotels: { eyebrow: string; title: string; intro: string };
     map: { eyebrow: string; title: string; directions: string };
+    scratchHint: string;
     backToTop: string;
     skip: string;
     calendarGoogle: string;
@@ -76,6 +77,7 @@ const TR: LuxeStrings = {
       title: "Mekanımız",
       directions: "Yol Tarifi Al",
     },
+    scratchHint: "Tarihi kazıyın",
     backToTop: "Yukarı Çık",
     skip: "Atla",
     calendarGoogle: "Google Takvim",
@@ -132,6 +134,7 @@ const EN: LuxeStrings = {
       title: "The venue",
       directions: "Get Directions",
     },
+    scratchHint: "Scratch to reveal",
     backToTop: "Back to Top",
     skip: "Skip",
     calendarGoogle: "Google Calendar",
@@ -188,6 +191,7 @@ const SR: LuxeStrings = {
       title: "Mesto",
       directions: "Uputstvo",
     },
+    scratchHint: "Skidirajte datum",
     backToTop: "Na vrh",
     skip: "Preskoči",
     calendarGoogle: "Google kalendar",

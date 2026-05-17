@@ -146,6 +146,9 @@ export async function saveInvitation(
        aralık dışı değer → null (harita gizlenir). */
     venue_lat: coordOrNull(formData.get("venue_lat"), 90),
     venue_lng: coordOrNull(formData.get("venue_lng"), 180),
+
+    /* Migration 008 — scratch reveal opt-in. */
+    enable_scratch_reveal: formData.get("enable_scratch_reveal") === "on",
   };
 
   const { error: updateErr } = await supabase

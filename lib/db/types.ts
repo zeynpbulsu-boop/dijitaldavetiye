@@ -99,6 +99,10 @@ export interface Invitation {
   venue_lat: number | null;
   venue_lng: number | null;
 
+  /* Migration 008 — Pressed Love paritesi: Hero'daki tarih satırı
+     kazıyarak ortaya çıkar (canvas overlay). Default false. */
+  enable_scratch_reveal: boolean;
+
   owner_email: string | null;
   owner_phone: string | null;
 

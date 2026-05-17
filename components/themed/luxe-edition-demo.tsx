@@ -33,6 +33,7 @@ import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
 import { CountdownLuxe } from "@/components/themed/countdown-luxe";
 import { MapEmbed } from "@/components/themed/map-embed";
+import { ScratchReveal } from "@/components/themed/scratch-reveal";
 import { RsvpForm } from "@/app/i/[slug]/_rsvp-form";
 import { luxeStrings, type LuxeLocale } from "@/lib/i18n/luxe-strings";
 import type { EditionMeta } from "@/lib/design/tokens";
@@ -133,6 +134,11 @@ export interface LuxeEditionTheme {
    */
   venueLat?: number | null;
   venueLng?: number | null;
+  /**
+   * Migration 008 — true ise Hero'daki tarih satırı canvas overlay ile
+   * gizlenir; misafir kazıyarak ortaya çıkarır (Pressed Love paritesi).
+   */
+  enableScratch?: boolean;
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -236,6 +242,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
           month={month}
           year={year}
           heroCtaFallback={rsvpTitle}
+          scratchHint={i18n.sections.scratchHint}
         />
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
@@ -866,12 +873,14 @@ function Hero({
   month,
   year,
   heroCtaFallback,
+  scratchHint,
 }: {
   theme: LuxeEditionTheme;
   day: string;
   month: string;
   year: string;
   heroCtaFallback: string;
+  scratchHint: string;
 }) {
   return (
     <section
@@ -936,22 +945,53 @@ function Hero({
           transition={{ delay: 5.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           className="mt-12 flex items-center gap-3 sm:mt-16 sm:gap-6"
         >
-          <span aria-hidden className="h-px w-10 sm:w-20" style={{ background: `${theme.ink}40` }} />
-          <span
-            key={`${day}-${month}-${year}`}
-            style={{
-              color: theme.ink,
-              fontSize: "clamp(12px, 3.2vw, 14px)",
-              letterSpacing: "0.42em",
-              textTransform: "uppercase",
-              fontWeight: 300,
-              animation: "inkPulse 1.2s ease-out",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {day} {month} {year}
-          </span>
-          <span aria-hidden className="h-px w-10 sm:w-20" style={{ background: `${theme.ink}40` }} />
+          {theme.enableScratch ? (
+            /* Pressed Love paritesi — date satırını kazıyarak ortaya çıkar.
+               Inline-flex span'lar arasında ScratchReveal block olarak
+               davranır; padding ile minimum bir kazıma yüzeyi sağlanır. */
+            <ScratchReveal
+              hint={scratchHint}
+              surfaceColor={`${theme.accent}E0`}
+              hintColor={isDarkColor(theme.bg) ? "#FFFFFF" : theme.bg}
+              brushSize={32}
+              threshold={0.35}
+              className="px-6 py-3"
+            >
+              <span
+                key={`${day}-${month}-${year}`}
+                style={{
+                  color: theme.ink,
+                  fontSize: "clamp(12px, 3.2vw, 14px)",
+                  letterSpacing: "0.42em",
+                  textTransform: "uppercase",
+                  fontWeight: 300,
+                  whiteSpace: "nowrap",
+                  display: "inline-block",
+                }}
+              >
+                {day} {month} {year}
+              </span>
+            </ScratchReveal>
+          ) : (
+            <>
+              <span aria-hidden className="h-px w-10 sm:w-20" style={{ background: `${theme.ink}40` }} />
+              <span
+                key={`${day}-${month}-${year}`}
+                style={{
+                  color: theme.ink,
+                  fontSize: "clamp(12px, 3.2vw, 14px)",
+                  letterSpacing: "0.42em",
+                  textTransform: "uppercase",
+                  fontWeight: 300,
+                  animation: "inkPulse 1.2s ease-out",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {day} {month} {year}
+              </span>
+              <span aria-hidden className="h-px w-10 sm:w-20" style={{ background: `${theme.ink}40` }} />
+            </>
+          )}
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}
