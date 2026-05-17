@@ -55,7 +55,10 @@ export function CalligraphyName({
       className={`relative inline-block ${className}`}
       style={{
         fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
-        fontSize: `clamp(${size * 0.6}px, ${size / 12}vw, ${size * 1.4}px)`,
+        /* FAZ A.1 — mobile-first clamp. size is the desktop max; min is
+           ~0.43× so a 130px brand size renders as 56px on a 375px viewport
+           (was 78px under the old 0.6× floor, which overflowed iPhone SE). */
+        fontSize: `clamp(${Math.round(size * 0.43)}px, ${(size / 12).toFixed(2)}vw, ${size}px)`,
         lineHeight: 1,
         letterSpacing: "0.005em",
       }}

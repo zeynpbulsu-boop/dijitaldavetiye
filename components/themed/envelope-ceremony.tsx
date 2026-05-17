@@ -64,8 +64,13 @@ export function EnvelopeCeremony({
         initial={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed inset-0 z-50 flex flex-col items-center justify-center px-8"
-        style={{ background: bgColor, color: inkColor }}
+        className="fixed inset-0 z-50 flex flex-col items-center justify-center px-6 sm:px-8"
+        style={{
+          background: bgColor,
+          color: inkColor,
+          paddingTop: "max(1rem, var(--safe-top))",
+          paddingBottom: "max(1rem, var(--safe-bottom))",
+        }}
       >
         {/* Chapel watermark — 5% opacity arkada */}
         <ChapelWatermark position="absolute" opacity={0.05} maxWidth={900} bgColor={bgColor} src={watermarkSrc} />
@@ -115,7 +120,7 @@ export function EnvelopeCeremony({
               : { duration: 6, repeat: Infinity, ease: "easeInOut" }
           }
         >
-          <WaxSealLuxe size={260} haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} />
+          <WaxSealLuxe size={260} minSize={180} haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} />
         </motion.div>
 
         {/* Breaking burst — soft halo patlaması */}
