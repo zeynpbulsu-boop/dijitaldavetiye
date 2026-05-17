@@ -1,27 +1,31 @@
 "use client";
 
 /**
- * WaxSealLuxe — FAZ 5.11.2 (gerçek alpha PNG)
+ * WaxSealLuxe — FAZ 5.12 (per-edition src)
  *
- * PNG'nin beyaz BG'si Pillow ile transparent yapıldı — artık blend
- * mode tricks gerekmiyor. Direkt <img> kullan, herhangi bir zemine
- * (cream / dark sage / navy) sorunsuz otur.
+ * PNG'nin beyaz BG'si Pillow ile transparent yapıldı (alpha channel).
+ * Her edisyon kendi wax seal asset'ini geçirir.
  */
 
 import { motion } from "framer-motion";
 
 interface WaxSealLuxeProps {
+  /** PNG path — default Aethel sage seal. */
+  src?: string;
+  alt?: string;
   size?: number;
   rotate?: number;
   delay?: number;
   className?: string;
-  /** Geriye uyumluluk — kullanılmıyor, alpha gerçek transparency. */
-  bgColor?: string;
   /** Hafif aura halo rengi. */
   haloColor?: string;
+  /** Geriye uyumluluk — kullanılmıyor. */
+  bgColor?: string;
 }
 
 export function WaxSealLuxe({
+  src = "/aethel/wax-seal-luxe.png",
+  alt = "Mühür",
   size = 220,
   rotate = -6,
   delay = 0,
@@ -40,7 +44,6 @@ export function WaxSealLuxe({
       className={`relative inline-block ${className}`}
       style={{ width: size, height: size }}
     >
-      {/* Aura halo */}
       <motion.div
         aria-hidden
         className="pointer-events-none absolute -inset-10 rounded-full"
@@ -55,8 +58,8 @@ export function WaxSealLuxe({
       />
 
       <img
-        src="/aethel/wax-seal-luxe.png"
-        alt="Mühür — Defne & Aras"
+        src={src}
+        alt={alt}
         width={size}
         height={size}
         draggable={false}
@@ -64,7 +67,7 @@ export function WaxSealLuxe({
           width: size,
           height: size,
           userSelect: "none",
-          filter: "drop-shadow(0 18px 32px rgba(60, 70, 50, 0.20))",
+          filter: "drop-shadow(0 18px 32px rgba(20, 20, 20, 0.25))",
         }}
       />
     </motion.div>

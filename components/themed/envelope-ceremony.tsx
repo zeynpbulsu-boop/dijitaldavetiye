@@ -22,6 +22,10 @@ interface EnvelopeCeremonyProps {
   inkColor: string;
   /** Wax seal aura halo rengi. */
   haloColor?: string;
+  /** Per-edition wax seal PNG path. */
+  waxSealSrc?: string;
+  /** Per-edition watermark PNG path. */
+  watermarkSrc?: string;
   onOpened: () => void;
 }
 
@@ -33,6 +37,8 @@ export function EnvelopeCeremony({
   bgColor,
   inkColor,
   haloColor = "#9EAA8E",
+  waxSealSrc,
+  watermarkSrc,
   onOpened,
 }: EnvelopeCeremonyProps) {
   const [stage, setStage] = useState<Stage>("sealed");
@@ -62,7 +68,7 @@ export function EnvelopeCeremony({
         style={{ background: bgColor, color: inkColor }}
       >
         {/* Chapel watermark — 5% opacity arkada */}
-        <ChapelWatermark position="absolute" opacity={0.05} maxWidth={900} bgColor={bgColor} />
+        <ChapelWatermark position="absolute" opacity={0.05} maxWidth={900} bgColor={bgColor} src={watermarkSrc} />
 
         {/* Üst eyebrow */}
         <motion.div
@@ -109,7 +115,7 @@ export function EnvelopeCeremony({
               : { duration: 6, repeat: Infinity, ease: "easeInOut" }
           }
         >
-          <WaxSealLuxe size={260} haloColor={haloColor} rotate={-6} bgColor={bgColor} />
+          <WaxSealLuxe size={260} haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} />
         </motion.div>
 
         {/* Breaking burst — soft halo patlaması */}

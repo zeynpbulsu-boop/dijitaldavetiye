@@ -1,22 +1,25 @@
 "use client";
 
 /**
- * ChapelWatermark — FAZ 5.11.2 (gerçek alpha PNG)
+ * ChapelWatermark — FAZ 5.12 (per-edition src)
  *
- * PNG'nin beyaz BG'si Pillow ile transparent. Direkt <img> kullan.
+ * Gerçek alpha PNG. Her edisyon kendi watermark asset'ini geçirir.
+ * "Chapel" adı tarihsel — artık genel "EditionWatermark" anlamında.
  */
 
 interface ChapelWatermarkProps {
+  /** PNG path — default Aethel chapel. */
+  src?: string;
   position?: "fixed" | "absolute";
   opacity?: number;
   alignment?: "center" | "top" | "bottom" | "left" | "right";
   className?: string;
   maxWidth?: number;
-  /** Geriye uyumluluk — kullanılmıyor. */
-  bgColor?: string;
+  bgColor?: string; // geriye uyumluluk
 }
 
 export function ChapelWatermark({
+  src = "/aethel/chapel-vignette.png",
   position = "absolute",
   opacity = 0.06,
   alignment = "center",
@@ -38,7 +41,7 @@ export function ChapelWatermark({
       style={{ zIndex: 0 }}
     >
       <img
-        src="/aethel/chapel-vignette.png"
+        src={src}
         alt=""
         draggable={false}
         style={{
