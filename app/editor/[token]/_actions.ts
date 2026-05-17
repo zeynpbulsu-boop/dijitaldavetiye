@@ -118,6 +118,13 @@ export async function saveInvitation(
     /* Migration 005 — wax seal tint. hero_media_url + photos /api/upload
        üzerinden yönetiliyor, bu form'da yok. */
     wax_seal_color: hexOrNull(formData.get("wax_seal_color")),
+
+    /* Migration 006 — hediye / banka bilgileri. hotels array'i ayrı
+       bir API'den yönetilecek (form'a JSONB sokmak iyi UX değil). */
+    gift_iban: trimOrNull(formData.get("gift_iban")),
+    gift_bank: trimOrNull(formData.get("gift_bank")),
+    gift_account_holder: trimOrNull(formData.get("gift_account_holder")),
+    gift_note: trimOrNull(formData.get("gift_note")),
   };
 
   const { error: updateErr } = await supabase

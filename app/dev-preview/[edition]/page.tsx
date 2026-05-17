@@ -75,6 +75,12 @@ const SAMPLE_INVITATION: Invitation = {
   wax_seal_color: null,
   hero_media_url: null,
   photos: [],
+  /* Migration 006 — gift + hotels */
+  gift_iban: null,
+  gift_bank: null,
+  gift_account_holder: null,
+  gift_note: null,
+  hotels: [],
 
   owner_email: null,
   owner_phone: null,

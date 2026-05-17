@@ -34,6 +34,15 @@ export interface PhotoItem {
   caption?: string;
 }
 
+/** Migration 006 — otel önerisi (invitations.hotels JSONB array). */
+export interface HotelItem {
+  name: string;
+  address?: string;
+  price?: string;
+  url?: string;
+  note?: string;
+}
+
 export interface Invitation {
   id: string;
   slug: string;
@@ -76,6 +85,15 @@ export interface Invitation {
   wax_seal_color: string | null;
   hero_media_url: string | null;
   photos: PhotoItem[];
+
+  /* Migration 006 — Pressed Love Como paritesi:
+       gift_*          banka hesabı + hediye notu (4 kolon)
+       hotels          otel önerisi listesi (JSONB array) */
+  gift_iban: string | null;
+  gift_bank: string | null;
+  gift_account_holder: string | null;
+  gift_note: string | null;
+  hotels: HotelItem[];
 
   owner_email: string | null;
   owner_phone: string | null;

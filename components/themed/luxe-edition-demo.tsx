@@ -35,7 +35,7 @@ import { CountdownLuxe } from "@/components/themed/countdown-luxe";
 import { RsvpForm } from "@/app/i/[slug]/_rsvp-form";
 import { luxeStrings, type LuxeLocale } from "@/lib/i18n/luxe-strings";
 import type { EditionMeta } from "@/lib/design/tokens";
-import type { EventType, PhotoItem } from "@/lib/db/types";
+import type { EventType, HotelItem, PhotoItem } from "@/lib/db/types";
 import Image from "next/image";
 
 export interface LuxeEditionTheme {
@@ -114,6 +114,18 @@ export interface LuxeEditionTheme {
   heroMediaUrl?: string | null;
   /** Galeri item listesi. Boş array veya undefined ise galeri gizlenir. */
   photos?: PhotoItem[];
+  /**
+   * Migration 006 — hediye bloğu (IBAN + banka). undefined ise
+   * section render edilmez. iban set edilirse bloğun tamamı görünür.
+   */
+  gift?: {
+    iban: string;
+    bank?: string | null;
+    accountHolder?: string | null;
+    note?: string | null;
+  };
+  /** Otel önerisi listesi (Pressed Love paritesi). */
+  hotels?: HotelItem[];
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -175,6 +187,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         <EnvelopeCeremony
           greeting={theme.greeting ?? "Bir davet sizi bekliyor"}
           ctaLabel={theme.envelopeCta ?? "Davetiyeyi Aç"}
+          skipLabel={i18n.sections.skip}
           bgColor={theme.bg}
           inkColor={theme.ink}
           haloColor={theme.haloColor}
@@ -186,11 +199,12 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
       )}
 
       <motion.div
+        id="main"
         initial={{ opacity: 0 }}
         animate={{ opacity: opened ? 1 : 0 }}
         transition={{ delay: 0.3, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         data-edition={theme.meta.slug}
-        className="relative min-h-screen overflow-x-hidden"
+        className="relative min-h-screen overflow-x-hidden scroll-smooth"
         style={{
           background: theme.bg,
           color: theme.ink,
@@ -472,6 +486,99 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
 
+        {/* HOTELS — Pressed Love paritesi, theme.hotels varsa */}
+        {theme.hotels && theme.hotels.length > 0 && (
+          <>
+            <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-32">
+              <SectionHeader
+                theme={theme}
+                eyebrow={i18n.sections.hotels.eyebrow}
+                title={i18n.sections.hotels.title}
+              />
+              <p
+                className="mx-auto mt-6 max-w-[560px] px-2 text-center text-[13px]"
+                style={{ color: theme.inkSoft, lineHeight: 1.8, fontWeight: 300 }}
+              >
+                {i18n.sections.hotels.intro}
+              </p>
+              <ul className="mx-auto mt-10 grid max-w-[900px] gap-3 sm:mt-14 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                {theme.hotels.map((h, i) => (
+                  <motion.li
+                    key={`${h.name}-${i}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-10%" }}
+                    transition={{ duration: 0.8, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                    className="flex flex-col gap-2 px-5 py-5"
+                    style={{
+                      background: isDarkColor(theme.bg)
+                        ? "rgba(255,255,255,0.05)"
+                        : "rgba(255,255,255,0.20)",
+                      border: `0.5px solid ${
+                        isDarkColor(theme.bg) ? `${theme.accent}55` : `${theme.inkMuted}40`
+                      }`,
+                      borderRadius: 2,
+                      backdropFilter: "blur(2px)",
+                    }}
+                  >
+                    <div
+                      className="text-[10px] uppercase"
+                      style={{ color: theme.accent, letterSpacing: "0.32em", fontWeight: 300 }}
+                    >
+                      {h.price ?? "Otel"}
+                    </div>
+                    <h3
+                      className="italic"
+                      style={{
+                        color: theme.ink,
+                        lineHeight: 1.3,
+                        fontWeight: 300,
+                        fontSize: "clamp(17px, 4vw, 20px)",
+                      }}
+                    >
+                      {h.name}
+                    </h3>
+                    {h.address && (
+                      <p
+                        className="text-[12px]"
+                        style={{ color: theme.inkSoft, fontWeight: 300, lineHeight: 1.6 }}
+                      >
+                        {h.address}
+                      </p>
+                    )}
+                    {h.note && (
+                      <p
+                        className="text-[12px] italic"
+                        style={{ color: theme.inkSoft, fontWeight: 300, lineHeight: 1.6 }}
+                      >
+                        {h.note}
+                      </p>
+                    )}
+                    {h.url && (
+                      <a
+                        href={h.url}
+                        target="_blank"
+                        rel="noopener"
+                        className="mt-2 inline-flex w-fit min-h-[36px] items-center text-[10px] uppercase transition-all hover:tracking-[0.34em]"
+                        style={{
+                          color: theme.accent,
+                          letterSpacing: "0.3em",
+                          fontWeight: 300,
+                          textDecoration: "underline",
+                          textUnderlineOffset: 4,
+                        }}
+                      >
+                        Detay →
+                      </a>
+                    )}
+                  </motion.li>
+                ))}
+              </ul>
+            </section>
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+          </>
+        )}
+
         {/* RSVP — FAZ B.1 — only on the live invitation, not in demos */}
         {theme.rsvpSlug && (
           <>
@@ -542,6 +649,68 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
           </ul>
         </section>
 
+        {/* GIFTS — Pressed Love paritesi, theme.gift varsa */}
+        {theme.gift && (
+          <>
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+            <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-32">
+              <SectionHeader
+                theme={theme}
+                eyebrow={i18n.sections.gifts.eyebrow}
+                title={i18n.sections.gifts.title}
+              />
+              <p
+                className="mx-auto mt-6 max-w-[560px] px-2 text-center text-[13px]"
+                style={{ color: theme.inkSoft, lineHeight: 1.8, fontWeight: 300 }}
+              >
+                {i18n.sections.gifts.intro}
+              </p>
+              <div
+                className="mx-auto mt-10 max-w-[560px] px-5 py-7 sm:mt-12 sm:px-8 sm:py-8"
+                style={{
+                  background: isDarkColor(theme.bg)
+                    ? "rgba(255,255,255,0.05)"
+                    : "rgba(255,255,255,0.22)",
+                  border: `0.5px solid ${theme.accent}55`,
+                  borderRadius: 2,
+                  backdropFilter: "blur(2px)",
+                }}
+              >
+                {theme.gift.bank && (
+                  <GiftRow
+                    label={i18n.sections.gifts.bank}
+                    value={theme.gift.bank}
+                    theme={theme}
+                  />
+                )}
+                {theme.gift.accountHolder && (
+                  <GiftRow
+                    label={i18n.sections.gifts.accountHolder}
+                    value={theme.gift.accountHolder}
+                    theme={theme}
+                  />
+                )}
+                <GiftRow
+                  label="IBAN"
+                  value={theme.gift.iban}
+                  theme={theme}
+                  copyable
+                  copyLabel={i18n.sections.gifts.copyLabel}
+                  copyDone={i18n.sections.gifts.copyDone}
+                />
+                {theme.gift.note && (
+                  <p
+                    className="mt-5 text-[12px] italic"
+                    style={{ color: theme.inkSoft, fontWeight: 300, lineHeight: 1.7 }}
+                  >
+                    {theme.gift.note}
+                  </p>
+                )}
+              </div>
+            </section>
+          </>
+        )}
+
         {/* FOOTER */}
         <footer
           className="relative px-5 py-20 text-center sm:px-6 sm:py-28 lg:py-32"
@@ -605,6 +774,23 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
           >
             {theme.footerNote ?? i18n.footerFallback}
           </p>
+
+          {/* Back to Top — Pressed Love paritesi */}
+          <div className="relative z-10 mt-10">
+            <a
+              href="#main"
+              className="inline-flex min-h-[40px] items-center text-[10px] uppercase transition-all hover:tracking-[0.36em]"
+              style={{
+                color: theme.inkSoft,
+                letterSpacing: "0.28em",
+                fontWeight: 300,
+                borderBottom: `0.5px solid ${theme.inkMuted}55`,
+                paddingBottom: 4,
+              }}
+            >
+              ↑ {i18n.sections.backToTop}
+            </a>
+          </div>
 
           {/* FAZ D.8 — thin legal line under the editorial close */}
           <div
@@ -889,6 +1075,75 @@ function FloatingControls({ bg, ink }: { bg: string; ink: string }) {
         ♪
       </button>
     </>
+  );
+}
+
+/* Gift section row — etiket + değer + opsiyonel "Kopyala" butonu.
+   IBAN için copyable=true geçer; clipboard API'siyle yazar ve 2s
+   "Kopyalandı" feedback'i. Tek satırda render edilir; uzun IBAN'lar
+   mobil'de wrap olur. */
+function GiftRow({
+  label,
+  value,
+  theme,
+  copyable = false,
+  copyLabel,
+  copyDone,
+}: {
+  label: string;
+  value: string;
+  theme: LuxeEditionTheme;
+  copyable?: boolean;
+  copyLabel?: string;
+  copyDone?: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard izni yoksa sessizce yut */
+    }
+  }
+  return (
+    <div className="flex flex-col gap-1 border-b py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 last:border-b-0"
+      style={{ borderColor: `${theme.inkMuted}30` }}
+    >
+      <div className="flex-1">
+        <div
+          className="text-[10px] uppercase"
+          style={{ color: theme.inkMuted, letterSpacing: "0.28em", fontWeight: 300 }}
+        >
+          {label}
+        </div>
+        <div
+          className="mt-1 text-[14px] sm:text-[15px]"
+          style={{ color: theme.ink, fontWeight: 300, wordBreak: "break-all" }}
+        >
+          {value}
+        </div>
+      </div>
+      {copyable && (
+        <button
+          type="button"
+          onClick={copy}
+          className="self-start text-[10px] uppercase transition-all hover:tracking-[0.34em] sm:self-center"
+          style={{
+            color: copied ? theme.accent : theme.ink,
+            letterSpacing: "0.28em",
+            fontWeight: 300,
+            border: `0.5px solid ${theme.ink}40`,
+            borderRadius: 999,
+            padding: "8px 16px",
+            minHeight: 36,
+          }}
+        >
+          {copied ? copyDone ?? "Kopyalandı" : copyLabel ?? "Kopyala"}
+        </button>
+      )}
+    </div>
   );
 }
 

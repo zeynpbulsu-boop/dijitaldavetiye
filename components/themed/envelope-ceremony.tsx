@@ -18,6 +18,8 @@ import { ChapelWatermark } from "./chapel-watermark";
 interface EnvelopeCeremonyProps {
   greeting?: string;
   ctaLabel?: string;
+  /** Pressed Love paritesi — sağ üstte "Atla" linki etiketi. */
+  skipLabel?: string;
   bgColor: string;
   inkColor: string;
   /** Wax seal aura halo rengi. */
@@ -36,6 +38,7 @@ type Stage = "sealed" | "breaking" | "opening";
 export function EnvelopeCeremony({
   greeting = "Bir davet sizi bekliyor",
   ctaLabel = "Davetiyeyi Aç",
+  skipLabel = "Atla",
   bgColor,
   inkColor,
   haloColor = "#9EAA8E",
@@ -75,6 +78,27 @@ export function EnvelopeCeremony({
           paddingBottom: "max(1rem, var(--safe-bottom))",
         }}
       >
+        {/* Skip butonu — Pressed Love paritesi, animasyonu beğenmeyen
+            kullanıcı doğrudan davetiyeye geçebilsin. */}
+        <button
+          type="button"
+          onClick={() => onOpened()}
+          aria-label={skipLabel}
+          className="absolute right-4 top-4 z-20 inline-flex min-h-[36px] items-center justify-center rounded-full px-4 py-1 text-[10px] uppercase transition-all hover:tracking-[0.32em] sm:right-6 sm:top-6"
+          style={{
+            color: inkColor,
+            background: "rgba(255,255,255,0.7)",
+            border: `0.5px solid ${inkColor}30`,
+            letterSpacing: "0.28em",
+            fontWeight: 300,
+            fontFamily: "var(--font-display), Georgia, serif",
+            backdropFilter: "blur(6px)",
+            paddingTop: "max(0.25rem, var(--safe-top))",
+          }}
+        >
+          {skipLabel}
+        </button>
+
         {/* Chapel watermark — 5% opacity arkada */}
         <ChapelWatermark position="absolute" opacity={0.05} maxWidth={900} bgColor={bgColor} src={watermarkSrc} />
 
