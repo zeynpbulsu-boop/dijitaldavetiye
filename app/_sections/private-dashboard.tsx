@@ -104,7 +104,7 @@ export function PrivateDashboard() {
                   type="button"
                   className="rounded-full border border-brand-ink/22 px-3 py-1 text-brand-ink"
                 >
-                  Excel'e indir ↓
+                  Excel&apos;e indir ↓
                 </button>
               </div>
 
@@ -172,7 +172,7 @@ export function PrivateDashboard() {
               <span className="italic text-brand-cognac">tek bir yerde</span>.
             </h2>
             <p className="mt-4 max-w-[480px] text-[15px] leading-[1.7] text-brand-mute">
-              Her davetiyenin arkasında özel bir yönetim paneli — RSVP'ler,
+              Her davetiyenin arkasında özel bir yönetim paneli — RSVP&apos;ler,
               diyet tercihleri, alerjiler, +1 sayısı, hepsi anında.
             </p>
 
