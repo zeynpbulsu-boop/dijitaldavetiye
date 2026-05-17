@@ -1,110 +1,87 @@
 "use client";
 
+/**
+ * TemplateCarousel — 6 luxe edition kartı (yeniden yazıldı).
+ *
+ * Önceki carousel 9 karışık kart gösteriyordu, isim-slug uyumsuzdu
+ * (örn. "Lavender" diye gösterilen kart aslında egee-blue'ya bağlıydı,
+ * "Mansion Lights" verde-borgogna'ya gidiyordu). Yeni hâl: 6 gerçek
+ * luxe edition, her birinin gerçek wax seal PNG'si kapak olarak,
+ * tıklayınca /dev-preview/{slug}'a — yani gerçek davetiye demosuna
+ * gider.
+ *
+ * Mouse drag + native scroll + touch swipe rail.
+ */
+
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect } from "react";
 import { TiltCard } from "@/components/effects/tilt-card";
 import { useT } from "@/lib/i18n/provider";
-import { getTemplateMeta } from "@/lib/templates/registry";
 
-/**
- * Template Carousel — horizontal snap rail of portrait cards.
- * Mouse drag + native scroll + touch swipe. Cards: gradient placeholder
- * (no raster assets), template name in italic Cormorant, optional "YENİ"
- * badge. Hover: 1.04 scale + cognac wash overlay.
- *
- * Each card links to /templates/[slug] when the slug exists in the registry
- * — falls back to /#themes anchor for placeholders.
- */
-type Card = {
+type EditionCard = {
   slug: string;
   name: string;
   category: string;
-  /** From → To CSS color stops for the placeholder backdrop. */
+  /** Kart arkaplan gradient'ı — edition'ın bg + footerBg'sinden türer. */
   bg: { from: string; to: string };
-  /** Ornament accent — small inline SVG drawn over the gradient. */
-  ornament: "vine" | "spray" | "wreath" | "ribbon" | "leaf" | "burst";
+  /** Wax seal PNG kapak yolu (public/). */
+  cover: string;
+  /** "YENİ" rozeti. */
   isNew?: boolean;
-  exists?: boolean;
+  /** Açık tema mı (font rengi siyah / krem) — kart üstündeki metnin
+   *  kontrastı için. */
+  isDark?: boolean;
 };
 
-const cards: Card[] = [
+const cards: EditionCard[] = [
   {
-    slug: "blush-garden",
-    name: "Magnolia",
-    category: "Klasik Botanik",
-    bg: { from: "#F2EEE6", to: "#E7D9CB" },
-    ornament: "leaf",
+    slug: "aethel",
+    name: "Aethel's Chapel",
+    category: "Toskana · Antik Şapel",
+    bg: { from: "#F2EEE4", to: "#D8DCC9" },
+    cover: "/aethel/wax-seal-luxe.png",
     isNew: true,
-    exists: true,
   },
   {
-    slug: "verde-borgogna",
+    slug: "atelier-indigo",
+    name: "Atelier Indigo",
+    category: "Gece Yarısı · Altın Varak",
+    bg: { from: "#0F1A3D", to: "#1B2E5F" },
+    cover: "/atelier-indigo/wax-seal.png",
+    isDark: true,
+  },
+  {
+    slug: "mansion-lights",
     name: "Mansion Lights",
-    category: "Akşam Yalısı",
-    bg: { from: "#2B1E16", to: "#5A3A28" },
-    ornament: "burst",
+    category: "Akşam Yalısı · Şampanya",
+    bg: { from: "#11261E", to: "#1F4435" },
+    cover: "/mansion-lights/wax-seal.png",
+    isDark: true,
     isNew: true,
-    exists: true,
   },
   {
-    slug: "elegant-ivory",
-    name: "Timeless",
-    category: "Sade Editöryel",
-    bg: { from: "#EFE6DA", to: "#D8C9B7" },
-    ornament: "ribbon",
-    exists: true,
-  },
-  {
-    slug: "black-ink",
-    name: "Modern",
-    category: "Minimal Çizgi",
-    bg: { from: "#F2EEE6", to: "#C9B9A4" },
-    ornament: "spray",
-    exists: true,
-  },
-  {
-    slug: "blush-reverie",
-    name: "Dream",
-    category: "Şefkat Pudra",
-    bg: { from: "#F5EDDB", to: "#E0BFAE" },
-    ornament: "vine",
-    isNew: true,
-    exists: true,
-  },
-  {
-    slug: "egee-blue",
-    name: "Lavender",
-    category: "Kıyı Modern",
-    bg: { from: "#EAE2EE", to: "#B8A4C9" },
-    ornament: "spray",
-    exists: true,
+    slug: "bodrum-blue",
+    name: "Bodrum Blue",
+    category: "Ege Mavisi · Kireç Beyazı",
+    bg: { from: "#F4F1EA", to: "#CFDCE3" },
+    cover: "/bodrum-blue/wax-seal.png",
   },
   {
     slug: "olive-grove",
-    name: "Botanical",
-    category: "Akdeniz Zeytin",
-    bg: { from: "#EFEEDD", to: "#A8B596" },
-    ornament: "leaf",
-    exists: true,
+    name: "Olive Grove",
+    category: "Akdeniz · Zeytin Bahçesi",
+    bg: { from: "#F2EFE0", to: "#C8D2A8" },
+    cover: "/olive-grove/wax-seal.png",
   },
   {
-    slug: "bordeaux",
-    name: "Atelier Indigo",
-    category: "Bordo Akşam",
-    bg: { from: "#1F0E0E", to: "#7A2E25" },
-    ornament: "burst",
-    exists: true,
-  },
-  {
-    slug: "aethel-chapel",
-    name: "Aethel's Chapel",
-    category: "Masalsı · Antik",
-    bg: { from: "#EDE9DD", to: "#7A8A6E" },
-    ornament: "leaf",
+    slug: "aurora",
+    name: "Aurora",
+    category: "Modern Minimal · Mor",
+    bg: { from: "#F8F7F4", to: "#D8D2EC" },
+    cover: "/aurora/wax-seal.png",
     isNew: true,
-    exists: true,
   },
 ];
 
@@ -113,17 +90,6 @@ export function TemplateCarousel() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-15%" });
   const railRef = useRef<HTMLDivElement>(null);
-
-  // Hide deprecated entries from the public carousel. The hardcoded
-  // `cards` array still contains every historical slug so legacy
-  // /templates/[slug] URLs keep resolving (URL stability) — but here
-  // we filter out anything the registry has marked deprecated.
-  // `originalIndex` is preserved so the i18n category dictionary
-  // (keyed by position in the source array) keeps pointing at the
-  // right label.
-  const visibleCards = cards
-    .map((c, originalIndex) => ({ c, originalIndex }))
-    .filter(({ c }) => !getTemplateMeta(c.slug)?.deprecated);
 
   // Click-and-drag horizontal pan for desktop.
   useEffect(() => {
@@ -166,9 +132,9 @@ export function TemplateCarousel() {
 
   return (
     <section
-      ref={ref}
       id="themes"
-      className="relative border-b border-line bg-bg py-24 lg:py-32"
+      ref={ref}
+      className="border-b border-line bg-bg py-20 lg:py-32"
     >
       <div className="container-wide">
         {/* Section header */}
@@ -176,304 +142,161 @@ export function TemplateCarousel() {
           initial={{ opacity: 0, y: 18 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-14 flex items-end justify-between gap-6 border-b border-line pb-6 lg:mb-20"
+          className="mb-12 flex flex-col items-start gap-6 sm:flex-row sm:items-end sm:justify-between lg:mb-16"
         >
           <div>
             <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-cognac">
-              — {t.carousel.eyebrow}
+              — {t.templates?.eyebrow ?? "Koleksiyon"}
             </span>
             <h2
               className="mt-4 font-display text-brand-ink"
               style={{
-                fontSize: "clamp(36px, 5vw, 64px)",
-                lineHeight: 1.02,
+                fontSize: "clamp(36px, 5vw, 72px)",
+                lineHeight: 0.98,
                 letterSpacing: "-0.025em",
               }}
             >
-              {t.carousel.headline_prefix}
-              <span className="italic text-brand-cognac">{t.carousel.headline_accent}</span>
-              {t.carousel.headline_suffix}
+              Altı edisyon,{" "}
+              <span className="italic text-brand-cognac">altı hikâye</span>.
             </h2>
+            <p className="mt-3 max-w-[540px] text-[14px] leading-[1.7] text-brand-mute">
+              Her edisyon kendi mührü, watermark dokusu, ornament ailesi ve
+              fontuyla — &ldquo;aynı kalıba renk değişiyor&rdquo; değil,
+              gerçekten farklı kompozisyonlar. Tıklayın, demoyu gezin.
+            </p>
           </div>
-          <span className="hidden text-[11px] uppercase tracking-[0.2em] text-brand-mute sm:inline-block">
-            {t.carousel.drag_hint}
-          </span>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-brand-mute">
+            Sürükle →
+          </p>
+        </motion.div>
+
+        {/* Rail */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 1, delay: 0.15 }}
+          ref={railRef}
+          className="no-scrollbar -mx-5 flex cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 lg:-mx-8 lg:gap-7 lg:px-8"
+          style={{ scrollPaddingLeft: 24 }}
+        >
+          {cards.map((card) => (
+            <Link
+              key={card.slug}
+              href={`/dev-preview/${card.slug}`}
+              className="group block w-[280px] flex-shrink-0 snap-start sm:w-[320px] lg:w-[380px]"
+            >
+              <TiltCard tilt={6} scaleOnHover={1.02}>
+                <article
+                  className="relative aspect-[3/4] overflow-hidden rounded-md shadow-ed-md transition-shadow group-hover:shadow-ed-lg"
+                  style={{
+                    background: `linear-gradient(155deg, ${card.bg.from} 0%, ${card.bg.to} 100%)`,
+                  }}
+                >
+                  {/* Wax seal kapak */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="relative h-[58%] w-[58%]">
+                      <Image
+                        src={card.cover}
+                        alt={`${card.name} mührü`}
+                        fill
+                        sizes="(max-width: 640px) 60vw, 220px"
+                        style={{
+                          objectFit: "contain",
+                          filter:
+                            "drop-shadow(0 18px 32px rgba(20, 20, 20, 0.22))",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* "YENİ" rozeti */}
+                  {card.isNew && (
+                    <span
+                      className="absolute right-4 top-4 rounded-full px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.22em]"
+                      style={{
+                        background: card.isDark
+                          ? "rgba(255,255,255,0.85)"
+                          : "rgba(31, 27, 23, 0.88)",
+                        color: card.isDark ? "#1F1B17" : "#F6F1EA",
+                      }}
+                    >
+                      Yeni
+                    </span>
+                  )}
+
+                  {/* Alt etiket bandı */}
+                  <div
+                    className="absolute inset-x-3 bottom-3 flex flex-col gap-0.5 rounded-sm px-4 py-3"
+                    style={{
+                      background: card.isDark
+                        ? "rgba(255,255,255,0.10)"
+                        : "rgba(255,255,255,0.78)",
+                      backdropFilter: "blur(8px)",
+                      border: `0.5px solid ${
+                        card.isDark
+                          ? "rgba(255,255,255,0.18)"
+                          : "rgba(31,27,23,0.08)"
+                      }`,
+                    }}
+                  >
+                    <h3
+                      className="font-display italic"
+                      style={{
+                        fontSize: "clamp(20px, 2.4vw, 26px)",
+                        lineHeight: 1.1,
+                        letterSpacing: "-0.012em",
+                        color: card.isDark ? "#F6F1EA" : "#1F1B17",
+                      }}
+                    >
+                      {card.name}
+                    </h3>
+                    <span
+                      className="text-[10px] uppercase"
+                      style={{
+                        letterSpacing: "0.28em",
+                        color: card.isDark
+                          ? "rgba(246, 241, 234, 0.7)"
+                          : "rgba(31, 27, 23, 0.62)",
+                      }}
+                    >
+                      {card.category}
+                    </span>
+                  </div>
+
+                  {/* Hover cognac wash overlay */}
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, transparent 50%, rgba(140,90,60,0.10) 100%)",
+                    }}
+                  />
+                </article>
+              </TiltCard>
+            </Link>
+          ))}
+        </motion.div>
+
+        {/* Footer CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, delay: 0.3 }}
+          className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <p className="text-[13px] text-brand-mute">
+            Her edisyon kendi mührü, watermark dokusu, ornament ailesi ve
+            fontuyla &mdash; tek bir kalıbın renk varyantı değil.
+          </p>
+          <Link
+            href="#pricing"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-brand-ink/40 px-6 text-[11px] uppercase tracking-[0.28em] text-brand-ink transition hover:border-brand-cognac hover:text-brand-cognac"
+          >
+            Fiyatları gör
+          </Link>
         </motion.div>
       </div>
-
-      {/* Carousel rail — full bleed, drag + snap */}
-      <div
-        ref={railRef}
-        className="no-scrollbar relative flex w-full cursor-grab snap-x snap-mandatory overflow-x-auto scroll-smooth"
-        style={{ paddingInline: "max(1.25rem, calc(50vw - 660px))" }}
-      >
-        <div className="flex gap-5 pb-4 pr-5 lg:gap-7">
-          {visibleCards.map(({ c: card, originalIndex }, i) => (
-            <motion.div
-              key={card.slug + i}
-              initial={{ opacity: 0, y: 28 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.85,
-                delay: 0.1 + i * 0.07,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="snap-center"
-            >
-              <TiltCard max={6}>
-                <TemplateCard
-                  card={card}
-                  index={i}
-                  categoryLabel={t.carousel.card_categories[originalIndex] ?? card.category}
-                  newBadge={t.carousel.badge_new}
-                  actionLabel={t.carousel.card_action}
-                />
-              </TiltCard>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      <div className="container-wide mt-10 flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-brand-mute lg:mt-14">
-        <span>{t.carousel.bottom_tagline}</span>
-        <Link
-          href="#themes"
-          className="font-medium text-brand-ink underline decoration-brand-mute/40 underline-offset-[6px] transition hover:decoration-brand-cognac hover:text-brand-cognac"
-        >
-          {t.carousel.bottom_cta}
-        </Link>
-      </div>
     </section>
-  );
-}
-
-function TemplateCard({
-  card,
-  index,
-  categoryLabel,
-  newBadge,
-  actionLabel,
-}: {
-  card: Card;
-  index: number;
-  categoryLabel: string;
-  newBadge: string;
-  actionLabel: string;
-}) {
-  const href = card.exists ? `/templates/${card.slug}` : "#themes";
-  const meta = getTemplateMeta(card.slug);
-  return (
-    <Link
-      href={href}
-      data-cursor="cta"
-      aria-label={`${card.name} — ${categoryLabel}`}
-      className="group relative block w-[260px] flex-shrink-0 select-none sm:w-[290px] lg:w-[320px]"
-    >
-      {/* Card frame */}
-      <div className="relative aspect-[3/4] overflow-hidden rounded-[6px] shadow-[0_2px_8px_rgba(43,30,22,0.12)] transition-shadow duration-500 group-hover:shadow-[0_24px_50px_-12px_rgba(43,30,22,0.35)]">
-        {/* Real wedding photography backdrop — Unsplash-curated per template.
-            Falls back to soft gradient if registry thumb missing. */}
-        {meta?.thumb ? (
-          <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.08]">
-            <Image
-              src={meta.thumb}
-              alt={`${card.name} — ${meta.tagline}`}
-              fill
-              sizes="(max-width: 768px) 280px, 320px"
-              className="object-cover"
-              priority={index < 4}
-            />
-          </div>
-        ) : (
-          <div
-            className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.08]"
-            style={{ background: `linear-gradient(155deg, ${card.bg.from} 0%, ${card.bg.to} 100%)` }}
-          />
-        )}
-
-        {/* Soft warmth wash — slight gradient overlay so name plate stays legible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
-
-        {/* Hover deepen */}
-        <div className="absolute inset-0 bg-brand-ink/0 transition-colors duration-500 group-hover:bg-brand-ink/15" />
-
-        {/* Vertical edge label */}
-        <span className="absolute left-3 top-3 text-[9px] font-medium uppercase tracking-[0.3em] text-brand-cream/85">
-          NUVE · ED. № {String(index + 1).padStart(2, "0")}
-        </span>
-
-        {/* New-badge — localised */}
-        {card.isNew && (
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-brand-cognac px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-brand-cream">
-            <span className="block h-1 w-1 rounded-full bg-brand-cream/80" />
-            {newBadge}
-          </span>
-        )}
-
-        {/* Bottom name plate */}
-        <div className="absolute inset-x-0 bottom-0 p-4 lg:p-5">
-          <div className="rounded-[3px] bg-brand-cream/85 px-3.5 py-3 backdrop-blur-[2px]">
-            <p
-              className="font-display text-brand-ink"
-              style={{
-                fontSize: "22px",
-                lineHeight: 1.05,
-                letterSpacing: "-0.015em",
-              }}
-            >
-              {card.name}
-            </p>
-            <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.22em] text-brand-mute">
-              {categoryLabel}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Underline detail on hover */}
-      <div className="mt-3 flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-brand-mute">
-        <span>{actionLabel}</span>
-        <span className="transition-transform duration-300 group-hover:translate-x-1">
-          →
-        </span>
-      </div>
-    </Link>
-  );
-}
-
-/**
- * Small abstract ornaments — purely decorative, no copy or branding.
- * Drawn at card-center scale; kept airy and subtle.
- */
-function CardOrnament({ motif }: { motif: Card["ornament"] }) {
-  const stroke = "rgba(43, 30, 22, 0.22)";
-  const accent = "rgba(140, 90, 60, 0.55)";
-
-  if (motif === "leaf") {
-    return (
-      <svg viewBox="0 0 200 260" className="h-[78%] w-auto">
-        <g fill="none" stroke={stroke} strokeWidth="1" strokeLinecap="round">
-          <path d="M100 30 Q100 130 100 230" />
-          {Array.from({ length: 8 }).map((_, i) => (
-            <g key={i}>
-              <path
-                d={`M100 ${50 + i * 22} Q ${70 - (i % 2) * 10} ${60 + i * 22}, ${50 + (i % 2) * 6} ${70 + i * 22}`}
-              />
-              <path
-                d={`M100 ${50 + i * 22} Q ${130 + (i % 2) * 10} ${60 + i * 22}, ${150 - (i % 2) * 6} ${70 + i * 22}`}
-              />
-            </g>
-          ))}
-        </g>
-      </svg>
-    );
-  }
-
-  if (motif === "vine") {
-    return (
-      <svg viewBox="0 0 220 260" className="h-[80%] w-auto">
-        <g fill="none" stroke={stroke} strokeWidth="1">
-          <path
-            d="M40 30 Q 120 80, 90 130 T 150 230"
-            strokeLinecap="round"
-          />
-          {[60, 95, 130, 170, 210].map((y, i) => (
-            <g key={i} stroke={accent}>
-              <circle cx={i % 2 === 0 ? 80 : 130} cy={y} r="6" fill="none" />
-              <circle cx={i % 2 === 0 ? 80 : 130} cy={y} r="2" fill={accent} />
-            </g>
-          ))}
-        </g>
-      </svg>
-    );
-  }
-
-  if (motif === "wreath") {
-    return (
-      <svg viewBox="0 0 220 260" className="h-[78%] w-auto">
-        <g fill="none" stroke={stroke} strokeWidth="1">
-          <ellipse cx="110" cy="130" rx="78" ry="98" />
-          {Array.from({ length: 16 }).map((_, i) => {
-            const a = (i / 16) * Math.PI * 2;
-            const cx = 110 + Math.cos(a) * 78;
-            const cy = 130 + Math.sin(a) * 98;
-            return (
-              <circle
-                key={i}
-                cx={cx}
-                cy={cy}
-                r="4"
-                fill={i % 3 === 0 ? accent : "none"}
-                stroke={stroke}
-              />
-            );
-          })}
-        </g>
-      </svg>
-    );
-  }
-
-  if (motif === "ribbon") {
-    return (
-      <svg viewBox="0 0 220 60" className="w-[78%]">
-        <g fill="none" stroke={stroke} strokeWidth="1" strokeLinecap="round">
-          <path d="M10 30 Q 60 0, 110 30 T 210 30" />
-          <path d="M10 30 Q 60 60, 110 30 T 210 30" strokeOpacity="0.5" />
-        </g>
-      </svg>
-    );
-  }
-
-  if (motif === "burst") {
-    return (
-      <svg viewBox="0 0 200 200" className="h-[72%] w-auto">
-        <g fill="none" stroke="rgba(242, 238, 230, 0.35)" strokeWidth="0.8">
-          {Array.from({ length: 24 }).map((_, i) => {
-            const a = (i / 24) * Math.PI * 2;
-            return (
-              <line
-                key={i}
-                x1={100 + Math.cos(a) * 30}
-                y1={100 + Math.sin(a) * 30}
-                x2={100 + Math.cos(a) * 86}
-                y2={100 + Math.sin(a) * 86}
-              />
-            );
-          })}
-          <circle cx="100" cy="100" r="22" stroke="rgba(242, 238, 230, 0.5)" />
-        </g>
-      </svg>
-    );
-  }
-
-  // spray
-  return (
-    <svg viewBox="0 0 200 260" className="h-[78%] w-auto">
-      <g fill="none" stroke={stroke} strokeWidth="1" strokeLinecap="round">
-        {Array.from({ length: 9 }).map((_, i) => {
-          const angle = -40 + i * 10;
-          const rad = (angle * Math.PI) / 180;
-          return (
-            <line
-              key={i}
-              x1="100"
-              y1="230"
-              x2={100 + Math.sin(rad) * 180}
-              y2={230 - Math.cos(rad) * 180}
-            />
-          );
-        })}
-        {[60, 90, 120].map((y, i) => (
-          <circle
-            key={i}
-            cx={i % 2 ? 130 : 80}
-            cy={y}
-            r="3"
-            fill={accent}
-            stroke="none"
-          />
-        ))}
-      </g>
-    </svg>
   );
 }
