@@ -158,6 +158,19 @@ export function luxeThemeFromInvitation(
         }
       : undefined,
     hotels: Array.isArray(inv.hotels) ? inv.hotels : [],
+    /* Migration 007 — venue coords. Hem lat hem lng set olmalı; biri
+       null ise map gizlenir. Numeric kolon Supabase'den string
+       olarak gelebilir → parseFloat ile güvene al. */
+    venueLat: typeof inv.venue_lat === "number"
+      ? inv.venue_lat
+      : inv.venue_lat != null
+        ? parseFloat(String(inv.venue_lat))
+        : null,
+    venueLng: typeof inv.venue_lng === "number"
+      ? inv.venue_lng
+      : inv.venue_lng != null
+        ? parseFloat(String(inv.venue_lng))
+        : null,
     /* Editable copy overrides (migration 003). Each column is nullable;
        falls back to the preset when the editor hasn't set it. */
     greeting: inv.greeting ?? preset.greeting,

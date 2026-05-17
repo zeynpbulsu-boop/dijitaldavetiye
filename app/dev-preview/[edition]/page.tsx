@@ -81,6 +81,9 @@ const SAMPLE_INVITATION: Invitation = {
   gift_account_holder: null,
   gift_note: null,
   hotels: [],
+  /* Migration 007 — venue coords */
+  venue_lat: null,
+  venue_lng: null,
 
   owner_email: null,
   owner_phone: null,

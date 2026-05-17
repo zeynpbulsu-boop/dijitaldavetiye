@@ -95,6 +95,10 @@ export interface Invitation {
   gift_note: string | null;
   hotels: HotelItem[];
 
+  /* Migration 007 — venue koordinatları (B.3 map embed). */
+  venue_lat: number | null;
+  venue_lng: number | null;
+
   owner_email: string | null;
   owner_phone: string | null;
 

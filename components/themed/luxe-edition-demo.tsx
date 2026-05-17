@@ -32,6 +32,7 @@ import { EnvelopeCeremony } from "@/components/themed/envelope-ceremony";
 import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
 import { CountdownLuxe } from "@/components/themed/countdown-luxe";
+import { MapEmbed } from "@/components/themed/map-embed";
 import { RsvpForm } from "@/app/i/[slug]/_rsvp-form";
 import { luxeStrings, type LuxeLocale } from "@/lib/i18n/luxe-strings";
 import type { EditionMeta } from "@/lib/design/tokens";
@@ -126,6 +127,12 @@ export interface LuxeEditionTheme {
   };
   /** Otel önerisi listesi (Pressed Love paritesi). */
   hotels?: HotelItem[];
+  /**
+   * Migration 007 — venue koordinatları. İkisi de set ise harita
+   * section render edilir; biri null ise gizlenir.
+   */
+  venueLat?: number | null;
+  venueLng?: number | null;
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -431,6 +438,30 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         </section>
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
+
+        {/* MAP — Migration 007, B.3. İki koordinat da set ise. */}
+        {typeof theme.venueLat === "number" && typeof theme.venueLng === "number" && (
+          <>
+            <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-32">
+              <SectionHeader
+                theme={theme}
+                eyebrow={i18n.sections.map.eyebrow}
+                title={i18n.sections.map.title}
+              />
+              <div className="mt-10 sm:mt-14">
+                <MapEmbed
+                  lat={theme.venueLat}
+                  lng={theme.venueLng}
+                  label={theme.venue}
+                  directionsLabel={i18n.sections.map.directions}
+                  ink={theme.ink}
+                  accent={theme.accent}
+                />
+              </div>
+            </section>
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+          </>
+        )}
 
         {/* PHOTO GALLERY — Migration 005, couple yüklediğinde */}
         {theme.photos && theme.photos.length > 0 && (

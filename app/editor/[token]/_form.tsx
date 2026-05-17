@@ -132,6 +132,26 @@ export function EditorForm({
           defaultValue={invitation.venue_address ?? ""}
           placeholder="Via dei Cipressi, 18"
         />
+        <Row>
+          <Field
+            label="Enlem (latitude)"
+            name="venue_lat"
+            defaultValue={
+              invitation.venue_lat != null ? String(invitation.venue_lat) : ""
+            }
+            placeholder="41.0082"
+            hint="Google Maps'te pin'e sağ tıkla → koordinatı kopyala. İlk sayı."
+          />
+          <Field
+            label="Boylam (longitude)"
+            name="venue_lng"
+            defaultValue={
+              invitation.venue_lng != null ? String(invitation.venue_lng) : ""
+            }
+            placeholder="28.9784"
+            hint="İkinci sayı. İkisi de doluysa davetiyede harita çıkar."
+          />
+        </Row>
       </Group>
 
       {showLuxeFields && (
