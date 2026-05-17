@@ -18,12 +18,13 @@ export type InvitationStatus =
   | "refunded";
 export type RsvpAttendance = "yes" | "no" | "maybe";
 export type DbLocale = "tr" | "en" | "sr";
-/** Migration 004 — invitations.event_type CHECK enum. */
+/** Migration 004 + 009 — invitations.event_type CHECK enum. */
 export type EventType =
   | "wedding"
   | "engagement"
   | "henna"
-  | "save_the_date";
+  | "save_the_date"
+  | "birthday";
 /** Migration 004 — guests.status CHECK enum. */
 export type GuestStatus = "invited" | "confirmed" | "declined" | "maybe";
 
@@ -155,6 +156,19 @@ export interface Guest {
 
 export type GuestInsert = Partial<Guest> &
   Pick<Guest, "invitation_id" | "name">;
+
+/** Migration 009 — public.reviews row. */
+export interface Review {
+  id: string;
+  name: string;
+  country: string | null;
+  country_code: string | null;
+  rating: number;
+  content: string;
+  verified: boolean;
+  published: boolean;
+  created_at: string;
+}
 
 export interface WebhookEvent {
   webhook_id: string;

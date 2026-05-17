@@ -66,6 +66,13 @@ export default function KvkkPage() {
             boyunca + 12 ay; sonrasında anonimleştirilir veya silinir.
           </p>
           <p>
+            <strong>Davetiye erişim süresi:</strong> Her davetiye etkinlik
+            tarihinden sonra <strong>en az 2 ay</strong> daha online kalır.
+            Bu süre içinde misafirler davetiyeyi açabilir, RSVP yanıtları
+            paneliniz üzerinden erişilebilir. 2 ay sonra otomatik
+            arşivlenir; talep üzerine uzatılabilir.
+          </p>
+          <p>
             <strong>Haklarınız:</strong> KVKK madde 11 kapsamında verilerinize
             erişme, düzeltme, silme veya işlemeye itiraz etme haklarına
             sahipsiniz. Talepleriniz için{" "}
