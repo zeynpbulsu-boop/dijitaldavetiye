@@ -46,6 +46,8 @@ function baseInvitation(overrides: Partial<Invitation> = {}): Invitation {
     gift_account_holder: null,
     gift_note: null,
     hotels: [],
+    venue_lat: null,
+    venue_lng: null,
     owner_email: null,
     owner_phone: null,
     admin_token: "tok",

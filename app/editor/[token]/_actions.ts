@@ -39,6 +39,22 @@ function hexOrNull(v: FormDataEntryValue | null): string | null {
   return m ? `#${m[1].toLowerCase()}` : null;
 }
 
+/** Latitude (-90..90) ya da longitude (-180..180) parse. Hatalı veya
+ *  boş giriş için null döner — DB CHECK / Postgres NUMERIC overflow'a
+ *  düşmeden önce burada filtreliyoruz. */
+function coordOrNull(
+  v: FormDataEntryValue | null,
+  max: number,
+): number | null {
+  const s = trimOrNull(v);
+  if (!s) return null;
+  /* Türkçe ondalık virgülünü da kabul et. */
+  const n = parseFloat(s.replace(",", "."));
+  if (!Number.isFinite(n)) return null;
+  if (n < -max || n > max) return null;
+  return n;
+}
+
 const ALLOWED_LOCALES: DbLocale[] = ["tr", "en", "sr"];
 const ALLOWED_EVENT_TYPES: EventType[] = [
   "wedding",
@@ -125,6 +141,11 @@ export async function saveInvitation(
     gift_bank: trimOrNull(formData.get("gift_bank")),
     gift_account_holder: trimOrNull(formData.get("gift_account_holder")),
     gift_note: trimOrNull(formData.get("gift_note")),
+
+    /* Migration 007 — venue coords (B.3 map embed). Geçersiz veya
+       aralık dışı değer → null (harita gizlenir). */
+    venue_lat: coordOrNull(formData.get("venue_lat"), 90),
+    venue_lng: coordOrNull(formData.get("venue_lng"), 180),
   };
 
   const { error: updateErr } = await supabase
