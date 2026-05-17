@@ -197,7 +197,7 @@ export function GuestList({ token }: GuestListProps) {
           Misafirlerini yönet
         </h2>
         <p className="mt-2 max-w-[600px] text-[13px] leading-[1.7] text-brand-mute">
-          Davetli ekle; misafirin RSVP'si geldiğinde statüsü otomatik
+          Davetli ekle; misafirin RSVP&apos;si geldiğinde statüsü otomatik
           güncellenir. İsim veya e-posta eşleşmesi yoksa walk-in olarak ayrı
           satıra düşer.
         </p>
