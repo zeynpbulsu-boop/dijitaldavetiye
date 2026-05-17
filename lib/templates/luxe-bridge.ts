@@ -144,6 +144,10 @@ export function luxeThemeFromInvitation(
      + event_type label overrides. */
     locale: inv.locale,
     eventType: inv.event_type,
+    /* Migration 005 — premium media + theming */
+    waxSealColor: inv.wax_seal_color,
+    heroMediaUrl: inv.hero_media_url,
+    photos: Array.isArray(inv.photos) ? inv.photos : [],
     /* Editable copy overrides (migration 003). Each column is nullable;
        falls back to the preset when the editor hasn't set it. */
     greeting: inv.greeting ?? preset.greeting,

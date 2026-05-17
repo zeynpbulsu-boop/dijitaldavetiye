@@ -21,6 +21,7 @@ export interface LuxeStrings {
     music: { eyebrow: string; title: string };
     rsvp: { eyebrow: string; title: string };
     faq: { eyebrow: string; title: string };
+    gallery: { eyebrow: string; title: string };
     calendarGoogle: string;
     calendarIcs: string;
   };
@@ -49,6 +50,7 @@ const TR: LuxeStrings = {
     music: { eyebrow: "— Bizim Müziğimiz", title: "O Anın Sesi" },
     rsvp: { eyebrow: "— Yanıt", title: "Bizimle olur musun?" },
     faq: { eyebrow: "— Sıkça Sorulanlar", title: "Aklındaki Sorular" },
+    gallery: { eyebrow: "— Anılarımız", title: "Bir bakış" },
     calendarGoogle: "Google Takvim",
     calendarIcs: "Apple / Outlook (.ics)",
   },
@@ -82,6 +84,7 @@ const EN: LuxeStrings = {
     music: { eyebrow: "— Our Music", title: "The Sound of the Moment" },
     rsvp: { eyebrow: "— Reply", title: "Will you be there?" },
     faq: { eyebrow: "— Frequently Asked", title: "On your mind" },
+    gallery: { eyebrow: "— Our memories", title: "A glimpse" },
     calendarGoogle: "Google Calendar",
     calendarIcs: "Apple / Outlook (.ics)",
   },
@@ -115,6 +118,7 @@ const SR: LuxeStrings = {
     music: { eyebrow: "— Naša Muzika", title: "Zvuk trenutka" },
     rsvp: { eyebrow: "— Odgovor", title: "Da li ćeš biti tu?" },
     faq: { eyebrow: "— Često Postavljana", title: "Pitanja" },
+    gallery: { eyebrow: "— Naše uspomene", title: "Pogled" },
     calendarGoogle: "Google kalendar",
     calendarIcs: "Apple / Outlook (.ics)",
   },

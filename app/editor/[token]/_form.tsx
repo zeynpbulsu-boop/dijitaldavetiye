@@ -183,6 +183,26 @@ export function EditorForm({
         </Group>
       )}
 
+      <Group title="Mühür rengi" eyebrow="— Tema">
+        <p className="text-[13px] leading-[1.7] text-brand-mute">
+          Mühürün üzerinde mix-blend-multiply ile bindirilir; boş
+          bırakırsan edisyonun varsayılan rengi geçerli olur. Düğün
+          renklerine uyacak bir hex değer dene.
+        </p>
+        <div className="flex items-center gap-3">
+          <input
+            type="color"
+            name="wax_seal_color"
+            defaultValue={invitation.wax_seal_color ?? "#7A8A6E"}
+            className="h-11 w-16 cursor-pointer rounded-md border border-brand-ink/15 bg-white"
+          />
+          <span className="text-[12px] text-brand-mute">
+            Çıkarmak için renk seçiciyi varsayılan dışı bir tona çek, sonra
+            kutuyu boşalt — kayıttan sonra varsayılan rengi alır.
+          </span>
+        </div>
+      </Group>
+
       <div className="flex flex-wrap items-center gap-4 border-t border-brand-ink/12 pt-6">
         <button
           type="submit"

@@ -35,7 +35,8 @@ import { CountdownLuxe } from "@/components/themed/countdown-luxe";
 import { RsvpForm } from "@/app/i/[slug]/_rsvp-form";
 import { luxeStrings, type LuxeLocale } from "@/lib/i18n/luxe-strings";
 import type { EditionMeta } from "@/lib/design/tokens";
-import type { EventType } from "@/lib/db/types";
+import type { EventType, PhotoItem } from "@/lib/db/types";
+import Image from "next/image";
 
 export interface LuxeEditionTheme {
   /** EditionMeta türü — sadece calligraphyFont ve separator için gerekli. */
@@ -100,6 +101,19 @@ export interface LuxeEditionTheme {
    * 'henna', 'save_the_date' için section başlıkları override edilir.
    */
   eventType?: EventType;
+  /**
+   * Migration 005 — couple'ın seçtiği wax seal tint rengi (hex).
+   * Yoksa preset PNG rengi.
+   */
+  waxSealColor?: string | null;
+  /**
+   * Couple'ın yüklediği hero görseli (Supabase Storage public URL).
+   * Verildiğinde envelope sonrası Hero üstüne kapak fotosu olarak
+   * render edilir.
+   */
+  heroMediaUrl?: string | null;
+  /** Galeri item listesi. Boş array veya undefined ise galeri gizlenir. */
+  photos?: PhotoItem[];
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -165,6 +179,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
           inkColor={theme.ink}
           haloColor={theme.haloColor}
           waxSealSrc={theme.waxSealSrc}
+          waxSealTint={theme.waxSealColor}
           watermarkSrc={theme.watermarkSrc}
           onOpened={() => setOpened(true)}
         />
@@ -203,6 +218,26 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         />
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
+
+        {/* HERO MEDIA — Migration 005, couple yüklediğinde gösterilir */}
+        {theme.heroMediaUrl && (
+          <>
+            <section className="relative w-full px-5 py-12 sm:px-6 sm:py-16 lg:py-20">
+              <div className="mx-auto max-w-[1100px] overflow-hidden rounded-md shadow-ed-lg">
+                <div className="relative aspect-[4/3] w-full sm:aspect-[16/9]">
+                  <Image
+                    src={theme.heroMediaUrl}
+                    alt={`${theme.coupleName} — kapak fotoğrafı`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1100px) 92vw, 1100px"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+              </div>
+            </section>
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+          </>
+        )}
 
         {/* SLOT MACHINE */}
         <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
@@ -383,6 +418,41 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
 
+        {/* PHOTO GALLERY — Migration 005, couple yüklediğinde */}
+        {theme.photos && theme.photos.length > 0 && (
+          <>
+            <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-32">
+              <SectionHeader
+                theme={theme}
+                eyebrow={i18n.sections.gallery?.eyebrow ?? "— Anılarımız"}
+                title={i18n.sections.gallery?.title ?? "Bir bakış"}
+              />
+              <div className="mx-auto mt-10 grid max-w-[1100px] grid-cols-2 gap-2 sm:mt-14 sm:grid-cols-3 sm:gap-3 lg:gap-4">
+                {theme.photos.map((p, i) => (
+                  <motion.div
+                    key={p.url}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-10%" }}
+                    transition={{ duration: 0.8, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative aspect-square overflow-hidden rounded-sm"
+                    style={{ border: `0.5px solid ${theme.inkMuted}30` }}
+                  >
+                    <Image
+                      src={p.url}
+                      alt={p.alt ?? `${theme.coupleName} — galeri ${i + 1}`}
+                      fill
+                      sizes="(max-width: 640px) 50vw, 33vw"
+                      style={{ objectFit: "cover" }}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+          </>
+        )}
+
         {/* MUSIC */}
         <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-40">
           <SectionHeader
@@ -492,6 +562,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
               size={170}
               minSize={120}
               haloColor={theme.haloColor}
+              tintColor={theme.waxSealColor}
               rotate={-4}
               bgColor={theme.footerBg}
             />
@@ -625,6 +696,7 @@ function Hero({
             minSize={140}
             priority
             haloColor={theme.haloColor}
+            tintColor={theme.waxSealColor}
             rotate={-6}
             delay={1.0}
             bgColor={theme.bg}

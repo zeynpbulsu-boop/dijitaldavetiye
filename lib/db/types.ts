@@ -27,6 +27,13 @@ export type EventType =
 /** Migration 004 — guests.status CHECK enum. */
 export type GuestStatus = "invited" | "confirmed" | "declined" | "maybe";
 
+/** Migration 005 — galeri item (invitations.photos JSONB array). */
+export interface PhotoItem {
+  url: string;
+  alt?: string;
+  caption?: string;
+}
+
 export interface Invitation {
   id: string;
   slug: string;
@@ -61,6 +68,14 @@ export interface Invitation {
      save_the_date). LuxeEditionDemo etiket overrideları bu kolona
      bakar; not-null default 'wedding' yani geçmiş satırlar etkilenmez. */
   event_type: EventType;
+
+  /* Migration 005 — premium media + theming overrideları:
+       wax_seal_color  hex string; null ise preset rengi
+       hero_media_url  couple yüklediği venue/engagement görseli
+       photos          galeri item listesi (JSONB array) */
+  wax_seal_color: string | null;
+  hero_media_url: string | null;
+  photos: PhotoItem[];
 
   owner_email: string | null;
   owner_phone: string | null;

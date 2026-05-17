@@ -31,6 +31,14 @@ function isoDateOrNull(v: FormDataEntryValue | null): string | null {
   return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null;
 }
 
+/** 6-haneli hex color validator. #RRGGBB veya RRGGBB kabul. */
+function hexOrNull(v: FormDataEntryValue | null): string | null {
+  const s = trimOrNull(v);
+  if (!s) return null;
+  const m = s.match(/^#?([0-9a-f]{6})$/i);
+  return m ? `#${m[1].toLowerCase()}` : null;
+}
+
 const ALLOWED_LOCALES: DbLocale[] = ["tr", "en", "sr"];
 const ALLOWED_EVENT_TYPES: EventType[] = [
   "wedding",
@@ -106,6 +114,10 @@ export async function saveInvitation(
     envelope_cta: trimOrNull(formData.get("envelope_cta")),
     footer_note: trimOrNull(formData.get("footer_note")),
     music_track: trimOrNull(formData.get("music_track")),
+
+    /* Migration 005 — wax seal tint. hero_media_url + photos /api/upload
+       üzerinden yönetiliyor, bu form'da yok. */
+    wax_seal_color: hexOrNull(formData.get("wax_seal_color")),
   };
 
   const { error: updateErr } = await supabase
