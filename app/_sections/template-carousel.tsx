@@ -18,7 +18,6 @@ import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect } from "react";
 import { TiltCard } from "@/components/effects/tilt-card";
-import { useT } from "@/lib/i18n/provider";
 
 type EditionCard = {
   slug: string;
@@ -86,7 +85,6 @@ const cards: EditionCard[] = [
 ];
 
 export function TemplateCarousel() {
-  const t = useT();
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-15%" });
   const railRef = useRef<HTMLDivElement>(null);
@@ -146,7 +144,7 @@ export function TemplateCarousel() {
         >
           <div>
             <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-cognac">
-              — {t.templates?.eyebrow ?? "Koleksiyon"}
+              — Koleksiyon
             </span>
             <h2
               className="mt-4 font-display text-brand-ink"
