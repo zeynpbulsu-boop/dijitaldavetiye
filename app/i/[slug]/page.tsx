@@ -4,6 +4,8 @@ import { adminDb } from "@/lib/db/supabase";
 import type { Invitation } from "@/lib/db/types";
 import { dictionaries } from "@/lib/i18n/dictionaries";
 import { themeForSlug } from "@/lib/templates/themes";
+import { luxeThemeFromInvitation } from "@/lib/templates/luxe-bridge";
+import { LuxeEditionDemo } from "@/components/themed/luxe-edition-demo";
 import { InvitationView } from "./_invitation-view";
 
 /**
@@ -59,6 +61,15 @@ export default async function PublicInvitationPage({
 }) {
   const inv = await loadLive(params.slug);
   if (!inv) notFound();
+
+  /* FAZ A.3 — Demo → Production bridge. When the couple chose one of
+     the 6 luxe editions, render with `LuxeEditionDemo` so the live
+     invitation matches the demo they previewed. Everything else stays
+     on the legacy InvitationView until those templates migrate too. */
+  const luxeTheme = luxeThemeFromInvitation(inv);
+  if (luxeTheme) {
+    return <LuxeEditionDemo theme={luxeTheme} />;
+  }
 
   const t = dictionaries[inv.locale];
   const theme = themeForSlug(inv.template_slug);
