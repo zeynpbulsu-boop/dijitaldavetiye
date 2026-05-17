@@ -148,6 +148,16 @@ export function luxeThemeFromInvitation(
     waxSealColor: inv.wax_seal_color,
     heroMediaUrl: inv.hero_media_url,
     photos: Array.isArray(inv.photos) ? inv.photos : [],
+    /* Migration 006 — gift + hotels (Pressed Love paritesi) */
+    gift: inv.gift_iban
+      ? {
+          iban: inv.gift_iban,
+          bank: inv.gift_bank,
+          accountHolder: inv.gift_account_holder,
+          note: inv.gift_note,
+        }
+      : undefined,
+    hotels: Array.isArray(inv.hotels) ? inv.hotels : [],
     /* Editable copy overrides (migration 003). Each column is nullable;
        falls back to the preset when the editor hasn't set it. */
     greeting: inv.greeting ?? preset.greeting,

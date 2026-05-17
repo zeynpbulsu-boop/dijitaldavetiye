@@ -22,6 +22,10 @@ export interface LuxeStrings {
     rsvp: { eyebrow: string; title: string };
     faq: { eyebrow: string; title: string };
     gallery: { eyebrow: string; title: string };
+    gifts: { eyebrow: string; title: string; intro: string; copyLabel: string; copyDone: string; accountHolder: string; bank: string };
+    hotels: { eyebrow: string; title: string; intro: string };
+    backToTop: string;
+    skip: string;
     calendarGoogle: string;
     calendarIcs: string;
   };
@@ -51,6 +55,23 @@ const TR: LuxeStrings = {
     rsvp: { eyebrow: "— Yanıt", title: "Bizimle olur musun?" },
     faq: { eyebrow: "— Sıkça Sorulanlar", title: "Aklındaki Sorular" },
     gallery: { eyebrow: "— Anılarımız", title: "Bir bakış" },
+    gifts: {
+      eyebrow: "— Hediye",
+      title: "Sadece varlığınız",
+      intro:
+        "Varlığınız en büyük hediye. Yine de hatırlamak isteyenler için banka bilgilerimizi paylaşıyoruz.",
+      copyLabel: "Kopyala",
+      copyDone: "Kopyalandı",
+      accountHolder: "Hesap sahibi",
+      bank: "Banka",
+    },
+    hotels: {
+      eyebrow: "— Konaklama",
+      title: "Kalacak yer",
+      intro: "Yakın otel önerilerimiz aşağıda. RSVP formunda tercihinizi belirtebilirsiniz.",
+    },
+    backToTop: "Yukarı Çık",
+    skip: "Atla",
     calendarGoogle: "Google Takvim",
     calendarIcs: "Apple / Outlook (.ics)",
   },
@@ -85,6 +106,23 @@ const EN: LuxeStrings = {
     rsvp: { eyebrow: "— Reply", title: "Will you be there?" },
     faq: { eyebrow: "— Frequently Asked", title: "On your mind" },
     gallery: { eyebrow: "— Our memories", title: "A glimpse" },
+    gifts: {
+      eyebrow: "— Gifts",
+      title: "Your presence is the gift",
+      intro:
+        "Your presence is the greatest gift. For those who'd like to mark the day, our bank details are below.",
+      copyLabel: "Copy",
+      copyDone: "Copied",
+      accountHolder: "Account holder",
+      bank: "Bank",
+    },
+    hotels: {
+      eyebrow: "— Stay",
+      title: "Where to stay",
+      intro: "A few nearby options. You can note your preference in the RSVP form.",
+    },
+    backToTop: "Back to Top",
+    skip: "Skip",
     calendarGoogle: "Google Calendar",
     calendarIcs: "Apple / Outlook (.ics)",
   },
@@ -119,6 +157,23 @@ const SR: LuxeStrings = {
     rsvp: { eyebrow: "— Odgovor", title: "Da li ćeš biti tu?" },
     faq: { eyebrow: "— Često Postavljana", title: "Pitanja" },
     gallery: { eyebrow: "— Naše uspomene", title: "Pogled" },
+    gifts: {
+      eyebrow: "— Pokloni",
+      title: "Vaše prisustvo je dar",
+      intro:
+        "Vaše prisustvo je najveći dar. Onima koji žele da obeleže dan dajemo i bankovne podatke.",
+      copyLabel: "Kopiraj",
+      copyDone: "Kopirano",
+      accountHolder: "Vlasnik računa",
+      bank: "Banka",
+    },
+    hotels: {
+      eyebrow: "— Smeštaj",
+      title: "Gde odsesti",
+      intro: "Nekoliko obližnjih opcija. Preferenciju možete navesti u RSVP formi.",
+    },
+    backToTop: "Na vrh",
+    skip: "Preskoči",
     calendarGoogle: "Google kalendar",
     calendarIcs: "Apple / Outlook (.ics)",
   },

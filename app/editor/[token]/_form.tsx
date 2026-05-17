@@ -183,6 +183,40 @@ export function EditorForm({
         </Group>
       )}
 
+      <Group title="Hediye / IBAN" eyebrow="— Banka Bilgileri">
+        <p className="text-[13px] leading-[1.7] text-brand-mute">
+          IBAN doluysa davetiyenin sonunda &quot;kopyala&quot; butonuyla bir
+          banka kartı görünür. Boş bırakırsan bu bölüm gizlenir.
+        </p>
+        <Row>
+          <Field
+            label="IBAN"
+            name="gift_iban"
+            defaultValue={invitation.gift_iban ?? ""}
+            placeholder="TR00 0000 0000 0000 0000 0000 00"
+          />
+          <Field
+            label="Banka"
+            name="gift_bank"
+            defaultValue={invitation.gift_bank ?? ""}
+            placeholder="Garanti BBVA"
+          />
+        </Row>
+        <Field
+          label="Hesap sahibi"
+          name="gift_account_holder"
+          defaultValue={invitation.gift_account_holder ?? ""}
+          placeholder="Defne &amp; Aras"
+        />
+        <Field
+          label="Ek not (opsiyonel)"
+          name="gift_note"
+          defaultValue={invitation.gift_note ?? ""}
+          placeholder="Açıklama alanına ismini yazabilir misin?"
+          hint="Türk geleneği: altın takma yerine banka tercih edenler için kısa bir mesaj."
+        />
+      </Group>
+
       <Group title="Mühür rengi" eyebrow="— Tema">
         <p className="text-[13px] leading-[1.7] text-brand-mute">
           Mühürün üzerinde mix-blend-multiply ile bindirilir; boş
