@@ -1,0 +1,104 @@
+"use server";
+
+/**
+ * Editor server actions — FAZ A.4.
+ *
+ * Token-gated mutations for the couple's editor at /editor/[token].
+ * Authentication is the same `admin_token` URL pattern used by
+ * /admin/[token]: anyone who has the link can write to that single
+ * invitation row. No user accounts.
+ *
+ * RLS note: writes go through the service-role `adminDb()` client so
+ * row-level policies don't apply here — the token check IS the policy.
+ * Don't expose this action outside a server context.
+ */
+
+import { revalidatePath } from "next/cache";
+import { adminDb } from "@/lib/db/supabase";
+import type { Invitation } from "@/lib/db/types";
+
+/** Trimmed text → null when empty (so DB nulls fall back to luxe presets). */
+function trimOrNull(v: FormDataEntryValue | null): string | null {
+  if (typeof v !== "string") return null;
+  const trimmed = v.trim();
+  return trimmed.length === 0 ? null : trimmed;
+}
+
+/** Loose YYYY-MM-DD validator. Returns null on invalid/empty input. */
+function isoDateOrNull(v: FormDataEntryValue | null): string | null {
+  const s = trimOrNull(v);
+  if (!s) return null;
+  return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null;
+}
+
+export interface SaveResult {
+  ok: boolean;
+  /** Human-readable Turkish status — surfaced in the form UI. */
+  message: string;
+  slug?: string;
+}
+
+/**
+ * Persist the editable subset of an invitation. Whitelisted keys only:
+ * we don't accept tier, status, payment fields, or admin_token via
+ * this action even if the form submits them.
+ */
+export async function saveInvitation(
+  token: string,
+  formData: FormData,
+): Promise<SaveResult> {
+  if (!token) return { ok: false, message: "Geçersiz erişim." };
+  const supabase = adminDb();
+
+  /* Resolve the row by token first so we can return its slug for
+     navigation, and so we fail fast on unknown tokens. */
+  const { data: existing, error: lookupErr } = await supabase
+    .from("invitations")
+    .select("id, slug")
+    .eq("admin_token", token)
+    .single<Pick<Invitation, "id" | "slug">>();
+
+  if (lookupErr || !existing) {
+    return { ok: false, message: "Bu davetiye bulunamadı." };
+  }
+
+  const patch: Partial<Invitation> = {
+    /* Couple + venue + date — already in the schema since 001_init.sql */
+    partner_one_name: trimOrNull(formData.get("partner_one_name")),
+    partner_two_name: trimOrNull(formData.get("partner_two_name")),
+    monogram_initials: trimOrNull(formData.get("monogram_initials")),
+    venue_name: trimOrNull(formData.get("venue_name")),
+    venue_city: trimOrNull(formData.get("venue_city")),
+    venue_address: trimOrNull(formData.get("venue_address")),
+    wedding_date: isoDateOrNull(formData.get("wedding_date")),
+
+    /* Luxe copy overrides — added in migration 003 */
+    greeting: trimOrNull(formData.get("greeting")),
+    hero_eyebrow: trimOrNull(formData.get("hero_eyebrow")),
+    hero_cta: trimOrNull(formData.get("hero_cta")),
+    envelope_cta: trimOrNull(formData.get("envelope_cta")),
+    footer_note: trimOrNull(formData.get("footer_note")),
+    music_track: trimOrNull(formData.get("music_track")),
+  };
+
+  const { error: updateErr } = await supabase
+    .from("invitations")
+    .update(patch)
+    .eq("id", existing.id);
+
+  if (updateErr) {
+    return {
+      ok: false,
+      message: `Kaydedilemedi: ${updateErr.message}`,
+    };
+  }
+
+  /* Bust the live invitation page so the next visit shows fresh copy. */
+  revalidatePath(`/i/${existing.slug}`);
+
+  return {
+    ok: true,
+    message: "Değişiklikler kaydedildi.",
+    slug: existing.slug,
+  };
+}
