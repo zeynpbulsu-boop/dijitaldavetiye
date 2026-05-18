@@ -32,6 +32,11 @@ import {
   EditionAmbient,
   type EditionAmbientKind,
 } from "@/components/themed/edition-ambient";
+import {
+  JourneyTimeline,
+  type StoryEntry,
+  type StoryGlyph,
+} from "@/components/themed/journey-timeline";
 import { EnvelopeCeremony } from "@/components/themed/envelope-ceremony";
 import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
@@ -148,6 +153,13 @@ export interface LuxeEditionTheme {
    * "elegant animation" paritesi. Verilmezse animasyon render edilmez.
    */
   ambient?: EditionAmbientKind;
+  /**
+   * PR #20 — "Bizim Hikayemiz" timeline kayıtları. TDI Heritage
+   * paritesi. Verilmezse timeline section render edilmez.
+   */
+  story?: StoryEntry[];
+  /** PR #20 — Story timeline'da kullanılacak edition-spesifik glyph. */
+  storyGlyph?: StoryGlyph;
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -277,6 +289,24 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                 </div>
               </div>
             </section>
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+          </>
+        )}
+
+        {/* JOURNEY TIMELINE — PR #20 (TDI Heritage paritesi) */}
+        {theme.story && theme.story.length > 0 && (
+          <>
+            <JourneyTimeline
+              entries={theme.story}
+              glyph={theme.storyGlyph}
+              ink={theme.ink}
+              inkSoft={theme.inkSoft}
+              inkMuted={theme.inkMuted}
+              accent={theme.accent}
+              bg={theme.bg}
+              eyebrow={i18n.sections.story?.eyebrow ?? "— Hikâyemiz"}
+              title={i18n.sections.story?.title ?? "Yolumuzdan"}
+            />
             <ThemedSeparator theme={themeForSep} lineLength={100} />
           </>
         )}
