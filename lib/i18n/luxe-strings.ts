@@ -25,6 +25,7 @@ export interface LuxeStrings {
     gifts: { eyebrow: string; title: string; intro: string; copyLabel: string; copyDone: string; accountHolder: string; bank: string };
     hotels: { eyebrow: string; title: string; intro: string };
     map: { eyebrow: string; title: string; directions: string };
+    story?: { eyebrow: string; title: string };
     scratchHint: string;
     backToTop: string;
     skip: string;
@@ -76,6 +77,10 @@ const TR: LuxeStrings = {
       eyebrow: "— Nasıl Gelinir",
       title: "Mekanımız",
       directions: "Yol Tarifi Al",
+    },
+    story: {
+      eyebrow: "— Hikâyemiz",
+      title: "Yolumuzdan",
     },
     scratchHint: "Tarihi kazıyın",
     backToTop: "Yukarı Çık",
@@ -134,6 +139,10 @@ const EN: LuxeStrings = {
       title: "The venue",
       directions: "Get Directions",
     },
+    story: {
+      eyebrow: "— Our Journey",
+      title: "Along our way",
+    },
     scratchHint: "Scratch to reveal",
     backToTop: "Back to Top",
     skip: "Skip",
@@ -190,6 +199,10 @@ const SR: LuxeStrings = {
       eyebrow: "— Kako stići",
       title: "Mesto",
       directions: "Uputstvo",
+    },
+    story: {
+      eyebrow: "— Naša priča",
+      title: "Putem našim",
     },
     scratchHint: "Skidirajte datum",
     backToTop: "Na vrh",
