@@ -45,12 +45,11 @@ export function Nav() {
   }, [drawerOpen]);
 
   const navItems = [
-    { label: t.nav.menu.manifesto, href: "#manifesto" },
-    { label: t.nav.menu.themes, href: "#themes" },
-    { label: t.nav.menu.how, href: "#how-it-works" },
-    { label: t.nav.menu.pricing, href: "#pricing" },
-    { label: t.nav.menu.faq, href: "#faq" },
-    { label: t.nav.menu.contact, href: "#footer" },
+    { label: t.nav.menu.themes, href: "/tasarimlar" },
+    { label: t.nav.menu.how, href: "/#how-it-works" },
+    { label: t.nav.menu.pricing, href: "/#pricing" },
+    { label: t.nav.menu.faq, href: "/#faq" },
+    { label: t.nav.menu.contact, href: "/#footer" },
   ];
 
   return (

@@ -1,107 +1,28 @@
 "use client";
 
 /**
- * TemplateCarousel — 6 luxe edition kartı (yeniden yazıldı).
+ * TemplateCarousel — 6 luxe edition + "Yakında" placeholder.
  *
- * Önceki carousel 9 karışık kart gösteriyordu, isim-slug uyumsuzdu
- * (örn. "Lavender" diye gösterilen kart aslında egee-blue'ya bağlıydı,
- * "Mansion Lights" verde-borgogna'ya gidiyordu). Yeni hâl: 6 gerçek
- * luxe edition, her birinin gerçek wax seal PNG'si kapak olarak,
- * tıklayınca /dev-preview/{slug}'a — yani gerçek davetiye demosuna
- * gider.
+ * PR #18 refactor: kart markup'ı EditionCardTile'a taşındı, data
+ * lib/templates/edition-cards.ts'te. /tasarimlar dedicated catalog
+ * sayfası aynı data + tile'ı kullanıyor (bizevleniyoruz.net paritesi).
  *
- * Mouse drag + native scroll + touch swipe rail.
+ * Polish (PR #18):
+ *  - Numbered display (01-06) her kartta
+ *  - "Demoyu gör →" pill hover'da görünür (TDI paritesi)
+ *  - "EN SEVİLEN" rozeti Aethel'da (bizevleniyoruz paritesi)
+ *  - 7. kart "Yakında" placeholder (TDI Coming Soon paritesi)
+ *  - Footer'da "Tüm koleksiyon →" link /tasarimlar'a gider
  */
 
 import Link from "next/link";
-import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect } from "react";
-import { TiltCard } from "@/components/effects/tilt-card";
-
-type EditionCard = {
-  slug: string;
-  name: string;
-  category: string;
-  /** Sağ üstte kategori chip (Pressed Love paritesi: ELEGANT, DRAMATIC,
-   *  ROMANTIC, COASTAL, BOTANICAL, MODERN). Uppercase, küçük pill. */
-  vibe: string;
-  /** Kart arkaplan gradient'ı — coverScene yüklenirken / fallback için. */
-  bg: { from: string; to: string };
-  /** PR #17 — Per-edition full-bleed sahne (fal.ai rendered, JPEG).
-   *  Kartın ana karakteri. The Digital Invite paritesi: Bloom'da çiçek,
-   *  Wonderlust'ta harita; bizde Aethel'de şapel, Bodrum'da Ege kıyısı. */
-  coverScene: string;
-  /** Wax seal PNG — coverScene'in üstünde merkez ortada oturur. */
-  seal: string;
-  /** "YENİ" rozeti. */
-  isNew?: boolean;
-  /** Sahne koyu mu (font rengi krem) — kart üstündeki metnin
-   *  kontrastı için. */
-  isDark?: boolean;
-};
-
-const cards: EditionCard[] = [
-  {
-    slug: "aethel",
-    name: "Aethel's Chapel",
-    category: "Toskana · Antik Şapel",
-    vibe: "Elegant",
-    bg: { from: "#F2EEE4", to: "#D8DCC9" },
-    coverScene: "/aethel/cover.jpg",
-    seal: "/aethel/wax-seal-luxe.png",
-    isNew: true,
-  },
-  {
-    slug: "atelier-indigo",
-    name: "Atelier Indigo",
-    category: "Gece Yarısı · Altın Varak",
-    vibe: "Dramatic",
-    bg: { from: "#0F1A3D", to: "#1B2E5F" },
-    coverScene: "/atelier-indigo/cover.jpg",
-    seal: "/atelier-indigo/wax-seal.png",
-    isDark: true,
-  },
-  {
-    slug: "mansion-lights",
-    name: "Mansion Lights",
-    category: "Akşam Yalısı · Şampanya",
-    vibe: "Regal",
-    bg: { from: "#11261E", to: "#1F4435" },
-    coverScene: "/mansion-lights/cover.jpg",
-    seal: "/mansion-lights/wax-seal.png",
-    isDark: true,
-    isNew: true,
-  },
-  {
-    slug: "bodrum-blue",
-    name: "Bodrum Blue",
-    category: "Ege Mavisi · Kireç Beyazı",
-    vibe: "Coastal",
-    bg: { from: "#F4F1EA", to: "#CFDCE3" },
-    coverScene: "/bodrum-blue/cover.jpg",
-    seal: "/bodrum-blue/wax-seal.png",
-  },
-  {
-    slug: "olive-grove",
-    name: "Olive Grove",
-    category: "Akdeniz · Zeytin Bahçesi",
-    vibe: "Botanical",
-    bg: { from: "#F2EFE0", to: "#C8D2A8" },
-    coverScene: "/olive-grove/cover.jpg",
-    seal: "/olive-grove/wax-seal.png",
-  },
-  {
-    slug: "aurora",
-    name: "Aurora",
-    category: "Modern Minimal · Mor",
-    vibe: "Modern",
-    bg: { from: "#F8F7F4", to: "#D8D2EC" },
-    coverScene: "/aurora/cover.jpg",
-    seal: "/aurora/wax-seal.png",
-    isNew: true,
-  },
-];
+import { editionCards } from "@/lib/templates/edition-cards";
+import {
+  EditionCardTile,
+  ComingSoonTile,
+} from "@/components/edition-card-tile";
 
 export function TemplateCarousel() {
   const ref = useRef<HTMLElement>(null);
@@ -177,9 +98,9 @@ export function TemplateCarousel() {
               <span className="italic text-brand-cognac">altı hikâye</span>.
             </h2>
             <p className="mt-3 max-w-[540px] text-[14px] leading-[1.7] text-brand-mute">
-              Her edisyon kendi mührü, watermark dokusu, ornament ailesi ve
-              fontuyla — &ldquo;aynı kalıba renk değişiyor&rdquo; değil,
-              gerçekten farklı kompozisyonlar. Tıklayın, demoyu gezin.
+              Her edisyon kendi mührü, sahnesi, ornament ailesi ve fontuyla
+              tasarlandı &mdash; tek bir kalıbın renk varyantı değil.
+              Tıklayın, demoyu gezin.
             </p>
           </div>
           <p className="text-[11px] uppercase tracking-[0.22em] text-brand-mute">
@@ -196,164 +117,14 @@ export function TemplateCarousel() {
           className="no-scrollbar -mx-5 flex cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 lg:-mx-8 lg:gap-7 lg:px-8"
           style={{ scrollPaddingLeft: 24 }}
         >
-          {cards.map((card) => (
-            <Link
+          {editionCards.map((card) => (
+            <EditionCardTile
               key={card.slug}
-              href={`/dev-preview/${card.slug}`}
-              className="group block w-[280px] flex-shrink-0 snap-start sm:w-[320px] lg:w-[380px]"
-            >
-              <TiltCard max={6}>
-                <article
-                  className="relative aspect-[3/4] overflow-hidden rounded-md shadow-ed-md transition-shadow group-hover:shadow-ed-lg"
-                  style={{
-                    background: `linear-gradient(155deg, ${card.bg.from} 0%, ${card.bg.to} 100%)`,
-                  }}
-                >
-                  {/* PR #17 — Full-bleed sahne (TDI paritesi).
-                      Önceki: düşük opacity watermark + boş gradient.
-                      Yeni: tam doluluk fal.ai rendered scene, kartın
-                      ana karakteri burada. */}
-                  <div className="absolute inset-0">
-                    <Image
-                      src={card.coverScene}
-                      alt=""
-                      fill
-                      sizes="(max-width: 640px) 280px, (max-width: 1024px) 320px, 380px"
-                      style={{
-                        objectFit: "cover",
-                      }}
-                      priority={false}
-                    />
-                  </div>
-
-                  {/* Sahne üstüne yumuşak overlay — mühür + alt etiket
-                      okunabilir kalsın. Açık temalarda hafif krem
-                      yıkama, koyu temalarda hafif siyah perde. */}
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background: card.isDark
-                        ? "radial-gradient(circle at 50% 45%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.32) 100%)"
-                        : "radial-gradient(circle at 50% 45%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.40) 100%)",
-                    }}
-                  />
-
-                  {/* Üst sol: NUVE brand watermark (PL'da
-                      "PRESSED LOVE" üst sol). */}
-                  <span
-                    className="absolute left-4 top-4 text-[9px] uppercase tracking-[0.36em]"
-                    style={{
-                      color: card.isDark
-                        ? "rgba(246, 241, 234, 0.88)"
-                        : "rgba(31, 27, 23, 0.7)",
-                      fontWeight: 500,
-                      textShadow: card.isDark
-                        ? "0 1px 2px rgba(0,0,0,0.4)"
-                        : "0 1px 2px rgba(255,255,255,0.6)",
-                    }}
-                  >
-                    NUVE
-                  </span>
-
-                  {/* Üst sağ: kategori chip (vibe) — PL paritesi */}
-                  <span
-                    className="absolute right-4 top-4 rounded-full px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.22em]"
-                    style={{
-                      background: card.isDark
-                        ? "rgba(246, 241, 234, 0.18)"
-                        : "rgba(255, 255, 255, 0.78)",
-                      color: card.isDark
-                        ? "rgba(246, 241, 234, 0.92)"
-                        : "rgba(31, 27, 23, 0.78)",
-                      backdropFilter: "blur(8px)",
-                      border: card.isDark
-                        ? "0.5px solid rgba(255,255,255,0.22)"
-                        : "0.5px solid rgba(31,27,23,0.08)",
-                    }}
-                  >
-                    {card.vibe}
-                  </span>
-
-                  {/* Wax seal kapak — sahne üzerinde merkez ortada */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative h-[52%] w-[52%]">
-                      <Image
-                        src={card.seal}
-                        alt={`${card.name} mührü`}
-                        fill
-                        sizes="(max-width: 640px) 50vw, 200px"
-                        style={{
-                          objectFit: "contain",
-                          filter:
-                            "drop-shadow(0 22px 36px rgba(20, 20, 20, 0.4))",
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* "YENİ" rozeti — vibe chip yanına geçti, sağ üst
-                      köşede chip ile dikey sıralı görünür. */}
-                  {card.isNew && (
-                    <span
-                      className="absolute right-4 top-12 rounded-full bg-emerald-700/85 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.22em] text-paper"
-                    >
-                      Yeni
-                    </span>
-                  )}
-
-                  {/* Alt etiket bandı */}
-                  <div
-                    className="absolute inset-x-3 bottom-3 flex flex-col gap-0.5 rounded-sm px-4 py-3"
-                    style={{
-                      background: card.isDark
-                        ? "rgba(255,255,255,0.10)"
-                        : "rgba(255,255,255,0.78)",
-                      backdropFilter: "blur(8px)",
-                      border: `0.5px solid ${
-                        card.isDark
-                          ? "rgba(255,255,255,0.18)"
-                          : "rgba(31,27,23,0.08)"
-                      }`,
-                    }}
-                  >
-                    <h3
-                      className="font-display italic"
-                      style={{
-                        fontSize: "clamp(20px, 2.4vw, 26px)",
-                        lineHeight: 1.1,
-                        letterSpacing: "-0.012em",
-                        color: card.isDark ? "#F6F1EA" : "#1F1B17",
-                      }}
-                    >
-                      {card.name}
-                    </h3>
-                    <span
-                      className="text-[10px] uppercase"
-                      style={{
-                        letterSpacing: "0.28em",
-                        color: card.isDark
-                          ? "rgba(246, 241, 234, 0.7)"
-                          : "rgba(31, 27, 23, 0.62)",
-                      }}
-                    >
-                      {card.category}
-                    </span>
-                  </div>
-
-                  {/* Hover cognac wash overlay */}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, transparent 50%, rgba(140,90,60,0.10) 100%)",
-                    }}
-                  />
-                </article>
-              </TiltCard>
-            </Link>
+              card={card}
+              isCarouselSlide
+            />
           ))}
+          <ComingSoonTile isCarouselSlide />
         </motion.div>
 
         {/* Footer CTA */}
@@ -364,15 +135,23 @@ export function TemplateCarousel() {
           className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between"
         >
           <p className="text-[13px] text-brand-mute">
-            Her edisyon kendi mührü, watermark dokusu, ornament ailesi ve
-            fontuyla &mdash; tek bir kalıbın renk varyantı değil.
+            Her edisyon kendi mührü, sahnesi, ornament ailesi ve fontuyla
+            tasarlandı &mdash; tek bir kalıbın renk varyantı değil.
           </p>
-          <Link
-            href="#pricing"
-            className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-brand-ink/40 px-6 text-[11px] uppercase tracking-[0.28em] text-brand-ink transition hover:border-brand-cognac hover:text-brand-cognac"
-          >
-            Fiyatları gör
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/tasarimlar"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-brand-ink px-6 text-[11px] uppercase tracking-[0.28em] text-bg transition hover:tracking-[0.32em]"
+            >
+              Tüm koleksiyon →
+            </Link>
+            <Link
+              href="#pricing"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-brand-ink/40 px-6 text-[11px] uppercase tracking-[0.28em] text-brand-ink transition hover:border-brand-cognac hover:text-brand-cognac"
+            >
+              Fiyatları gör
+            </Link>
+          </div>
         </motion.div>
       </div>
     </section>
