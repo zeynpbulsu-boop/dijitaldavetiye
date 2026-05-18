@@ -26,16 +26,17 @@ type EditionCard = {
   /** Sağ üstte kategori chip (Pressed Love paritesi: ELEGANT, DRAMATIC,
    *  ROMANTIC, COASTAL, BOTANICAL, MODERN). Uppercase, küçük pill. */
   vibe: string;
-  /** Kart arkaplan gradient'ı — edition'ın bg + footerBg'sinden türer. */
+  /** Kart arkaplan gradient'ı — coverScene yüklenirken / fallback için. */
   bg: { from: string; to: string };
-  /** Wax seal PNG kapak yolu (public/). */
-  cover: string;
-  /** Watermark / chapel scene PNG — kartın bg'sinde çok düşük opacity
-   *  ile render edilir, "sahne" hissi katar (PL kartlarındaki gibi). */
-  watermark: string;
+  /** PR #17 — Per-edition full-bleed sahne (fal.ai rendered, JPEG).
+   *  Kartın ana karakteri. The Digital Invite paritesi: Bloom'da çiçek,
+   *  Wonderlust'ta harita; bizde Aethel'de şapel, Bodrum'da Ege kıyısı. */
+  coverScene: string;
+  /** Wax seal PNG — coverScene'in üstünde merkez ortada oturur. */
+  seal: string;
   /** "YENİ" rozeti. */
   isNew?: boolean;
-  /** Açık tema mı (font rengi siyah / krem) — kart üstündeki metnin
+  /** Sahne koyu mu (font rengi krem) — kart üstündeki metnin
    *  kontrastı için. */
   isDark?: boolean;
 };
@@ -47,8 +48,8 @@ const cards: EditionCard[] = [
     category: "Toskana · Antik Şapel",
     vibe: "Elegant",
     bg: { from: "#F2EEE4", to: "#D8DCC9" },
-    cover: "/aethel/wax-seal-luxe.png",
-    watermark: "/aethel/chapel-vignette.png",
+    coverScene: "/aethel/cover.jpg",
+    seal: "/aethel/wax-seal-luxe.png",
     isNew: true,
   },
   {
@@ -57,8 +58,8 @@ const cards: EditionCard[] = [
     category: "Gece Yarısı · Altın Varak",
     vibe: "Dramatic",
     bg: { from: "#0F1A3D", to: "#1B2E5F" },
-    cover: "/atelier-indigo/wax-seal.png",
-    watermark: "/atelier-indigo/watermark.png",
+    coverScene: "/atelier-indigo/cover.jpg",
+    seal: "/atelier-indigo/wax-seal.png",
     isDark: true,
   },
   {
@@ -67,8 +68,8 @@ const cards: EditionCard[] = [
     category: "Akşam Yalısı · Şampanya",
     vibe: "Regal",
     bg: { from: "#11261E", to: "#1F4435" },
-    cover: "/mansion-lights/wax-seal.png",
-    watermark: "/mansion-lights/watermark.png",
+    coverScene: "/mansion-lights/cover.jpg",
+    seal: "/mansion-lights/wax-seal.png",
     isDark: true,
     isNew: true,
   },
@@ -78,8 +79,8 @@ const cards: EditionCard[] = [
     category: "Ege Mavisi · Kireç Beyazı",
     vibe: "Coastal",
     bg: { from: "#F4F1EA", to: "#CFDCE3" },
-    cover: "/bodrum-blue/wax-seal.png",
-    watermark: "/bodrum-blue/watermark.png",
+    coverScene: "/bodrum-blue/cover.jpg",
+    seal: "/bodrum-blue/wax-seal.png",
   },
   {
     slug: "olive-grove",
@@ -87,8 +88,8 @@ const cards: EditionCard[] = [
     category: "Akdeniz · Zeytin Bahçesi",
     vibe: "Botanical",
     bg: { from: "#F2EFE0", to: "#C8D2A8" },
-    cover: "/olive-grove/wax-seal.png",
-    watermark: "/olive-grove/watermark.png",
+    coverScene: "/olive-grove/cover.jpg",
+    seal: "/olive-grove/wax-seal.png",
   },
   {
     slug: "aurora",
@@ -96,8 +97,8 @@ const cards: EditionCard[] = [
     category: "Modern Minimal · Mor",
     vibe: "Modern",
     bg: { from: "#F8F7F4", to: "#D8D2EC" },
-    cover: "/aurora/wax-seal.png",
-    watermark: "/aurora/watermark.png",
+    coverScene: "/aurora/cover.jpg",
+    seal: "/aurora/wax-seal.png",
     isNew: true,
   },
 ];
@@ -208,22 +209,35 @@ export function TemplateCarousel() {
                     background: `linear-gradient(155deg, ${card.bg.from} 0%, ${card.bg.to} 100%)`,
                   }}
                 >
-                  {/* Watermark scene bg layer — PL paritesi:
-                      kartın "sahnesi" hissini katar, mührün altında
-                      düşük opacity ile dolaşır. */}
+                  {/* PR #17 — Full-bleed sahne (TDI paritesi).
+                      Önceki: düşük opacity watermark + boş gradient.
+                      Yeni: tam doluluk fal.ai rendered scene, kartın
+                      ana karakteri burada. */}
                   <div className="absolute inset-0">
                     <Image
-                      src={card.watermark}
+                      src={card.coverScene}
                       alt=""
                       fill
-                      sizes="380px"
+                      sizes="(max-width: 640px) 280px, (max-width: 1024px) 320px, 380px"
                       style={{
                         objectFit: "cover",
-                        opacity: card.isDark ? 0.22 : 0.35,
-                        mixBlendMode: card.isDark ? "screen" : "multiply",
                       }}
+                      priority={false}
                     />
                   </div>
+
+                  {/* Sahne üstüne yumuşak overlay — mühür + alt etiket
+                      okunabilir kalsın. Açık temalarda hafif krem
+                      yıkama, koyu temalarda hafif siyah perde. */}
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: card.isDark
+                        ? "radial-gradient(circle at 50% 45%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.32) 100%)"
+                        : "radial-gradient(circle at 50% 45%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.40) 100%)",
+                    }}
+                  />
 
                   {/* Üst sol: NUVE brand watermark (PL'da
                       "PRESSED LOVE" üst sol). */}
@@ -231,9 +245,12 @@ export function TemplateCarousel() {
                     className="absolute left-4 top-4 text-[9px] uppercase tracking-[0.36em]"
                     style={{
                       color: card.isDark
-                        ? "rgba(246, 241, 234, 0.7)"
-                        : "rgba(31, 27, 23, 0.55)",
+                        ? "rgba(246, 241, 234, 0.88)"
+                        : "rgba(31, 27, 23, 0.7)",
                       fontWeight: 500,
+                      textShadow: card.isDark
+                        ? "0 1px 2px rgba(0,0,0,0.4)"
+                        : "0 1px 2px rgba(255,255,255,0.6)",
                     }}
                   >
                     NUVE
@@ -245,28 +262,31 @@ export function TemplateCarousel() {
                     style={{
                       background: card.isDark
                         ? "rgba(246, 241, 234, 0.18)"
-                        : "rgba(31, 27, 23, 0.08)",
+                        : "rgba(255, 255, 255, 0.78)",
                       color: card.isDark
                         ? "rgba(246, 241, 234, 0.92)"
                         : "rgba(31, 27, 23, 0.78)",
-                      backdropFilter: "blur(4px)",
+                      backdropFilter: "blur(8px)",
+                      border: card.isDark
+                        ? "0.5px solid rgba(255,255,255,0.22)"
+                        : "0.5px solid rgba(31,27,23,0.08)",
                     }}
                   >
                     {card.vibe}
                   </span>
 
-                  {/* Wax seal kapak — bg watermark üzerinde */}
+                  {/* Wax seal kapak — sahne üzerinde merkez ortada */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative h-[58%] w-[58%]">
+                    <div className="relative h-[52%] w-[52%]">
                       <Image
-                        src={card.cover}
+                        src={card.seal}
                         alt={`${card.name} mührü`}
                         fill
-                        sizes="(max-width: 640px) 60vw, 220px"
+                        sizes="(max-width: 640px) 50vw, 200px"
                         style={{
                           objectFit: "contain",
                           filter:
-                            "drop-shadow(0 18px 32px rgba(20, 20, 20, 0.28))",
+                            "drop-shadow(0 22px 36px rgba(20, 20, 20, 0.4))",
                         }}
                       />
                     </div>
