@@ -30,6 +30,7 @@ export const AETHEL_THEME: LuxeEditionTheme = {
   musicTrack: "Clair de Lune · Claude Debussy",
   footerNote: "Bizimle olmanız bizi onurlandırır",
   defaultDate: { day: "12", month: "Eylül", year: "2026" },
+  ambient: "doves",
 };
 
 /* ── 1. ATELIER INDIGO (gece mavisi + altın varak) ─────────────── */
@@ -54,6 +55,7 @@ export const ATELIER_INDIGO_THEME: LuxeEditionTheme = {
   musicTrack: "Nocturne in E♭ · Chopin",
   footerNote: "Bir gece masalı için bekleriz",
   defaultDate: { day: "24", month: "Ekim", year: "2026" },
+  ambient: "starfield",
 };
 
 /* ── 2. MANSION LIGHTS (boğazda akşam yalısı) ──────────────────── */
@@ -78,6 +80,7 @@ export const MANSION_LIGHTS_THEME: LuxeEditionTheme = {
   musicTrack: "La Vie en Rose · Édith Piaf",
   footerNote: "Geleneğe bir ışık daha katmak için",
   defaultDate: { day: "8", month: "Haziran", year: "2026" },
+  ambient: "chandelier",
 };
 
 /* ── 3. BODRUM BLUE (Ege esintisi) ─────────────────────────────── */
@@ -102,6 +105,7 @@ export const BODRUM_BLUE_THEME: LuxeEditionTheme = {
   musicTrack: "Σ'αγαπώ · George Dalaras",
   footerNote: "Tuz, rüzgar ve birbirimiz için",
   defaultDate: { day: "27", month: "Temmuz", year: "2026" },
+  ambient: "waves",
 };
 
 /* ── 4. OLIVE GROVE (Alaçatı organik lüks) ─────────────────────── */
@@ -126,6 +130,7 @@ export const OLIVE_GROVE_THEME: LuxeEditionTheme = {
   musicTrack: "Lemon Tree · Fool's Garden (acoustic)",
   footerNote: "Limon kokulu bir sabah için",
   defaultDate: { day: "15", month: "Mayıs", year: "2026" },
+  ambient: "leaves",
 };
 
 /* ── 5. AURORA (modernist minimalist) ──────────────────────────── */
@@ -150,6 +155,7 @@ export const AURORA_THEME: LuxeEditionTheme = {
   musicTrack: "Comptine d'un autre été · Yann Tiersen",
   footerNote: "Geometri ve sevgi için",
   defaultDate: { day: "3", month: "Ekim", year: "2026" },
+  ambient: "aurora",
 };
 
 /* ── Toplu erişim ──────────────────────────────────────────────── */
