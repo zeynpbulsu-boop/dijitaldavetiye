@@ -12,6 +12,23 @@
 
 export type LuxeLocale = "tr" | "en" | "sr";
 
+/**
+ * PR #21 — Extended schedule icon kinds (Pressed Love Big Entrance
+ * paritesi). 4'ten 10'a çıkarıldı; her edisyon kendi vibe'ına uygun
+ * ikonlar kullanabilsin.
+ */
+export type ScheduleIconName =
+  | "bell" /** ceremony, vows */
+  | "glass" /** champagne, cocktail, aperitivo */
+  | "plate" /** dinner, feast */
+  | "star" /** night dance, after party */
+  | "arrival" /** entrance, guests arriving */
+  | "vows" /** ring exchange, vows */
+  | "music" /** live music, jazz, dj */
+  | "dance" /** dancing */
+  | "cake" /** dessert, cake */
+  | "ring"; /** ring exchange */
+
 export interface LuxeStrings {
   /* Section eyebrows (uppercase, tracked) */
   sections: {
@@ -38,10 +55,24 @@ export interface LuxeStrings {
     time: string;
     title: string;
     desc: string;
-    icon: "bell" | "glass" | "plate" | "star";
+    icon: ScheduleIconName;
   }>;
   faq: ReadonlyArray<{ q: string; a: string }>;
   footerFallback: string;
+}
+
+/** Per-edition schedule item override shape (uses extended icon set). */
+export interface ScheduleItem {
+  time: string;
+  title: string;
+  desc: string;
+  icon: ScheduleIconName;
+}
+
+/** Per-edition FAQ item override shape. */
+export interface FaqItem {
+  q: string;
+  a: string;
 }
 
 const TR: LuxeStrings = {

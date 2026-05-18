@@ -44,7 +44,12 @@ import { CountdownLuxe } from "@/components/themed/countdown-luxe";
 import { MapEmbed } from "@/components/themed/map-embed";
 import { ScratchReveal } from "@/components/themed/scratch-reveal";
 import { RsvpForm } from "@/app/i/[slug]/_rsvp-form";
-import { luxeStrings, type LuxeLocale } from "@/lib/i18n/luxe-strings";
+import {
+  luxeStrings,
+  type LuxeLocale,
+  type ScheduleItem,
+  type FaqItem,
+} from "@/lib/i18n/luxe-strings";
 import type { EditionMeta } from "@/lib/design/tokens";
 import type { EventType, HotelItem, PhotoItem } from "@/lib/db/types";
 import Image from "next/image";
@@ -160,6 +165,18 @@ export interface LuxeEditionTheme {
   story?: StoryEntry[];
   /** PR #20 — Story timeline'da kullanılacak edition-spesifik glyph. */
   storyGlyph?: StoryGlyph;
+  /**
+   * PR #21 — Per-edition schedule override (Pressed Love Big Entrance
+   * paritesi). Verilmezse global i18n.schedule kullanılır. Her edisyon
+   * kendi venue'sine yakışan 5 satırlık narrative program.
+   */
+  schedule?: ScheduleItem[];
+  /**
+   * PR #21 — Per-edition FAQ override. Verilmezse global i18n.faq.
+   * Her edisyon kendi venue'sine özel cevaplar (otopark, ulaşım, dress
+   * code, çocuk).
+   */
+  faq?: FaqItem[];
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -387,7 +404,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
             title={i18n.sections.schedule.title}
           />
           <ul className="mx-auto mt-12 max-w-[760px] space-y-4 sm:mt-20 sm:space-y-6">
-            {i18n.schedule.map((item, i) => (
+            {(theme.schedule ?? i18n.schedule).map((item, i) => (
               <motion.li
                 key={i}
                 initial={{ opacity: 0, x: -16 }}
@@ -686,7 +703,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
             title={i18n.sections.faq.title}
           />
           <ul className="mx-auto mt-10 max-w-[760px] space-y-2 sm:mt-16">
-            {i18n.faq.map((f, i) => (
+            {(theme.faq ?? i18n.faq).map((f, i) => (
               <motion.li
                 key={i}
                 initial={{ opacity: 0, y: 12 }}
@@ -1309,7 +1326,7 @@ function isDarkColor(hex: string): boolean {
   return brightness < 128;
 }
 
-function ScheduleIcon({ name }: { name: string }) {
+function ScheduleIcon({ name }: { name: import("@/lib/i18n/luxe-strings").ScheduleIconName }) {
   const props = {
     width: 22,
     height: 22,
@@ -1348,6 +1365,62 @@ function ScheduleIcon({ name }: { name: string }) {
       return (
         <svg {...props}>
           <path d="M12 2 L 14 9 L 21 10 L 16 14 L 17.5 21 L 12 17 L 6.5 21 L 8 14 L 3 10 L 10 9 Z" />
+        </svg>
+      );
+    case "arrival":
+      /* Open door + arrow — guests entering */
+      return (
+        <svg {...props}>
+          <path d="M9 21 L 9 3 L 15 4 L 15 20 L 9 21 Z" />
+          <circle cx="13.2" cy="12" r="0.5" fill="currentColor" />
+          <path d="M3 12 L 8 12 M5.5 9.5 L 8 12 L 5.5 14.5" />
+        </svg>
+      );
+    case "vows":
+      /* Two hearts joined */
+      return (
+        <svg {...props}>
+          <path d="M8 13 C 5 11, 5 8, 7 7 C 8.5 6.5, 9.5 7.5, 10 8.5 C 10.5 7.5, 11.5 6.5, 13 7 C 15 8, 15 11, 12 13 L 10 14.5 Z" />
+          <path d="M14 17 C 12 15.5, 12 13.5, 13.5 13 C 14.5 12.5, 15 13.5, 15.5 14 C 16 13.5, 16.5 12.5, 17.5 13 C 19 13.5, 19 15.5, 17 17 L 15.5 18.2 Z" />
+        </svg>
+      );
+    case "music":
+      /* Music note */
+      return (
+        <svg {...props}>
+          <path d="M9 18 C 9 19.5, 7.5 20, 6.5 20 C 5.5 20, 5 19, 5 18 C 5 17, 6 16, 7 16 C 8 16, 9 16.5, 9 17 L 9 5 L 17 3 L 17 16" />
+          <ellipse cx="14.5" cy="17" rx="2.5" ry="2" />
+        </svg>
+      );
+    case "dance":
+      /* Two figures dancing */
+      return (
+        <svg {...props}>
+          <circle cx="8" cy="5" r="1.5" />
+          <path d="M8 7 L 8 14 M5 17 L 8 14 L 11 17 M6 11 L 14 9" />
+          <circle cx="16" cy="6" r="1.5" />
+          <path d="M16 8 L 16 14 M13 17 L 16 14 L 19 17" />
+        </svg>
+      );
+    case "cake":
+      /* Layered cake with candle */
+      return (
+        <svg {...props}>
+          <path d="M12 2 L 12 4" />
+          <circle cx="12" cy="2" r="0.5" fill="currentColor" />
+          <rect x="4" y="14" width="16" height="6" rx="0.5" />
+          <rect x="6" y="10" width="12" height="4" rx="0.5" />
+          <rect x="9" y="6" width="6" height="4" rx="0.5" />
+        </svg>
+      );
+    case "ring":
+      /* Wedding rings interlocked */
+      return (
+        <svg {...props}>
+          <circle cx="9" cy="14" r="5" />
+          <circle cx="15" cy="14" r="5" />
+          <path d="M7.5 5 L 10.5 5 L 9 8 Z" fill="currentColor" />
+          <path d="M13.5 5 L 16.5 5 L 15 8 Z" fill="currentColor" />
         </svg>
       );
     default:
