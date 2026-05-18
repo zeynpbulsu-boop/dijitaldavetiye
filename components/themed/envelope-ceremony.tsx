@@ -102,21 +102,8 @@ export function EnvelopeCeremony({
         {/* Chapel watermark — 5% opacity arkada */}
         <ChapelWatermark position="absolute" opacity={0.05} maxWidth={900} bgColor={bgColor} src={watermarkSrc} />
 
-        {/* Üst eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: stage === "sealed" ? 0.7 : 0, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 mb-24 text-[10px] uppercase"
-          style={{
-            color: inkColor,
-            letterSpacing: "0.5em",
-            fontWeight: 300,
-            fontFamily: "var(--font-display), Georgia, serif",
-          }}
-        >
-          {greeting}
-        </motion.div>
+        {/* Eyebrow kaldırıldı — Pressed Love paritesi (sade: sadece
+            mühür + bütünleşik CTA). */}
 
         {/* Wax seal — opening'de uçar */}
         <motion.div
@@ -147,7 +134,7 @@ export function EnvelopeCeremony({
               : { duration: 6, repeat: Infinity, ease: "easeInOut" }
           }
         >
-          <WaxSealLuxe size={260} minSize={180} priority haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} tintColor={waxSealTint} />
+          <WaxSealLuxe size={460} minSize={260} priority haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} tintColor={waxSealTint} />
         </motion.div>
 
         {/* Breaking burst — soft halo patlaması */}
@@ -179,18 +166,20 @@ export function EnvelopeCeremony({
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: stage === "sealed" ? 1 : 0, y: 0 }}
           transition={{ duration: 1.2, delay: 1.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 mt-28 inline-flex items-center justify-center overflow-hidden px-16 py-4 transition-all hover:tracking-[0.46em]"
+          className="relative z-20 mt-[-72px] sm:mt-[-100px] inline-flex items-center justify-center overflow-hidden px-10 py-3.5 transition-all hover:tracking-[0.42em]"
           style={{
-            border: `0.5px solid ${inkColor}55`,
+            border: `0.5px solid ${inkColor}88`,
             color: inkColor,
-            background: "transparent",
+            background: `${bgColor}E0`,
             borderRadius: 999,
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: "0.36em",
             textTransform: "uppercase",
-            fontWeight: 300,
+            fontWeight: 400,
             fontFamily: "var(--font-display), Georgia, serif",
             cursor: "pointer",
+            backdropFilter: "blur(6px)",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
           }}
         >
           <span
@@ -204,20 +193,8 @@ export function EnvelopeCeremony({
           <span className="relative">{ctaLabel}</span>
         </motion.button>
 
-        {/* Alt hint */}
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: stage === "sealed" ? 0.45 : 0 }}
-          transition={{ duration: 1.0, delay: 2.4 }}
-          className="relative z-10 mt-10 text-[9px] uppercase"
-          style={{
-            color: inkColor,
-            letterSpacing: "0.42em",
-            fontWeight: 300,
-          }}
-        >
-          ↑ mührü kırın
-        </motion.span>
+        {/* Hint kaldırıldı — Pressed Love paritesi. CTA mührün altında
+            bütünleşik, ek metin albeni'yi düşürüyor. */}
       </motion.div>
     </AnimatePresence>
   );
