@@ -62,15 +62,29 @@ export function Hero() {
             <h1
               className="mt-7 font-display text-brand-ink"
               style={{
-                fontSize: "clamp(40px, 6.5vw, 88px)",
-                lineHeight: 0.98,
-                letterSpacing: "-0.03em",
+                fontSize: "clamp(48px, 9vw, 144px)",
+                lineHeight: 0.92,
+                letterSpacing: "-0.035em",
+                fontWeight: 500,
               }}
             >
-              Dijital Düğün Davetiyesi{" "}
+              Dijital Düğün{" "}
+              <br className="hidden sm:inline" />
+              Davetiyesi{" "}
               <span className="italic text-brand-cognac">&amp;</span>{" "}
+              <br className="hidden sm:inline" />
               Save the Date
             </h1>
+            <p
+              className="mt-4 font-display italic text-brand-cognac"
+              style={{
+                fontSize: "clamp(20px, 2.6vw, 36px)",
+                letterSpacing: "-0.015em",
+                lineHeight: 1.15,
+              }}
+            >
+              Tasarımı unutulmaz olsun.
+            </p>
 
             <p className="mt-6 max-w-[540px] text-[16px] leading-[1.6] text-brand-mute lg:text-[17px]">
               Şık dijital düğün davetiyesi — RSVP yönetimi, interaktif

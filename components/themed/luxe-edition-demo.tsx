@@ -1008,14 +1008,40 @@ function Hero({
           {theme.venue}
         </motion.div>
 
+        {/* SAVE THE DATE pill — Pressed Love paritesi.
+            theme.addToCalendar.google varsa Google Calendar deep
+            link açar; yoksa #pricing'e sevk. */}
+        <motion.a
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 6.4, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          href={theme.addToCalendar?.google ?? "#pricing"}
+          target={theme.addToCalendar ? "_blank" : undefined}
+          rel={theme.addToCalendar ? "noopener" : undefined}
+          className="mt-10 inline-flex min-h-[48px] items-center justify-center px-9 py-3 transition-all hover:tracking-[0.44em] sm:mt-12"
+          style={{
+            border: `0.5px solid ${theme.ink}66`,
+            color: theme.ink,
+            background: "transparent",
+            borderRadius: 999,
+            fontSize: 11,
+            letterSpacing: "0.36em",
+            textTransform: "uppercase",
+            fontWeight: 400,
+            fontFamily: "var(--font-display), Georgia, serif",
+          }}
+        >
+          Save the Date
+        </motion.a>
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 6.6, duration: 1.2 }}
+          transition={{ delay: 6.8, duration: 1.2 }}
           className="mt-10 sm:mt-14"
         >
           {/* FAZ D.7 — hero lovebirds da accent renginde */}
-          <Lovebirds size={94} color={`${theme.accent}AA`} delay={6.8} />
+          <Lovebirds size={94} color={`${theme.accent}AA`} delay={7.0} />
         </motion.div>
 
         <motion.button

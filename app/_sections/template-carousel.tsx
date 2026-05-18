@@ -23,10 +23,16 @@ type EditionCard = {
   slug: string;
   name: string;
   category: string;
+  /** Sağ üstte kategori chip (Pressed Love paritesi: ELEGANT, DRAMATIC,
+   *  ROMANTIC, COASTAL, BOTANICAL, MODERN). Uppercase, küçük pill. */
+  vibe: string;
   /** Kart arkaplan gradient'ı — edition'ın bg + footerBg'sinden türer. */
   bg: { from: string; to: string };
   /** Wax seal PNG kapak yolu (public/). */
   cover: string;
+  /** Watermark / chapel scene PNG — kartın bg'sinde çok düşük opacity
+   *  ile render edilir, "sahne" hissi katar (PL kartlarındaki gibi). */
+  watermark: string;
   /** "YENİ" rozeti. */
   isNew?: boolean;
   /** Açık tema mı (font rengi siyah / krem) — kart üstündeki metnin
@@ -39,24 +45,30 @@ const cards: EditionCard[] = [
     slug: "aethel",
     name: "Aethel's Chapel",
     category: "Toskana · Antik Şapel",
+    vibe: "Elegant",
     bg: { from: "#F2EEE4", to: "#D8DCC9" },
     cover: "/aethel/wax-seal-luxe.png",
+    watermark: "/aethel/chapel-vignette.png",
     isNew: true,
   },
   {
     slug: "atelier-indigo",
     name: "Atelier Indigo",
     category: "Gece Yarısı · Altın Varak",
+    vibe: "Dramatic",
     bg: { from: "#0F1A3D", to: "#1B2E5F" },
     cover: "/atelier-indigo/wax-seal.png",
+    watermark: "/atelier-indigo/watermark.png",
     isDark: true,
   },
   {
     slug: "mansion-lights",
     name: "Mansion Lights",
     category: "Akşam Yalısı · Şampanya",
+    vibe: "Regal",
     bg: { from: "#11261E", to: "#1F4435" },
     cover: "/mansion-lights/wax-seal.png",
+    watermark: "/mansion-lights/watermark.png",
     isDark: true,
     isNew: true,
   },
@@ -64,22 +76,28 @@ const cards: EditionCard[] = [
     slug: "bodrum-blue",
     name: "Bodrum Blue",
     category: "Ege Mavisi · Kireç Beyazı",
+    vibe: "Coastal",
     bg: { from: "#F4F1EA", to: "#CFDCE3" },
     cover: "/bodrum-blue/wax-seal.png",
+    watermark: "/bodrum-blue/watermark.png",
   },
   {
     slug: "olive-grove",
     name: "Olive Grove",
     category: "Akdeniz · Zeytin Bahçesi",
+    vibe: "Botanical",
     bg: { from: "#F2EFE0", to: "#C8D2A8" },
     cover: "/olive-grove/wax-seal.png",
+    watermark: "/olive-grove/watermark.png",
   },
   {
     slug: "aurora",
     name: "Aurora",
     category: "Modern Minimal · Mor",
+    vibe: "Modern",
     bg: { from: "#F8F7F4", to: "#D8D2EC" },
     cover: "/aurora/wax-seal.png",
+    watermark: "/aurora/watermark.png",
     isNew: true,
   },
 ];
@@ -190,7 +208,54 @@ export function TemplateCarousel() {
                     background: `linear-gradient(155deg, ${card.bg.from} 0%, ${card.bg.to} 100%)`,
                   }}
                 >
-                  {/* Wax seal kapak */}
+                  {/* Watermark scene bg layer — PL paritesi:
+                      kartın "sahnesi" hissini katar, mührün altında
+                      düşük opacity ile dolaşır. */}
+                  <div className="absolute inset-0">
+                    <Image
+                      src={card.watermark}
+                      alt=""
+                      fill
+                      sizes="380px"
+                      style={{
+                        objectFit: "cover",
+                        opacity: card.isDark ? 0.22 : 0.35,
+                        mixBlendMode: card.isDark ? "screen" : "multiply",
+                      }}
+                    />
+                  </div>
+
+                  {/* Üst sol: NUVE brand watermark (PL'da
+                      "PRESSED LOVE" üst sol). */}
+                  <span
+                    className="absolute left-4 top-4 text-[9px] uppercase tracking-[0.36em]"
+                    style={{
+                      color: card.isDark
+                        ? "rgba(246, 241, 234, 0.7)"
+                        : "rgba(31, 27, 23, 0.55)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    NUVE
+                  </span>
+
+                  {/* Üst sağ: kategori chip (vibe) — PL paritesi */}
+                  <span
+                    className="absolute right-4 top-4 rounded-full px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.22em]"
+                    style={{
+                      background: card.isDark
+                        ? "rgba(246, 241, 234, 0.18)"
+                        : "rgba(31, 27, 23, 0.08)",
+                      color: card.isDark
+                        ? "rgba(246, 241, 234, 0.92)"
+                        : "rgba(31, 27, 23, 0.78)",
+                      backdropFilter: "blur(4px)",
+                    }}
+                  >
+                    {card.vibe}
+                  </span>
+
+                  {/* Wax seal kapak — bg watermark üzerinde */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="relative h-[58%] w-[58%]">
                       <Image
@@ -201,22 +266,17 @@ export function TemplateCarousel() {
                         style={{
                           objectFit: "contain",
                           filter:
-                            "drop-shadow(0 18px 32px rgba(20, 20, 20, 0.22))",
+                            "drop-shadow(0 18px 32px rgba(20, 20, 20, 0.28))",
                         }}
                       />
                     </div>
                   </div>
 
-                  {/* "YENİ" rozeti */}
+                  {/* "YENİ" rozeti — vibe chip yanına geçti, sağ üst
+                      köşede chip ile dikey sıralı görünür. */}
                   {card.isNew && (
                     <span
-                      className="absolute right-4 top-4 rounded-full px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.22em]"
-                      style={{
-                        background: card.isDark
-                          ? "rgba(255,255,255,0.85)"
-                          : "rgba(31, 27, 23, 0.88)",
-                        color: card.isDark ? "#1F1B17" : "#F6F1EA",
-                      }}
+                      className="absolute right-4 top-12 rounded-full bg-emerald-700/85 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.22em] text-paper"
                     >
                       Yeni
                     </span>

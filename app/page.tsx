@@ -12,6 +12,7 @@ import { ForProfessionals } from "./_sections/for-professionals";
 import { Faq } from "./_sections/faq";
 import { ClosingCta } from "./_sections/closing-cta";
 import { Footer } from "./_sections/footer";
+import { StickyCta } from "./_sections/sticky-cta";
 
 /**
  * NUVE home page — B2C clean (Pressed Love + TDI paritesi).
@@ -57,6 +58,7 @@ export default function HomePage() {
         <ClosingCta />
         <Footer />
       </main>
+      <StickyCta />
     </>
   );
 }
