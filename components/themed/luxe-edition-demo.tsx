@@ -28,6 +28,10 @@ import { LiveRsvpCounter } from "@/components/themed/live-rsvp-counter";
 import { MusicWaveformPlayer } from "@/components/themed/music-waveform-player";
 import { WaxSealLuxe } from "@/components/themed/wax-seal-luxe";
 import { ChapelWatermark } from "@/components/themed/chapel-watermark";
+import {
+  EditionAmbient,
+  type EditionAmbientKind,
+} from "@/components/themed/edition-ambient";
 import { EnvelopeCeremony } from "@/components/themed/envelope-ceremony";
 import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
@@ -139,6 +143,11 @@ export interface LuxeEditionTheme {
    * gizlenir; misafir kazıyarak ortaya çıkarır (Pressed Love paritesi).
    */
   enableScratch?: boolean;
+  /**
+   * PR #19 — Per-edition hero ambient animation kind. TDI Heritage
+   * "elegant animation" paritesi. Verilmezse animasyon render edilmez.
+   */
+  ambient?: EditionAmbientKind;
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -899,6 +908,16 @@ function Hero({
         bgColor={theme.bg}
         src={theme.watermarkSrc}
       />
+
+      {/* PR #19 — Per-edition micro-animation (doves/stars/waves/...).
+          z-[1] watermark üstünde, content (z-10) altında. */}
+      {theme.ambient && (
+        <EditionAmbient
+          kind={theme.ambient}
+          accentColor={theme.accent}
+          bgColor={theme.bg}
+        />
+      )}
 
       <div className="relative z-10 flex w-full flex-col items-center text-center">
         <motion.div
