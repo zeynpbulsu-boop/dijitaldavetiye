@@ -177,6 +177,13 @@ export interface LuxeEditionTheme {
    * code, çocuk).
    */
   faq?: FaqItem[];
+  /**
+   * PR #22 — Hero full-bleed cover scene (fal.ai rendered JPEG).
+   * Verildiğinde Hero arkasında %100 cover olarak render edilir
+   * (Pressed Love Big Entrance Venetian doors paritesi). Verilmezse
+   * Hero düz bg + ChapelWatermark görünür (önceki davranış).
+   */
+  coverScene?: string;
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -943,18 +950,49 @@ function Hero({
   heroCtaFallback: string;
   scratchHint: string;
 }) {
+  const usesCover = !!theme.coverScene;
+  const isDark = isDarkColor(theme.bg);
   return (
     <section
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 py-20 sm:px-6 lg:py-32"
       style={{ background: theme.bg, color: theme.ink }}
     >
-      <ChapelWatermark
-        position="absolute"
-        opacity={0.09}
-        maxWidth={1000}
-        bgColor={theme.bg}
-        src={theme.watermarkSrc}
-      />
+      {/* PR #22 — Hero full-bleed cover scene (Pressed Love Big Entrance
+          Venetian doors paritesi). Yoksa fallback olarak watermark. */}
+      {usesCover ? (
+        <>
+          <div className="absolute inset-0">
+            <Image
+              src={theme.coverScene!}
+              alt=""
+              fill
+              sizes="100vw"
+              priority
+              style={{ objectFit: "cover", objectPosition: "center" }}
+            />
+          </div>
+          {/* Soft overlay — seal + isim + tarih okunabilir kalsın.
+              Açık temada üst+alt cream yıkama; koyu temada hafif siyah perde.
+              Üst kısım daha yoğun overlay'li çünkü eyebrow + seal orada. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background: isDark
+                ? `linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.18) 35%, rgba(0,0,0,0.32) 70%, rgba(0,0,0,0.55) 100%)`
+                : `linear-gradient(180deg, ${theme.bg}E6 0%, ${theme.bg}80 30%, ${theme.bg}66 60%, ${theme.bg}E6 100%)`,
+            }}
+          />
+        </>
+      ) : (
+        <ChapelWatermark
+          position="absolute"
+          opacity={0.09}
+          maxWidth={1000}
+          bgColor={theme.bg}
+          src={theme.watermarkSrc}
+        />
+      )}
 
       {/* PR #19 — Per-edition micro-animation (doves/stars/waves/...).
           z-[1] watermark üstünde, content (z-10) altında. */}
@@ -971,11 +1009,16 @@ function Hero({
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.6 }}
-          className="text-[10px] uppercase"
+          className="text-[11px] uppercase"
           style={{
             color: theme.inkMuted,
             letterSpacing: "0.5em",
-            fontWeight: 300,
+            fontWeight: 400,
+            textShadow: usesCover
+              ? isDark
+                ? "0 1px 4px rgba(0,0,0,0.5)"
+                : `0 1px 3px ${theme.bg}AA`
+              : undefined,
           }}
         >
           {theme.heroEyebrow ?? "Evleniyoruz"}
@@ -985,12 +1028,12 @@ function Hero({
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.6, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-10 sm:mt-14"
+          className="mt-8 sm:mt-12"
         >
           <WaxSealLuxe
             src={theme.waxSealSrc}
-            size={210}
-            minSize={140}
+            size={380}
+            minSize={240}
             priority
             haloColor={theme.haloColor}
             tintColor={theme.waxSealColor}
@@ -1000,10 +1043,10 @@ function Hero({
           />
         </motion.div>
 
-        <div className="mt-12 sm:mt-16">
+        <div className="mt-10 sm:mt-14" style={usesCover && isDark ? { filter: "drop-shadow(0 2px 14px rgba(0,0,0,0.45))" } : undefined}>
           <CalligraphyName
             text={theme.coupleName}
-            size={130}
+            size={180}
             color={theme.ink}
             duration={4.2}
             delay={1.8}
@@ -1014,7 +1057,7 @@ function Hero({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 5.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-12 flex items-center gap-3 sm:mt-16 sm:gap-6"
+          className="mt-10 flex items-center gap-3 sm:mt-14 sm:gap-6"
         >
           {theme.enableScratch ? (
             /* Pressed Love paritesi — date satırını kazıyarak ortaya çıkar.
@@ -1032,10 +1075,10 @@ function Hero({
                 key={`${day}-${month}-${year}`}
                 style={{
                   color: theme.ink,
-                  fontSize: "clamp(12px, 3.2vw, 14px)",
+                  fontSize: "clamp(14px, 3.6vw, 18px)",
                   letterSpacing: "0.42em",
                   textTransform: "uppercase",
-                  fontWeight: 300,
+                  fontWeight: 400,
                   whiteSpace: "nowrap",
                   display: "inline-block",
                 }}
@@ -1050,10 +1093,10 @@ function Hero({
                 key={`${day}-${month}-${year}`}
                 style={{
                   color: theme.ink,
-                  fontSize: "clamp(12px, 3.2vw, 14px)",
+                  fontSize: "clamp(14px, 3.6vw, 18px)",
                   letterSpacing: "0.42em",
                   textTransform: "uppercase",
-                  fontWeight: 300,
+                  fontWeight: 400,
                   animation: "inkPulse 1.2s ease-out",
                   whiteSpace: "nowrap",
                 }}
@@ -1066,10 +1109,20 @@ function Hero({
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.75 }}
+          animate={{ opacity: 0.9 }}
           transition={{ delay: 6.0, duration: 1 }}
-          className="mt-4 px-4 text-[11px] italic"
-          style={{ color: theme.inkSoft, letterSpacing: "0.08em", fontWeight: 300 }}
+          className="mt-5 px-4 italic"
+          style={{
+            color: theme.inkSoft,
+            letterSpacing: "0.10em",
+            fontWeight: 400,
+            fontSize: "clamp(13px, 1.6vw, 16px)",
+            textShadow: usesCover
+              ? isDark
+                ? "0 1px 6px rgba(0,0,0,0.5)"
+                : `0 1px 4px ${theme.bg}AA`
+              : undefined,
+          }}
         >
           {theme.venue}
         </motion.div>

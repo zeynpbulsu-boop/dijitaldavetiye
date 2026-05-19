@@ -102,6 +102,34 @@ export function EnvelopeCeremony({
         {/* Chapel watermark — 5% opacity arkada */}
         <ChapelWatermark position="absolute" opacity={0.05} maxWidth={900} bgColor={bgColor} src={watermarkSrc} />
 
+        {/* PR #22 — Envelope flap & paper texture (Pressed Love paritesi).
+            Cream paper background'a diyagonal flap çizgileri ekler;
+            mühür gerçek bir zarfın üstünde oturuyormuş hissi. */}
+        <svg
+          aria-hidden
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          style={{ mixBlendMode: "multiply", opacity: 0.32 }}
+        >
+          {/* Top-left flap */}
+          <line x1="0" y1="0" x2="50" y2="50" stroke={inkColor} strokeWidth="0.15" strokeOpacity="0.45" />
+          {/* Top-right flap */}
+          <line x1="100" y1="0" x2="50" y2="50" stroke={inkColor} strokeWidth="0.15" strokeOpacity="0.45" />
+          {/* Left side */}
+          <line x1="0" y1="100" x2="50" y2="50" stroke={inkColor} strokeWidth="0.1" strokeOpacity="0.25" />
+          {/* Right side */}
+          <line x1="100" y1="100" x2="50" y2="50" stroke={inkColor} strokeWidth="0.1" strokeOpacity="0.25" />
+        </svg>
+        {/* Paper grain — subtle vignette */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: `radial-gradient(ellipse at center, transparent 35%, ${inkColor}10 100%)`,
+          }}
+        />
+
         {/* Eyebrow kaldırıldı — Pressed Love paritesi (sade: sadece
             mühür + bütünleşik CTA). */}
 
@@ -158,7 +186,8 @@ export function EnvelopeCeremony({
           )}
         </AnimatePresence>
 
-        {/* CTA — incecik pill, shimmer */}
+        {/* CTA — incecik pill, mail icon + shimmer. PR #22: mail icon
+            eklendi (PL paritesi). */}
         <motion.button
           type="button"
           onClick={open}
@@ -166,11 +195,11 @@ export function EnvelopeCeremony({
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: stage === "sealed" ? 1 : 0, y: 0 }}
           transition={{ duration: 1.2, delay: 1.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-20 mt-[-72px] sm:mt-[-100px] inline-flex items-center justify-center overflow-hidden px-10 py-3.5 transition-all hover:tracking-[0.42em]"
+          className="relative z-20 mt-[-90px] sm:mt-[-120px] inline-flex items-center justify-center gap-3 overflow-hidden px-9 py-3.5 transition-all hover:tracking-[0.42em]"
           style={{
             border: `0.5px solid ${inkColor}88`,
             color: inkColor,
-            background: `${bgColor}E0`,
+            background: `${bgColor}E6`,
             borderRadius: 999,
             fontSize: 11,
             letterSpacing: "0.36em",
@@ -178,18 +207,31 @@ export function EnvelopeCeremony({
             fontWeight: 400,
             fontFamily: "var(--font-display), Georgia, serif",
             cursor: "pointer",
-            backdropFilter: "blur(6px)",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+            backdropFilter: "blur(8px)",
+            boxShadow: "0 6px 22px rgba(0,0,0,0.18)",
           }}
         >
           <span
             aria-hidden
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: `linear-gradient(110deg, transparent 0%, transparent 42%, ${inkColor}1F 50%, transparent 58%, transparent 100%)`,
+              background: `linear-gradient(110deg, transparent 0%, transparent 42%, ${inkColor}24 50%, transparent 58%, transparent 100%)`,
               animation: "shimmerSweep 5s ease-in-out infinite",
             }}
           />
+          {/* Mail icon — PL paritesi */}
+          <svg
+            aria-hidden
+            width="14"
+            height="11"
+            viewBox="0 0 18 14"
+            fill="none"
+            className="relative"
+            style={{ color: inkColor }}
+          >
+            <rect x="0.75" y="0.75" width="16.5" height="12.5" rx="1.5" stroke="currentColor" strokeWidth="1" />
+            <path d="M1 2 L 9 8 L 17 2" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </svg>
           <span className="relative">{ctaLabel}</span>
         </motion.button>
 
