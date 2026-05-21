@@ -37,3 +37,6 @@ next-env.d.ts
 # editor
 .vscode
 .idea
+
+# PR #24 — pre-swan cover archives are redundant with git history
+public/*/_orig-pre-swan.jpg
