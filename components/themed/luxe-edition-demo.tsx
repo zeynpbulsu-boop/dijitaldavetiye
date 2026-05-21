@@ -185,6 +185,11 @@ export interface LuxeEditionTheme {
    * Hero düz bg + ChapelWatermark görünür (önceki davranış).
    */
   coverScene?: string;
+  /**
+   * PR #26 — EnvelopeCeremony full-bleed paper bg (fal.ai rendered).
+   * Pressed Love Swan Lake paritesi. Verilmezse SVG flap fallback.
+   */
+  envelopePaperSrc?: string;
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -258,6 +263,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
           waxSealSrc={theme.waxSealSrc}
           waxSealTint={theme.waxSealColor}
           watermarkSrc={theme.watermarkSrc}
+          envelopePaperSrc={theme.envelopePaperSrc}
           onOpened={() => setOpened(true)}
         />
       )}

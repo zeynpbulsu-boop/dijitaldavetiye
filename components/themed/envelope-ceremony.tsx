@@ -12,6 +12,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { WaxSealLuxe } from "./wax-seal-luxe";
 import { ChapelWatermark } from "./chapel-watermark";
 
@@ -30,6 +31,13 @@ interface EnvelopeCeremonyProps {
   waxSealTint?: string | null;
   /** Per-edition watermark PNG path. */
   watermarkSrc?: string;
+  /**
+   * PR #26 — Per-edition envelope paper bg (fal.ai rendered).
+   * Verildiğinde full-bleed gerçek zarf görseli mührün arkasında oturur
+   * (Pressed Love Swan Lake paritesi). Verilmezse SVG flap çizgilerine
+   * fallback yapılır.
+   */
+  envelopePaperSrc?: string;
   onOpened: () => void;
 }
 
@@ -45,6 +53,7 @@ export function EnvelopeCeremony({
   waxSealSrc,
   waxSealTint = null,
   watermarkSrc,
+  envelopePaperSrc,
   onOpened,
 }: EnvelopeCeremonyProps) {
   const [stage, setStage] = useState<Stage>("sealed");
@@ -99,36 +108,55 @@ export function EnvelopeCeremony({
           {skipLabel}
         </button>
 
-        {/* Chapel watermark — 5% opacity arkada */}
-        <ChapelWatermark position="absolute" opacity={0.05} maxWidth={900} bgColor={bgColor} src={watermarkSrc} />
+        {/* PR #26 — Real envelope paper bg (Pressed Love Swan Lake paritesi).
+            Set edildiğinde fal.ai rendered zarf görseli full-bleed. Yoksa
+            SVG flap çizgilerine fallback. */}
+        {envelopePaperSrc ? (
+          <div className="absolute inset-0">
+            <Image
+              src={envelopePaperSrc}
+              alt=""
+              fill
+              sizes="100vw"
+              priority
+              style={{ objectFit: "cover", objectPosition: "center" }}
+            />
+            {/* Yumuşak overlay — mühür merkezi vurgulu kalsın */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background: `radial-gradient(ellipse at center, transparent 30%, ${bgColor}55 70%, ${bgColor}AA 100%)`,
+              }}
+            />
+          </div>
+        ) : (
+          <>
+            {/* Chapel watermark — 5% opacity arkada (fallback) */}
+            <ChapelWatermark position="absolute" opacity={0.05} maxWidth={900} bgColor={bgColor} src={watermarkSrc} />
 
-        {/* PR #22 — Envelope flap & paper texture (Pressed Love paritesi).
-            Cream paper background'a diyagonal flap çizgileri ekler;
-            mühür gerçek bir zarfın üstünde oturuyormuş hissi. */}
-        <svg
-          aria-hidden
-          className="pointer-events-none absolute inset-0 h-full w-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          style={{ mixBlendMode: "multiply", opacity: 0.32 }}
-        >
-          {/* Top-left flap */}
-          <line x1="0" y1="0" x2="50" y2="50" stroke={inkColor} strokeWidth="0.15" strokeOpacity="0.45" />
-          {/* Top-right flap */}
-          <line x1="100" y1="0" x2="50" y2="50" stroke={inkColor} strokeWidth="0.15" strokeOpacity="0.45" />
-          {/* Left side */}
-          <line x1="0" y1="100" x2="50" y2="50" stroke={inkColor} strokeWidth="0.1" strokeOpacity="0.25" />
-          {/* Right side */}
-          <line x1="100" y1="100" x2="50" y2="50" stroke={inkColor} strokeWidth="0.1" strokeOpacity="0.25" />
-        </svg>
-        {/* Paper grain — subtle vignette */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: `radial-gradient(ellipse at center, transparent 35%, ${inkColor}10 100%)`,
-          }}
-        />
+            {/* Envelope flap çizgileri (SVG fallback) */}
+            <svg
+              aria-hidden
+              className="pointer-events-none absolute inset-0 h-full w-full"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              style={{ mixBlendMode: "multiply", opacity: 0.32 }}
+            >
+              <line x1="0" y1="0" x2="50" y2="50" stroke={inkColor} strokeWidth="0.15" strokeOpacity="0.45" />
+              <line x1="100" y1="0" x2="50" y2="50" stroke={inkColor} strokeWidth="0.15" strokeOpacity="0.45" />
+              <line x1="0" y1="100" x2="50" y2="50" stroke={inkColor} strokeWidth="0.1" strokeOpacity="0.25" />
+              <line x1="100" y1="100" x2="50" y2="50" stroke={inkColor} strokeWidth="0.1" strokeOpacity="0.25" />
+            </svg>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background: `radial-gradient(ellipse at center, transparent 35%, ${inkColor}10 100%)`,
+              }}
+            />
+          </>
+        )}
 
         {/* Eyebrow kaldırıldı — Pressed Love paritesi (sade: sadece
             mühür + bütünleşik CTA). */}
