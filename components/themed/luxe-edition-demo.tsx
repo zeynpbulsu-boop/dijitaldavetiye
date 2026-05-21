@@ -49,6 +49,7 @@ import {
   type LuxeLocale,
   type ScheduleItem,
   type FaqItem,
+  type ScheduleIconName,
 } from "@/lib/i18n/luxe-strings";
 import type { EditionMeta } from "@/lib/design/tokens";
 import type { EventType, HotelItem, PhotoItem } from "@/lib/db/types";
@@ -1379,7 +1380,7 @@ function isDarkColor(hex: string): boolean {
   return brightness < 128;
 }
 
-function ScheduleIcon({ name }: { name: import("@/lib/i18n/luxe-strings").ScheduleIconName }) {
+function ScheduleIcon({ name }: { name: ScheduleIconName }) {
   const props = {
     width: 22,
     height: 22,
