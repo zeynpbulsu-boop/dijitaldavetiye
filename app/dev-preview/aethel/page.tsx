@@ -1,35 +1,27 @@
 import type { Metadata } from "next";
-import { AethelChapelDemo } from "./_aethel-demo";
+import { LuxeEditionDemo } from "@/components/themed/luxe-edition-demo";
+import { AETHEL_THEME } from "@/lib/design/luxe-themes";
 
 /**
- * /dev-preview/aethel — FAZ 5.7 KILLER DEMO
+ * /dev-preview/aethel — Aethel Chapel demo.
  *
- * Aethel's Chapel ediziyonu tam tematik bütünsel davetiye olarak.
- * Pressed Love'u ezme planının kanıt sayfası.
+ * PR #27: Eski bespoke AethelChapelDemo bileşeni kaldırıldı; artık
+ * Aethel da diğer 5 edition gibi LuxeEditionDemo + AETHEL_THEME
+ * pattern'ini kullanıyor. Bu sayede PR #20+ tüm özellikler
+ * (full-bleed cover scene, journey timeline, per-edition schedule/
+ * FAQ/hotels, micro-animations, envelope flap) Aethel demo'sunda da
+ * çalışıyor.
  *
- * İçindeki yeni elementler:
- *   - Hero: solid yosun yeşili + CalligraphyName stroke-by-stroke
- *   - LiveRsvpCounter sticky bar
- *   - ThemedSeparator (✦ vintage diamond, mor salkım accent rengi)
- *   - StoryTimeline (Tanışma → İlk Randevu → Teklif → Düğün)
- *   - MusicWaveformPlayer (couple şarkısı + 36 ince çubuk visualizer)
- *   - Schedule timeline (Ceremony 16:00 · Aperitivo 17:30 · ...)
- *   - Sticky floating dil + ses + CTA (Pressed Love kalıbı)
- *
- * Aynı tema (Aethel Chapel) tüm site'ye tutarlı şekilde yedirilmiş:
- *   - Hero arka planı: koyu yosun yeşili
- *   - Body içerik: fildişi krem
- *   - Section ayraç: ✦ mor salkım accent
- *   - Background pattern: ivy SVG watermark
- *   - Font: Pinyon Script calligraphy + Cormorant body
+ * Bespoke implementasyon _aethel-demo.tsx içinde duruyor ama artık
+ * import edilmiyor — bir sonraki temizlemede silinecek.
  */
 
 export const metadata: Metadata = {
   title: "Aethel's Chapel — Killer Demo · NUVE",
-  description: "FAZ 5 killer demo. Tematik bütünsel davetiye deneyimi.",
+  description: "Tematik bütünsel dijital davetiye — Toskana antik şapel.",
   robots: { index: false, follow: false },
 };
 
 export default function AethelDemoPage() {
-  return <AethelChapelDemo />;
+  return <LuxeEditionDemo theme={AETHEL_THEME} />;
 }
