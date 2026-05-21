@@ -39,3 +39,14 @@ docs
 
 # Vercel-specific
 .vercel
+
+# PR #25 — Archived original asset PNGs (5-9 MB each, only kept in git
+# for posterity; not used at runtime — Next/Image uses cover.jpg/wax-seal.png/
+# watermark.png). 100+ MB of them were ballooning Docker build context and
+# triggering OOM in Coolify builder stage.
+public/**/_orig-*.png
+public/**/_orig-*.jpg
+public/**/_orig-*.jpeg
+
+# Scripts run only locally, never inside container
+scripts

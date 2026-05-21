@@ -35,6 +35,12 @@ COPY . .
 # Disable Next.js telemetry during build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# PR #25 — Bump Node heap to 2 GB for next build. Default ~1.5 GB
+# yetersiz kalıyor (public/'da 6 fal.ai rendered cover JPEG + sharp
+# AVIF/WebP optimizasyonu için ek bellek lazım). Coolify builder
+# stage'inde OOM olmasını engeller.
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
 # Build-time env vars (public — these get inlined into the bundle).
 # Coolify injects runtime env vars at container start; for NEXT_PUBLIC_*
 # values you need them present at build time too. Pass via Coolify
