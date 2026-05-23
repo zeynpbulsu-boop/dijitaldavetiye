@@ -15,6 +15,7 @@ import "./globals.css";
 import { CursorRing } from "@/components/effects/cursor-ring";
 import { LocaleProvider } from "@/lib/i18n/provider";
 import { CurrencyProvider } from "@/lib/currency/provider";
+import { LenisProvider } from "@/lib/motion/lenis-provider";
 
 /**
  * Body: Inter Tight — modern grotesk, default body across NUVE.
@@ -202,12 +203,14 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Ana içeriğe atla
         </a>
-        <LocaleProvider>
-          <CurrencyProvider>
-            <CursorRing />
-            {children}
-          </CurrencyProvider>
-        </LocaleProvider>
+        <LenisProvider>
+          <LocaleProvider>
+            <CurrencyProvider>
+              <CursorRing />
+              {children}
+            </CurrencyProvider>
+          </LocaleProvider>
+        </LenisProvider>
       </body>
     </html>
   );
