@@ -3,9 +3,20 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { startCheckout } from "@/lib/payments/checkout-client";
 import { isTierSlug, type TierSlug } from "@/lib/payments/products";
 import { themeForSlug } from "@/lib/templates/themes";
+
+/* Luxe edition slug → real asset paths. */
+const LUXE_ASSETS: Record<string, { cover: string; seal: string }> = {
+  aethel: { cover: "/aethel/cover.jpg", seal: "/aethel/wax-seal-luxe.png" },
+  nocturne: { cover: "/nocturne/cover.jpg", seal: "/nocturne/wax-seal.png" },
+  candela: { cover: "/candela/cover.jpg", seal: "/candela/wax-seal.png" },
+  mistral: { cover: "/mistral/cover.jpg", seal: "/mistral/wax-seal.png" },
+  olea: { cover: "/olea/cover.jpg", seal: "/olea/wax-seal.png" },
+  aurora: { cover: "/aurora/cover.jpg", seal: "/aurora/wax-seal.png" },
+};
 
 /**
  * /order/[slug] — invitation editor.
@@ -362,110 +373,197 @@ export default function OrderEditorPage() {
           <div className="sticky top-24">
             {(() => {
               const theme = themeForSlug(templateSlug);
+              const luxe = LUXE_ASSETS[templateSlug];
+              const initials = monogram || (p1 && p2 ? `${p1[0]}&${p2[0]}` : (p1?.[0] ?? p2?.[0] ?? "N"));
               return (
-                <div className="overflow-hidden rounded-[10px] border border-brand-ink/12 bg-paper">
-                  {/* Preview header — neutral */}
-                  <div className="border-b border-brand-ink/10 px-6 py-3">
+                <div className="overflow-hidden rounded-[12px] border border-brand-ink/12 bg-paper shadow-[0_12px_40px_-16px_rgba(43,30,22,0.18)]">
+                  {/* Preview header */}
+                  <div className="flex items-center justify-between border-b border-brand-ink/10 px-5 py-3">
                     <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-cognac">
                       — Önizleme · {theme.name}
                     </p>
+                    <span className="text-[9px] uppercase tracking-[0.22em] text-brand-mute">
+                      Canlı
+                    </span>
                   </div>
 
-                  {/* Themed preview canvas */}
+                  {/* Themed preview canvas — Hero benzeri */}
                   <div
-                    className="p-8 text-center"
-                    style={{ background: theme.bg, color: theme.ink }}
+                    className="relative overflow-hidden text-center"
+                    style={{
+                      background: theme.bg,
+                      color: theme.ink,
+                      minHeight: 460,
+                    }}
                   >
-                    <p
-                      className="text-[9px] font-semibold uppercase tracking-[0.32em]"
-                      style={{ color: theme.accent }}
-                    >
-                      NUVE · {theme.name.toUpperCase()}
-                    </p>
-
-                    {/* Mini wax seal */}
-                    <div
-                      className="mx-auto mt-5 flex h-16 w-16 items-center justify-center rounded-full shadow-[0_8px_18px_-6px_rgba(43,30,22,0.45)]"
-                      style={{ background: theme.monogramFill }}
-                    >
-                      <span
-                        className="font-display italic"
-                        style={{
-                          color: theme.monogramText,
-                          fontSize: "24px",
-                          lineHeight: 1,
-                        }}
+                    {/* Cover scene background (real edition cover, faded) */}
+                    {luxe && (
+                      <div
+                        aria-hidden
+                        className="pointer-events-none absolute inset-0"
+                        style={{ opacity: theme.isDark ? 0.35 : 0.5 }}
                       >
-                        {monogram ||
-                          (p1 && p2 ? `${p1[0]}&${p2[0]}` : "N")}
-                      </span>
-                    </div>
-
-                    <p
-                      className="mt-5 font-display"
-                      style={{
-                        color: theme.ink,
-                        fontSize: "28px",
-                        lineHeight: 1.05,
-                        letterSpacing: "-0.012em",
-                      }}
-                    >
-                      {p1 || "—"}
-                    </p>
-                    <p
-                      className="font-display italic"
-                      style={{ color: theme.accent, fontSize: "16px", lineHeight: 1.4 }}
-                    >
-                      ve
-                    </p>
-                    <p
-                      className="font-display"
-                      style={{
-                        color: theme.ink,
-                        fontSize: "28px",
-                        lineHeight: 1.05,
-                        letterSpacing: "-0.012em",
-                      }}
-                    >
-                      {p2 || "—"}
-                    </p>
-
-                    {date && (
-                      <div className="mt-5 inline-flex items-center gap-2">
-                        <span aria-hidden className="h-px w-6" style={{ background: theme.ruleColor }} />
-                        <span
-                          className="text-[10px] uppercase tracking-[0.24em]"
-                          style={{ color: theme.inkSoft }}
-                        >
-                          {date}
-                        </span>
-                        <span aria-hidden className="h-px w-6" style={{ background: theme.ruleColor }} />
+                        <Image
+                          src={luxe.cover}
+                          alt=""
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 460px"
+                          style={{ objectFit: "cover" }}
+                          priority={false}
+                        />
+                        {/* Gradient overlay for legibility */}
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background: theme.isDark
+                              ? "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.55) 100%)"
+                              : "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0.4) 100%)",
+                          }}
+                        />
                       </div>
                     )}
-                    {(venueName || venueCity) && (
+
+                    {/* Content */}
+                    <div className="relative z-10 flex flex-col items-center px-7 py-10">
                       <p
-                        className="mt-2 font-display italic"
-                        style={{ color: theme.inkSoft, fontSize: "13px" }}
+                        className="text-[9px] font-semibold uppercase tracking-[0.42em]"
+                        style={{ color: theme.accent }}
                       >
-                        {[venueName, venueCity].filter(Boolean).join(" · ")}
+                        Evleniyoruz
                       </p>
-                    )}
+
+                      {/* Real wax seal asset (luxe) veya fallback CSS daire */}
+                      <div className="mt-6 flex h-[88px] w-[88px] items-center justify-center">
+                        {luxe ? (
+                          <div className="relative h-full w-full">
+                            <Image
+                              src={luxe.seal}
+                              alt=""
+                              fill
+                              sizes="88px"
+                              style={{
+                                objectFit: "contain",
+                                filter: "drop-shadow(0 6px 16px rgba(0,0,0,0.35))",
+                              }}
+                              priority={false}
+                            />
+                            {/* Initials overlay on seal */}
+                            <span
+                              className="absolute inset-0 flex items-center justify-center font-display italic"
+                              style={{
+                                color: theme.monogramText,
+                                fontSize: "22px",
+                                lineHeight: 1,
+                                textShadow: "0 1px 2px rgba(0,0,0,0.4)",
+                              }}
+                            >
+                              {initials}
+                            </span>
+                          </div>
+                        ) : (
+                          <div
+                            className="flex h-full w-full items-center justify-center rounded-full shadow-[0_8px_18px_-6px_rgba(43,30,22,0.45)]"
+                            style={{ background: theme.monogramFill }}
+                          >
+                            <span
+                              className="font-display italic"
+                              style={{
+                                color: theme.monogramText,
+                                fontSize: "26px",
+                                lineHeight: 1,
+                              }}
+                            >
+                              {initials}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Couple names — Pinyon Script calligraphy */}
+                      <div
+                        className="mt-7"
+                        style={{
+                          fontFamily: "var(--font-calligraphy), Georgia, serif",
+                          color: theme.ink,
+                        }}
+                      >
+                        <p style={{ fontSize: "44px", lineHeight: 1.05, letterSpacing: "0.01em" }}>
+                          {p1 || "—"}
+                        </p>
+                        <p
+                          className="my-1"
+                          style={{
+                            fontFamily: "var(--font-display), serif",
+                            fontStyle: "italic",
+                            fontSize: "13px",
+                            color: theme.accent,
+                            letterSpacing: "0.18em",
+                            textTransform: "lowercase",
+                          }}
+                        >
+                          ve
+                        </p>
+                        <p style={{ fontSize: "44px", lineHeight: 1.05, letterSpacing: "0.01em" }}>
+                          {p2 || "—"}
+                        </p>
+                      </div>
+
+                      {/* Decorative separator */}
+                      <span
+                        aria-hidden
+                        className="my-6 inline-block"
+                        style={{
+                          width: 48,
+                          height: 1,
+                          background: theme.ruleColor,
+                          opacity: 0.7,
+                        }}
+                      />
+
+                      {date && (
+                        <p
+                          className="text-[11px] uppercase tracking-[0.32em]"
+                          style={{ color: theme.inkSoft }}
+                        >
+                          {new Date(date).toLocaleDateString("tr-TR", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </p>
+                      )}
+                      {(venueName || venueCity) && (
+                        <p
+                          className="mt-2 font-display italic"
+                          style={{ color: theme.inkSoft, fontSize: "13px", letterSpacing: "0.01em" }}
+                        >
+                          {[venueName, venueCity].filter(Boolean).join(" · ")}
+                        </p>
+                      )}
+
+                      {!p1 && !p2 && !date && (
+                        <p
+                          className="mt-3 text-[10px] uppercase tracking-[0.28em]"
+                          style={{ color: theme.inkSoft, opacity: 0.6 }}
+                        >
+                          Soldaki alanlardan başla
+                        </p>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Palette chips */}
-                  <div className="flex items-center gap-2 border-t border-brand-ink/10 px-6 py-3">
-                    {[theme.bg, theme.ink, theme.accent, theme.monogramFill, theme.spark].map(
-                      (c, i) => (
-                        <span
-                          key={i}
-                          aria-hidden
-                          className="h-5 w-5 rounded-full border border-brand-ink/12"
-                          style={{ background: c }}
-                          title={c}
-                        />
-                      ),
-                    )}
-                    <span className="ml-auto text-[10px] uppercase tracking-[0.2em] text-brand-mute">
+                  {/* Palette chips + slug label */}
+                  <div className="flex items-center gap-2 border-t border-brand-ink/10 bg-paper px-5 py-3">
+                    {[theme.accent, theme.ink, theme.monogramFill, theme.spark].map((c, i) => (
+                      <span
+                        key={i}
+                        aria-hidden
+                        className="h-4 w-4 rounded-full border border-brand-ink/12"
+                        style={{ background: c }}
+                        title={c}
+                      />
+                    ))}
+                    <span className="ml-auto text-[9px] uppercase tracking-[0.22em] text-brand-mute">
                       {templateSlug}
                     </span>
                   </div>
