@@ -12,9 +12,9 @@ import { useState } from "react";
  *
  * Drop your purchased / licensed watercolor backgrounds into:
  *   public/illustrations/blush-reverie/hero.jpg   (or .png / .webp)
- *   public/illustrations/olive-grove/hero.jpg
+ *   public/illustrations/olea/hero.jpg
  *   public/illustrations/bordeaux/hero.jpg
- *   public/illustrations/mansion-lights/hero.jpg
+ *   public/illustrations/candela/hero.jpg
  *   public/illustrations/kir-bahcesi/hero.jpg
  *   ...etc
  *

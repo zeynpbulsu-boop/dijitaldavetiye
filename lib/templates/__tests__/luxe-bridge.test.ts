@@ -6,8 +6,8 @@ import type { Invitation } from "@/lib/db/types";
 /**
  * Luxe bridge contract — FAZ A.3.
  *
- *   1. Six luxe slugs (aethel, atelier-indigo, aurora, bodrum-blue,
- *      mansion-lights, olive-grove) resolve to themes.
+ *   1. Six luxe slugs (aethel, nocturne, aurora, mistral,
+ *      candela, olea) resolve to themes.
  *   2. Anything else returns null so the legacy view still owns it.
  *   3. DB values override preset values; nulls fall back to preset.
  *   4. wedding_date splits into { day, month, year } in the row's locale.

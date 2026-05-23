@@ -29,10 +29,10 @@ export interface StoryEntry {
 
 export type StoryGlyph =
   | "cross" /** Aethel — kilise haçı */
-  | "moon" /** Atelier Indigo — hilal */
-  | "candle" /** Mansion Lights — alev */
-  | "anchor" /** Bodrum Blue — çapa */
-  | "olive" /** Olive Grove — zeytin yaprağı */
+  | "moon" /** Nocturne — hilal */
+  | "candle" /** Candéla — alev */
+  | "anchor" /** Mistral — çapa */
+  | "olive" /** Olea — zeytin yaprağı */
   | "spark"; /** Aurora — kıvılcım/yıldız */
 
 interface Props {

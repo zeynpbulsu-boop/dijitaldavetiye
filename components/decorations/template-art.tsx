@@ -31,7 +31,7 @@ export function TemplateDecorations({ slug, theme }: Props) {
   switch (slug) {
     case "magnolia":
       return <MagnoliaArt theme={theme} />;
-    case "mansion-lights":
+    case "candela":
       return <MansionLightsArt theme={theme} />;
     case "timeless":
       return <TimelessArt theme={theme} />;
@@ -39,7 +39,7 @@ export function TemplateDecorations({ slug, theme }: Props) {
       return <ModernArt theme={theme} />;
     case "bordeaux":
       return <BordeauxArt theme={theme} />;
-    case "olive-grove":
+    case "olea":
     case "botanical":
       return <BotanicalArt theme={theme} />;
     case "blush-reverie":
@@ -48,7 +48,7 @@ export function TemplateDecorations({ slug, theme }: Props) {
     case "lavender":
     case "kir-bahcesi":
       return <KirBahcesiArt theme={theme} />;
-    case "atelier-indigo":
+    case "nocturne":
     case "verde-borgogna":
       return <AtelierInkArt theme={theme} />;
     case "elegant-ivory":
@@ -306,7 +306,7 @@ function MagnoliaArt({ theme }: { theme: InvitationTheme }) {
 }
 
 /* ────────────────────────────────────────────────────────────────── */
-/* 2) Mansion Lights — Akşam Yalısı                                  */
+/* 2) Candéla — Akşam Yalısı                                  */
 /* ────────────────────────────────────────────────────────────────── */
 /* Tall column lines + center chandelier silhouette + flickering glow */
 
@@ -961,7 +961,7 @@ function BordeauxArt({ theme }: { theme: InvitationTheme }) {
 }
 
 /* ────────────────────────────────────────────────────────────────── */
-/* 6) Botanical / Olive Grove — Bitki Yeşili                         */
+/* 6) Botanical / Olea — Bitki Yeşili                         */
 /* ────────────────────────────────────────────────────────────────── */
 /* Eucalyptus branches at edges, gentle sway */
 
@@ -1155,7 +1155,7 @@ function KirBahcesiArt({ theme }: { theme: InvitationTheme }) {
 }
 
 /* ────────────────────────────────────────────────────────────────── */
-/* 9) Atelier Indigo / Verde Borgogna — Sanatsal mürekkep            */
+/* 9) Nocturne / Verde Borgogna — Sanatsal mürekkep            */
 /* ────────────────────────────────────────────────────────────────── */
 /* Watercolour ink wash + brush strokes */
 
@@ -1643,7 +1643,7 @@ export function TemplateCardArt({ slug, dark = false }: { slug: string; dark?: b
     case "magnolia":
     case "blush-garden":
       return <SceneMagnoliaArch />;
-    case "mansion-lights":
+    case "candela":
     case "verde-borgogna":
       return <SceneMoonlitMansion />;
     case "timeless":
@@ -1653,9 +1653,9 @@ export function TemplateCardArt({ slug, dark = false }: { slug: string; dark?: b
     case "black-ink":
       return <SceneBlackInk />;
     case "bordeaux":
-    case "atelier-indigo":
+    case "nocturne":
       return <SceneBordeauxCrest />;
-    case "olive-grove":
+    case "olea":
     case "botanical":
       return <SceneOliveArch />;
     case "blush-reverie":
@@ -1749,7 +1749,7 @@ function SceneMagnoliaArch() {
 }
 
 /* ──────────────────────────────────────────────────────────────────
- * Scene 2 — Moonlit Mansion (Mansion Lights / Verde-Borgogna)
+ * Scene 2 — Moonlit Mansion (Candéla / Verde-Borgogna)
  * Deep midnight blue sky + crescent moon + mansion silhouette with
  * golden window glows + sparse stars. Cinematic evening.
  * ────────────────────────────────────────────────────────────────── */
@@ -1935,7 +1935,7 @@ function SceneBlackInk() {
 }
 
 /* ──────────────────────────────────────────────────────────────────
- * Scene 5 — Bordeaux Crest (Bordeaux / Atelier Indigo)
+ * Scene 5 — Bordeaux Crest (Bordeaux / Nocturne)
  * Deep burgundy bg + filigree corners + central wax seal monogram
  * + gold ember flecks. Old-world heraldic.
  * ────────────────────────────────────────────────────────────────── */
@@ -2007,7 +2007,7 @@ function SceneBordeauxCrest() {
 }
 
 /* ──────────────────────────────────────────────────────────────────
- * Scene 6 — Olive Arch (Olive Grove / Botanical)
+ * Scene 6 — Olive Arch (Olea / Botanical)
  * Warm cream wash + olive branches forming archway + golden gate
  * silhouette in distance. Mediterranean afternoon.
  * ────────────────────────────────────────────────────────────────── */

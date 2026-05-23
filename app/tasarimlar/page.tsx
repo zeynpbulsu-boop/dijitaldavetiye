@@ -17,7 +17,7 @@ import { TasarimlarCatalog } from "./_catalog";
 export const metadata: Metadata = {
   title: "Tasarımlar · Tüm Edisyonlar",
   description:
-    "NUVE'nin altı luxe edisyonu — Aethel's Chapel, Atelier Indigo, Mansion Lights, Bodrum Blue, Olive Grove, Aurora. Her edisyon kendi mührü, sahnesi ve fontuyla.",
+    "NUVE'nin altı luxe edisyonu — Aethel's Chapel, Nocturne, Candéla, Mistral, Olea, Aurora. Her edisyon kendi mührü, sahnesi ve fontuyla.",
   openGraph: {
     title: "NUVE — Altı edisyon, altı hikâye",
     description: "Premium dijital davetiye edisyonları. Her birinin kendi sahnesi var.",

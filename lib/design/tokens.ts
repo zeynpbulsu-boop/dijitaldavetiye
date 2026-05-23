@@ -14,11 +14,11 @@
 /* ── Edition catalogue ─────────────────────────────────────────── */
 
 export type EditionSlug =
-  | "atelier-indigo"
+  | "nocturne"      // was: atelier-indigo (renamed 2026-05-23 — bizevleniyoruz catalog conflict)
   | "timeless"
-  | "olive-grove"
-  | "mansion-lights"
-  | "bodrum-blue"
+  | "olea"          // was: olive-grove
+  | "candela"       // was: mansion-lights (renamed — bizevleniyoruz catalog conflict)
+  | "mistral"       // was: bodrum-blue
   | "aurora";
 
 export interface EditionMeta {
@@ -62,9 +62,9 @@ export interface EditionMeta {
 }
 
 export const EDITIONS: Record<EditionSlug, EditionMeta> = {
-  "atelier-indigo": {
-    slug: "atelier-indigo",
-    name: "Atelier Indigo",
+  nocturne: {
+    slug: "nocturne",
+    name: "Nocturne",
     character: "Karanlık bordo + altın filigree, art-deco letterpress",
     displayFont: "Playfair Display",
     motion: "letterpress",
@@ -94,9 +94,9 @@ export const EDITIONS: Record<EditionSlug, EditionMeta> = {
     bodyBg: "#FBF8F2",
     bodyInk: "#2A2622",
   },
-  "olive-grove": {
-    slug: "olive-grove",
-    name: "Olive Grove",
+  olea: {
+    slug: "olea",
+    name: "Olea",
     character: "Akdeniz krem keten + zeytin yeşili, signature el yazısı",
     displayFont: "Cormorant Garamond + Caveat",
     motion: "botanical",
@@ -110,10 +110,10 @@ export const EDITIONS: Record<EditionSlug, EditionMeta> = {
     bodyBg: "#F2EFE0",
     bodyInk: "#2D3320",
   },
-  "mansion-lights": {
-    slug: "mansion-lights",
-    name: "Mansion Lights",
-    character: "Akşam yalısı, koyu yeşil + şampanya altın",
+  candela: {
+    slug: "candela",
+    name: "Candéla",
+    character: "Akşam yalısı + yüzlerce mum, koyu bordo + şampanya altın",
     displayFont: "DM Serif Display",
     motion: "gilded",
     palette: { bg: "#11261E", bgAlt: "#1A3329", ink: "#F2EAD3", accent: "#D9B36A", deep: "#8A6F32" },
@@ -126,10 +126,10 @@ export const EDITIONS: Record<EditionSlug, EditionMeta> = {
     bodyBg: "#F2EAD3",
     bodyInk: "#11261E",
   },
-  "bodrum-blue": {
-    slug: "bodrum-blue",
-    name: "Bodrum Blue",
-    character: "Ege mavisi + kireç beyazı + zeytin",
+  mistral: {
+    slug: "mistral",
+    name: "Mistral",
+    character: "Ege mavisi + kireç beyazı + zeytin, Akdeniz rüzgârı",
     displayFont: "Tenor Sans",
     motion: "coastal",
     palette: { bg: "#F4F1EA", bgAlt: "#E0EAEE", ink: "#1F3848", accent: "#4A7E94", deep: "#1E3D5C" },

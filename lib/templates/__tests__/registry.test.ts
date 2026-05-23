@@ -36,7 +36,7 @@ describe("listTemplates", () => {
     // FAZ 2D will expand this set with Aurora etc.
     expect(visible).toContain("bordeaux");
     expect(visible).toContain("egee-blue");
-    expect(visible).toContain("olive-grove");
+    expect(visible).toContain("olea");
     expect(visible).toContain("verde-borgogna");
     expect(visible).toContain("elegant-ivory");
   });

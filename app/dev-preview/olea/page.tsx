@@ -3,7 +3,7 @@ import { LuxeEditionDemo } from "@/components/themed/luxe-edition-demo";
 import { OLIVE_GROVE_THEME } from "@/lib/design/luxe-themes";
 
 export const metadata: Metadata = {
-  title: "Olive Grove — Killer Demo · NUVE",
+  title: "Olea — Killer Demo · NUVE",
   description: "Alaçatı zeytin bahçesi + limon + sage. Premium davetiye.",
   robots: { index: false, follow: false },
 };

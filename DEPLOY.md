@@ -138,7 +138,7 @@ public/illustrations/{template-slug}/hero.jpg   (or .png / .webp)
 Supported template slugs (one folder per — already scaffolded):
 
 ```
-blush-reverie · bordeaux · olive-grove · mansion-lights ·
+blush-reverie · bordeaux · olea · candela ·
 magnolia · timeless · modern · lavender · kir-bahcesi ·
 egee-blue · black-ink · elegant-ivory · verde-borgogna · blush-garden
 ```

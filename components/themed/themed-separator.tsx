@@ -5,7 +5,7 @@
  *
  * Section ayraç. Tema'nın ornamentColor + separatorIcon'undan beslenir.
  * Hiçbir sayfa ayracı düz çizgi değildir — her edition'ın kendi DNA'sını
- * taşır: Aethel Chapel ✦ yosun yeşili, Olive Grove 🌿 yaprak, vb.
+ * taşır: Aethel Chapel ✦ yosun yeşili, Olea 🌿 yaprak, vb.
  *
  * Pressed Love'ın yapamadığı ŞEY budur: onların `+` her sayfada aynı
  * jenerik gri. Bizimki edition kimliğini her cm²'ye yedirir.
@@ -110,7 +110,7 @@ function SeparatorGlyph({
         </svg>
       );
     case "leaf":
-      // 🌿 Olive Grove
+      // 🌿 Olea
       return (
         <svg {...props}>
           <path d="M12 2 C 8 7, 6 12, 8 18 C 14 20, 18 16, 18 10 C 18 6, 16 3, 12 2 Z"
@@ -134,7 +134,7 @@ function SeparatorGlyph({
         </svg>
       );
     case "star":
-      // Bodrum Blue — Aegean / coastal star
+      // Mistral — Aegean / coastal star
       return (
         <svg {...props}>
           <path d="M12 2 L14 9 L21 10 L16 14 L17.5 21 L12 17 L6.5 21 L8 14 L3 10 L10 9 Z"

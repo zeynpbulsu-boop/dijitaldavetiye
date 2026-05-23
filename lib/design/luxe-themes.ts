@@ -136,7 +136,7 @@ export const AETHEL_THEME: LuxeEditionTheme = {
 
 /* ── 1. ATELIER INDIGO (gece mavisi + altın varak) ─────────────── */
 export const ATELIER_INDIGO_THEME: LuxeEditionTheme = {
-  meta: EDITIONS["atelier-indigo"],
+  meta: EDITIONS["nocturne"],
   bg: "#0F1A3D",
   footerBg: "#0A1430",
   ink: "#F2EAD3",
@@ -144,9 +144,9 @@ export const ATELIER_INDIGO_THEME: LuxeEditionTheme = {
   inkMuted: "rgba(212, 161, 88, 0.78)",
   accent: "#D4A158",
   haloColor: "#D4A158",
-  waxSealSrc: "/atelier-indigo/wax-seal.png",
-  watermarkSrc: "/atelier-indigo/watermark.png",
-  coverScene: "/atelier-indigo/cover.jpg",
+  waxSealSrc: "/nocturne/wax-seal.png",
+  watermarkSrc: "/nocturne/watermark.png",
+  coverScene: "/nocturne/cover.jpg",
   weddingDateISO: "2026-10-24",
   coupleName: "Selin & Mert",
   monogram: "S&M",
@@ -262,7 +262,7 @@ export const ATELIER_INDIGO_THEME: LuxeEditionTheme = {
 
 /* ── 2. MANSION LIGHTS (boğazda akşam yalısı) ──────────────────── */
 export const MANSION_LIGHTS_THEME: LuxeEditionTheme = {
-  meta: EDITIONS["mansion-lights"],
+  meta: EDITIONS["candela"],
   bg: "#4A1521",
   footerBg: "#3A0F19",
   ink: "#F2EAD3",
@@ -270,9 +270,9 @@ export const MANSION_LIGHTS_THEME: LuxeEditionTheme = {
   inkMuted: "rgba(217, 179, 106, 0.85)",
   accent: "#D9B36A",
   haloColor: "#D9B36A",
-  waxSealSrc: "/mansion-lights/wax-seal.png",
-  watermarkSrc: "/mansion-lights/watermark.png",
-  coverScene: "/mansion-lights/cover.jpg",
+  waxSealSrc: "/candela/wax-seal.png",
+  watermarkSrc: "/candela/watermark.png",
+  coverScene: "/candela/cover.jpg",
   weddingDateISO: "2026-06-08",
   coupleName: "Zeynep & Kerem",
   monogram: "Z&K",
@@ -388,7 +388,7 @@ export const MANSION_LIGHTS_THEME: LuxeEditionTheme = {
 
 /* ── 3. BODRUM BLUE (Ege esintisi) ─────────────────────────────── */
 export const BODRUM_BLUE_THEME: LuxeEditionTheme = {
-  meta: EDITIONS["bodrum-blue"],
+  meta: EDITIONS["mistral"],
   bg: "#F4F1EA",
   footerBg: "#E8E3D8",
   ink: "#1F3848",
@@ -396,9 +396,9 @@ export const BODRUM_BLUE_THEME: LuxeEditionTheme = {
   inkMuted: "rgba(74, 126, 148, 0.7)",
   accent: "#4A7E94",
   haloColor: "#7BA8BD",
-  waxSealSrc: "/bodrum-blue/wax-seal.png",
-  watermarkSrc: "/bodrum-blue/watermark.png",
-  coverScene: "/bodrum-blue/cover.jpg",
+  waxSealSrc: "/mistral/wax-seal.png",
+  watermarkSrc: "/mistral/watermark.png",
+  coverScene: "/mistral/cover.jpg",
   weddingDateISO: "2026-07-27",
   coupleName: "Ayda & Can",
   monogram: "A&C",
@@ -514,7 +514,7 @@ export const BODRUM_BLUE_THEME: LuxeEditionTheme = {
 
 /* ── 4. OLIVE GROVE (Alaçatı organik lüks) ─────────────────────── */
 export const OLIVE_GROVE_THEME: LuxeEditionTheme = {
-  meta: EDITIONS["olive-grove"],
+  meta: EDITIONS["olea"],
   bg: "#F5F2EB",
   footerBg: "#E8E3D5",
   ink: "#2D3320",
@@ -522,9 +522,9 @@ export const OLIVE_GROVE_THEME: LuxeEditionTheme = {
   inkMuted: "rgba(103, 120, 78, 0.8)",
   accent: "#67784E",
   haloColor: "#9EAA8E",
-  waxSealSrc: "/olive-grove/wax-seal.png",
-  watermarkSrc: "/olive-grove/watermark.png",
-  coverScene: "/olive-grove/cover.jpg",
+  waxSealSrc: "/olea/wax-seal.png",
+  watermarkSrc: "/olea/watermark.png",
+  coverScene: "/olea/cover.jpg",
   weddingDateISO: "2026-05-15",
   coupleName: "Ipek & Yiğit",
   monogram: "İ&Y",
@@ -767,10 +767,10 @@ export const AURORA_THEME: LuxeEditionTheme = {
 /* ── Toplu erişim ──────────────────────────────────────────────── */
 export const LUXE_THEMES = {
   aethel: AETHEL_THEME,
-  "atelier-indigo": ATELIER_INDIGO_THEME,
-  "mansion-lights": MANSION_LIGHTS_THEME,
-  "bodrum-blue": BODRUM_BLUE_THEME,
-  "olive-grove": OLIVE_GROVE_THEME,
+  "nocturne": ATELIER_INDIGO_THEME,
+  "candela": MANSION_LIGHTS_THEME,
+  "mistral": BODRUM_BLUE_THEME,
+  "olea": OLIVE_GROVE_THEME,
   aurora: AURORA_THEME,
 } as const;
 

@@ -5,7 +5,7 @@ import { EditorialBase } from "../_shared/editorial-base";
 import type { EditorialTheme } from "../_shared/theme";
 
 const theme: EditorialTheme = {
-  editionName: "Olive Grove",
+  editionName: "Olea",
 
   bg: "#EFEEDD",
   ink: "#2E3324",

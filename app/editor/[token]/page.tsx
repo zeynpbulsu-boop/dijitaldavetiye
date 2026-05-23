@@ -16,7 +16,7 @@ import { HotelsSection } from "./_hotels";
  * Supabase Auth + RLS for v1 — the email-link pattern keeps the
  * onboarding flow to "open this link, edit your invitation, save."
  *
- * For luxe slugs (aethel, atelier-indigo, ...) the editor shows the
+ * For luxe slugs (aethel, nocturne, ...) the editor shows the
  * extra copy fields that LuxeEditionDemo consumes (greeting, eyebrow,
  * CTAs, footer note, music track). Non-luxe slugs hide those — they'd
  * just sit in the DB unused.
