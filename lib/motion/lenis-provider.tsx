@@ -3,17 +3,21 @@
 /**
  * LenisProvider — viral motion foundation #1
  *
- * Lenis smooth scroll bağlanır, GSAP ScrollTrigger ile sync edilir.
- * Root layout'ta tüm uygulamayı sarar. prefers-reduced-motion → no-op.
- *
- * Awwwards 2026 SOTD pattern: Lenis + GSAP + scroll-driven motion
- * cinematik ağırlık hissi vermek için.
+ * Lenis smooth scroll bağlanır. GSAP ScrollTrigger sync **lazy** —
+ * sadece useScrollTrigger() çağrılınca yüklenir (Faz 2 signature
+ * moment'ları için). Default'ta Lenis solo çalışır (~7KB), GSAP
+ * eklenmez (~50KB tasarruf).
  */
 
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import Lenis from "lenis";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 interface LenisContextValue {
   lenis: Lenis | null;
@@ -32,14 +36,11 @@ export function LenisProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mq.matches) {
       setReduced(true);
       return;
     }
-
-    // Avoid initializing on browsers that lack rAF / matchMedia (safety net)
     if (typeof requestAnimationFrame === "undefined") return;
 
     const lenis = new Lenis({
@@ -51,22 +52,15 @@ export function LenisProvider({ children }: { children: ReactNode }) {
     });
     lenisRef.current = lenis;
 
-    gsap.registerPlugin(ScrollTrigger);
-
-    const onScroll = () => ScrollTrigger.update();
-    lenis.on("scroll", onScroll);
-
-    const tick = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
-
-    // Refresh ScrollTrigger once after fonts/images settle
-    const refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 500);
+    let rafId = 0;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
 
     return () => {
-      window.clearTimeout(refreshTimer);
-      lenis.off("scroll", onScroll);
-      gsap.ticker.remove(tick);
+      cancelAnimationFrame(rafId);
       lenis.destroy();
       lenisRef.current = null;
     };

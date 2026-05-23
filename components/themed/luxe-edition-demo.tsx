@@ -38,6 +38,10 @@ import {
   type StoryGlyph,
 } from "@/components/themed/journey-timeline";
 import { EnvelopeCeremony } from "@/components/themed/envelope-ceremony";
+import { CinematicIntro } from "@/components/themed/cinematic-intro";
+import { CountdownDetonation } from "@/components/themed/countdown-detonation";
+import { UnmutePrompt } from "@/components/audio/unmute-prompt";
+import { useAudio } from "@/lib/audio/audio-context";
 import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
 import { CountdownLuxe } from "@/components/themed/countdown-luxe";
@@ -221,7 +225,17 @@ const EVENT_OVERRIDES_TR: Record<
 };
 
 export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
+  /* Faz 1 viral upgrade wiring:
+     - introDone: 2.5s CinematicIntro tamamlandı mı? (false → intro render)
+     - opened: zarf açıldı mı? (mevcut davranış)
+     - boom: countdown T-0'a ulaştı mı? (CountdownDetonation tetiği)
+     - audio: per-edition ambient için context */
+  const [introDone, setIntroDone] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [boom, setBoom] = useState(false);
+  const audio = useAudio();
+  const editionSlug = theme.meta.slug as Parameters<typeof audio.playAmbient>[0];
+
   const initDate = theme.defaultDate ?? { day: "12", month: "Eylül", year: "2026" };
   const [day, setDay] = useState(initDate.day);
   const [month, setMonth] = useState(initDate.month);
@@ -251,8 +265,20 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
   return (
     <>
-      {/* ZARF SEREMONISI */}
-      {!opened && (
+      {/* FAZ 1 — 2.5s cinematic page-in (curtain + monogram + ink bloom) */}
+      {!introDone && (
+        <CinematicIntro
+          monogram={theme.monogram ?? theme.coupleName?.split(" & ").map((p) => p[0]).join("&") ?? "N"}
+          inkColor={theme.ink}
+          accentColor={theme.accent}
+          curtainColor={theme.bg}
+          onComplete={() => setIntroDone(true)}
+          edition={theme.meta.slug}
+        />
+      )}
+
+      {/* ZARF SEREMONISI — intro bittikten sonra mount */}
+      {introDone && !opened && (
         <EnvelopeCeremony
           greeting={theme.greeting ?? "Bir davet sizi bekliyor"}
           ctaLabel={theme.envelopeCta ?? "Davetiyeyi Aç"}
@@ -267,6 +293,16 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
           onOpened={() => setOpened(true)}
         />
       )}
+
+      {/* FAZ 1 — Sesi aç prompt'u, zarf açıldıktan 600ms sonra slide-in */}
+      <UnmutePrompt show={opened} edition={editionSlug} />
+
+      {/* FAZ 1 — Countdown T-0 detonation (confetti + flash + shimmer + chime) */}
+      <CountdownDetonation
+        triggered={boom}
+        palette={{ accent: theme.accent, ink: theme.ink, bg: theme.bg }}
+      />
+
 
       <motion.div
         id="main"
@@ -403,6 +439,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                   inkSoft={theme.inkSoft}
                   labels={i18n.countdownLabels}
                   pastLabel={countdownPastLabel}
+                  onReachZero={() => setBoom(true)}
                 />
               </div>
             </section>

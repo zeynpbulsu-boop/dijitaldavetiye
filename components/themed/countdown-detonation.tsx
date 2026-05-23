@@ -19,8 +19,19 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import confetti from "canvas-confetti";
 import { useAudio, SHARED_SFX } from "@/lib/audio/audio-context";
+
+/* Lazy load canvas-confetti — only when T-0 triggers. */
+type ConfettiFn = (options: Record<string, unknown>) => void;
+let confettiPromise: Promise<ConfettiFn> | null = null;
+const loadConfetti = (): Promise<ConfettiFn> => {
+  if (!confettiPromise) {
+    confettiPromise = import("canvas-confetti").then(
+      (m) => (m as unknown as { default: ConfettiFn }).default
+    );
+  }
+  return confettiPromise;
+};
 
 interface Props {
   triggered: boolean;
@@ -50,7 +61,7 @@ export function CountdownDetonation({ triggered, palette }: Props) {
     setFlash(true);
     const flashTimer = window.setTimeout(() => setFlash(false), 800);
 
-    // Phase 3 — confetti burst (skip if reduced motion)
+    // Phase 3 — confetti burst (skip if reduced motion). Lazy import canvas-confetti.
     let confettiTimers: number[] = [];
     if (!reduced) {
       const colors = [
@@ -60,42 +71,42 @@ export function CountdownDetonation({ triggered, palette }: Props) {
         "#FFFFFF",
       ];
 
-      // 3-cannon: left, center, right with slight stagger
-      const cannon = (x: number, delay: number) => {
-        const id = window.setTimeout(() => {
-          confetti({
-            particleCount: 90,
-            spread: 65,
-            startVelocity: 38,
-            origin: { x, y: 0.55 },
-            colors,
-            ticks: 240,
-            scalar: 1.05,
-            gravity: 1.05,
-            decay: 0.92,
-          });
-        }, delay);
-        confettiTimers.push(id);
-      };
-      cannon(0.18, 80);
-      cannon(0.5, 0);
-      cannon(0.82, 80);
+      void loadConfetti().then((confetti) => {
+        const cannon = (x: number, delay: number) => {
+          const id = window.setTimeout(() => {
+            confetti({
+              particleCount: 90,
+              spread: 65,
+              startVelocity: 38,
+              origin: { x, y: 0.55 },
+              colors,
+              ticks: 240,
+              scalar: 1.05,
+              gravity: 1.05,
+              decay: 0.92,
+            });
+          }, delay);
+          confettiTimers.push(id);
+        };
+        cannon(0.18, 80);
+        cannon(0.5, 0);
+        cannon(0.82, 80);
 
-      // Secondary soft burst (gold dust)
-      const secondaryTimer = window.setTimeout(() => {
-        confetti({
-          particleCount: 60,
-          spread: 120,
-          startVelocity: 25,
-          origin: { x: 0.5, y: 0.45 },
-          colors: [palette.accent, "#F2EAD3"],
-          shapes: ["circle"],
-          gravity: 0.65,
-          decay: 0.94,
-          scalar: 0.7,
-        });
-      }, 350);
-      confettiTimers.push(secondaryTimer);
+        const secondaryTimer = window.setTimeout(() => {
+          confetti({
+            particleCount: 60,
+            spread: 120,
+            startVelocity: 25,
+            origin: { x: 0.5, y: 0.45 },
+            colors: [palette.accent, "#F2EAD3"],
+            shapes: ["circle"],
+            gravity: 0.65,
+            decay: 0.94,
+            scalar: 0.7,
+          });
+        }, 350);
+        confettiTimers.push(secondaryTimer);
+      });
     }
 
     // Phase 4 — seal shatter SFX
