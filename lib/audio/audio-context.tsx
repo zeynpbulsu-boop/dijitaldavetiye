@@ -1,20 +1,14 @@
 "use client";
 
 /**
- * AudioContext — singleton, user-gesture-gated, graceful-degrade.
+ * AudioContext — singleton, lazy-loaded, user-gesture-gated.
  *
- * Tarayıcılar autoplay'i yasak ettiği için (özellikle iOS Safari),
- * AudioContext sadece kullanıcı ilk dokunduğunda unlock olur.
+ * PERF: Tone.js (~200KB) + Howler.js (~20KB) eager loaded olunca
+ * her sayfa First Load JS'i 220KB şişiyordu → bundle regression.
+ * Bu refactor'da Tone + Howler **sadece kullanıcı sesi açtığında**
+ * (`unlock()` veya `playSfx()` çağrısında) dynamic import edilir.
  *
- * Tasarım:
- *   - Tone.js master AudioContext
- *   - Howler.js one-shot SFX player
- *   - useAmbient(slug) → ambient loop (per-edition)
- *   - useSfx() → { play(name) } imperative
- *   - prefers-reduced-motion + audio çakışmasında: motion reduce ise
- *     ambient OFF (defaultta), kullanıcı manuel açabilir.
- *
- * Audio dosyaları yoksa no-op. Hata fırlatmaz.
+ * Initial bundle: 0 audio lib. Sessiz fallback hiç asset yüklemez.
  */
 
 import {
@@ -26,26 +20,18 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Howl, Howler } from "howler";
-import * as Tone from "tone";
 import { EDITION_AUDIO, SHARED_SFX, type AudioManifest } from "./edition-tracks";
 import type { EditionSlug } from "@/lib/design/tokens";
 
 type EditionKey = EditionSlug | "aethel";
 
 interface AudioContextValue {
-  /** AudioContext açık mı? (kullanıcı ilk dokunduktan sonra true) */
   unlocked: boolean;
-  /** Mute toggle. Default: muted (autoplay policy). */
   muted: boolean;
   setMuted: (m: boolean) => void;
-  /** Manuel unlock — UI'dan "♪ Sesi aç" tıklayınca çağrılır. */
   unlock: () => Promise<void>;
-  /** Per-edition ambient'ı başlat. */
   playAmbient: (edition: EditionKey) => void;
-  /** Ambient'i durdur. */
   stopAmbient: () => void;
-  /** One-shot SFX oynat. (key path or edition-specific name) */
   playSfx: (src: string, options?: { volume?: number; rate?: number }) => void;
 }
 
@@ -54,7 +40,6 @@ const AudioCtx = createContext<AudioContextValue | null>(null);
 export function useAudio(): AudioContextValue {
   const ctx = useContext(AudioCtx);
   if (!ctx) {
-    // Provider yoksa no-op fallback
     return {
       unlocked: false,
       muted: true,
@@ -68,63 +53,84 @@ export function useAudio(): AudioContextValue {
   return ctx;
 }
 
+/* Lazy lib loaders — module-level memoize so multiple unlocks don't re-import. */
+let howlerPromise: Promise<typeof import("howler")> | null = null;
+const loadHowler = () => {
+  if (!howlerPromise) howlerPromise = import("howler");
+  return howlerPromise;
+};
+
+let tonePromise: Promise<typeof import("tone")> | null = null;
+const loadTone = () => {
+  if (!tonePromise) tonePromise = import("tone");
+  return tonePromise;
+};
+
 export function AudioProvider({ children }: { children: ReactNode }) {
   const [unlocked, setUnlocked] = useState(false);
   const [muted, setMutedState] = useState(true);
-  const ambientHowlRef = useRef<Howl | null>(null);
-  const sfxCacheRef = useRef<Map<string, Howl>>(new Map());
+  // Howl instances stored as `any` since the type is loaded lazily.
+  const ambientHowlRef = useRef<{ stop: () => void; fade: (from: number, to: number, ms: number) => void; volume: () => number } | null>(null);
+  const sfxCacheRef = useRef<Map<string, { play: () => void; unload: () => void }>>(new Map());
 
   const unlock = useCallback(async () => {
     try {
-      // Tone.js master context unlock
+      const Tone = await loadTone();
       if (Tone.getContext().state !== "running") {
         await Tone.start();
       }
       setUnlocked(true);
     } catch (e) {
-      // Audio yoksa veya context yoksa — sessiz fallback
       console.warn("[audio] unlock failed:", e);
     }
   }, []);
 
-  const setMuted = useCallback((m: boolean) => {
-    setMutedState(m);
-    Howler.mute(m);
-    if (!m && !unlocked) {
-      // Sesi açmak istiyor ama unlock olmamış → unlock dene
-      void unlock();
-    }
-  }, [unlocked, unlock]);
+  const setMuted = useCallback(
+    (m: boolean) => {
+      setMutedState(m);
+      // Howler mute lazily — only if it was already loaded
+      if (howlerPromise) {
+        void howlerPromise.then((H) => H.Howler.mute(m));
+      }
+      if (!m && !unlocked) {
+        void unlock();
+      }
+    },
+    [unlocked, unlock]
+  );
 
-  const playAmbient = useCallback((edition: EditionKey) => {
-    const manifest: AudioManifest | undefined = EDITION_AUDIO[edition];
-    if (!manifest?.ambient || muted) return;
+  const playAmbient = useCallback(
+    (edition: EditionKey) => {
+      const manifest: AudioManifest | undefined = EDITION_AUDIO[edition];
+      if (!manifest?.ambient || muted) return;
 
-    // Önceki ambient'i fade-out edip durdur
-    if (ambientHowlRef.current) {
-      ambientHowlRef.current.fade(ambientHowlRef.current.volume(), 0, 600);
-      const previous = ambientHowlRef.current;
-      window.setTimeout(() => previous.stop(), 700);
-    }
-
-    try {
-      const howl = new Howl({
-        src: [manifest.ambient],
-        loop: true,
-        volume: 0,
-        html5: false,
-        preload: true,
-        onloaderror: () => {
-          // Dosya yok — sessiz fallback
-        },
+      void loadHowler().then((H) => {
+        if (ambientHowlRef.current) {
+          const previous = ambientHowlRef.current;
+          previous.fade(previous.volume(), 0, 600);
+          window.setTimeout(() => previous.stop(), 700);
+        }
+        try {
+          const howl = new H.Howl({
+            src: [manifest.ambient!],
+            loop: true,
+            volume: 0,
+            html5: false,
+            preload: true,
+            onloaderror: () => {
+              /* file yok → sessiz fallback */
+            },
+          });
+          howl.play();
+          howl.fade(0, 0.35, 1200);
+          ambientHowlRef.current = howl as unknown as typeof ambientHowlRef.current;
+        } catch (e) {
+          console.warn("[audio] ambient play failed:", e);
+        }
       });
-      howl.play();
-      howl.fade(0, 0.35, 1200);
-      ambientHowlRef.current = howl;
-    } catch (e) {
-      console.warn("[audio] ambient play failed:", e);
-    }
-  }, [muted]);
+    },
+    [muted]
+  );
 
   const stopAmbient = useCallback(() => {
     if (!ambientHowlRef.current) return;
@@ -137,37 +143,40 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const playSfx = useCallback(
     (src: string, options?: { volume?: number; rate?: number }) => {
       if (muted) return;
-
-      let howl = sfxCacheRef.current.get(src);
-      if (!howl) {
-        howl = new Howl({
-          src: [src],
-          volume: options?.volume ?? 0.7,
-          rate: options?.rate ?? 1,
-          onloaderror: () => {
-            sfxCacheRef.current.delete(src);
-          },
-        });
-        sfxCacheRef.current.set(src, howl);
-      }
-      try {
-        howl.play();
-      } catch (e) {
-        // Sessiz fallback
-      }
+      void loadHowler().then((H) => {
+        let howl = sfxCacheRef.current.get(src);
+        if (!howl) {
+          const fresh = new H.Howl({
+            src: [src],
+            volume: options?.volume ?? 0.7,
+            rate: options?.rate ?? 1,
+            onloaderror: () => {
+              sfxCacheRef.current.delete(src);
+            },
+          });
+          howl = fresh as unknown as typeof howl;
+          sfxCacheRef.current.set(src, howl as NonNullable<typeof howl>);
+        }
+        try {
+          howl?.play();
+        } catch {
+          /* silent fallback */
+        }
+      });
     },
     [muted]
   );
 
-  // Cleanup on unmount
+  // Cleanup
   useEffect(() => {
+    const cache = sfxCacheRef.current;
     return () => {
       if (ambientHowlRef.current) {
         ambientHowlRef.current.stop();
         ambientHowlRef.current = null;
       }
-      sfxCacheRef.current.forEach((h) => h.unload());
-      sfxCacheRef.current.clear();
+      cache.forEach((h) => h.unload());
+      cache.clear();
     };
   }, []);
 
