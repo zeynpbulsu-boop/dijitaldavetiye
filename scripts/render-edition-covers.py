@@ -42,7 +42,7 @@ PROMPTS = [
     },
     # ── 2. ATELIER INDIGO — gece yarısı kozmik ──
     {
-        "edition": "atelier-indigo",
+        "edition": "nocturne",
         "name": "cover",
         "aspect": "4:5",
         "prompt": (
@@ -58,7 +58,7 @@ PROMPTS = [
     },
     # ── 3. MANSION LIGHTS — Bosphorus yalı + chandelier ──
     {
-        "edition": "mansion-lights",
+        "edition": "candela",
         "name": "cover",
         "aspect": "4:5",
         "prompt": (
@@ -75,7 +75,7 @@ PROMPTS = [
     },
     # ── 4. BODRUM BLUE — Ege kıyı + yelkenli ──
     {
-        "edition": "bodrum-blue",
+        "edition": "mistral",
         "name": "cover",
         "aspect": "4:5",
         "prompt": (
@@ -92,7 +92,7 @@ PROMPTS = [
     },
     # ── 5. OLIVE GROVE — zeytin bahçesi golden hour ──
     {
-        "edition": "olive-grove",
+        "edition": "olea",
         "name": "cover",
         "aspect": "4:5",
         "prompt": (

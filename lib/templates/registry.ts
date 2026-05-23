@@ -3,7 +3,7 @@ import type { Template, TemplateComponentProps, TemplateMeta } from "./types";
 import { BlushReverie } from "@/components/templates/blush-reverie";
 import { Bordeaux } from "@/components/templates/bordeaux";
 import { EgeeBlue } from "@/components/templates/egee-blue";
-import { OliveGrove } from "@/components/templates/olive-grove";
+import { OliveGrove } from "@/components/templates/olea";
 import { BlackInk } from "@/components/templates/black-ink";
 import { BlushGarden } from "@/components/templates/blush-garden";
 import { VerdeBorgogna } from "@/components/templates/verde-borgogna";
@@ -68,7 +68,7 @@ export const templateMeta: TemplateMeta[] = [
     tagline: "Klasik · Lüks",
     description:
       "Derin bordo arka plan + altın detaylar + mum mührü. Sonbahar yalı düğünleri ve şarap renkleri için klasik bir tasarım.",
-    // FAZ 4 — fal.ai Flux Pro 1.1 bespoke render (Atelier Indigo)
+    // FAZ 4 — fal.ai Flux Pro 1.1 bespoke render (Nocturne)
     thumb:
       "https://v3b.fal.media/files/b/0a9a79f6/Fw7IpU5iSwkMwxymFFn_q_29108dd79a0a4f6993c8ee4479331b48.jpg",
     palette: ["#3A1A1A", "#5A2820", "#8A3F36", "#C9A961", "#FBF5E6"],
@@ -86,7 +86,7 @@ export const templateMeta: TemplateMeta[] = [
     tagline: "Kıyı · Modern",
     description:
       "Açık dusty blue + krem + altın aksanlı. Bodrum, Çeşme, Yunan adası düğünleri için temiz modern tasarım.",
-    // FAZ 4 — fal.ai Flux Pro 1.1 bespoke render (Bodrum Blue)
+    // FAZ 4 — fal.ai Flux Pro 1.1 bespoke render (Mistral)
     thumb:
       "https://v3b.fal.media/files/b/0a9a79f6/E6B7hIBfUGhM4Gtn4SKCq_b54dd8fe4e924022a650eb8af48e8350.jpg",
     palette: ["#DCDFE6", "#A5B8C8", "#6F8295", "#3F4E5C", "#FBF5E6"],
@@ -98,12 +98,12 @@ export const templateMeta: TemplateMeta[] = [
     priceTry: 899,
   },
   {
-    slug: "olive-grove",
-    name: "Olive Grove",
+    slug: "olea",
+    name: "Olea",
     tagline: "Toprak · Akdeniz",
     description:
       "Zeytin yeşili + krem + altın. Mardin, Kapadokya, Akdeniz teras düğünleri için sıcak ve doğal.",
-    // FAZ 4 — fal.ai Flux Pro 1.1 bespoke render (Olive Grove)
+    // FAZ 4 — fal.ai Flux Pro 1.1 bespoke render (Olea)
     thumb:
       "https://v3b.fal.media/files/b/0a9a79f6/tfvNAFhLPJQNv_u8UhCwL_2854d6777635440eb919b7ac98b03838.jpg",
     palette: ["#EFEEDD", "#C9B576", "#7A8B72", "#5E6346", "#4A4022"],
@@ -158,7 +158,7 @@ export const templateMeta: TemplateMeta[] = [
     tagline: "Editöryel · Lüks",
     description:
       "Koyu yeşil + bordo geçişli arka plan + altın hat. Kış ve sonbahar için zengin renk paletleri.",
-    // FAZ 4 — fal.ai Flux Pro 1.1 bespoke render (Mansion Lights: Bosphorus yali, candelabra)
+    // FAZ 4 — fal.ai Flux Pro 1.1 bespoke render (Candéla: Bosphorus yali, candelabra)
     thumb:
       "https://v3b.fal.media/files/b/0a9a79f6/rlX975VkLS6MuDfJPqwNk_4a066228b2194e1fb3f5bc7f9cf99522.jpg",
     palette: ["#2D5544", "#5A2A2A", "#C9A961", "#E8E5DC"],
@@ -215,7 +215,7 @@ const componentBySlug: Record<string, ComponentType<TemplateComponentProps>> = {
   "blush-reverie": BlushReverie,
   bordeaux: Bordeaux,
   "egee-blue": EgeeBlue,
-  "olive-grove": OliveGrove,
+  "olea": OliveGrove,
   "black-ink": BlackInk,
   "blush-garden": BlushGarden,
   "verde-borgogna": VerdeBorgogna,

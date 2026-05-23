@@ -11,7 +11,7 @@ from pathlib import Path
 from PIL import Image
 
 OUT_BASE = Path(__file__).resolve().parent.parent / "public"
-EDITIONS = ["aethel", "atelier-indigo", "mansion-lights", "bodrum-blue", "olive-grove", "aurora"]
+EDITIONS = ["aethel", "nocturne", "candela", "mistral", "olea", "aurora"]
 MAX_WIDTH = 1600
 QUALITY = 88
 

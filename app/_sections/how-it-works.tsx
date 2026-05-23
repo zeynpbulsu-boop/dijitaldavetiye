@@ -15,7 +15,7 @@ const STEPS = [
   {
     n: "01",
     title: "Tasarımını seç",
-    body: "6 lüks koleksiyondan dilediğinle başla — Aethel, Atelier Indigo, Aurora, Bodrum Blue, Mansion Lights, Olive Grove. Hepsi 48 saatte yayında.",
+    body: "6 lüks koleksiyondan dilediğinle başla — Aethel, Nocturne, Aurora, Mistral, Candéla, Olea. Hepsi 48 saatte yayında.",
   },
   {
     n: "02",

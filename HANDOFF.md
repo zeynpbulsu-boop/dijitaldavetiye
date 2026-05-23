@@ -115,7 +115,7 @@ import { chromium, devices } from 'playwright';
 
 const URLS = [
   'http://localhost:3000/dev-preview/aethel',
-  'http://localhost:3000/dev-preview/atelier-indigo',
+  'http://localhost:3000/dev-preview/nocturne',
   // ...
 ];
 
@@ -163,7 +163,7 @@ Son commit: `fe14331 feat(luxe): FAZ 5.12 — 5 edition rollout`
 | 4 | `/i/[slug]` luxe demo'ya bağlı değil | `app/i/[slug]/page.tsx` |
 | 5 | Editor LuxeEditionTheme bilmiyor | `app/editor/[slug]/page.tsx` |
 | 6 | Aurora seal zayıf | `public/aurora/wax-seal.png` |
-| 7 | Mansion seal "H" monogram | `public/mansion-lights/wax-seal.png` |
+| 7 | Mansion seal "H" monogram | `public/candela/wax-seal.png` |
 | 8 | Dodo LIVE keys yok | Coolify env |
 | 9 | Real domain yok | DNS + Coolify |
 | 10 | A11y audit yapılmadı | Tüm pages |

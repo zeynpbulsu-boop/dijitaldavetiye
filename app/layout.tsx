@@ -44,7 +44,7 @@ const cormorant = Cormorant_Garamond({
  * Turkish coverage. font-display: swap so layout never blocks.
  */
 
-// Atelier Indigo — traditional luxury serif, art-deco letterpress
+// Nocturne — traditional luxury serif, art-deco letterpress
 const playfair = Playfair_Display({
   subsets: ["latin", "latin-ext"],
   variable: "--font-atelier",
@@ -53,7 +53,7 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-// Mansion Lights — Didot stand-in, high-contrast neo-classical
+// Candéla — Didot stand-in, high-contrast neo-classical
 const dmSerif = DM_Serif_Display({
   subsets: ["latin", "latin-ext"],
   variable: "--font-mansion",
@@ -62,7 +62,7 @@ const dmSerif = DM_Serif_Display({
   display: "swap",
 });
 
-// Bodrum Blue — Aegean clean serif (Ogg stand-in)
+// Mistral — Aegean clean serif (Ogg stand-in)
 const tenor = Tenor_Sans({
   subsets: ["latin", "latin-ext"],
   variable: "--font-bodrum",
@@ -87,7 +87,7 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-// Olive Grove — signature handwriting (used sparingly for couple names)
+// Olea — signature handwriting (used sparingly for couple names)
 const caveat = Caveat({
   subsets: ["latin", "latin-ext"],
   variable: "--font-signature",

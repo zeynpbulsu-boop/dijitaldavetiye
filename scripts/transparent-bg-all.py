@@ -8,7 +8,7 @@ import shutil
 
 THRESHOLD = 232
 
-EDITIONS = ["atelier-indigo", "mansion-lights", "bodrum-blue", "olive-grove", "aurora"]
+EDITIONS = ["nocturne", "candela", "mistral", "olea", "aurora"]
 NAMES = ["watermark", "wax-seal"]
 
 

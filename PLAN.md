@@ -196,7 +196,7 @@
 - [ ] `npm install --save-dev @axe-core/cli`
 - [ ] `npx axe http://localhost:3000/dev-preview/aethel`
 - [ ] Color contrast: tüm text WCAG AA (4.5:1 normal, 3:1 large)
-  - Atelier Indigo: gold-on-navy → audit (D4A158 on 0F1A3D = 8.5:1 ✓)
+  - Nocturne: gold-on-navy → audit (D4A158 on 0F1A3D = 8.5:1 ✓)
   - Aurora: rose-gold on taupe → audit (B8867A on EFE9E4 = 3.2:1 ⚠️ borderline)
 - [ ] Focus visible: tüm interactive element için custom focus ring
 - [ ] Keyboard navigation: envelope ceremony Tab+Enter ile açılabilsin
@@ -235,7 +235,7 @@
   - Açık tema: `background: 'rgba(255,255,255,0.18)'` (mevcut)
   - Koyu tema: `background: 'rgba(255,255,255,0.05)'`, border `${theme.accent}55` (daha belirgin altın çerçeve)
 - [ ] `isDark` helper'ı kullan (zaten var)
-- [ ] Test: Atelier Indigo + Mansion Lights'ta kartlar belirgin görünmeli
+- [ ] Test: Nocturne + Candéla'ta kartlar belirgin görünmeli
 
 ### D.4 — Theme-aware separator
 - [ ] `themed-separator.tsx` parent theme'in accent rengini al

@@ -2,10 +2,10 @@
 FAZ 5.12 — Fal.ai 10-asset render (5 editions × 2 PNG/each).
 
 Saves:
-  public/atelier-indigo/{watermark,wax-seal}.png
-  public/mansion-lights/{watermark,wax-seal}.png
-  public/bodrum-blue/{watermark,wax-seal}.png
-  public/olive-grove/{watermark,wax-seal}.png
+  public/nocturne/{watermark,wax-seal}.png
+  public/candela/{watermark,wax-seal}.png
+  public/mistral/{watermark,wax-seal}.png
+  public/olea/{watermark,wax-seal}.png
   public/aurora/{watermark,wax-seal}.png
 
 Then run scripts/transparent-bg-all.py to alpha-clip the white.
@@ -22,7 +22,7 @@ OUT_BASE = Path(__file__).resolve().parent.parent / "public"
 PROMPTS = [
     # ── 1. ATELIER INDIGO ──
     {
-        "edition": "atelier-indigo",
+        "edition": "nocturne",
         "name": "watermark",
         "aspect": "4:3",
         "prompt": (
@@ -36,7 +36,7 @@ PROMPTS = [
         ),
     },
     {
-        "edition": "atelier-indigo",
+        "edition": "nocturne",
         "name": "wax-seal",
         "aspect": "1:1",
         "prompt": (
@@ -51,7 +51,7 @@ PROMPTS = [
     },
     # ── 2. MANSION LIGHTS ──
     {
-        "edition": "mansion-lights",
+        "edition": "candela",
         "name": "watermark",
         "aspect": "4:3",
         "prompt": (
@@ -65,7 +65,7 @@ PROMPTS = [
         ),
     },
     {
-        "edition": "mansion-lights",
+        "edition": "candela",
         "name": "wax-seal",
         "aspect": "1:1",
         "prompt": (
@@ -79,7 +79,7 @@ PROMPTS = [
     },
     # ── 3. BODRUM BLUE ──
     {
-        "edition": "bodrum-blue",
+        "edition": "mistral",
         "name": "watermark",
         "aspect": "4:3",
         "prompt": (
@@ -93,7 +93,7 @@ PROMPTS = [
         ),
     },
     {
-        "edition": "bodrum-blue",
+        "edition": "mistral",
         "name": "wax-seal",
         "aspect": "1:1",
         "prompt": (
@@ -107,7 +107,7 @@ PROMPTS = [
     },
     # ── 4. OLIVE GROVE ──
     {
-        "edition": "olive-grove",
+        "edition": "olea",
         "name": "watermark",
         "aspect": "4:3",
         "prompt": (
@@ -121,7 +121,7 @@ PROMPTS = [
         ),
     },
     {
-        "edition": "olive-grove",
+        "edition": "olea",
         "name": "wax-seal",
         "aspect": "1:1",
         "prompt": (

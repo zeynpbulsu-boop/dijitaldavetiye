@@ -152,11 +152,11 @@ describe("buildComposition()", () => {
   it("includes the edition slug in every error message for traceability", () => {
     expect(() =>
       buildComposition({
-        slug: "atelier-indigo",
-        name: "Atelier Indigo",
+        slug: "nocturne",
+        name: "Nocturne",
         order: ["cover", "envelope", "details", "rsvp", "thanks"],
         slots: { ...allMandatorySlots, gallery: StubComponent },
       }),
-    ).toThrow(/\[atelier-indigo\]/);
+    ).toThrow(/\[nocturne\]/);
   });
 });

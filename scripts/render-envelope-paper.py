@@ -20,10 +20,10 @@ OUT_BASE = Path(__file__).resolve().parent.parent / "public"
 # Per-edition cream/paper tone hint
 PALETTES = {
     "aethel": "warm Tuscan cream paper, antique vellum, soft sage shadows",
-    "atelier-indigo": "deep velvety midnight indigo paper with faint silver foil shimmer",
-    "mansion-lights": "rich burgundy textured paper with antique gold leaf accents",
-    "bodrum-blue": "crisp Mediterranean white linen-textured paper, soft turquoise tint",
-    "olive-grove": "olive-cream natural linen paper, dusty sage tones",
+    "nocturne": "deep velvety midnight indigo paper with faint silver foil shimmer",
+    "candela": "rich burgundy textured paper with antique gold leaf accents",
+    "mistral": "crisp Mediterranean white linen-textured paper, soft turquoise tint",
+    "olea": "olive-cream natural linen paper, dusty sage tones",
     "aurora": "soft pearl ivory paper, blush pink and lavender hints",
 }
 

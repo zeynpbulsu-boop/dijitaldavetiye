@@ -5,7 +5,7 @@
  *
  * Renders the hediye / IBAN card. Reads edition CSS variables so it
  * adopts whichever edition wraps it. Editions that want a more
- * bespoke gift block (e.g. Mansion Lights' gilded card with letterpress
+ * bespoke gift block (e.g. Candéla' gilded card with letterpress
  * IBAN) override this slot entirely.
  *
  * If no `giftIban` is provided in the invitation data, the slot

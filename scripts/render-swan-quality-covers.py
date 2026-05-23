@@ -52,7 +52,7 @@ PROMPTS = [
         ),
     },
     {
-        "edition": "atelier-indigo",
+        "edition": "nocturne",
         "name": "cover",
         "aspect": "9:16",
         "prompt": (
@@ -65,7 +65,7 @@ PROMPTS = [
         ),
     },
     {
-        "edition": "mansion-lights",
+        "edition": "candela",
         "name": "cover",
         "aspect": "9:16",
         "prompt": (
@@ -79,7 +79,7 @@ PROMPTS = [
         ),
     },
     {
-        "edition": "bodrum-blue",
+        "edition": "mistral",
         "name": "cover",
         "aspect": "9:16",
         "prompt": (
@@ -92,7 +92,7 @@ PROMPTS = [
         ),
     },
     {
-        "edition": "olive-grove",
+        "edition": "olea",
         "name": "cover",
         "aspect": "9:16",
         "prompt": (

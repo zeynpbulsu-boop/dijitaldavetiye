@@ -11,8 +11,8 @@
  *  - doves        (Aethel)       — Toskana güvercinleri yavaşça uçar
  *  - starfield    (Atelier)      — gece yıldızları parıldar + sürüklenir
  *  - chandelier   (Mansion)      — üst merkez ışık halesi atar
- *  - waves        (Bodrum Blue)  — alt kısımda yumuşak dalga bantları
- *  - leaves       (Olive Grove)  — zeytin yaprakları sallanır + düşer
+ *  - waves        (Mistral)  — alt kısımda yumuşak dalga bantları
+ *  - leaves       (Olea)  — zeytin yaprakları sallanır + düşer
  *  - aurora       (Aurora)       — diagonal aurora şeritleri akar
  *
  * Tasarım:
@@ -133,7 +133,7 @@ function Doves({ accentColor, reduced }: { accentColor: string; reduced: boolean
   );
 }
 
-/* ── Starfield — Atelier Indigo ──────────────────────────────────── */
+/* ── Starfield — Nocturne ──────────────────────────────────── */
 function Starfield({ accentColor, reduced }: { accentColor: string; reduced: boolean }) {
   // Deterministic pseudo-random positions for stable SSR
   const stars = Array.from({ length: 50 }, (_, i) => {
@@ -189,7 +189,7 @@ function Starfield({ accentColor, reduced }: { accentColor: string; reduced: boo
   );
 }
 
-/* ── Chandelier — Mansion Lights ─────────────────────────────────── */
+/* ── Chandelier — Candéla ─────────────────────────────────── */
 function Chandelier({ accentColor, reduced }: { accentColor: string; reduced: boolean }) {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 z-[1] overflow-hidden">
@@ -241,7 +241,7 @@ function Chandelier({ accentColor, reduced }: { accentColor: string; reduced: bo
   );
 }
 
-/* ── Waves — Bodrum Blue ─────────────────────────────────────────── */
+/* ── Waves — Mistral ─────────────────────────────────────────── */
 function Waves({
   accentColor,
   reduced,
@@ -297,7 +297,7 @@ function Waves({
   );
 }
 
-/* ── Leaves — Olive Grove ────────────────────────────────────────── */
+/* ── Leaves — Olea ────────────────────────────────────────── */
 function Leaves({ accentColor, reduced }: { accentColor: string; reduced: boolean }) {
   const leaves = [
     { x: 8, y: 12, rot: -20, scale: 1.2, delay: 0, dur: 11 },

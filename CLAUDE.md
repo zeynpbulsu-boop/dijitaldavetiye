@@ -29,10 +29,10 @@ app/
   _sections/                        # Hero, TemplateCarousel, HowItWorks, Pricing, FAQ, vb.
   dev-preview/
     aethel/page.tsx                 # 6 luxe demo (FAZ 5.10-5.12)
-    atelier-indigo/page.tsx
-    bodrum-blue/page.tsx
-    mansion-lights/page.tsx
-    olive-grove/page.tsx
+    nocturne/page.tsx
+    mistral/page.tsx
+    candela/page.tsx
+    olea/page.tsx
     aurora/page.tsx
   templates/[slug]/page.tsx         # Şablon detay sayfası (carousel hedefi)
   order/[slug]/page.tsx             # Sipariş başlangıç
@@ -78,10 +78,10 @@ lib/
 
 public/
   aethel/{wax-seal-luxe,chapel-vignette,_orig-*}.png
-  atelier-indigo/{wax-seal,watermark,_orig-*}.png
-  bodrum-blue/{wax-seal,watermark,_orig-*}.png
-  mansion-lights/{wax-seal,watermark,_orig-*}.png
-  olive-grove/{wax-seal,watermark,_orig-*}.png
+  nocturne/{wax-seal,watermark,_orig-*}.png
+  mistral/{wax-seal,watermark,_orig-*}.png
+  candela/{wax-seal,watermark,_orig-*}.png
+  olea/{wax-seal,watermark,_orig-*}.png
   aurora/{wax-seal,watermark,_orig-*}.png
 
 scripts/
@@ -93,7 +93,7 @@ scripts/
 ### Tema Sistemi
 
 **`lib/design/tokens.ts`** — 7 edition'ın temel `EditionMeta`'sı:
-- `atelier-indigo` `timeless` `olive-grove` `mansion-lights` `bodrum-blue` `aurora` (object keys)
+- `nocturne` `timeless` `olea` `candela` `mistral` `aurora` (object keys)
 - + `AETHEL_CHAPEL` (const export, slug "aurora" tip reuse ile)
 
 **`lib/design/luxe-themes.ts`** — 6 `LuxeEditionTheme` preset:
@@ -101,8 +101,8 @@ scripts/
 interface LuxeEditionTheme {
   meta: EditionMeta;
   bg, footerBg, ink, inkSoft, inkMuted, accent, haloColor: string;
-  waxSealSrc: string;          // /atelier-indigo/wax-seal.png
-  watermarkSrc: string;        // /atelier-indigo/watermark.png
+  waxSealSrc: string;          // /nocturne/wax-seal.png
+  watermarkSrc: string;        // /nocturne/watermark.png
   coupleName, monogram, venue, greeting, heroEyebrow, heroCta,
   envelopeCta, musicTrack, footerNote: string;
   defaultDate: { day, month, year };
@@ -180,10 +180,10 @@ git add -A && git commit -m "..." && git push origin main
 | Edition | URL |
 |---|---|
 | Aethel | http://b9ba0lj82z1m88uwltdc1w85.72.62.39.172.sslip.io/dev-preview/aethel |
-| Atelier Indigo | …/dev-preview/atelier-indigo |
-| Mansion Lights | …/dev-preview/mansion-lights |
-| Bodrum Blue | …/dev-preview/bodrum-blue |
-| Olive Grove | …/dev-preview/olive-grove |
+| Nocturne | …/dev-preview/nocturne |
+| Candéla | …/dev-preview/candela |
+| Mistral | …/dev-preview/mistral |
+| Olea | …/dev-preview/olea |
 | Aurora | …/dev-preview/aurora |
 | Production /i/ | …/i/[slug] — burada slot-based render var, luxe henüz bağlı değil |
 

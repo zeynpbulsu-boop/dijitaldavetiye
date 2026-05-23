@@ -121,9 +121,9 @@ const THEMES: Record<string, InvitationTheme> = {
     ornamentOpacity: 0.28,
     isDark: true,
   },
-  "atelier-indigo": {
-    slug: "atelier-indigo",
-    name: "Atelier Indigo",
+  "nocturne": {
+    slug: "nocturne",
+    name: "Nocturne",
     bg: "linear-gradient(170deg, #2A0F0F 0%, #1F0E0E 55%, #3A1414 100%)",
     ink: "#F2E8D8",
     inkSoft: "rgba(242, 232, 216, 0.7)",
@@ -141,9 +141,9 @@ const THEMES: Record<string, InvitationTheme> = {
   },
 
   /* ── earthy mediterranean ── */
-  "olive-grove": {
-    slug: "olive-grove",
-    name: "Olive Grove",
+  "olea": {
+    slug: "olea",
+    name: "Olea",
     bg: "linear-gradient(170deg, #F4EFDD 0%, #EFEEDD 55%, #D7D7BD 100%)",
     ink: "#2E3324",
     inkSoft: "rgba(46, 51, 36, 0.7)",
@@ -199,9 +199,9 @@ const THEMES: Record<string, InvitationTheme> = {
   },
 
   /* ── opulent dark night ── */
-  "mansion-lights": {
-    slug: "mansion-lights",
-    name: "Mansion Lights",
+  "candela": {
+    slug: "candela",
+    name: "Candéla",
     bg: "linear-gradient(170deg, #1A120C 0%, #2B1E16 55%, #5A3A28 100%)",
     ink: "#F2EEE6",
     inkSoft: "rgba(242, 238, 230, 0.7)",
