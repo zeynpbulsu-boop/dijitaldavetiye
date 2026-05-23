@@ -11,10 +11,11 @@
  */
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import { WaxSealLuxe } from "./wax-seal-luxe";
 import { ChapelWatermark } from "./chapel-watermark";
+import { useAudio, SHARED_SFX } from "@/lib/audio/audio-context";
 
 interface EnvelopeCeremonyProps {
   greeting?: string;
@@ -57,10 +58,31 @@ export function EnvelopeCeremony({
   onOpened,
 }: EnvelopeCeremonyProps) {
   const [stage, setStage] = useState<Stage>("sealed");
+  const audio = useAudio();
+
+  /* 12 wax fragment shards — random angles + distances, frozen per mount. */
+  const fragments = useMemo(
+    () =>
+      Array.from({ length: 12 }, (_, i) => {
+        const angle = (i / 12) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+        const distance = 180 + Math.random() * 140;
+        return {
+          id: i,
+          x: Math.cos(angle) * distance,
+          y: Math.sin(angle) * distance,
+          rotate: (Math.random() - 0.5) * 540,
+          size: 6 + Math.random() * 14,
+          delay: Math.random() * 0.15,
+        };
+      }),
+    []
+  );
 
   function open() {
     if (stage !== "sealed") return;
     setStage("breaking");
+    // Audio fire: envelope tear (lazy lib load)
+    audio.playSfx(SHARED_SFX.envelopeOpen, { volume: 0.55 });
     window.setTimeout(() => setStage("opening"), 900);
     window.setTimeout(() => onOpened(), 2500);
   }
@@ -212,6 +234,55 @@ export function EnvelopeCeremony({
               }}
             />
           )}
+        </AnimatePresence>
+
+        {/* White light flash — 220ms at break, very subtle */}
+        <AnimatePresence>
+          {stage === "breaking" && (
+            <motion.div
+              aria-hidden
+              key="flash"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.45, 0] }}
+              transition={{ duration: 0.55, times: [0, 0.25, 1], ease: "easeOut" }}
+              className="pointer-events-none absolute inset-0"
+              style={{ background: "#ffffff" }}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Wax shards — 12 fragments fly outward at break */}
+        <AnimatePresence>
+          {(stage === "breaking" || stage === "opening") &&
+            fragments.map((f) => (
+              <motion.span
+                aria-hidden
+                key={`frag-${f.id}`}
+                initial={{ x: 0, y: 0, scale: 0, rotate: 0, opacity: 0 }}
+                animate={{
+                  x: f.x,
+                  y: f.y,
+                  scale: 1,
+                  rotate: f.rotate,
+                  opacity: [0, 1, 1, 0],
+                }}
+                transition={{
+                  duration: 1.4,
+                  delay: f.delay,
+                  ease: [0.16, 1, 0.3, 1],
+                  times: [0, 0.15, 0.7, 1],
+                }}
+                className="pointer-events-none absolute"
+                style={{
+                  width: f.size,
+                  height: f.size,
+                  background: haloColor,
+                  borderRadius: f.size > 12 ? 2 : 9999,
+                  boxShadow: `0 2px 6px ${haloColor}88`,
+                  willChange: "transform, opacity",
+                }}
+              />
+            ))}
         </AnimatePresence>
 
         {/* CTA — incecik pill, mail icon + shimmer. PR #22: mail icon
