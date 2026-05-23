@@ -13,7 +13,7 @@
  * Event geçmişse (delta < 0): "Düğün günü." gibi tek satır mesaj.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface CountdownLuxeProps {
   /** ISO YYYY-MM-DD veya tam tarih saat string. */
@@ -28,6 +28,8 @@ interface CountdownLuxeProps {
   pastLabel?: string;
   /** Türkçe etiketler default, en/sr için override. */
   labels?: { d: string; h: string; m: string; s: string };
+  /** T-0'a ulaşıldığı an bir kere tetiklenir (Faz 1: detonation hook). */
+  onReachZero?: () => void;
   className?: string;
 }
 
@@ -50,6 +52,7 @@ export function CountdownLuxe({
   inkSoft,
   pastLabel = "Düğün günü geldi.",
   labels = TR_LABELS,
+  onReachZero,
   className = "",
 }: CountdownLuxeProps) {
   const target = useMemo(() => {
@@ -67,6 +70,16 @@ export function CountdownLuxe({
   }, []);
 
   const d = now == null ? { ms: 1, days: 0, hours: 0, minutes: 0, seconds: 0 } : diff(target, now);
+
+  // Detonation trigger — fires exactly once when countdown crosses zero.
+  const detonatedRef = useRef(false);
+  useEffect(() => {
+    if (now == null) return;
+    if (d.ms <= 0 && !detonatedRef.current) {
+      detonatedRef.current = true;
+      onReachZero?.();
+    }
+  }, [now, d.ms, onReachZero]);
 
   if (d.ms <= 0) {
     return (
