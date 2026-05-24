@@ -112,6 +112,10 @@ export function TasarimlarCatalog() {
               key={f.id}
               type="button"
               onClick={() => setFilter(f.id)}
+              data-cursor="magnetic"
+              data-cursor-label={f.label}
+              aria-pressed={filter === f.id}
+              aria-label={`${f.label} kategorisi (${counts[f.id]} edisyon)`}
               className={`shrink-0 rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.22em] transition ${
                 filter === f.id
                   ? "bg-brand-ink text-bg"
@@ -173,6 +177,9 @@ export function TasarimlarCatalog() {
             </div>
             <Link
               href="/#pricing"
+              data-cursor="magnetic"
+              data-cursor-label="Tasarla"
+              aria-label="Davetiyeni tasarlamaya başla"
               className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-brand-ink px-8 text-[12px] uppercase tracking-[0.22em] text-bg transition hover:tracking-[0.28em]"
             >
               Davetiyeni tasarla →
