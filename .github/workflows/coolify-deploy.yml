@@ -1,0 +1,74 @@
+name: Coolify Auto-Deploy
+
+# Push to main (veya feature/viral-upgrade-faz-1) → Coolify webhook tetiklenir,
+# yeni Docker image build edip yayına alır.
+#
+# BERKE-DEVRALMA notu: "Auto-deploy GitHub push'tan güvenilir şekilde tetiklemiyor
+# → manuel Redeploy gerek". Bu workflow Coolify panel webhook'una bağımlı olmadan
+# direkt API token ile zorlar — güvenilir.
+#
+# Gerekli GitHub Secrets:
+#   COOLIFY_API_TOKEN  — Coolify panel → Settings → Keys & Tokens → "Generate"
+#   COOLIFY_APP_UUID   — Mevcut app: b9ba0lj82z1m88uwltdc1w85
+#   COOLIFY_BASE_URL   — https://coolify.bulsulabs.xyz
+#
+# (Secrets eklemek için: GitHub repo → Settings → Secrets and variables →
+# Actions → "New repository secret".)
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/viral-upgrade-faz-1"
+  workflow_dispatch: # manuel tetik UI'dan
+
+jobs:
+  trigger-coolify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Validate secrets
+        env:
+          TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+          UUID: ${{ secrets.COOLIFY_APP_UUID }}
+          BASE: ${{ secrets.COOLIFY_BASE_URL }}
+        run: |
+          if [ -z "$TOKEN" ] || [ -z "$UUID" ] || [ -z "$BASE" ]; then
+            echo "::error::Eksik secret: COOLIFY_API_TOKEN, COOLIFY_APP_UUID, COOLIFY_BASE_URL hepsi set olmalı."
+            exit 1
+          fi
+          echo "✓ Secrets OK"
+
+      - name: Trigger Coolify deploy
+        env:
+          TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+          UUID: ${{ secrets.COOLIFY_APP_UUID }}
+          BASE: ${{ secrets.COOLIFY_BASE_URL }}
+        run: |
+          set -e
+          URL="${BASE}/api/v1/deploy?uuid=${UUID}&force=false"
+          echo "POST ${URL}"
+          HTTP_CODE=$(curl -sS -o /tmp/coolify-response.json -w "%{http_code}" \
+            -X GET "${URL}" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Content-Type: application/json")
+          echo "HTTP ${HTTP_CODE}"
+          cat /tmp/coolify-response.json
+          echo ""
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -gt 299 ]; then
+            echo "::error::Coolify deploy başarısız (HTTP ${HTTP_CODE})"
+            exit 1
+          fi
+          echo "✓ Coolify deploy tetiklendi"
+
+      - name: Summary
+        run: |
+          echo "### 🚀 Coolify Auto-Deploy" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tetik:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Coolify build ~90sn, total ~2-3 dk. Live URL:" >> $GITHUB_STEP_SUMMARY
+          echo "http://b9ba0lj82z1m88uwltdc1w85.72.62.39.172.sslip.io" >> $GITHUB_STEP_SUMMARY
