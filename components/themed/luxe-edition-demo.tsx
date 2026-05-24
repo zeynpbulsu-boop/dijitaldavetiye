@@ -43,6 +43,7 @@ import { CountdownDetonation } from "@/components/themed/countdown-detonation";
 import { UnmutePrompt } from "@/components/audio/unmute-prompt";
 import { useAudio } from "@/lib/audio/audio-context";
 import { SignatureDoves } from "@/components/themed/signature-doves";
+import { SignatureLeaves } from "@/components/themed/signature-leaves";
 import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
 import { CountdownLuxe } from "@/components/themed/countdown-luxe";
@@ -1043,6 +1044,8 @@ function Hero({
           <div aria-hidden className="hero-shimmer-sweep" />
           {/* Faz 2 — Aethel signature: 2 doves diagonal flight (CSS only). */}
           {theme.ambient === "doves" && <SignatureDoves />}
+          {/* Faz 2 — Olea signature: 5 falling olive leaves with sway (CSS only). */}
+          {theme.ambient === "leaves" && <SignatureLeaves />}
         </>
       ) : (
         <ChapelWatermark
