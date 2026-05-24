@@ -31,12 +31,14 @@ export function EditionCardTile({
   return (
     <Link
       href={`/dev-preview/${card.slug}`}
+      data-cursor="view"
+      data-cursor-label={card.name}
       className={`group block ${
         isCarouselSlide
           ? "w-[280px] flex-shrink-0 snap-start sm:w-[320px] lg:w-[380px]"
           : "w-full"
       } ${className}`}
-      aria-label={`${card.name} — ${card.shortDescription}`}
+      aria-label={`${card.name} edisyonunu incele — ${card.shortDescription}`}
     >
       <TiltCard max={6}>
         <article
