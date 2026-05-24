@@ -265,13 +265,15 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
 
   return (
     <>
-      {/* FAZ 1 — 2.5s cinematic page-in (curtain + monogram + ink bloom) */}
+      {/* FAZ 1 — 2.5s cinematic page-in (curtain + monogram + ink bloom).
+          Curtain rengi: koyu temalarda zemin (zaten dark), açık temalarda
+          ink (dramatik kontrast). White-on-white sorununu önler. */}
       {!introDone && (
         <CinematicIntro
           monogram={theme.monogram ?? theme.coupleName?.split(" & ").map((p) => p[0]).join("&") ?? "N"}
-          inkColor={theme.ink}
+          inkColor={theme.bg}
           accentColor={theme.accent}
-          curtainColor={theme.bg}
+          curtainColor={theme.ink}
           onComplete={() => setIntroDone(true)}
           edition={theme.meta.slug}
         />
