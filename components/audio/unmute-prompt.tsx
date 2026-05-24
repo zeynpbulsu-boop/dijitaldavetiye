@@ -1,12 +1,13 @@
 "use client";
 
 /**
- * UnmutePrompt — küçük "♪ Sesi aç" pill, envelope açıldıktan ~600ms sonra
- * sağ-alt köşeden slide-in eder. 8 saniye sonra otomatik fade-out
- * (kullanıcı tıklamadıysa). Tıklama → audio unlock + mute=false.
+ * UnmutePrompt — envelope opened olduktan sonra ambient OTOMATIK başlar.
  *
- * Kullanım:
- *   <UnmutePrompt show={opened} edition="aethel" />
+ * Browser autoplay policy: ses sadece user gesture'dan sonra çalabilir.
+ * Envelope tap → unmute + unlock + autoplay ambient.
+ *
+ * UI: küçük "♪ Müzik çalıyor" pill sağ-alt köşeden slide-in,
+ * 4sn sonra fade-out. Kullanıcı isterse tıklayıp ses kapatabilir.
  */
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,22 +18,44 @@ import type { EditionSlug } from "@/lib/design/tokens";
 interface Props {
   show: boolean;
   edition: EditionSlug | "aethel";
-  /** Custom label. Default: "Sesi Aç" */
-  label?: string;
-  /** Auto-hide after N ms. Default: 8000. 0 = never. */
+  /** Auto-hide after N ms. Default: 4000. 0 = never. */
   autoHideMs?: number;
 }
 
-export function UnmutePrompt({ show, edition, label = "Sesi Aç", autoHideMs = 8000 }: Props) {
-  const { unlocked, muted, setMuted, playAmbient } = useAudio();
+export function UnmutePrompt({ show, edition, autoHideMs = 4000 }: Props) {
+  const { unlocked, muted, setMuted, unlock, playAmbient } = useAudio();
   const [visible, setVisible] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
+  const [started, setStarted] = useState(false);
 
+  // OTOMATIK BAŞLAT: envelope opened olur olmaz ambient çal
   useEffect(() => {
-    if (!show || dismissed) return;
-    const t = window.setTimeout(() => setVisible(true), 600);
+    if (!show || started) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        await unlock();
+        if (cancelled) return;
+        setMuted(false);
+        // Küçük gecikme: AudioContext'in unlock'u settle olsun
+        window.setTimeout(() => {
+          if (!cancelled) playAmbient(edition);
+        }, 200);
+        setStarted(true);
+      } catch (e) {
+        // Sessiz fallback — kullanıcı manuel pill ile açabilir
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [show, started, edition, unlock, setMuted, playAmbient]);
+
+  // Visible mini-pill — "müzik çalıyor" feedback
+  useEffect(() => {
+    if (!show) return;
+    const t = window.setTimeout(() => setVisible(true), 800);
     return () => window.clearTimeout(t);
-  }, [show, dismissed]);
+  }, [show]);
 
   useEffect(() => {
     if (!visible || autoHideMs === 0) return;
@@ -40,14 +63,17 @@ export function UnmutePrompt({ show, edition, label = "Sesi Aç", autoHideMs = 8
     return () => window.clearTimeout(t);
   }, [visible, autoHideMs]);
 
-  const handleClick = async () => {
-    setMuted(false);
-    playAmbient(edition);
+  const handleClick = () => {
+    if (muted) {
+      setMuted(false);
+      playAmbient(edition);
+    } else {
+      setMuted(true);
+    }
     setVisible(false);
-    setDismissed(true);
   };
 
-  if (unlocked && !muted) return null;
+  const label = muted ? "Sesi Aç" : "Müzik çalıyor";
 
   return (
     <AnimatePresence>
@@ -56,8 +82,8 @@ export function UnmutePrompt({ show, edition, label = "Sesi Aç", autoHideMs = 8
           type="button"
           onClick={handleClick}
           data-cursor="audio"
-          data-cursor-label={label}
-          initial={{ opacity: 0, y: 16, x: 0 }}
+          data-cursor-label={muted ? "Aç" : "Kapat"}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -86,7 +112,13 @@ export function UnmutePrompt({ show, edition, label = "Sesi Aç", autoHideMs = 8
             boxShadow: "0 12px 36px -12px rgba(0,0,0,0.45)",
           }}
         >
-          <span style={{ fontSize: 16, lineHeight: 1 }}>♪</span>
+          <motion.span
+            style={{ fontSize: 16, lineHeight: 1 }}
+            animate={muted ? {} : { scale: [1, 1.15, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {muted ? "♪" : "♬"}
+          </motion.span>
           <span>{label}</span>
         </motion.button>
       )}
