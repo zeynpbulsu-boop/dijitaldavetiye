@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LuxeEditionDemo } from "@/components/themed/luxe-edition-demo";
-import { MANSION_LIGHTS_THEME } from "@/lib/design/luxe-themes";
+import { CANDELA_THEME } from "@/lib/design/luxe-themes";
 
 export const metadata: Metadata = {
   title: "Candéla — Killer Demo · NUVE",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function MansionLightsPage() {
-  return <LuxeEditionDemo theme={MANSION_LIGHTS_THEME} />;
+  return <LuxeEditionDemo theme={CANDELA_THEME} />;
 }

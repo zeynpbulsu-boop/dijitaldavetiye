@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LuxeEditionDemo } from "@/components/themed/luxe-edition-demo";
-import { ATELIER_INDIGO_THEME } from "@/lib/design/luxe-themes";
+import { NOCTURNE_THEME } from "@/lib/design/luxe-themes";
 
 export const metadata: Metadata = {
   title: "Nocturne — Killer Demo · NUVE",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function AtelierIndigoPage() {
-  return <LuxeEditionDemo theme={ATELIER_INDIGO_THEME} />;
+  return <LuxeEditionDemo theme={NOCTURNE_THEME} />;
 }
