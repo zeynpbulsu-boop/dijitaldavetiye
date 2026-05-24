@@ -62,7 +62,7 @@ export function StickyCta() {
       }}
     >
       <Link
-        href="#pricing"
+        href="/order/aethel"
         data-cursor="magnetic"
         data-cursor-label="Başla"
         aria-label="Davetiye tasarlamaya başla — ücretsiz"
