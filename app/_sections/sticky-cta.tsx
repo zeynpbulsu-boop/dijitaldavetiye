@@ -63,6 +63,9 @@ export function StickyCta() {
     >
       <Link
         href="#pricing"
+        data-cursor="magnetic"
+        data-cursor-label="Başla"
+        aria-label="Davetiye tasarlamaya başla — ücretsiz"
         className="text-[12px] font-semibold uppercase tracking-[0.22em] hover:tracking-[0.28em]"
       >
         Tasarlamaya başla — ÜCRETSİZ
