@@ -141,6 +141,8 @@ export function Pricing() {
                 key={c}
                 type="button"
                 onClick={() => setCurrency(c)}
+                aria-pressed={currency === c}
+                aria-label={`${c} para birimi`}
                 className={`rounded-full px-4 py-1 text-[11px] uppercase tracking-[0.2em] transition ${
                   currency === c
                     ? "bg-brand-ink text-bg"
@@ -214,6 +216,9 @@ export function Pricing() {
               </ul>
               <Link
                 href={`/order/${tier.id}`}
+                data-cursor="magnetic"
+                data-cursor-label={tier.popular ? "Seç" : "Seç"}
+                aria-label={`${tier.name} paketini seç ve sipariş ver`}
                 className={`mt-auto inline-flex min-h-[44px] items-center justify-center rounded-full text-[11px] uppercase transition-all ${
                   tier.popular
                     ? "bg-brand-ink text-bg hover:tracking-[0.32em]"

@@ -83,6 +83,9 @@ export function ClosingCta() {
 
           <Link
             href="#themes"
+            data-cursor="open"
+            data-cursor-label="Tasarımlar"
+            aria-label={t.closing.cta_secondary}
             className="inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.22em] text-brand-ink/70 transition hover:text-brand-cognac"
           >
             <span>{t.closing.cta_secondary}</span>
