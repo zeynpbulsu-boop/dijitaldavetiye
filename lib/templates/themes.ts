@@ -163,17 +163,20 @@ const THEMES: Record<string, InvitationTheme> = {
   aurora: {
     slug: "aurora",
     name: "Aurora",
+    /* Aurora 2026 — warm beige base + rose-gold accent + Future Dusk
+       (Pantone 2026 trend renk: derin twilight purple-blue) spark
+       ile contemporary minimalist palet. */
     bg: "linear-gradient(170deg, #EFE9E4 0%, #E2D9D1 55%, #D6CCC0 100%)",
-    ink: "#3A332D",
-    inkSoft: "rgba(58, 51, 45, 0.72)",
+    ink: "#2D2A35",
+    inkSoft: "rgba(45, 42, 53, 0.72)",
     accent: "#B8867A",
-    monogramFill: "#B8867A",
+    monogramFill: "#5D3A7E",
     monogramText: "#EFE9E4",
-    spark: "#D6B0A4",
-    ruleColor: "rgba(184, 134, 122, 0.4)",
+    spark: "#5D3A7E",
+    ruleColor: "rgba(93, 58, 126, 0.36)",
     storyBg: "rgba(184, 134, 122, 0.08)",
-    storyBorder: "rgba(58, 51, 45, 0.10)",
-    footerDot: "#B8867A",
+    storyBorder: "rgba(45, 42, 53, 0.10)",
+    footerDot: "#5D3A7E",
     ornament: "babys-breath",
     ornamentOpacity: 0.28,
     isDark: false,
