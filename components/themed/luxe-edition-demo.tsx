@@ -693,47 +693,77 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-10%" }}
                     transition={{ duration: 0.8, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                    className="flex flex-col gap-2 px-5 py-5"
+                    whileHover={{ y: -3 }}
+                    className="flex flex-col gap-2 px-5 py-6 transition-all duration-300 hover:shadow-[0_18px_40px_-16px_rgba(43,30,22,0.18)]"
                     style={{
                       background: isDarkColor(theme.bg)
                         ? "rgba(255,255,255,0.05)"
-                        : "rgba(255,255,255,0.20)",
+                        : "rgba(255,255,255,0.22)",
                       border: `0.5px solid ${
                         isDarkColor(theme.bg) ? `${theme.accent}55` : `${theme.inkMuted}40`
                       }`,
-                      borderRadius: 2,
+                      borderRadius: 4,
                       backdropFilter: "blur(2px)",
                     }}
                   >
-                    <div
-                      className="text-[10px] uppercase"
-                      style={{ color: theme.accent, letterSpacing: "0.32em", fontWeight: 300 }}
-                    >
-                      {h.price ?? "Otel"}
+                    {/* Roman numeral I, II, III, IV — premium luxe touch */}
+                    <div className="flex items-center gap-3">
+                      <span
+                        aria-hidden
+                        className="italic"
+                        style={{
+                          color: theme.accent,
+                          fontFamily: "var(--font-display), Georgia, serif",
+                          fontSize: 13,
+                          letterSpacing: "0.06em",
+                          fontWeight: 400,
+                          opacity: 0.7,
+                        }}
+                      >
+                        {["I", "II", "III", "IV", "V", "VI"][i] ?? `${i + 1}`}
+                      </span>
+                      <span
+                        aria-hidden
+                        className="h-px flex-1"
+                        style={{ background: `${theme.accent}33`, maxWidth: 48 }}
+                      />
                     </div>
                     <h3
                       className="italic"
                       style={{
                         color: theme.ink,
-                        lineHeight: 1.3,
-                        fontWeight: 300,
-                        fontSize: "clamp(17px, 4vw, 20px)",
+                        lineHeight: 1.25,
+                        fontWeight: 400,
+                        fontSize: "clamp(18px, 4vw, 22px)",
+                        letterSpacing: "-0.005em",
+                        fontFamily: "var(--font-display), Georgia, serif",
+                        marginTop: 4,
                       }}
                     >
                       {h.name}
                     </h3>
                     {h.address && (
                       <p
-                        className="text-[12px]"
-                        style={{ color: theme.inkSoft, fontWeight: 300, lineHeight: 1.6 }}
+                        className="text-[12.5px]"
+                        style={{
+                          color: theme.inkSoft,
+                          fontWeight: 300,
+                          lineHeight: 1.65,
+                          letterSpacing: "0.005em",
+                        }}
                       >
                         {h.address}
                       </p>
                     )}
                     {h.note && (
                       <p
-                        className="text-[12px] italic"
-                        style={{ color: theme.inkSoft, fontWeight: 300, lineHeight: 1.6 }}
+                        className="text-[12.5px] italic"
+                        style={{
+                          color: theme.inkMuted,
+                          fontWeight: 300,
+                          lineHeight: 1.65,
+                          letterSpacing: "0.005em",
+                        }}
                       >
                         {h.note}
                       </p>
