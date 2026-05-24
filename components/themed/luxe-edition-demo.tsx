@@ -241,8 +241,17 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
   const [month, setMonth] = useState(initDate.month);
   const [year, setYear] = useState(initDate.year);
 
-  /* Locale-aware string'ler (TR/EN/SR). rsvpLocale legacy alias. */
-  const locale: LuxeLocale = theme.locale ?? theme.rsvpLocale ?? "tr";
+  /* Locale-aware string'ler (TR/EN/SR). Önce ?lang= querystring, sonra
+     theme.locale prop, sonra legacy rsvpLocale, son default "tr". */
+  const queryLocale =
+    typeof window !== "undefined"
+      ? (new URLSearchParams(window.location.search).get("lang") as LuxeLocale | null)
+      : null;
+  const isValidLocale = (l: string | null): l is LuxeLocale =>
+    l === "tr" || l === "en" || l === "sr";
+  const locale: LuxeLocale = isValidLocale(queryLocale)
+    ? queryLocale
+    : theme.locale ?? theme.rsvpLocale ?? "tr";
   const i18n = luxeStrings(locale);
 
   /* Event type override'ları (engagement/henna/save_the_date). Sadece
@@ -329,7 +338,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
           src={theme.watermarkSrc}
         />
 
-        <FloatingControls bg={theme.bg} ink={theme.ink} />
+        <FloatingControls bg={theme.bg} ink={theme.ink} currentLocale={locale} />
 
         <Hero
           theme={theme}
@@ -1214,6 +1223,9 @@ function Hero({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 7.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
           type="button"
+          data-cursor="magnetic"
+          data-cursor-label={theme.heroCta ?? "RSVP"}
+          aria-label={theme.heroCta ?? "RSVP"}
           className="relative mt-12 inline-flex min-h-[44px] items-center justify-center overflow-hidden px-10 py-3.5 transition-all hover:tracking-[0.48em] sm:mt-16 sm:px-16 sm:py-4"
           style={{
             border: `0.5px solid ${theme.ink}55`,
@@ -1298,37 +1310,113 @@ function SectionHeader({
   );
 }
 
-function FloatingControls({ bg, ink }: { bg: string; ink: string }) {
-  // Floating buttons need contrast — beyaz pill if dark bg, dark pill if light bg.
+function FloatingControls({
+  bg,
+  ink,
+  currentLocale,
+}: {
+  bg: string;
+  ink: string;
+  currentLocale: LuxeLocale;
+}) {
   const isDark = isDarkColor(bg);
-  const pillBg = isDark ? "#FFFFFF" : "#FFFFFF";
+  const pillBg = "#FFFFFF";
   const pillInk = isDark ? "#1F1B17" : ink;
-  /* FAZ A.1 — bottom respects iOS home-indicator safe-area. Floor at
-     1.5rem so desktop layout is unchanged. */
   const bottom = "max(1.5rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem))";
+
+  const audio = useAudio();
+  const [langOpen, setLangOpen] = useState(false);
+
+  const switchLocale = (loc: LuxeLocale) => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", loc);
+    window.location.href = url.toString();
+  };
+
+  const toggleMute = () => {
+    if (audio.muted) {
+      audio.setMuted(false);
+      void audio.unlock();
+    } else {
+      audio.setMuted(true);
+    }
+  };
+
   return (
     <>
+      {/* DİL — dropdown switcher (TR / EN / SR) */}
+      <div className="fixed left-4 z-40 sm:left-6" style={{ bottom }}>
+        <button
+          type="button"
+          aria-label="Dil seç"
+          aria-expanded={langOpen}
+          onClick={() => setLangOpen((v) => !v)}
+          data-cursor="magnetic"
+          data-cursor-label="Dil"
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-transform hover:scale-110"
+          style={{
+            background: pillBg,
+            color: pillInk,
+            fontFamily: "var(--font-display), Georgia, serif",
+            fontSize: 11,
+            letterSpacing: "0.2em",
+            fontWeight: 400,
+            boxShadow: "0 4px 14px rgba(0, 0, 0, 0.15)",
+            border: "0.5px solid rgba(0, 0, 0, 0.10)",
+          }}
+        >
+          {currentLocale.toUpperCase()}
+        </button>
+        <AnimatePresenceWrapper open={langOpen}>
+          <div
+            role="menu"
+            aria-label="Dil seç"
+            className="absolute bottom-[52px] left-0 flex flex-col gap-1.5 rounded-xl p-2"
+            style={{
+              background: pillBg,
+              boxShadow: "0 8px 24px -8px rgba(0,0,0,0.18)",
+              border: "0.5px solid rgba(0,0,0,0.08)",
+              minWidth: 96,
+            }}
+          >
+            {(["tr", "en", "sr"] as const).map((loc) => {
+              const active = currentLocale === loc;
+              return (
+                <button
+                  key={loc}
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    if (!active) switchLocale(loc);
+                    setLangOpen(false);
+                  }}
+                  className="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-left transition hover:bg-black/[0.04]"
+                  style={{
+                    fontFamily: "var(--font-display), Georgia, serif",
+                    fontSize: 12,
+                    letterSpacing: "0.18em",
+                    color: pillInk,
+                    fontWeight: active ? 500 : 300,
+                  }}
+                >
+                  <span>{loc.toUpperCase()}</span>
+                  {active && <span aria-hidden style={{ opacity: 0.5 }}>·</span>}
+                </button>
+              );
+            })}
+          </div>
+        </AnimatePresenceWrapper>
+      </div>
+
+      {/* SES — aç/kapat toggle */}
       <button
         type="button"
-        aria-label="Dil"
-        className="fixed left-4 z-40 flex h-11 w-11 items-center justify-center rounded-full transition-transform hover:scale-110 sm:left-6"
-        style={{
-          bottom,
-          background: pillBg,
-          color: pillInk,
-          fontFamily: "var(--font-display), Georgia, serif",
-          fontSize: 11,
-          letterSpacing: "0.2em",
-          fontWeight: 300,
-          boxShadow: "0 4px 14px rgba(0, 0, 0, 0.15)",
-          border: "0.5px solid rgba(0, 0, 0, 0.10)",
-        }}
-      >
-        TR
-      </button>
-      <button
-        type="button"
-        aria-label="Sesi aç/kapat"
+        aria-label={audio.muted ? "Sesi aç" : "Sesi kapat"}
+        aria-pressed={!audio.muted}
+        onClick={toggleMute}
+        data-cursor="audio"
+        data-cursor-label={audio.muted ? "Aç" : "Kapat"}
         className="fixed right-4 z-40 flex h-11 w-11 items-center justify-center rounded-full transition-transform hover:scale-110 sm:right-6"
         style={{
           bottom,
@@ -1337,11 +1425,33 @@ function FloatingControls({ bg, ink }: { bg: string; ink: string }) {
           fontSize: 16,
           boxShadow: "0 4px 14px rgba(0, 0, 0, 0.15)",
           border: "0.5px solid rgba(0, 0, 0, 0.10)",
+          opacity: audio.muted ? 0.85 : 1,
         }}
       >
-        ♪
+        {audio.muted ? "♪" : "♬"}
       </button>
     </>
+  );
+}
+
+/* Minimal AnimatePresence wrapper — küçük dropdown için framer overkill,
+   sade CSS fade yeterli. (Bundle tasarrufu için ayrı motion component yok.) */
+function AnimatePresenceWrapper({
+  open,
+  children,
+}: {
+  open: boolean;
+  children: React.ReactNode;
+}) {
+  if (!open) return null;
+  return (
+    <div
+      style={{
+        animation: "fadeUpQuick 200ms cubic-bezier(0.22,1,0.36,1) both",
+      }}
+    >
+      {children}
+    </div>
   );
 }
 
@@ -1396,6 +1506,9 @@ function GiftRow({
         <button
           type="button"
           onClick={copy}
+          data-cursor="copy"
+          data-cursor-label={copied ? copyDone ?? "OK" : copyLabel ?? "Kopyala"}
+          aria-label={copyLabel ?? "Kopyala"}
           className="self-start text-[10px] uppercase transition-all hover:tracking-[0.34em] sm:self-center"
           style={{
             color: copied ? theme.accent : theme.ink,
