@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LuxeEditionDemo } from "@/components/themed/luxe-edition-demo";
-import { OLIVE_GROVE_THEME } from "@/lib/design/luxe-themes";
+import { OLEA_THEME } from "@/lib/design/luxe-themes";
 
 export const metadata: Metadata = {
   title: "Olea — Killer Demo · NUVE",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function OliveGrovePage() {
-  return <LuxeEditionDemo theme={OLIVE_GROVE_THEME} />;
+  return <LuxeEditionDemo theme={OLEA_THEME} />;
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LuxeEditionDemo } from "@/components/themed/luxe-edition-demo";
-import { BODRUM_BLUE_THEME } from "@/lib/design/luxe-themes";
+import { MISTRAL_THEME } from "@/lib/design/luxe-themes";
 
 export const metadata: Metadata = {
   title: "Mistral — Killer Demo · NUVE",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function BodrumBluePage() {
-  return <LuxeEditionDemo theme={BODRUM_BLUE_THEME} />;
+  return <LuxeEditionDemo theme={MISTRAL_THEME} />;
 }

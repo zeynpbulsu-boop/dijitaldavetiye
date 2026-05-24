@@ -135,7 +135,7 @@ export const AETHEL_THEME: LuxeEditionTheme = {
 };
 
 /* ── 1. ATELIER INDIGO (gece mavisi + altın varak) ─────────────── */
-export const ATELIER_INDIGO_THEME: LuxeEditionTheme = {
+export const NOCTURNE_THEME: LuxeEditionTheme = {
   meta: EDITIONS["nocturne"],
   bg: "#0F1A3D",
   footerBg: "#0A1430",
@@ -261,7 +261,7 @@ export const ATELIER_INDIGO_THEME: LuxeEditionTheme = {
 };
 
 /* ── 2. MANSION LIGHTS (boğazda akşam yalısı) ──────────────────── */
-export const MANSION_LIGHTS_THEME: LuxeEditionTheme = {
+export const CANDELA_THEME: LuxeEditionTheme = {
   meta: EDITIONS["candela"],
   bg: "#4A1521",
   footerBg: "#3A0F19",
@@ -387,7 +387,7 @@ export const MANSION_LIGHTS_THEME: LuxeEditionTheme = {
 };
 
 /* ── 3. BODRUM BLUE (Ege esintisi) ─────────────────────────────── */
-export const BODRUM_BLUE_THEME: LuxeEditionTheme = {
+export const MISTRAL_THEME: LuxeEditionTheme = {
   meta: EDITIONS["mistral"],
   bg: "#F4F1EA",
   footerBg: "#E8E3D8",
@@ -513,7 +513,7 @@ export const BODRUM_BLUE_THEME: LuxeEditionTheme = {
 };
 
 /* ── 4. OLIVE GROVE (Alaçatı organik lüks) ─────────────────────── */
-export const OLIVE_GROVE_THEME: LuxeEditionTheme = {
+export const OLEA_THEME: LuxeEditionTheme = {
   meta: EDITIONS["olea"],
   bg: "#F5F2EB",
   footerBg: "#E8E3D5",
@@ -769,10 +769,10 @@ export const AURORA_THEME: LuxeEditionTheme = {
 /* ── Toplu erişim ──────────────────────────────────────────────── */
 export const LUXE_THEMES = {
   aethel: AETHEL_THEME,
-  "nocturne": ATELIER_INDIGO_THEME,
-  "candela": MANSION_LIGHTS_THEME,
-  "mistral": BODRUM_BLUE_THEME,
-  "olea": OLIVE_GROVE_THEME,
+  "nocturne": NOCTURNE_THEME,
+  "candela": CANDELA_THEME,
+  "mistral": MISTRAL_THEME,
+  "olea": OLEA_THEME,
   aurora: AURORA_THEME,
 } as const;
 
