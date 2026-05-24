@@ -98,10 +98,10 @@ export function Hero() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="#pricing"
+                href="/order/aethel"
                 data-cursor="magnetic"
                 data-cursor-label="Tasarla"
-                aria-label="Davetiyeni tasarla bölümüne git"
+                aria-label="Davetiyeni tasarlamaya başla"
                 className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-brand-ink px-7 text-[12px] uppercase tracking-[0.22em] text-bg transition-all hover:tracking-[0.28em]"
               >
                 Davetiyeni tasarla →

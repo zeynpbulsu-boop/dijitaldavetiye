@@ -235,10 +235,10 @@ export function Pricing() {
                 ))}
               </ul>
               <Link
-                href={`/order/${tier.id}`}
+                href={`/order/aethel?tier=${tier.id}`}
                 data-cursor="magnetic"
-                data-cursor-label={tier.popular ? "Seç" : "Seç"}
-                aria-label={`${tier.name} paketini seç ve sipariş ver`}
+                data-cursor-label="Seç"
+                aria-label={`${tier.name} paketini seç ve tasarlamaya başla`}
                 className={`mt-auto inline-flex min-h-[44px] items-center justify-center rounded-full text-[11px] uppercase transition-all ${
                   tier.popular
                     ? "bg-brand-ink text-bg hover:tracking-[0.32em]"

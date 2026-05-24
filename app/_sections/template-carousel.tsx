@@ -149,13 +149,13 @@ export function TemplateCarousel() {
               Tüm koleksiyon →
             </Link>
             <Link
-              href="#pricing"
-              data-cursor="open"
-              data-cursor-label="Fiyat"
-              aria-label="Fiyatları gör"
+              href="/order/aethel"
+              data-cursor="magnetic"
+              data-cursor-label="Tasarla"
+              aria-label="Davetiye tasarlamaya başla"
               className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-brand-ink/40 px-6 text-[11px] uppercase tracking-[0.28em] text-brand-ink transition hover:border-brand-cognac hover:text-brand-cognac"
             >
-              Fiyatları gör
+              Tasarlamaya başla
             </Link>
           </div>
         </motion.div>

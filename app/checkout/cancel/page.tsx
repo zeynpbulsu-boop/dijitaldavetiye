@@ -33,7 +33,7 @@ function CancelInner() {
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
           <Link
-            href={`/order/blush-reverie${tier ? `?tier=${tier}` : ""}`}
+            href={`/order/aethel${tier ? `?tier=${tier}` : ""}`}
             className="inline-flex items-center gap-2 rounded-full bg-brand-cognac px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-cream transition hover:bg-brand-ink"
           >
             {t.checkout.cancel.cta_retry}
