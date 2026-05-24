@@ -511,26 +511,45 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                   <ScheduleIcon name={item.icon} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div
-                    className="text-[10px] uppercase"
-                    style={{ color: theme.accent, letterSpacing: "0.42em", fontWeight: 300 }}
-                  >
-                    {item.time}
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="text-[11px] uppercase tabular-nums"
+                      style={{
+                        color: theme.accent,
+                        letterSpacing: "0.42em",
+                        fontWeight: 400,
+                        fontFamily: "var(--font-display), Georgia, serif",
+                      }}
+                    >
+                      {item.time}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="h-px flex-1"
+                      style={{ background: `${theme.accent}33`, maxWidth: 56 }}
+                    />
                   </div>
                   <h3
-                    className="mt-2 italic"
+                    className="mt-2.5 italic"
                     style={{
                       color: theme.ink,
-                      lineHeight: 1.3,
-                      fontWeight: 300,
-                      fontSize: "clamp(16px, 4.4vw, 19px)",
+                      lineHeight: 1.25,
+                      fontWeight: 400,
+                      fontSize: "clamp(17px, 4.4vw, 21px)",
+                      letterSpacing: "-0.005em",
+                      fontFamily: "var(--font-display), Georgia, serif",
                     }}
                   >
                     {item.title}
                   </h3>
                   <p
-                    className="mt-2 text-[13px]"
-                    style={{ color: theme.inkSoft, fontWeight: 300, lineHeight: 1.7 }}
+                    className="mt-2 text-[13.5px] sm:text-[14px]"
+                    style={{
+                      color: theme.inkSoft,
+                      fontWeight: 300,
+                      lineHeight: 1.72,
+                      letterSpacing: "0.005em",
+                    }}
                   >
                     {item.desc}
                   </p>
@@ -781,30 +800,58 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
               >
                 <details className="group">
                   <summary
-                    /* FAZ D.5 — hover'da yumuşak bir vurgu (accent ile underline) */
-                    className="flex cursor-pointer items-center justify-between gap-3 transition-colors hover:text-[--faq-hover-ink]"
+                    className="flex cursor-pointer items-baseline gap-5 transition-colors hover:text-[--faq-hover-ink]"
+                    data-cursor="open"
                     style={{
                       color: theme.ink,
                       fontWeight: 300,
-                      letterSpacing: "0.01em",
-                      fontSize: "clamp(15px, 4vw, 17px)",
+                      letterSpacing: "0.005em",
+                      fontSize: "clamp(15px, 4vw, 18px)",
                       minHeight: 44,
-                      // CSS var: hover'da accent rengine yumuşak geç
                       ["--faq-hover-ink" as unknown as string]: theme.accent,
                     } as CSSProperties}
                   >
-                    <span className="flex-1">{f.q}</span>
+                    {/* Number prefix — premium luxe edition signature */}
                     <span
-                      className="ml-2 flex h-6 w-6 flex-shrink-0 items-center justify-center text-[20px] transition-transform group-open:rotate-45"
-                      style={{ color: theme.accent, fontWeight: 200 }}
+                      aria-hidden
+                      className="flex-shrink-0 tabular-nums italic"
+                      style={{
+                        color: theme.accent,
+                        fontFamily: "var(--font-display), Georgia, serif",
+                        fontSize: "clamp(14px, 3vw, 16px)",
+                        letterSpacing: "0.06em",
+                        opacity: 0.7,
+                        minWidth: 30,
+                      }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span
+                      className="flex-1 italic"
+                      style={{
+                        fontFamily: "var(--font-display), Georgia, serif",
+                        fontWeight: 400,
+                        lineHeight: 1.35,
+                      }}
+                    >
+                      {f.q}
+                    </span>
+                    <span
+                      className="ml-2 flex h-7 w-7 flex-shrink-0 items-center justify-center text-[22px] transition-transform duration-500 group-open:rotate-[225deg]"
+                      style={{ color: theme.accent, fontWeight: 200, lineHeight: 1 }}
                       aria-hidden
                     >
                       +
                     </span>
                   </summary>
                   <p
-                    className="mt-4 max-w-[640px] text-[14px]"
-                    style={{ color: theme.inkSoft, lineHeight: 1.8, fontWeight: 300 }}
+                    className="ml-[50px] mt-4 max-w-[640px] text-[14px] sm:text-[14.5px]"
+                    style={{
+                      color: theme.inkSoft,
+                      lineHeight: 1.8,
+                      fontWeight: 300,
+                      letterSpacing: "0.005em",
+                    }}
                   >
                     {f.a}
                   </p>

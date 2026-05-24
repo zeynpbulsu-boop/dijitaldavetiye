@@ -158,19 +158,32 @@ export function JourneyTimeline({
                     onLeft ? "sm:pr-14 sm:text-right" : "sm:pl-14 sm:text-left"
                   }`}
                 >
-                  <span
-                    className="font-display italic"
-                    style={{
-                      fontFamily: fontFamily ?? "var(--font-display), Georgia, serif",
-                      fontSize: "clamp(34px, 5vw, 56px)",
-                      lineHeight: 1,
-                      color: accent,
-                      fontWeight: 500,
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {entry.year}
-                  </span>
+                  {/* Year — büyük italic accent + decorative underline */}
+                  <div className={`inline-flex flex-col ${onLeft ? "sm:items-end" : "sm:items-start"}`}>
+                    <span
+                      className="font-display italic"
+                      style={{
+                        fontFamily: fontFamily ?? "var(--font-display), Georgia, serif",
+                        fontSize: "clamp(38px, 5.5vw, 64px)",
+                        lineHeight: 1,
+                        color: accent,
+                        fontWeight: 400,
+                        letterSpacing: "-0.025em",
+                      }}
+                    >
+                      {entry.year}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="mt-2 block"
+                      style={{
+                        width: 32,
+                        height: 1,
+                        background: accent,
+                        opacity: 0.5,
+                      }}
+                    />
+                  </div>
                   <h3
                     className="mt-3 italic"
                     style={{
@@ -185,15 +198,35 @@ export function JourneyTimeline({
                     {entry.title}
                   </h3>
                   <p
-                    className="mt-3 max-w-[420px] text-[13px] sm:text-[14px]"
+                    className="mt-4 max-w-[420px] text-[13px] sm:text-[14.5px]"
                     style={{
                       color: inkSoft,
-                      lineHeight: 1.75,
+                      lineHeight: 1.78,
                       fontWeight: 300,
                       marginLeft: onLeft ? "auto" : 0,
+                      letterSpacing: "0.005em",
                     }}
                   >
-                    {entry.body}
+                    {/* DropCap — premium luxe edition signature touch */}
+                    {entry.body.length > 0 && (
+                      <span
+                        aria-hidden
+                        className="float-left mr-2 italic"
+                        style={{
+                          fontFamily: fontFamily ?? "var(--font-display), Georgia, serif",
+                          fontSize: "clamp(38px, 5.5vw, 56px)",
+                          lineHeight: 0.9,
+                          color: accent,
+                          fontWeight: 400,
+                          marginTop: "4px",
+                          marginRight: "10px",
+                          paddingTop: "4px",
+                        }}
+                      >
+                        {entry.body[0]}
+                      </span>
+                    )}
+                    {entry.body.slice(1)}
                   </p>
                 </div>
               </motion.li>
