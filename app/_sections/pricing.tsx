@@ -164,16 +164,36 @@ export function Pricing() {
           {TIERS.map((tier) => (
             <li
               key={tier.id}
-              className={`relative flex flex-col rounded-md border bg-paper p-6 transition ${
+              className={`relative flex flex-col rounded-[10px] border bg-paper p-6 transition-all duration-300 ${
                 tier.popular
-                  ? "border-brand-cognac shadow-ed-lg sm:scale-[1.02]"
-                  : "border-brand-ink/12 shadow-ed-sm hover:border-brand-cognac/50"
+                  ? "border-brand-cognac shadow-[0_24px_60px_-20px_rgba(140,90,60,0.32)] sm:scale-[1.03] hover:shadow-[0_32px_80px_-24px_rgba(140,90,60,0.45)]"
+                  : "border-brand-ink/12 shadow-ed-sm hover:border-brand-cognac/50 hover:shadow-[0_16px_40px_-16px_rgba(43,30,22,0.18)] hover:-translate-y-1"
               }`}
+              style={
+                tier.popular
+                  ? {
+                      backgroundImage:
+                        "linear-gradient(180deg, rgba(212, 175, 138, 0.06) 0%, rgba(255,255,255,0) 30%), linear-gradient(180deg, rgba(255,255,255,0) 70%, rgba(212, 175, 138, 0.08) 100%)",
+                    }
+                  : undefined
+              }
             >
               {tier.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-cognac px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.22em] text-paper">
-                  En çok seçilen
-                </span>
+                <>
+                  {/* Subtle gold glow accent — premium tier signature */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 rounded-[10px]"
+                    style={{
+                      background:
+                        "radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 138, 0.18) 0%, transparent 55%)",
+                      mixBlendMode: "multiply",
+                    }}
+                  />
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-cognac px-3.5 py-1 text-[9px] font-semibold uppercase tracking-[0.28em] text-paper shadow-[0_4px_12px_rgba(140,90,60,0.4)]">
+                    ★ En çok seçilen
+                  </span>
+                </>
               )}
               <header className="border-b border-brand-ink/10 pb-5">
                 <h3 className="font-display text-[22px] text-brand-ink">
