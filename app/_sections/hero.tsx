@@ -99,12 +99,18 @@ export function Hero() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="#pricing"
+                data-cursor="magnetic"
+                data-cursor-label="Tasarla"
+                aria-label="Davetiyeni tasarla bölümüne git"
                 className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-brand-ink px-7 text-[12px] uppercase tracking-[0.22em] text-bg transition-all hover:tracking-[0.28em]"
               >
                 Davetiyeni tasarla →
               </Link>
               <Link
                 href="/dev-preview/aethel"
+                data-cursor="open"
+                data-cursor-label="Demo"
+                aria-label="Aethel davetiye demosunu gör"
                 className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-brand-ink/40 px-7 text-[12px] uppercase tracking-[0.22em] text-brand-ink transition hover:border-brand-cognac hover:text-brand-cognac"
               >
                 Demoyu gör
