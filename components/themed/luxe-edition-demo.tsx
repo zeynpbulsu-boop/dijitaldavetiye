@@ -42,6 +42,7 @@ import { CinematicIntro } from "@/components/themed/cinematic-intro";
 import { CountdownDetonation } from "@/components/themed/countdown-detonation";
 import { UnmutePrompt } from "@/components/audio/unmute-prompt";
 import { useAudio } from "@/lib/audio/audio-context";
+import { SignatureDoves } from "@/components/themed/signature-doves";
 import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
 import { CountdownLuxe } from "@/components/themed/countdown-luxe";
@@ -1040,6 +1041,8 @@ function Hero({
           />
           {/* Faz 2 — diagonal shimmer light sweep, 9s loop, premium öğle ışığı. */}
           <div aria-hidden className="hero-shimmer-sweep" />
+          {/* Faz 2 — Aethel signature: 2 doves diagonal flight (CSS only). */}
+          {theme.ambient === "doves" && <SignatureDoves />}
         </>
       ) : (
         <ChapelWatermark
