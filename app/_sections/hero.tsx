@@ -161,14 +161,25 @@ export function Hero() {
                 className="absolute left-1/2 top-2 z-10 h-5 w-24 -translate-x-1/2 rounded-full bg-brand-ink/90"
               />
 
-              {/* Davetiye demosu — phone içinde */}
+              {/* Davetiye demosu — phone içinde, yeni premium Aethel cover */}
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#F2EEE4] px-6 text-center">
+                {/* Full-bleed cinematic cover (v2) — premium fal.ai render */}
                 <Image
-                  src="/aethel/chapel-vignette.png"
+                  src="/aethel/cover.jpg"
                   alt=""
                   fill
                   sizes="420px"
-                  style={{ objectFit: "cover", opacity: 0.18 }}
+                  priority
+                  style={{ objectFit: "cover" }}
+                />
+                {/* Soft overlay legibility için — cream wash */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(242,238,228,0.35) 0%, rgba(242,238,228,0.55) 45%, rgba(242,238,228,0.78) 100%)",
+                  }}
                 />
                 <div className="relative z-10 mt-12 flex flex-col items-center gap-4">
                   <span className="text-[9px] uppercase tracking-[0.4em] text-[#5E6650]">

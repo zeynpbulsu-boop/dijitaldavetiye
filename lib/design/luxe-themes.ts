@@ -641,13 +641,15 @@ export const OLIVE_GROVE_THEME: LuxeEditionTheme = {
 /* ── 5. AURORA (modernist minimalist) ──────────────────────────── */
 export const AURORA_THEME: LuxeEditionTheme = {
   meta: EDITIONS["aurora"],
+  /* 2026 Pantone "Future Dusk" twilight purple accent + warm beige base.
+     Contemporary modernist mood, themes.ts ile birebir aligned. */
   bg: "#EFE9E4",
   footerBg: "#E2D9D1",
-  ink: "#3A332D",
-  inkSoft: "rgba(58, 51, 45, 0.72)",
+  ink: "#2D2A35",
+  inkSoft: "rgba(45, 42, 53, 0.72)",
   inkMuted: "rgba(184, 134, 122, 0.85)",
-  accent: "#B8867A",
-  haloColor: "#D6B0A4",
+  accent: "#5D3A7E",
+  haloColor: "#7C5BA0",
   waxSealSrc: "/aurora/wax-seal.png",
   watermarkSrc: "/aurora/watermark.png",
   coverScene: "/aurora/cover.jpg",
