@@ -141,12 +141,18 @@ export function TemplateCarousel() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/tasarimlar"
+              data-cursor="magnetic"
+              data-cursor-label="Koleksiyon"
+              aria-label="Tüm tasarım koleksiyonunu gör"
               className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-brand-ink px-6 text-[11px] uppercase tracking-[0.28em] text-bg transition hover:tracking-[0.32em]"
             >
               Tüm koleksiyon →
             </Link>
             <Link
               href="#pricing"
+              data-cursor="open"
+              data-cursor-label="Fiyat"
+              aria-label="Fiyatları gör"
               className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-brand-ink/40 px-6 text-[11px] uppercase tracking-[0.28em] text-brand-ink transition hover:border-brand-cognac hover:text-brand-cognac"
             >
               Fiyatları gör
