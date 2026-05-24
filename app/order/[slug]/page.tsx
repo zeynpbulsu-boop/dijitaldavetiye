@@ -242,6 +242,75 @@ export default function OrderEditorPage() {
             </p>
           </header>
 
+          {/* EDITION SWITCHER — 6 tasarım thumbnail, tıkla değiştir */}
+          <Section label="Tasarımı değiştir">
+            <p className="mb-4 text-[13px] leading-[1.7] text-brand-mute">
+              Her tasarımın kendi atmosferi, müziği ve sahnesi var. Aşağıdan
+              istediğin zaman değiştirebilirsin — formdaki bilgiler korunur.
+            </p>
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+              {(["aethel","nocturne","candela","mistral","olea","aurora"] as const).map((slug) => {
+                const isActive = templateSlug === slug;
+                const displayName = {
+                  aethel: "Aethel",
+                  nocturne: "Nocturne",
+                  candela: "Candéla",
+                  mistral: "Mistral",
+                  olea: "Olea",
+                  aurora: "Aurora",
+                }[slug];
+                return (
+                  <Link
+                    key={slug}
+                    href={`/order/${slug}`}
+                    data-cursor="view"
+                    data-cursor-label={displayName}
+                    aria-label={`${displayName} tasarımına geç`}
+                    aria-current={isActive ? "true" : undefined}
+                    className={`group relative overflow-hidden rounded-[8px] transition-all duration-300 ${
+                      isActive
+                        ? "ring-2 ring-brand-cognac ring-offset-2"
+                        : "opacity-75 hover:opacity-100 hover:-translate-y-1"
+                    }`}
+                  >
+                    <div className="relative aspect-[3/4]">
+                      <Image
+                        src={LUXE_ASSETS[slug]?.cover ?? "/aethel/cover.jpg"}
+                        alt={displayName}
+                        fill
+                        sizes="(max-width: 640px) 33vw, 16vw"
+                        style={{ objectFit: "cover" }}
+                      />
+                      <div
+                        aria-hidden
+                        className="absolute inset-x-0 bottom-0 px-1.5 py-1.5"
+                        style={{
+                          background:
+                            "linear-gradient(0deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0) 100%)",
+                        }}
+                      >
+                        <span
+                          className="block text-center text-[10px] uppercase tracking-[0.22em] text-white"
+                          style={{ fontFamily: "var(--font-display), serif" }}
+                        >
+                          {displayName}
+                        </span>
+                      </div>
+                      {isActive && (
+                        <span
+                          aria-hidden
+                          className="absolute right-1.5 top-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-cognac text-[10px] font-semibold text-paper shadow-md"
+                        >
+                          ✓
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </Section>
+
           <Section label="Çift">
             <Row>
               <Field label="Birinci isim">
