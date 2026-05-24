@@ -62,6 +62,22 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* FAZ 1 a11y — prefers-reduced-motion nuclear option.
+   Tüm CSS animasyon + transition'ları neredeyse anında bitir,
+   smooth scroll'u native scroll'a çek. Framer Motion da
+   MotionConfig reducedMotion="user" ile bunu paralel respect eder
+   (layout'ta wrap edili). Birlikte: A11y-grade tam respect. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* FAZ C.8 — Focus-visible ring on every interactive element. The
    default browser ring is suppressed on hover/click but kept on
    keyboard navigation so screen-reader users can locate the cursor.

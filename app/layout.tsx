@@ -17,6 +17,7 @@ import { LocaleProvider } from "@/lib/i18n/provider";
 import { CurrencyProvider } from "@/lib/currency/provider";
 import { LenisProvider } from "@/lib/motion/lenis-provider";
 import { AudioProvider } from "@/lib/audio/audio-context";
+import { MotionConfig } from "framer-motion";
 
 /**
  * Body: Inter Tight — modern grotesk, default body across NUVE.
@@ -204,16 +205,18 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Ana içeriğe atla
         </a>
-        <LenisProvider>
-          <AudioProvider>
-            <LocaleProvider>
-              <CurrencyProvider>
-                <CursorRing />
-                {children}
-              </CurrencyProvider>
-            </LocaleProvider>
-          </AudioProvider>
-        </LenisProvider>
+        <MotionConfig reducedMotion="user">
+          <LenisProvider>
+            <AudioProvider>
+              <LocaleProvider>
+                <CurrencyProvider>
+                  <CursorRing />
+                  {children}
+                </CurrencyProvider>
+              </LocaleProvider>
+            </AudioProvider>
+          </LenisProvider>
+        </MotionConfig>
       </body>
     </html>
   );
