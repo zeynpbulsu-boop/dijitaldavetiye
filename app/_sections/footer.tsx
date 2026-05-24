@@ -76,7 +76,10 @@ export function Footer() {
             </p>
             <Link
               href="mailto:info@nuve.app"
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand-cream px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-ink transition hover:bg-brand-cognac hover:text-brand-cream"
+              data-cursor="magnetic"
+              data-cursor-label="E-posta"
+              aria-label="E-posta gönder: info@nuve.app"
+              className="group mt-5 inline-flex items-center gap-2 rounded-full bg-brand-cream px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-ink transition hover:bg-brand-cognac hover:text-brand-cream"
             >
               info@nuve.app
               <svg
@@ -143,6 +146,8 @@ function SocialLink({
       aria-label={label}
       target="_blank"
       rel="noopener noreferrer"
+      data-cursor="open"
+      data-cursor-label={label}
       className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-cream/22 text-brand-cream/70 transition-all duration-300 hover:border-brand-cognac hover:bg-brand-cognac/10 hover:text-brand-cream"
     >
       {icon}
