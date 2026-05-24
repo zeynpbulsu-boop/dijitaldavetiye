@@ -97,6 +97,45 @@ html {
   will-change: transform;
 }
 
+/* Faz 2 — Hero shimmer light sweep. Subtle diagonal light beam
+   yavaşça soldan sağa kayar. Premium "öğle güneşi" hissi.
+   8s loop, mix-blend overlay, GPU compositor.
+   prefers-reduced-motion: respect (nuclear rule globally). */
+@keyframes heroShimmerSweep {
+  0% {
+    background-position: -60% 0;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.28;
+  }
+  80% {
+    opacity: 0.28;
+  }
+  100% {
+    background-position: 160% 0;
+    opacity: 0;
+  }
+}
+
+.hero-shimmer-sweep {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 62%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  mix-blend-mode: overlay;
+  animation: heroShimmerSweep 9s linear infinite;
+  z-index: 2;
+}
+
 /* FAZ 1 a11y — prefers-reduced-motion nuclear option.
    Tüm CSS animasyon + transition'ları neredeyse anında bitir,
    smooth scroll'u native scroll'a çek. Framer Motion da

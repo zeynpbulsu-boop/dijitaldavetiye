@@ -1038,6 +1038,8 @@ function Hero({
                 : `linear-gradient(180deg, ${theme.bg}E6 0%, ${theme.bg}80 30%, ${theme.bg}66 60%, ${theme.bg}E6 100%)`,
             }}
           />
+          {/* Faz 2 — diagonal shimmer light sweep, 9s loop, premium öğle ışığı. */}
+          <div aria-hidden className="hero-shimmer-sweep" />
         </>
       ) : (
         <ChapelWatermark
