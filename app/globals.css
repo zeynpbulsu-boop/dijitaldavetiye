@@ -74,6 +74,29 @@ html {
   }
 }
 
+/* Faz 1.6 — Native CSS scroll-driven Hero parallax.
+   Hero coverScene scroll'la birlikte yavaşça yukarı kayar +
+   hafifçe büyür → cinematic depth. Compositor thread, 60fps,
+   eski Android'de bile akıcı. animation-timeline destekleyen
+   tarayıcılarda (Chrome 115+, Safari 17.4+, Firefox 139+ behind
+   flag) aktif; desteklemeyen tarayıcılarda no-op (static).
+   prefers-reduced-motion ile globally durdurulur. */
+@keyframes heroCoverParallax {
+  from {
+    transform: scale(1.02) translateY(0%);
+  }
+  to {
+    transform: scale(1.12) translateY(-12%);
+  }
+}
+
+.hero-scroll-parallax {
+  animation: heroCoverParallax linear both;
+  animation-timeline: scroll(root);
+  animation-range: 0 80vh;
+  will-change: transform;
+}
+
 /* FAZ 1 a11y — prefers-reduced-motion nuclear option.
    Tüm CSS animasyon + transition'ları neredeyse anında bitir,
    smooth scroll'u native scroll'a çek. Framer Motion da

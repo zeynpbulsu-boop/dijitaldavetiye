@@ -1016,7 +1016,7 @@ function Hero({
           Venetian doors paritesi). Yoksa fallback olarak watermark. */}
       {usesCover ? (
         <>
-          <div className="absolute inset-0">
+          <div className="hero-scroll-parallax absolute inset-0">
             <Image
               src={theme.coverScene!}
               alt=""
