@@ -552,6 +552,19 @@ export default function OrderEditorPage() {
                     </div>
                   </div>
 
+                  {/* "Demoyu tam aç" CTA — kullanıcı edition'ı full deneyimle inceleyebilir */}
+                  <Link
+                    href={`/dev-preview/${templateSlug}`}
+                    target="_blank"
+                    rel="noopener"
+                    data-cursor="open"
+                    data-cursor-label="Tam ekran"
+                    className="group flex items-center justify-between gap-3 border-t border-brand-ink/10 bg-paper px-5 py-3 text-[10px] uppercase tracking-[0.26em] text-brand-mute transition hover:text-brand-cognac"
+                  >
+                    <span>Demoyu tam ekran aç</span>
+                    <span aria-hidden className="transition-transform group-hover:translate-x-1">↗</span>
+                  </Link>
+
                   {/* Palette chips + slug label */}
                   <div className="flex items-center gap-2 border-t border-brand-ink/10 bg-paper px-5 py-3">
                     {[theme.accent, theme.ink, theme.monogramFill, theme.spark].map((c, i) => (
