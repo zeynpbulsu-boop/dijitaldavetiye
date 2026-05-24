@@ -83,6 +83,14 @@ export function EnvelopeCeremony({
     setStage("breaking");
     // Audio fire: envelope tear (lazy lib load)
     audio.playSfx(SHARED_SFX.envelopeOpen, { volume: 0.55 });
+    // OTOMATIK MÜZIK — envelope tap = first user gesture, browser
+    // autoplay policy unlock. setMuted(false) → unlock() → playAmbient.
+    // edition slug envelope'tan props ile gelmiyor, ama caller
+    // (LuxeEditionDemo) zaten UnmutePrompt mount edip ambient'i tetikliyor.
+    // Burada sadece mute'u açıyoruz; ambient autoplay UnmutePrompt
+    // refactor ile artık opened=true olunca otomatik başlar.
+    audio.setMuted(false);
+    void audio.unlock();
     window.setTimeout(() => setStage("opening"), 900);
     window.setTimeout(() => onOpened(), 2500);
   }
