@@ -44,6 +44,8 @@ import { UnmutePrompt } from "@/components/audio/unmute-prompt";
 import { useAudio } from "@/lib/audio/audio-context";
 import { SignatureDoves } from "@/components/themed/signature-doves";
 import { SignatureLeaves } from "@/components/themed/signature-leaves";
+import { SignatureWaves } from "@/components/themed/signature-waves";
+import { SignatureStarfield } from "@/components/themed/signature-starfield";
 import { Lovebirds } from "@/components/ornaments/lovebirds";
 import { SlotPicker, slotOptions } from "@/components/inputs/slot-picker";
 import { CountdownLuxe } from "@/components/themed/countdown-luxe";
@@ -1046,6 +1048,10 @@ function Hero({
           {theme.ambient === "doves" && <SignatureDoves />}
           {/* Faz 2 — Olea signature: 5 falling olive leaves with sway (CSS only). */}
           {theme.ambient === "leaves" && <SignatureLeaves />}
+          {/* Faz 2 — Mistral signature: 3 horizontal wave shimmer lines (CSS only). */}
+          {theme.ambient === "waves" && <SignatureWaves />}
+          {/* Faz 2 — Nocturne signature: 24 twinkling stars (CSS only). */}
+          {theme.ambient === "starfield" && <SignatureStarfield />}
         </>
       ) : (
         <ChapelWatermark
