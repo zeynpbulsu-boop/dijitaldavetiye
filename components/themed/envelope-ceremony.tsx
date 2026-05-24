@@ -114,6 +114,8 @@ export function EnvelopeCeremony({
         <button
           type="button"
           onClick={() => onOpened()}
+          data-cursor="open"
+          data-cursor-label={skipLabel}
           aria-label={skipLabel}
           className="absolute right-4 top-4 z-20 inline-flex min-h-[36px] items-center justify-center rounded-full px-4 py-1 text-[10px] uppercase transition-all hover:tracking-[0.32em] sm:right-6 sm:top-6"
           style={{
@@ -291,6 +293,8 @@ export function EnvelopeCeremony({
           type="button"
           onClick={open}
           aria-label={ctaLabel}
+          data-cursor="magnetic"
+          data-cursor-label={ctaLabel}
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: stage === "sealed" ? 1 : 0, y: 0 }}
           transition={{ duration: 1.2, delay: 1.6, ease: [0.22, 1, 0.36, 1] }}
