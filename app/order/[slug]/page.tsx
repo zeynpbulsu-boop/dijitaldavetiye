@@ -7,6 +7,7 @@ import Image from "next/image";
 import { startCheckout } from "@/lib/payments/checkout-client";
 import { isTierSlug, type TierSlug } from "@/lib/payments/products";
 import { themeForSlug } from "@/lib/templates/themes";
+import { CustomCoverGenerator } from "@/components/order/custom-cover-generator";
 
 /* Luxe edition slug → real asset paths. */
 const LUXE_ASSETS: Record<string, { cover: string; seal: string }> = {
@@ -63,6 +64,8 @@ export default function OrderEditorPage() {
   const [story, setStory] = useState("");
   const [monogram, setMonogram] = useState("");
   const [email, setEmail] = useState("");
+  // Premium custom cover URL (fal.ai Recraft v3 ile üretilen özel kapak)
+  const [customCoverUrl, setCustomCoverUrl] = useState<string | null>(null);
 
   /* ---------- Boot: load existing draft or create new ---------- */
   useEffect(() => {
@@ -92,6 +95,9 @@ export default function OrderEditorPage() {
             setStory(String(inv.story_text ?? ""));
             setMonogram(String(inv.monogram_initials ?? ""));
             setEmail(String(inv.owner_email ?? ""));
+            setCustomCoverUrl(
+              typeof inv.hero_media_url === "string" ? inv.hero_media_url : null
+            );
             return;
           }
           // Token invalid / not found → clear and create fresh
@@ -387,6 +393,21 @@ export default function OrderEditorPage() {
             </Field>
           </Section>
 
+          {/* ÖZEL KAPAK — Premium add-on (TDI Premium tier paritesi).
+              Müşteri venue + atmosfer prompt'u yazar, fal.ai Recraft v3
+              ile per-couple custom cover üretilir. Mevcut hero_media_url
+              DB field'ına persist edilir. */}
+          <Section label="Özel Kapak (Premium)">
+            <CustomCoverGenerator
+              edition={templateSlug}
+              initialUrl={customCoverUrl}
+              onSaved={(url) => {
+                setCustomCoverUrl(url);
+                persist({ hero_media_url: url });
+              }}
+            />
+          </Section>
+
           <Section label="Sana nasıl ulaşalım">
             <Field label="E-posta">
               <input
@@ -465,20 +486,21 @@ export default function OrderEditorPage() {
                       minHeight: 460,
                     }}
                   >
-                    {/* Cover scene background (real edition cover, faded) */}
-                    {luxe && (
+                    {/* Cover scene background — custom (premium) varsa onu, yoksa edition default */}
+                    {(customCoverUrl || luxe) && (
                       <div
                         aria-hidden
                         className="pointer-events-none absolute inset-0"
-                        style={{ opacity: theme.isDark ? 0.35 : 0.5 }}
+                        style={{ opacity: theme.isDark ? 0.4 : 0.55 }}
                       >
                         <Image
-                          src={luxe.cover}
+                          src={customCoverUrl ?? luxe!.cover}
                           alt=""
                           fill
                           sizes="(max-width: 1024px) 100vw, 460px"
                           style={{ objectFit: "cover" }}
                           priority={false}
+                          unoptimized={!!customCoverUrl}
                         />
                         {/* Gradient overlay for legibility */}
                         <div
