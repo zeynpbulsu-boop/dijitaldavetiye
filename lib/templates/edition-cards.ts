@@ -113,6 +113,35 @@ export const editionCards: EditionCard[] = [
     isNew: true,
     shortDescription: "Modernist gradient bant, lavanta, rose gold arc.",
   },
+  /* ── İnteraktif Save the Date ürünleri (TDI paritesi: gamified
+       mini-game STD format). Standalone, ayrı route'lar. ── */
+  {
+    number: "07",
+    slug: "std-heart",
+    name: "Golden Heart",
+    category: "Save the Date · Kazı-Kazan",
+    vibe: "Interactive",
+    eventTypes: ["save-the-date", "wedding"],
+    bg: { from: "#F8F2E6", to: "#E5DCC4" },
+    coverScene: "/aethel/cover.jpg", // re-use Aethel cover backdrop until dedicated render
+    seal: "/aethel/wax-seal-luxe.png",
+    isNew: true,
+    shortDescription: "Altın kalbi kazı, tarihi keşfet. İnteraktif mini-game.",
+  },
+  {
+    number: "08",
+    slug: "std-slot",
+    name: "Slot Machine",
+    category: "Save the Date · Kol Çek",
+    vibe: "Playful",
+    eventTypes: ["save-the-date", "wedding"],
+    bg: { from: "#1A1208", to: "#5A3A28" },
+    coverScene: "/nocturne/cover.jpg",
+    seal: "/nocturne/wax-seal.png",
+    isNew: true,
+    isDark: true,
+    shortDescription: "Kolu çek, 3 reel dönsün, tarihinde dursun. Casino tarzı.",
+  },
 ];
 
 export const eventTypeLabels: Record<EditionEventType, string> = {
