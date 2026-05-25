@@ -44,7 +44,7 @@ export default function OrderEditorPage() {
   const params = useParams<{ slug: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const templateSlug = params?.slug ?? "blush-reverie";
+  const templateSlug = params?.slug ?? "aethel";
   // Flat pricing (Faz 20): only one tier. Query param ignored.
   void searchParams;
   const initialTier: TierSlug = "standard";

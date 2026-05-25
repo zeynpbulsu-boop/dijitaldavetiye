@@ -65,16 +65,16 @@ export function StickyCta() {
         href="/order/aethel"
         data-cursor="magnetic"
         data-cursor-label="Başla"
-        aria-label="Davetiye tasarlamaya başla — ücretsiz"
+        aria-label="Davetiye tasarlamaya başla — €39.99 tek fiyat"
         className="text-[12px] font-semibold uppercase tracking-[0.22em] hover:tracking-[0.28em]"
       >
-        Tasarlamaya başla — ÜCRETSİZ
+        Tasarlamaya başla
       </Link>
       <span aria-hidden className="hidden text-[11px] text-paper/55 sm:inline">
         ·
       </span>
       <span className="hidden text-[11px] uppercase tracking-[0.18em] text-paper/65 sm:inline">
-        Yayına alınca öde
+        €39.99 · Her etkinlik
       </span>
       <button
         type="button"

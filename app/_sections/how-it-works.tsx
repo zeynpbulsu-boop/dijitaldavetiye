@@ -15,17 +15,17 @@ const STEPS = [
   {
     n: "01",
     title: "Tasarımını seç",
-    body: "6 lüks koleksiyondan dilediğinle başla — Aethel, Nocturne, Aurora, Mistral, Candéla, Olea. Hepsi 48 saatte yayında.",
+    body: "6 lüks koleksiyon + 2 interaktif STD. Aethel, Nocturne, Aurora, Mistral, Candéla, Olea, Golden Heart, Slot Machine. Etkinlik tipi farketmez — düğün, doğum günü, baby shower, hepsi.",
   },
   {
     n: "02",
     title: "Detaylarını doldur",
-    body: "İsimler, tarih, mekan, müzik, fotoğraflar, hediye/IBAN, otel önerileri, davetli listesi — hepsini editör panelinden yönet.",
+    body: "İsimler, tarih, mekan, müzik, fotoğraflar. Premium istiyorsan mekânına özel AI illüstrasyon üret (15 saniyede, sınırsız varyant). Tüm özellikler tek €39.99'da dahil.",
   },
   {
     n: "03",
     title: "Linki paylaş",
-    body: "Tek bir bağlantı: WhatsApp, Instagram, SMS — anında. Yanıtlar gerçek zamanlı panelinde toplanır, Excel'e indir.",
+    body: "Tek bir bağlantı: WhatsApp, Instagram, SMS — anında. Yanıtlar gerçek zamanlı panelinde toplanır, Excel'e indir. Yeniden faturalandırma yok.",
   },
 ];
 
@@ -60,9 +60,10 @@ export function HowItWorks() {
             Nasıl Çalışır
           </h2>
           <p className="mx-auto mt-4 max-w-[560px] text-[15px] leading-[1.7] text-brand-mute">
-            Üç adımda yayında. Hesap açmaya, ödeme yapmaya gerek yok —
-            tasarlamak ücretsiz. Yalnızca yayına almak için tek seferlik
-            ödeme.
+            Üç adımda yayında. Hesap açmaya gerek yok — tasarlamak
+            ücretsiz, yayına alınca tek seferlik <strong>€39.99</strong>.
+            Düğün, doğum günü, baby shower — hangi etkinlik için
+            kullanırsan kullan, aynı fiyat.
           </p>
         </motion.div>
 

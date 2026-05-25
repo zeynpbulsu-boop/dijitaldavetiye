@@ -118,7 +118,7 @@ export function Hero() {
             </div>
 
             <p className="mt-4 text-[12px] uppercase tracking-[0.18em] text-brand-mute">
-              Tasarlamak ücretsiz · Tek seferlik ödeme · Aboneliksiz
+              Tasarlamak ücretsiz · Yayında €39.99 tek fiyat · Aboneliksiz
             </p>
 
             {/* Dil pill rail */}

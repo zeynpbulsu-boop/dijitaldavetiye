@@ -261,7 +261,11 @@ const tr: Messages = {
       },
       {
         q: "Kendi alan adımı kullanabilir miyim?",
-        a: "Her pakette dahil. yourname.com gibi bir adı bizim üstümüzden alıyoruz; DNS ayarlarını biz yapıyoruz, SSL'i kuruyoruz, sana sadece çalışan link kalıyor. Kendi alan adın varsa, ona da bağlıyoruz.",
+        a: "Standart dahil. yourname.com gibi bir adı bizim üstümüzden alıyoruz; DNS ayarlarını biz yapıyoruz, SSL'i kuruyoruz, sana sadece çalışan link kalıyor. Kendi alan adın varsa, ona da bağlıyoruz.",
+      },
+      {
+        q: "Düğün dışı etkinlikler için de uygun mu? (Doğum günü, baby shower…)",
+        a: "Aynı sistem, aynı fiyat. Düğün, doğum günü, baby shower, nişan, kına, sünnet, mezuniyet, yıl dönümü, açılış — €39.99 tek fiyat, tüm özellikler dahil. Etkinlik tipine göre kart şablonu otomatik uyarlanıyor.",
       },
       {
         q: "Düğünden sonra düzenleyebilir miyim?",
@@ -296,7 +300,7 @@ const tr: Messages = {
       { label: "Şablonlar", href: "#themes" },
       { label: "Nasıl Çalışır", href: "#how-it-works" },
       { label: "Fiyatlar", href: "#pricing" },
-      { label: "Demoyu Dene", href: "/order/blush-reverie" },
+      { label: "Demoyu Dene", href: "/dev-preview/aethel" },
       { label: "Yorumlar", href: "#testimonials" },
     ],
     legal_links: [
