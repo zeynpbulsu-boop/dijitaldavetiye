@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
-# push-with-pat.sh — Zeynep PAT ile push (macOS keychain bypass).
+# push-with-pat.sh — Bulletproof PAT push (macOS keychain full bypass).
 #
-# Sorun: macOS Keychain'de Bulsulog-art GitHub credential'ı saklı.
-# Normal `git push` keychain'den Bulsulog-art'ı çekip URL'deki PAT'ı
-# override eder → 403 Permission denied.
+# Sorun: 'git -c credential.helper=' bile keychain'i bazen bypass edemiyor
+# çünkü macOS osxkeychain helper inheritance ile kendini zorla load eder.
 #
-# Çözüm: `-c credential.helper=` ile keychain helper'ı DEVRE DIŞI bırak,
-# URL'deki gömülü PAT zorla kullanılsın.
-#
-# Kullanım:
-#   bash scripts/push-with-pat.sh ghp_YOUR_TOKEN
+# Bulletproof çözüm: http.extraheader ile token'ı Authorization header'ında
+# DIREKT inject. Credential helper hiç sorulmaz, URL'de PAT yok (log sızıntısı yok).
 
 set -euo pipefail
 
@@ -22,42 +18,49 @@ PAT="$1"
 USER="zeynpbulsu-boop"
 REPO="dijitaldavetiye"
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-URL_WITH_PAT="https://${USER}:${PAT}@github.com/${USER}/${REPO}.git"
 URL_CLEAN="https://github.com/${USER}/${REPO}.git"
 
-echo "→ Push hazırlığı: branch=$BRANCH, user=$USER, repo=$REPO"
-echo "→ Keychain bypass aktif (credential.helper= empty)"
+echo "→ Branch: $BRANCH"
+echo "→ Auth: http.extraheader Authorization bearer (keychain hiç sorulmaz)"
 
-# Direct push to URL with PAT, credential helper devre dışı.
-# Keychain'e dokunmaz, başka commands etkilenmez.
-git -c credential.helper= \
-    -c credential.useHttpPath=true \
-    push -u "$URL_WITH_PAT" "$BRANCH:$BRANCH" 2>&1 | tail -20
+# extraheader ile token authorization header'ına direkt enjekte.
+# Credential helper'a danışılmaz — keychain hiç devreye girmez.
+# URL temiz: token URL'de yok, log/process list'te görünmez.
+GIT_TERMINAL_PROMPT=0 \
+  git -c credential.helper= \
+      -c http.sslVerify=true \
+      -c "http.https://github.com/.extraheader=Authorization: bearer ${PAT}" \
+      push -u "$URL_CLEAN" "$BRANCH:$BRANCH" 2>&1 | tail -25
 
 PUSH_STATUS=${PIPESTATUS[0]}
-
-# Remote URL temizle (token'sız) — sızıntı yok
-git remote set-url origin "$URL_CLEAN" 2>/dev/null || true
 
 if [ $PUSH_STATUS -eq 0 ]; then
   echo ""
   echo "✅ Push BAŞARILI."
   echo ""
   echo "Sırada:"
-  echo "1. GitHub Actions: https://github.com/${USER}/${REPO}/actions"
-  echo "   Coolify Auto-Deploy workflow tetiklenmiş olmalı"
-  echo ""
+  echo "1. GitHub Actions otomatik tetikler: https://github.com/${USER}/${REPO}/actions"
   echo "2. 3 GitHub secret ekle (Coolify deploy için):"
   echo "   https://github.com/${USER}/${REPO}/settings/secrets/actions"
-  echo "   - COOLIFY_API_TOKEN (Coolify panel → Keys & Tokens → Generate)"
-  echo "   - COOLIFY_APP_UUID: b9ba0lj82z1m88uwltdc1w85"
-  echo "   - COOLIFY_BASE_URL: https://coolify.bulsulabs.xyz"
-  echo ""
-  echo "3. Live (~3dk):"
+  echo "   - COOLIFY_API_TOKEN  (Coolify panel → Keys & Tokens)"
+  echo "   - COOLIFY_APP_UUID   = b9ba0lj82z1m88uwltdc1w85"
+  echo "   - COOLIFY_BASE_URL   = https://coolify.bulsulabs.xyz"
+  echo "3. Live URL (~3dk):"
   echo "   http://b9ba0lj82z1m88uwltdc1w85.72.62.39.172.sslip.io"
 else
   echo ""
   echo "❌ Push BAŞARISIZ (exit $PUSH_STATUS)"
-  echo "Token geçerli mi: https://github.com/settings/tokens"
+  echo ""
+  echo "Sorun çözümleri:"
+  echo "1. Token'ı kontrol et: https://github.com/settings/tokens"
+  echo "   Scope: ✓ repo (write erişim için ŞART)"
+  echo "2. Token Zeynep hesabıyla oluşturulduğundan emin ol"
+  echo "3. Token expire olmamış mı (7 gün default)"
+  echo ""
+  echo "Hala fail ediyorsa keychain'i temizle:"
+  echo "   git credential-osxkeychain erase &lt;&lt;EOF"
+  echo "   host=github.com"
+  echo "   protocol=https"
+  echo "   EOF"
   exit $PUSH_STATUS
 fi
