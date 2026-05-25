@@ -7,94 +7,62 @@ import { useCurrency } from "@/lib/currency/provider";
 import { formatPrice, type CurrencyCode } from "@/lib/currency/format";
 
 /**
- * NUVE pricing — 4 tier model (The Digital Invite paritesi).
+ * NUVE pricing — TEK FİYAT modeli.
  *
- * Save the Date · Davetiye (Popular) · Premium · Doğum Günü.
- * Üstü çizgili indirim + "En çok seçilen" rozeti + ortak feature
- * comparison. Currency context'inden seçilen para birimine göre
- * fiyatlar canlı çevriliyor — base EUR.
+ * Her etkinlik tipi (düğün, doğum günü, baby shower, nişan, save the date,
+ * mezuniyet, açılış, kına, sünnet…) tek fiyat: €39.99.
  *
- * Dodo ürün ID'leri henüz bağlı değil; CTA'lar "Hazırlamaya Başla"
- * shell linki gönderir (`/order?tier=...`) ve gerçek checkout flow
- * Dodo entegrasyonu tamamlanınca devreye girer.
+ * Tier (Save the Date / Davetiye / Premium / Doğum Günü) modeli kaldırıldı —
+ * tek fiyat + bütün özellikler dahil. AI özel illüstrasyon, sınırsız bilgi
+ * bloğu, RSVP, müzik, harita… hiç ek ücret yok.
  */
 
-interface Tier {
-  id: "save_the_date" | "experience" | "premium" | "birthday";
-  name: string;
-  baseEur: number;
-  strikeEur?: number;
-  popular?: boolean;
-  description: string;
-  features: string[];
-  deliveryNote?: string;
-}
+const BASE_EUR = 39.99;
+const STRIKE_EUR = 89;
 
-const TIERS: Tier[] = [
+const EVENT_TYPES = [
+  "Düğün",
+  "Save the Date",
+  "Nişan",
+  "Doğum Günü",
+  "Baby Shower",
+  "Mezuniyet",
+  "Kına",
+  "Sünnet",
+  "Açılış",
+  "Yıl Dönümü",
+];
+
+const FEATURES: Array<{ icon: string; title: string; body: string }> = [
   {
-    id: "save_the_date",
-    name: "Save the Date",
-    baseEur: 49,
-    strikeEur: 100,
-    description:
-      "Düğün tarihinizi misafirlerinize duyurun — davetiye sonra gelir.",
-    features: [
-      "Çift ismi + düğün tarihi",
-      "Şık dijital kart",
-      "Paylaşılabilir link + QR kod",
-      "Sınırsız izlenme",
-    ],
-    deliveryNote: "72 saat içinde teslim",
+    icon: "✨",
+    title: "Mekânına özel AI illüstrasyon",
+    body: "Köy evi, deniz kenarı, taş bahçe — yaz, 15 saniyede üretelim. Sınırsız varyant.",
   },
   {
-    id: "experience",
-    name: "Davetiye",
-    baseEur: 159,
-    strikeEur: 325,
-    popular: true,
-    description:
-      "Çoğu çiftin tercihi — RSVP, harita, müzik, galeri ve daha fazlası.",
-    features: [
-      "5 bilgi bloğu (program, mekan, galeri, hediye, FAQ)",
-      "Couple-yüklediği kapak fotosu",
-      "Gelişmiş RSVP paneli + Excel indirme",
-      "Davetli yönetim listesi",
-      "Mühür rengi + zarf animasyonu",
-      "Türkçe + 2 dil ekleyebilirsiniz",
-    ],
-    deliveryNote: "48 saat içinde teslim",
+    icon: "✦",
+    title: "Bütün premium efektler",
+    body: "Mühür açılışı, kaligrafi isim, müzik, sayaç, scratch-reveal, slot machine STD.",
   },
   {
-    id: "premium",
-    name: "Premium",
-    baseEur: 575,
-    strikeEur: 920,
-    description:
-      "Hiçbir şeyden vazgeçmek istemeyen, gerçekten kişisel olanı arayan çiftler için.",
-    features: [
-      "Sınırsız bilgi bloğu",
-      "%100 özel tasarım",
-      "Bütün premium efektler dahil",
-      "Sınırsız tasarım revizyonu",
-      "Foto galerisi + custom hero foto",
-      "Hediye / IBAN bloğu + harita",
-    ],
-    deliveryNote: "5 iş günü içinde teslim",
+    icon: "✉",
+    title: "Sınırsız RSVP + davetli listesi",
+    body: "Excel indirme, çoklu dil, otomatik onay e-postası, koltuk yönetimi.",
   },
   {
-    id: "birthday",
-    name: "Doğum Günü",
-    baseEur: 44,
-    strikeEur: 100,
-    description:
-      "Şık bir dijital tebrik — yazıp, mühürleyin, kişiye özel açılış.",
-    features: [
-      "Kişisel mektubunuz",
-      "Doğum günü adı + tarih",
-      "Şık dijital kart",
-      "Paylaşılabilir link",
-    ],
-    deliveryNote: "72 saat içinde teslim",
+    icon: "❀",
+    title: "Foto galerisi + custom hero",
+    body: "Kendi fotoğrafını yükle veya AI ile üret. 9:16, 16:9, sınırsız değişim.",
+  },
+  {
+    icon: "✿",
+    title: "Harita + hediye / IBAN bloğu",
+    body: "OpenStreetMap iframe + Google Maps deep link, hediye listesi, otel önerileri.",
+  },
+  {
+    icon: "♪",
+    title: "Çoklu dil (TR + 2 dil)",
+    body: "Türkçe, İngilizce, Sırpça, Arapça… misafirlerin dilini seç.",
   },
 ];
 
@@ -109,7 +77,7 @@ export function Pricing() {
       ref={ref}
       className="relative border-b border-line bg-bg-alt py-24 lg:py-36"
     >
-      <div className="container-wide max-w-[1280px]">
+      <div className="container-wide max-w-[1180px]">
         <motion.header
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -117,7 +85,7 @@ export function Pricing() {
           className="mb-12 text-center sm:mb-16"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-cognac">
-            — Fiyatlandırma
+            — Tek fiyat, her etkinlik
           </span>
           <h2
             className="mt-4 font-display text-brand-ink"
@@ -127,11 +95,12 @@ export function Pricing() {
               letterSpacing: "-0.025em",
             }}
           >
-            Şeffaf fiyat, gizli ücret yok
+            {formatPrice(BASE_EUR, currency)} · hepsi dahil
           </h2>
           <p className="mx-auto mt-4 max-w-[640px] text-[15px] leading-[1.7] text-brand-mute">
-            Tek seferlik ödeme, sınırsız erişim. Etkinliğinizden sonra
-            davetiyeniz 2 ay daha online kalır.
+            Düğün, doğum günü, baby shower — etkinlik tipi farketmez. Tek
+            seferlik ödeme, sınırsız erişim. Etkinlikten sonra davetiyen 2 ay
+            daha online kalır.
           </p>
 
           {/* Currency toggle */}
@@ -155,102 +124,112 @@ export function Pricing() {
           </div>
         </motion.header>
 
-        <motion.ul
-          initial={{ opacity: 0, y: 16 }}
+        {/* Single hero pricing card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          className="mx-auto max-w-[920px]"
         >
-          {TIERS.map((tier) => (
-            <li
-              key={tier.id}
-              className={`relative flex flex-col rounded-[10px] border bg-paper p-6 transition-all duration-300 ${
-                tier.popular
-                  ? "border-brand-cognac shadow-[0_24px_60px_-20px_rgba(140,90,60,0.32)] sm:scale-[1.03] hover:shadow-[0_32px_80px_-24px_rgba(140,90,60,0.45)]"
-                  : "border-brand-ink/12 shadow-ed-sm hover:border-brand-cognac/50 hover:shadow-[0_16px_40px_-16px_rgba(43,30,22,0.18)] hover:-translate-y-1"
-              }`}
-              style={
-                tier.popular
-                  ? {
-                      backgroundImage:
-                        "linear-gradient(180deg, rgba(212, 175, 138, 0.06) 0%, rgba(255,255,255,0) 30%), linear-gradient(180deg, rgba(255,255,255,0) 70%, rgba(212, 175, 138, 0.08) 100%)",
-                    }
-                  : undefined
-              }
-            >
-              {tier.popular && (
-                <>
-                  {/* Subtle gold glow accent — premium tier signature */}
+          <div
+            className="relative overflow-hidden rounded-[14px] border border-brand-cognac/40 bg-paper p-8 shadow-[0_28px_70px_-24px_rgba(140,90,60,0.35)] sm:p-12"
+            style={{
+              backgroundImage:
+                "linear-gradient(180deg, rgba(212, 175, 138, 0.07) 0%, rgba(255,255,255,0) 35%), linear-gradient(180deg, rgba(255,255,255,0) 70%, rgba(212, 175, 138, 0.09) 100%)",
+            }}
+          >
+            {/* Gold glow accent */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 138, 0.16) 0%, transparent 55%)",
+                mixBlendMode: "multiply",
+              }}
+            />
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-cognac px-4 py-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-paper shadow-[0_4px_12px_rgba(140,90,60,0.4)]">
+              ★ Hepsi dahil
+            </span>
+
+            {/* Price block */}
+            <div className="relative flex flex-col items-center text-center sm:flex-row sm:items-end sm:justify-center sm:gap-5">
+              <span className="text-[18px] text-brand-mute line-through sm:text-[20px]">
+                {formatPrice(STRIKE_EUR, currency)}
+              </span>
+              <span
+                className="font-display text-brand-ink"
+                style={{
+                  fontSize: "clamp(56px, 8vw, 96px)",
+                  lineHeight: 1,
+                  letterSpacing: "-0.03em",
+                }}
+              >
+                {formatPrice(BASE_EUR, currency)}
+              </span>
+              <span className="text-[12px] uppercase tracking-[0.28em] text-brand-cognac sm:ml-2 sm:pb-3">
+                tek seferlik
+              </span>
+            </div>
+
+            {/* Event-type chips — sosyal kanıt: her etkinlik */}
+            <div className="relative mt-8 flex flex-wrap justify-center gap-2">
+              {EVENT_TYPES.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border border-brand-ink/20 bg-paper/60 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.18em] text-brand-ink/80"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            <p className="relative mx-auto mt-6 max-w-[520px] text-center text-[13px] leading-[1.65] text-brand-mute">
+              Etkinlik tipi farketmez — bütün özellikler her pakette dahil.
+              Premium ayrımı yok, gizli ücret yok.
+            </p>
+
+            {/* Feature grid — 6 madde 2 sütun */}
+            <ul className="relative mt-10 grid gap-x-8 gap-y-5 border-t border-brand-ink/10 pt-8 sm:grid-cols-2">
+              {FEATURES.map((f) => (
+                <li key={f.title} className="flex gap-3">
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute inset-0 rounded-[10px]"
-                    style={{
-                      background:
-                        "radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 138, 0.18) 0%, transparent 55%)",
-                      mixBlendMode: "multiply",
-                    }}
-                  />
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-cognac px-3.5 py-1 text-[9px] font-semibold uppercase tracking-[0.28em] text-paper shadow-[0_4px_12px_rgba(140,90,60,0.4)]">
-                    ★ En çok seçilen
-                  </span>
-                </>
-              )}
-              <header className="border-b border-brand-ink/10 pb-5">
-                <h3 className="font-display text-[22px] text-brand-ink">
-                  {tier.name}
-                </h3>
-                <p className="mt-2 text-[12px] leading-[1.55] text-brand-mute">
-                  {tier.description}
-                </p>
-                <div className="mt-5 flex items-baseline gap-2">
-                  {tier.strikeEur && (
-                    <span className="text-[14px] text-brand-mute line-through">
-                      {formatPrice(tier.strikeEur, currency)}
-                    </span>
-                  )}
-                  <span
-                    className="font-display text-brand-ink"
-                    style={{
-                      fontSize: "clamp(28px, 3.5vw, 40px)",
-                      letterSpacing: "-0.02em",
-                    }}
+                    className="mt-[2px] text-[16px] text-brand-cognac"
+                    style={{ fontFamily: "var(--font-display)" }}
                   >
-                    {formatPrice(tier.baseEur, currency)}
+                    {f.icon}
                   </span>
-                </div>
-                {tier.deliveryNote && (
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-brand-cognac">
-                    {tier.deliveryNote}
-                  </p>
-                )}
-              </header>
-              <ul className="my-5 flex-1 space-y-2 text-[13px] leading-[1.55] text-brand-ink/80">
-                {tier.features.map((f, i) => (
-                  <li key={i} className="flex gap-2">
-                    <span aria-hidden className="text-brand-cognac">
-                      ✓
-                    </span>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
+                  <div>
+                    <h3 className="text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-ink">
+                      {f.title}
+                    </h3>
+                    <p className="mt-1 text-[12.5px] leading-[1.55] text-brand-mute">
+                      {f.body}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* CTA */}
+            <div className="relative mt-10 flex flex-col items-center gap-3">
               <Link
-                href={`/order/aethel?tier=${tier.id}`}
+                href="/order/aethel"
                 data-cursor="magnetic"
-                data-cursor-label="Seç"
-                aria-label={`${tier.name} paketini seç ve tasarlamaya başla`}
-                className={`mt-auto inline-flex min-h-[44px] items-center justify-center rounded-full text-[11px] uppercase transition-all ${
-                  tier.popular
-                    ? "bg-brand-ink text-bg hover:tracking-[0.32em]"
-                    : "border border-brand-ink/40 text-brand-ink hover:border-brand-cognac hover:text-brand-cognac"
-                }`}
-                style={{ letterSpacing: "0.28em", padding: "0.5rem 1.25rem" }}
+                data-cursor-label="Tasarla"
+                aria-label="Davetiyeni tasarlamaya başla"
+                className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-brand-ink px-9 text-[12px] font-medium uppercase text-bg shadow-[0_18px_44px_-14px_rgba(43,30,22,0.35)] transition-all hover:tracking-[0.32em]"
+                style={{ letterSpacing: "0.26em" }}
               >
-                Bu paketi seç
+                Tasarlamaya başla
               </Link>
-            </li>
-          ))}
-        </motion.ul>
+              <p className="text-[10px] uppercase tracking-[0.24em] text-brand-mute">
+                14 gün para iade · 48 saatte teslim
+              </p>
+            </div>
+          </div>
+        </motion.div>
 
         <p className="mt-8 text-center text-[11px] uppercase tracking-[0.22em] text-brand-mute">
           Stripe + Dodo Payments · 14 gün para iade garantisi

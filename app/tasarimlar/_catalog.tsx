@@ -95,7 +95,7 @@ export function TasarimlarCatalog() {
             <p
               className="mt-4 text-[12px] uppercase tracking-[0.22em] text-brand-mute"
             >
-              {editionCards.length} edisyon · 1 yakında · Tek seferlik ödeme
+              {editionCards.length} tasarım · Tek fiyat &euro;39,99 · Her etkinlik dahil
             </p>
           </motion.div>
         </div>
