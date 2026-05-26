@@ -37,6 +37,7 @@ import {
   type StoryEntry,
   type StoryGlyph,
 } from "@/components/themed/journey-timeline";
+import { FloatingVerse } from "@/components/themed/floating-verse";
 import { EnvelopeCeremony } from "@/components/themed/envelope-ceremony";
 import { CinematicIntro } from "@/components/themed/cinematic-intro";
 import { CountdownDetonation } from "@/components/themed/countdown-detonation";
@@ -198,6 +199,12 @@ export interface LuxeEditionTheme {
    * Pressed Love Swan Lake paritesi. Verilmezse SVG flap fallback.
    */
   envelopePaperSrc?: string;
+  /**
+   * PR #27 — Per-edition lirik dizesi. Story ile Schedule arasında
+   * büyük italik FloatingVerse section'ı olarak render edilir.
+   * Verilmezse section gizlenir.
+   */
+  verse?: string;
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -388,6 +395,19 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
               bg={theme.bg}
               eyebrow={i18n.sections.story?.eyebrow ?? "— Hikâyemiz"}
               title={i18n.sections.story?.title ?? "Yolumuzdan"}
+            />
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+          </>
+        )}
+
+        {/* FLOATING VERSE — PR #27: per-edition lirik dize */}
+        {theme.verse && (
+          <>
+            <FloatingVerse
+              verse={theme.verse}
+              ink={theme.ink}
+              inkSoft={theme.inkSoft}
+              accent={theme.accent}
             />
             <ThemedSeparator theme={themeForSep} lineLength={100} />
           </>
@@ -616,7 +636,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
           </>
         )}
 
-        {/* PHOTO GALLERY — Migration 005, couple yüklediğinde */}
+        {/* PHOTO GALLERY — Polaroid mosaic (Migration 005 + PR #28) */}
         {theme.photos && theme.photos.length > 0 && (
           <>
             <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-32">
@@ -625,26 +645,55 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
                 eyebrow={i18n.sections.gallery?.eyebrow ?? "— Anılarımız"}
                 title={i18n.sections.gallery?.title ?? "Bir bakış"}
               />
-              <div className="mx-auto mt-10 grid max-w-[1100px] grid-cols-2 gap-2 sm:mt-14 sm:grid-cols-3 sm:gap-3 lg:gap-4">
-                {theme.photos.map((p, i) => (
-                  <motion.div
-                    key={p.url}
-                    initial={{ opacity: 0, y: 12 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-10%" }}
-                    transition={{ duration: 0.8, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative aspect-square overflow-hidden rounded-sm"
-                    style={{ border: `0.5px solid ${theme.inkMuted}30` }}
-                  >
-                    <Image
-                      src={p.url}
-                      alt={p.alt ?? `${theme.coupleName} — galeri ${i + 1}`}
-                      fill
-                      sizes="(max-width: 640px) 50vw, 33vw"
-                      style={{ objectFit: "cover" }}
-                    />
-                  </motion.div>
-                ))}
+              <div className="mx-auto mt-10 grid max-w-[1100px] grid-cols-2 gap-6 sm:mt-14 sm:grid-cols-3 sm:gap-8 lg:gap-10">
+                {theme.photos.map((p, i) => {
+                  /* Deterministic rotation per index, ±2.6deg.
+                     Stagger ensures the mosaic feels scattered but
+                     never identical across renders. */
+                  const rot = ((i * 53) % 11) / 2 - 2.6;
+                  return (
+                    <motion.figure
+                      key={p.url}
+                      initial={{ opacity: 0, y: 18, rotate: rot + (rot > 0 ? -4 : 4) }}
+                      whileInView={{ opacity: 1, y: 0, rotate: rot }}
+                      viewport={{ once: true, margin: "-12%" }}
+                      transition={{ duration: 0.9, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                      className="group relative mx-auto w-full max-w-[280px]"
+                      style={{
+                        background: "#FBFAF6",
+                        padding: "10px 10px 36px",
+                        boxShadow:
+                          "0 18px 38px -18px rgba(31,27,23,0.32), 0 2px 4px -1px rgba(31,27,23,0.08)",
+                      }}
+                    >
+                      <div
+                        className="relative w-full overflow-hidden"
+                        style={{ aspectRatio: "1 / 1" }}
+                      >
+                        <Image
+                          src={p.url}
+                          alt={p.alt ?? `${theme.coupleName} — anı ${i + 1}`}
+                          fill
+                          sizes="(max-width: 640px) 45vw, 280px"
+                          style={{ objectFit: "cover" }}
+                        />
+                      </div>
+                      {p.caption && (
+                        <figcaption
+                          className="absolute bottom-2 left-0 right-0 px-3 text-center italic"
+                          style={{
+                            fontFamily: "var(--font-calligraphy), Georgia, serif",
+                            fontSize: "13px",
+                            color: theme.inkSoft,
+                            lineHeight: 1.2,
+                          }}
+                        >
+                          {p.caption}
+                        </figcaption>
+                      )}
+                    </motion.figure>
+                  );
+                })}
               </div>
             </section>
             <ThemedSeparator theme={themeForSep} lineLength={100} />

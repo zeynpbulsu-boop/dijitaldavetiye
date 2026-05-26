@@ -35,6 +35,19 @@ interface CountdownLuxeProps {
 
 const TR_LABELS = { d: "Gün", h: "Saat", m: "Dakika", s: "Saniye" } as const;
 
+/* Milestone copy — heading that swaps based on remaining days.
+   Empty string means "no milestone, just show digits". */
+function milestoneLabel(days: number, hours: number, ms: number): string {
+  if (ms <= 0) return "";
+  if (days === 0 && hours < 6) return "Saatler içinde.";
+  if (days === 0) return "Bugün.";
+  if (days === 1) return "Yarın.";
+  if (days <= 7) return "Bu hafta.";
+  if (days <= 30) return "Bu ay.";
+  if (days <= 90) return "Yakında — yerini ayır.";
+  return "";
+}
+
 function diff(target: number, now: number) {
   const ms = Math.max(0, target - now);
   const s = Math.floor(ms / 1000);
@@ -96,16 +109,33 @@ export function CountdownLuxe({
     );
   }
 
+  const milestone = milestoneLabel(d.days, d.hours, d.ms);
+
   return (
-    <div
-      role="timer"
-      aria-live="polite"
-      className={`mx-auto grid max-w-[520px] grid-cols-4 gap-2 sm:gap-4 ${className}`}
-    >
-      <Cell value={d.days} label={labels.d} ink={ink} inkSoft={inkSoft} accent={accent} />
-      <Cell value={d.hours} label={labels.h} ink={ink} inkSoft={inkSoft} accent={accent} />
-      <Cell value={d.minutes} label={labels.m} ink={ink} inkSoft={inkSoft} accent={accent} />
-      <Cell value={d.seconds} label={labels.s} ink={ink} inkSoft={inkSoft} accent={accent} />
+    <div className={`mx-auto max-w-[520px] ${className}`}>
+      {milestone && (
+        <p
+          aria-hidden
+          className="mb-4 text-center text-[11px] uppercase sm:mb-5"
+          style={{
+            color: accent,
+            letterSpacing: "0.38em",
+            fontWeight: 400,
+          }}
+        >
+          {milestone}
+        </p>
+      )}
+      <div
+        role="timer"
+        aria-live="polite"
+        className="grid grid-cols-4 gap-2 sm:gap-4"
+      >
+        <Cell value={d.days} label={labels.d} ink={ink} inkSoft={inkSoft} accent={accent} />
+        <Cell value={d.hours} label={labels.h} ink={ink} inkSoft={inkSoft} accent={accent} />
+        <Cell value={d.minutes} label={labels.m} ink={ink} inkSoft={inkSoft} accent={accent} />
+        <Cell value={d.seconds} label={labels.s} ink={ink} inkSoft={inkSoft} accent={accent} />
+      </div>
     </div>
   );
 }
