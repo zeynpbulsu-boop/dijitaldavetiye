@@ -38,6 +38,10 @@ import {
   type StoryGlyph,
 } from "@/components/themed/journey-timeline";
 import { FloatingVerse } from "@/components/themed/floating-verse";
+import { HeartIconRow } from "@/components/themed/cute/heart-icon-row";
+import { CuteSectionLabel } from "@/components/themed/cute/cute-section-label";
+import { FloralCorner } from "@/components/themed/cute/floral-corner";
+import { SwanDuo } from "@/components/themed/cute/swan-duo";
 import { EnvelopeCeremony } from "@/components/themed/envelope-ceremony";
 import { CinematicIntro } from "@/components/themed/cinematic-intro";
 import { CountdownDetonation } from "@/components/themed/countdown-detonation";
@@ -205,6 +209,22 @@ export interface LuxeEditionTheme {
    * Verilmezse section gizlenir.
    */
   verse?: string;
+  /**
+   * PR #28 (Etsy 2026 refresh) — Floral corner ornament PNG paths.
+   * Sol-üst ve sağ-alt köşelerde transparent BG floral arrangement.
+   * Verilmezse köşe overlay'leri gizlenir.
+   */
+  floralCornerTl?: string;
+  floralCornerBr?: string;
+  /**
+   * PR #28 — Dress code section. Verilirse HeartIconRow + açıklama
+   * render edilir. 4 hex renk paleti default olarak set'lenebilir.
+   */
+  dressCode?: {
+    label?: string;
+    description: string;
+    colors?: [string, string, string, string];
+  };
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -611,6 +631,33 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
         </section>
 
         <ThemedSeparator theme={themeForSep} lineLength={100} />
+
+        {/* DRESS CODE — Etsy 2026 trend, theme.dressCode varsa */}
+        {theme.dressCode && (
+          <>
+            <section className="relative px-5 py-20 sm:px-6 sm:py-28 lg:py-32">
+              <CuteSectionLabel
+                text="dress code"
+                ink={theme.ink}
+                inkSoft={theme.inkSoft}
+                accent={theme.accent}
+              />
+              <div className="mt-10 sm:mt-14">
+                <HeartIconRow
+                  label={theme.dressCode.label}
+                  description={theme.dressCode.description}
+                  colors={theme.dressCode.colors}
+                  ink={theme.ink}
+                  inkSoft={theme.inkSoft}
+                />
+              </div>
+              <div className="mt-10 flex justify-center sm:mt-14">
+                <SwanDuo color={theme.accent} size={72} />
+              </div>
+            </section>
+            <ThemedSeparator theme={themeForSep} lineLength={100} />
+          </>
+        )}
 
         {/* MAP — Migration 007, B.3. İki koordinat da set ise. */}
         {typeof theme.venueLat === "number" && typeof theme.venueLng === "number" && (
@@ -1187,6 +1234,15 @@ function Hero({
           bgColor={theme.bg}
           src={theme.watermarkSrc}
         />
+      )}
+
+      {/* PR #28 — Etsy 2026 floral corner ornaments (real photographic
+          PNG). Sol-üst + sağ-alt, pointer-events none, dekoratif overlay. */}
+      {theme.floralCornerTl && (
+        <FloralCorner src={theme.floralCornerTl} corner="tl" />
+      )}
+      {theme.floralCornerBr && (
+        <FloralCorner src={theme.floralCornerBr} corner="br" />
       )}
 
       {/* PR #19 — Per-edition micro-animation (doves/stars/waves/...).

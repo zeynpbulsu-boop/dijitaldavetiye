@@ -529,6 +529,16 @@ export const OLEA_THEME: LuxeEditionTheme = {
   waxSealSrc: "/olea/wax-seal.png",
   watermarkSrc: "/olea/watermark.png",
   coverScene: "/olea/cover.jpg",
+  /* PR #28 — Etsy 2026 PoC refresh */
+  envelopePaperSrc: "/olea/envelope-on-linen.jpg",
+  floralCornerTl: "/olea/floral-corner-tl.png",
+  floralCornerBr: "/olea/floral-corner-br.png",
+  dressCode: {
+    label: "Dress code",
+    description:
+      "Garden-chic — keten, krem, sage, terracotta. Stiletto yerine zarif espadril; konfor önce.",
+    colors: ["#C4A85E", "#7A8A6E", "#F2EBD8", "#D4A4A0"],
+  },
   weddingDateISO: "2026-05-15",
   coupleName: "Ipek & Yiğit",
   verse: "Zeytin ağacı yüz yıl beklemeyi bilir; biz, bir akşam — ve o akşam siz de varsanız, yeter.",
