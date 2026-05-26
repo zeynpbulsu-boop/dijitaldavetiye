@@ -533,6 +533,7 @@ export const OLEA_THEME: LuxeEditionTheme = {
   envelopePaperSrc: "/olea/envelope-on-linen.jpg",
   floralCornerTl: "/olea/floral-corner-tl.png",
   floralCornerBr: "/olea/floral-corner-br.png",
+  coupleFlourish: "do",
   dressCode: {
     label: "Dress code",
     description:

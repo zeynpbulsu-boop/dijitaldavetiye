@@ -147,11 +147,13 @@ def submit(payload):
 
 
 def poll(req_id, max_wait=300):
+    # NOTE: poll URL drops the model variant; canonical base for status/result
+    # is `/fal-ai/flux-pro/requests/{id}` even for v1.1-ultra submissions.
     status_url = (
-        f"https://queue.fal.run/fal-ai/flux-pro/v1.1-ultra/requests/{req_id}/status"
+        f"https://queue.fal.run/fal-ai/flux-pro/requests/{req_id}/status"
     )
     res_url = (
-        f"https://queue.fal.run/fal-ai/flux-pro/v1.1-ultra/requests/{req_id}"
+        f"https://queue.fal.run/fal-ai/flux-pro/requests/{req_id}"
     )
     start = time.time()
     while time.time() - start < max_wait:

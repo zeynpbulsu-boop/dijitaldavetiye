@@ -225,6 +225,12 @@ export interface LuxeEditionTheme {
     description: string;
     colors?: [string, string, string, string];
   };
+  /**
+   * PR #28 — Etsy "we ❤️ do" trend. coupleName'in üstünde küçük
+   * calligraphic flourish + center heart icon. Verilmezse render
+   * edilmez (mevcut görünüm korunur).
+   */
+  coupleFlourish?: string;
 }
 
 /* Event-type label overrides. Wedding base'inden farklı olanları
@@ -1293,6 +1299,69 @@ function Hero({
             bgColor={theme.bg}
           />
         </motion.div>
+
+        {/* PR #28 — Etsy "we ❤️ do" flourish. Calligraphic single word /
+            phrase + center heart, coupleName'in hemen üstünde. */}
+        {theme.coupleFlourish && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.7, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-8 flex items-center justify-center gap-3 sm:mt-12 sm:gap-4"
+            style={
+              usesCover && isDark
+                ? { filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.45))" }
+                : undefined
+            }
+          >
+            <span
+              className="italic"
+              style={{
+                color: theme.ink,
+                fontFamily:
+                  "var(--font-calligraphy), 'Pinyon Script', Georgia, serif",
+                fontSize: "clamp(28px, 4.6vw, 52px)",
+                lineHeight: 1,
+                fontWeight: 400,
+                letterSpacing: "0.005em",
+              }}
+            >
+              we
+            </span>
+            <svg
+              width="22"
+              height="20"
+              viewBox="0 0 22 20"
+              aria-hidden
+              xmlns="http://www.w3.org/2000/svg"
+              style={{
+                filter: `drop-shadow(0 1px 2px ${theme.accent}66)`,
+              }}
+            >
+              <path
+                d="M11 18.5C11 18.5 1 12.5 1 6.5C1 3.5 3.5 1 6.5 1C8.5 1 10 2 11 3.5C12 2 13.5 1 15.5 1C18.5 1 21 3.5 21 6.5C21 12.5 11 18.5 11 18.5Z"
+                fill={theme.accent}
+                stroke={theme.accent}
+                strokeWidth="0.5"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span
+              className="italic"
+              style={{
+                color: theme.ink,
+                fontFamily:
+                  "var(--font-calligraphy), 'Pinyon Script', Georgia, serif",
+                fontSize: "clamp(28px, 4.6vw, 52px)",
+                lineHeight: 1,
+                fontWeight: 400,
+                letterSpacing: "0.005em",
+              }}
+            >
+              {theme.coupleFlourish}
+            </span>
+          </motion.div>
+        )}
 
         <div className="mt-10 sm:mt-14" style={usesCover && isDark ? { filter: "drop-shadow(0 2px 14px rgba(0,0,0,0.45))" } : undefined}>
           <CalligraphyName
