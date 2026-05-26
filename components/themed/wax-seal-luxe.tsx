@@ -88,6 +88,13 @@ export function WaxSealLuxe({
     "drop-shadow(0 22px 32px rgba(40, 28, 18, 0.18))",
   ].join(" ");
 
+  /* Inline SVG fractalNoise — wax grain texture. baseFrequency 0.85
+     gives fine-grain pigment scatter; turbulence is muted via
+     feColorMatrix to ~12% alpha and slightly desaturated so it reads
+     as surface roughness, not a noise filter. Encoded inline so no
+     extra HTTP request. */
+  const noiseDataUri = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.32'/></svg>")`;
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.7, rotate: rotate - 14 }}
@@ -105,6 +112,24 @@ export function WaxSealLuxe({
         animate={idle}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
       >
+        {/* Paper cradle — subtle linen weave just behind & beyond the
+            seal. Reads as the cotton card the wax was pressed onto.
+            Slight inner shadow vignette so the paper "dips" into the
+            seal area (impression depth). Scaled larger than seal so
+            it extends past the wax edge. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute"
+          style={{
+            inset: "-14%",
+            background:
+              "radial-gradient(circle, rgba(247,242,232,0.42) 0%, rgba(247,242,232,0.12) 55%, transparent 78%)",
+            borderRadius: "50%",
+            filter: "blur(0.5px)",
+            mixBlendMode: "lighten",
+          }}
+        />
+
         <Image
           src={src}
           alt={alt}
@@ -152,6 +177,51 @@ export function WaxSealLuxe({
             background:
               "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 30%, transparent 55%, rgba(0,0,0,0.07) 100%)",
             mixBlendMode: "soft-light",
+            WebkitMaskImage: `url(${src})`,
+            WebkitMaskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskImage: `url(${src})`,
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+
+        {/* Wax grain — fractal noise mask-clipped to seal. Bozulmamış
+            AI render'ın smooth yüzeyini "molecular pigment scatter"
+            ile kırar. mix-blend: overlay → koyu pigment alanları
+            koyulaşır, açıklar aydınlanır → gerçek wax non-uniform
+            renk hissi. Çok hafif (alpha 0.32) — abartılırsa kirli
+            görünür. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: noiseDataUri,
+            backgroundSize: "180px 180px",
+            mixBlendMode: "overlay",
+            opacity: 0.55,
+            WebkitMaskImage: `url(${src})`,
+            WebkitMaskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskImage: `url(${src})`,
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+
+        {/* Edge softness — AI PNG'lerin perfect cut alpha kenarını
+            kıran çok hafif blur halkası. Mührün dış sınırının 2-3px
+            içinde ince yumuşama. Sadece outer edge'i etkiler çünkü
+            mask sadece dış kenarda alpha sahip. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backdropFilter: "blur(0.4px)",
             WebkitMaskImage: `url(${src})`,
             WebkitMaskSize: "contain",
             WebkitMaskRepeat: "no-repeat",
