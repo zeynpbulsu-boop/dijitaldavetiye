@@ -11,7 +11,7 @@
  */
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { WaxSealLuxe } from "./wax-seal-luxe";
 import { ChapelWatermark } from "./chapel-watermark";
@@ -71,23 +71,13 @@ export function EnvelopeCeremony({
     else setTimeOfDay("Hoş geldiniz.");
   }, []);
 
-  /* 12 wax fragment shards — random angles + distances, frozen per mount. */
-  const fragments = useMemo(
-    () =>
-      Array.from({ length: 12 }, (_, i) => {
-        const angle = (i / 12) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
-        const distance = 180 + Math.random() * 140;
-        return {
-          id: i,
-          x: Math.cos(angle) * distance,
-          y: Math.sin(angle) * distance,
-          rotate: (Math.random() - 0.5) * 540,
-          size: 6 + Math.random() * 14,
-          delay: Math.random() * 0.15,
-        };
-      }),
-    []
-  );
+  /* Realistic crack path — sıfır şard, sadece 2 yarım mühür.
+     Wax gerçek hayatta net bir crackline boyunca ikiye ayrılır,
+     onlarca random fragment'a parçalanmaz. */
+  const crackPath =
+    "polygon(0% 0%, 47% 0%, 51% 18%, 46% 36%, 52% 54%, 47% 72%, 51% 100%, 0% 100%)";
+  const crackPathRight =
+    "polygon(47% 0%, 100% 0%, 100% 100%, 51% 100%, 47% 72%, 52% 54%, 46% 36%, 51% 18%)";
 
   function open() {
     if (stage !== "sealed") return;
@@ -225,24 +215,35 @@ export function EnvelopeCeremony({
           </motion.p>
         )}
 
-        {/* Wax seal — opening'de uçar. İdle stage'de pulsing scale
-            KALDIRILDI (sahte hissi veriyordu); seal kağıda yapışmış
-            sabit duruyor, WaxSealLuxe içinde çok hafif ±0.4° wobble
-            zaten var (mum gibi dalgalanır). */}
+        {/* PREMIUM REALISTIC BREAK SEQUENCE
+            ─────────────────────────────────
+            Eski: 12 random şard + halo burst + büyük scale pulse
+                  (cartoony, photoshop fake hissi).
+            Yeni: tek crack line boyunca mühür İKİ yarıma bölünür,
+                  yer çekimiyle aşağı düşer + dışa dönerek dağılır.
+            Aynı PNG iki kopya, birbirinin tamamlayıcısı clip-path
+            ile yarılanır → "split mühür" gibi görünür. */}
+
+        {/* LEFT half of seal */}
         <motion.div
           className="relative z-10"
+          style={{
+            clipPath: crackPath,
+            WebkitClipPath: crackPath,
+          }}
           animate={
             stage === "breaking"
               ? {
-                  rotate: [-6, -2, -10, -4, -8, -6],
-                  scale: [1, 1.04, 1.02, 1.06, 1.03, 1.05],
+                  x: [0, -2, 1, -3, 0],
+                  rotate: [-6, -4, -8, -5, -7],
+                  scale: [1, 0.99, 1.005, 0.995, 1],
                 }
               : stage === "opening"
               ? {
-                  y: -200,
-                  scale: 1.5,
+                  x: -180,
+                  y: 220,
+                  rotate: -52,
                   opacity: 0,
-                  rotate: -24,
                 }
               : {
                   rotate: -6,
@@ -252,81 +253,116 @@ export function EnvelopeCeremony({
             stage === "breaking"
               ? { duration: 0.9, ease: "easeInOut" }
               : stage === "opening"
-              ? { duration: 1.6, ease: [0.22, 1, 0.36, 1] }
+              ? { duration: 1.6, ease: [0.34, 0.07, 0.5, 1] /* gravity drop */ }
               : { duration: 0.6, ease: "easeOut" }
           }
         >
-          <WaxSealLuxe size={460} minSize={260} priority haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} tintColor={waxSealTint} />
+          <WaxSealLuxe
+            size={460}
+            minSize={260}
+            priority
+            haloColor={haloColor}
+            rotate={-6}
+            bgColor={bgColor}
+            src={waxSealSrc}
+            tintColor={waxSealTint}
+          />
         </motion.div>
 
-        {/* Breaking burst — soft halo patlaması */}
+        {/* RIGHT half — same image, complementary clip path,
+            absolutely positioned over the left half (same anchor). */}
+        <motion.div
+          className="pointer-events-none absolute z-10"
+          style={{
+            clipPath: crackPathRight,
+            WebkitClipPath: crackPathRight,
+          }}
+          animate={
+            stage === "breaking"
+              ? {
+                  x: [0, 2, -1, 3, 0],
+                  rotate: [-6, -8, -4, -7, -5],
+                  scale: [1, 0.995, 1.005, 0.99, 1],
+                }
+              : stage === "opening"
+              ? {
+                  x: 180,
+                  y: 220,
+                  rotate: 40,
+                  opacity: 0,
+                }
+              : {
+                  rotate: -6,
+                }
+          }
+          transition={
+            stage === "breaking"
+              ? { duration: 0.9, ease: "easeInOut" }
+              : stage === "opening"
+              ? { duration: 1.6, ease: [0.34, 0.07, 0.5, 1], delay: 0.05 }
+              : { duration: 0.6, ease: "easeOut" }
+          }
+        >
+          <WaxSealLuxe
+            size={460}
+            minSize={260}
+            priority={false}
+            haloColor={haloColor}
+            rotate={-6}
+            bgColor={bgColor}
+            src={waxSealSrc}
+            tintColor={waxSealTint}
+          />
+        </motion.div>
+
+        {/* CRACK LINE — ince koyu çatlak, breaking'in son frame'inde
+            220ms görünür, sonra opening'de yarıklar açılırken solar. */}
         <AnimatePresence>
-          {stage === "breaking" && (
+          {(stage === "breaking" || stage === "opening") && (
             <motion.div
               aria-hidden
-              key="burst"
-              initial={{ opacity: 0, scale: 0.3 }}
-              animate={{ opacity: [0, 0.6, 0], scale: [0.3, 2.2, 3] }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-              className="pointer-events-none absolute"
+              key="crack"
+              className="pointer-events-none absolute z-[11]"
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: stage === "breaking" ? [0, 0, 0.65, 0.45] : 0,
+              }}
+              transition={{
+                duration: stage === "breaking" ? 0.9 : 0.4,
+                times: stage === "breaking" ? [0, 0.55, 0.78, 1] : undefined,
+                ease: "easeOut",
+              }}
               style={{
-                width: 260,
-                height: 260,
-                background: `radial-gradient(circle, ${haloColor}66 0%, transparent 70%)`,
-                borderRadius: "50%",
+                width: 4,
+                height: 360,
+                background:
+                  "linear-gradient(180deg, transparent 0%, rgba(20,16,12,0.42) 18%, rgba(20,16,12,0.62) 50%, rgba(20,16,12,0.42) 82%, transparent 100%)",
+                filter: "blur(0.3px)",
+                transform: "translateX(-1px) skewX(2deg)",
               }}
             />
           )}
         </AnimatePresence>
 
-        {/* White light flash — 220ms at break, very subtle */}
+        {/* White light flash — 220ms, çok hafif (mührün kırıldığı
+            anda parlama). Halo burst kaldırıldı (Photoshop hissi). */}
         <AnimatePresence>
           {stage === "breaking" && (
             <motion.div
               aria-hidden
               key="flash"
               initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.45, 0] }}
-              transition={{ duration: 0.55, times: [0, 0.25, 1], ease: "easeOut" }}
+              animate={{ opacity: [0, 0.35, 0] }}
+              transition={{
+                duration: 0.4,
+                times: [0, 0.4, 1],
+                delay: 0.55,
+                ease: "easeOut",
+              }}
               className="pointer-events-none absolute inset-0"
               style={{ background: "#ffffff" }}
             />
           )}
-        </AnimatePresence>
-
-        {/* Wax shards — 12 fragments fly outward at break */}
-        <AnimatePresence>
-          {(stage === "breaking" || stage === "opening") &&
-            fragments.map((f) => (
-              <motion.span
-                aria-hidden
-                key={`frag-${f.id}`}
-                initial={{ x: 0, y: 0, scale: 0, rotate: 0, opacity: 0 }}
-                animate={{
-                  x: f.x,
-                  y: f.y,
-                  scale: 1,
-                  rotate: f.rotate,
-                  opacity: [0, 1, 1, 0],
-                }}
-                transition={{
-                  duration: 1.4,
-                  delay: f.delay,
-                  ease: [0.16, 1, 0.3, 1],
-                  times: [0, 0.15, 0.7, 1],
-                }}
-                className="pointer-events-none absolute"
-                style={{
-                  width: f.size,
-                  height: f.size,
-                  background: haloColor,
-                  borderRadius: f.size > 12 ? 2 : 9999,
-                  boxShadow: `0 2px 6px ${haloColor}88`,
-                  willChange: "transform, opacity",
-                }}
-              />
-            ))}
         </AnimatePresence>
 
         {/* CTA — incecik pill, mail icon + shimmer. PR #22: mail icon
