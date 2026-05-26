@@ -67,6 +67,27 @@ export function WaxSealLuxe({
     ? `(max-width: 640px) ${minSize}px, ${size}px`
     : `${size}px`;
 
+  /* Subtle idle micro-rotation. Real wax doesn't pulse — sealed onto
+     paper, it sits still. We give it the slightest "breathing" wobble
+     (±0.4°) so it doesn't feel frozen, but no scaling, no opacity
+     pulse. */
+  const idle = {
+    rotate: [rotate - 0.4, rotate + 0.4, rotate - 0.4],
+  };
+
+  /* Multi-layer shadow stack — recipe for a wax seal sitting on
+     paper, not a Photoshop drop-shadow:
+       1. Tight sharp shadow directly under the seal (paper contact)
+       2. Mid radius warm undertone (cognac / brown bleed)
+       3. Wider soft halo (ambient light occlusion)
+     drop-shadow filters compose, so the layering reads as one
+     continuous, physical shadow. */
+  const shadowStack = [
+    "drop-shadow(0 1px 1px rgba(20, 16, 12, 0.35))",
+    "drop-shadow(0 6px 10px rgba(86, 54, 32, 0.22))",
+    "drop-shadow(0 22px 32px rgba(40, 28, 18, 0.18))",
+  ].join(" ");
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.7, rotate: rotate - 14 }}
@@ -80,43 +101,57 @@ export function WaxSealLuxe({
       style={{ width: sizeCss, height: sizeCss }}
     >
       <motion.div
-        aria-hidden
-        className="pointer-events-none absolute -inset-10 rounded-full"
-        style={{
-          background: `radial-gradient(circle, ${haloColor}33 0%, transparent 60%)`,
-        }}
-        animate={{
-          opacity: [0.4, 0.75, 0.4],
-          scale: [0.85, 1.1, 0.85],
-        }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-      />
+        className="relative h-full w-full"
+        animate={idle}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={sizesAttr}
+          priority={priority}
+          draggable={false}
+          style={{
+            userSelect: "none",
+            filter: shadowStack,
+            objectFit: "contain",
+          }}
+        />
 
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes={sizesAttr}
-        priority={priority}
-        draggable={false}
-        style={{
-          userSelect: "none",
-          filter: "drop-shadow(0 18px 32px rgba(20, 20, 20, 0.25))",
-          objectFit: "contain",
-        }}
-      />
+        {/* Migration 005 — wax seal tint overlay. mix-blend-multiply
+            PNG'nin desenini koruyarak rengi değiştirir. */}
+        {tintColor && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background: tintColor,
+              mixBlendMode: "multiply",
+              WebkitMaskImage: `url(${src})`,
+              WebkitMaskSize: "contain",
+              WebkitMaskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskImage: `url(${src})`,
+              maskSize: "contain",
+              maskRepeat: "no-repeat",
+              maskPosition: "center",
+            }}
+          />
+        )}
 
-      {/* Migration 005 — wax seal tint overlay. mix-blend-multiply
-          PNG'nin desenini koruyarak rengi değiştirir; alpha kanalı
-          maskeleyici görevi görür (PNG'nin transparent kısmı tint'i
-          de görünmez yapar). */}
-      {tintColor && (
+        {/* Wax sheen — soft diagonal highlight emulates the way real
+            sealing wax catches light. Clipped to the PNG alpha so it
+            only paints on the wax surface, not the background. The
+            gradient is very subtle (≈8% white at peak) — kayıp olursa
+            seal flat görünür, fazla olursa plastik görünür. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            background: tintColor,
-            mixBlendMode: "multiply",
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 30%, transparent 55%, rgba(0,0,0,0.07) 100%)",
+            mixBlendMode: "soft-light",
             WebkitMaskImage: `url(${src})`,
             WebkitMaskSize: "contain",
             WebkitMaskRepeat: "no-repeat",
@@ -127,7 +162,7 @@ export function WaxSealLuxe({
             maskPosition: "center",
           }}
         />
-      )}
+      </motion.div>
     </motion.div>
   );
 }

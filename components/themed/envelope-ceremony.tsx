@@ -225,7 +225,10 @@ export function EnvelopeCeremony({
           </motion.p>
         )}
 
-        {/* Wax seal — opening'de uçar */}
+        {/* Wax seal — opening'de uçar. İdle stage'de pulsing scale
+            KALDIRILDI (sahte hissi veriyordu); seal kağıda yapışmış
+            sabit duruyor, WaxSealLuxe içinde çok hafif ±0.4° wobble
+            zaten var (mum gibi dalgalanır). */}
         <motion.div
           className="relative z-10"
           animate={
@@ -242,7 +245,6 @@ export function EnvelopeCeremony({
                   rotate: -24,
                 }
               : {
-                  scale: [1, 1.015, 1],
                   rotate: -6,
                 }
           }
@@ -251,7 +253,7 @@ export function EnvelopeCeremony({
               ? { duration: 0.9, ease: "easeInOut" }
               : stage === "opening"
               ? { duration: 1.6, ease: [0.22, 1, 0.36, 1] }
-              : { duration: 6, repeat: Infinity, ease: "easeInOut" }
+              : { duration: 0.6, ease: "easeOut" }
           }
         >
           <WaxSealLuxe size={460} minSize={260} priority haloColor={haloColor} rotate={-6} bgColor={bgColor} src={waxSealSrc} tintColor={waxSealTint} />
