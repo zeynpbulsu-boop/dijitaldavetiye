@@ -60,6 +60,17 @@ export function EnvelopeCeremony({
   const [stage, setStage] = useState<Stage>("sealed");
   const audio = useAudio();
 
+  /* Time-of-day greeting — humanizes the opening moment.
+     Client-only (no SSR mismatch via initial null). */
+  const [timeOfDay, setTimeOfDay] = useState<string | null>(null);
+  useEffect(() => {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 12) setTimeOfDay("Günaydın.");
+    else if (h >= 12 && h < 17) setTimeOfDay("İyi öğleden sonralar.");
+    else if (h >= 17 && h < 22) setTimeOfDay("İyi akşamlar.");
+    else setTimeOfDay("Hoş geldiniz.");
+  }, []);
+
   /* 12 wax fragment shards — random angles + distances, frozen per mount. */
   const fragments = useMemo(
     () =>
@@ -190,8 +201,29 @@ export function EnvelopeCeremony({
           </>
         )}
 
-        {/* Eyebrow kaldırıldı — Pressed Love paritesi (sade: sadece
-            mühür + bütünleşik CTA). */}
+        {/* Time-of-day salutation — incecik italic, mührün üstünde.
+            Pressed Love minimalist hissini bozmadan, ziyaretçinin
+            yerel zamanına göre tek satır karşılama. */}
+        {timeOfDay && stage === "sealed" && (
+          <motion.p
+            aria-hidden
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.4, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute z-10 italic"
+            style={{
+              top: "max(15%, calc(var(--safe-top) + 4rem))",
+              color: inkColor,
+              opacity: 0.7,
+              fontFamily: "var(--font-display), Georgia, serif",
+              fontSize: "clamp(14px, 2vw, 18px)",
+              fontWeight: 300,
+              letterSpacing: "0.02em",
+            }}
+          >
+            {timeOfDay}
+          </motion.p>
+        )}
 
         {/* Wax seal — opening'de uçar */}
         <motion.div
