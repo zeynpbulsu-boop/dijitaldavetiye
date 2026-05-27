@@ -107,21 +107,10 @@ export function CinematicIntro({
           flexDirection: "column",
         }}
       >
-        {/* Ink bloom — expanding accent halo, behind letters */}
-        <motion.div
-          initial={{ scale: 0, opacity: 0.85 }}
-          animate={{ scale: 4.5, opacity: 0 }}
-          transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            position: "absolute",
-            width: 240,
-            height: 240,
-            borderRadius: "9999px",
-            background: accentColor,
-            mixBlendMode: "screen",
-            willChange: "transform, opacity",
-          }}
-        />
+        {/* Ink bloom KALDIRILDI — scale 4.5x + screen blend tüm
+            viewport'u accent rengiyle (sage/olive) yeşil-yıkamış
+            gibi gösteriyordu, "ekran bozuk" hissi veriyordu.
+            Sadece monogram fade-in yeterli premium efekt. */}
 
         {/* Monogram letters with stagger fade-in + fade-out */}
         <motion.div
