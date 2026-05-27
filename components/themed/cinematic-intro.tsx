@@ -46,7 +46,7 @@ export function CinematicIntro({
     const timer = window.setTimeout(() => {
       setDone(true);
       onComplete();
-    }, 2500);
+    }, 1400);
     return () => window.clearTimeout(timer);
   }, [onComplete]);
 
@@ -69,7 +69,7 @@ export function CinematicIntro({
       <motion.div
         initial={{ y: 0 }}
         animate={{ y: "-100%" }}
-        transition={{ duration: 1.0, delay: 1.7, ease: [0.65, 0, 0.35, 1] }}
+        transition={{ duration: 0.7, delay: 0.7, ease: [0.65, 0, 0.35, 1] }}
         style={{
           position: "absolute",
           top: 0,
@@ -84,7 +84,7 @@ export function CinematicIntro({
       <motion.div
         initial={{ y: 0 }}
         animate={{ y: "100%" }}
-        transition={{ duration: 1.0, delay: 1.7, ease: [0.65, 0, 0.35, 1] }}
+        transition={{ duration: 0.7, delay: 0.7, ease: [0.65, 0, 0.35, 1] }}
         style={{
           position: "absolute",
           bottom: 0,
@@ -111,7 +111,7 @@ export function CinematicIntro({
         <motion.div
           initial={{ scale: 0, opacity: 0.85 }}
           animate={{ scale: 4.5, opacity: 0 }}
-          transition={{ duration: 1.0, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           style={{
             position: "absolute",
             width: 240,
@@ -130,7 +130,7 @@ export function CinematicIntro({
           variants={{
             hidden: {},
             visible: {
-              transition: { staggerChildren: 0.08, delayChildren: 0.4 },
+              transition: { staggerChildren: 0.06, delayChildren: 0.15 },
             },
           }}
           style={{
@@ -164,7 +164,7 @@ export function CinematicIntro({
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 0.5, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           style={{
             position: "relative",
             zIndex: 1,
@@ -184,7 +184,7 @@ export function CinematicIntro({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 2.0, ease: "linear" }}
+          transition={{ duration: 0.35, delay: 1.05, ease: "linear" }}
           style={{
             position: "absolute",
             inset: 0,

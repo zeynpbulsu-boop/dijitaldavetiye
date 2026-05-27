@@ -317,9 +317,14 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
       {!introDone && (
         <CinematicIntro
           monogram={theme.monogram ?? theme.coupleName?.split(" & ").map((p) => p[0]).join("&") ?? "N"}
-          inkColor={theme.bg}
+          /* Monogram + wordmark color → theme.ink (visible on bg). */
+          inkColor={theme.ink}
           accentColor={theme.accent}
-          curtainColor={theme.ink}
+          /* Curtain → theme.bg (sayfa zemini ile aynı renk).
+             Eski davranışta ink kullanılıyordu — light themes'te dark
+             olive/burgundy "broken screen" hissi yaratıyordu. Şimdi
+             intro: bg üstüne monogram fade-in (1.4s), sonra envelope. */
+          curtainColor={theme.bg}
           onComplete={() => setIntroDone(true)}
           edition={theme.meta.slug}
         />
