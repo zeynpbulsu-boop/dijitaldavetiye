@@ -267,7 +267,7 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
      - opened: zarf açıldı mı? (mevcut davranış)
      - boom: countdown T-0'a ulaştı mı? (CountdownDetonation tetiği)
      - audio: per-edition ambient için context */
-  const [introDone, setIntroDone] = useState(false);
+  const [introDone] = useState(true);
   const [opened, setOpened] = useState(false);
   const [boom, setBoom] = useState(false);
   const audio = useAudio();
@@ -314,21 +314,12 @@ export function LuxeEditionDemo({ theme }: { theme: LuxeEditionTheme }) {
       {/* FAZ 1 — 2.5s cinematic page-in (curtain + monogram + ink bloom).
           Curtain rengi: koyu temalarda zemin (zaten dark), açık temalarda
           ink (dramatik kontrast). White-on-white sorununu önler. */}
-      {!introDone && (
-        <CinematicIntro
-          monogram={theme.monogram ?? theme.coupleName?.split(" & ").map((p) => p[0]).join("&") ?? "N"}
-          /* Monogram + wordmark color → theme.ink (visible on bg). */
-          inkColor={theme.ink}
-          accentColor={theme.accent}
-          /* Curtain → theme.bg (sayfa zemini ile aynı renk).
-             Eski davranışta ink kullanılıyordu — light themes'te dark
-             olive/burgundy "broken screen" hissi yaratıyordu. Şimdi
-             intro: bg üstüne monogram fade-in (1.4s), sonra envelope. */
-          curtainColor={theme.bg}
-          onComplete={() => setIntroDone(true)}
-          edition={theme.meta.slug}
-        />
-      )}
+      {/* CinematicIntro tamamen DEVRE DIŞI (geçici). Önceki davranışta:
+          - Light themes'te dark olive curtain "ekran bozuk" hissi
+          - Curtain bg'ye eşitlendiğinde monogram fade-in opacity:0
+            başlangıçta "bembeyaz ekran"
+          Şimdi: introDone başlangıçtan true, doğrudan EnvelopeCeremony
+          mount edilir. Premium hissi sonradan farklı bir yöntemle. */}
 
       {/* ZARF SEREMONISI — intro bittikten sonra mount */}
       {introDone && !opened && (
