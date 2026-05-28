@@ -1,6 +1,8 @@
 import { Nav } from "./_sections/nav";
 import { ScrollProgress } from "./_sections/scroll-progress";
 import { FloatingMotifs } from "@/components/ornaments/floating-motifs";
+import { JsonLd, faqSchema } from "@/components/seo/json-ld";
+import { dictionaries } from "@/lib/i18n/dictionaries";
 import { Hero } from "./_sections/hero";
 import { TemplateCarousel } from "./_sections/template-carousel";
 import { HowItWorks } from "./_sections/how-it-works";
@@ -32,8 +34,16 @@ import { StickyCta } from "./_sections/sticky-cta";
  * conversion noise yaratıyordu, tek paket modeline geçişle gereksiz.
  */
 export default function HomePage() {
+  /* FAQ JSON-LD — Turkish (default locale) FAQ items injected for GEO
+     (Google + ChatGPT + Perplexity yapısal yanıtlar için). */
+  const faqItems = dictionaries.tr.faq.items.map((it) => ({
+    question: it.q,
+    answer: it.a,
+  }));
+
   return (
     <>
+      <JsonLd data={faqSchema(faqItems)} />
       <ScrollProgress />
       <FloatingMotifs />
       <Nav />
