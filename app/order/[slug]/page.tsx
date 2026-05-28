@@ -723,7 +723,7 @@ export default function OrderEditorPage() {
           <Section label="Fotoğraf galerisi">
             <p className="mb-4 text-[13px] leading-[1.6] text-brand-mute">
               Sevdiğiniz fotolardan 4-8 tane ekleyin. Polaroid çerçeveli mosaic
-              olarak görünür. Fotonun internetteki tam URL'si yeterli.
+              olarak görünür. Fotonun internetteki tam URL&apos;si yeterli.
             </p>
             <ul className="space-y-3">
               {photos.map((p, i) => (
