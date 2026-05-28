@@ -21,24 +21,20 @@ import { motion } from "framer-motion";
  */
 
 const ENVELOPES = [
-  { left: "6%", dur: 28, delay: 0, sway: 18, rot: -6 },
-  { left: "22%", dur: 34, delay: 6, sway: -14, rot: 4 },
-  { left: "38%", dur: 30, delay: 12, sway: 16, rot: -2 },
-  { left: "54%", dur: 32, delay: 4, sway: -16, rot: 6 },
-  { left: "72%", dur: 36, delay: 9, sway: 12, rot: -4 },
-  { left: "88%", dur: 30, delay: 2, sway: -18, rot: 5 },
+  { left: "16%", dur: 32, delay: 0, sway: 18, rot: -6 },
+  { left: "54%", dur: 36, delay: 8, sway: -16, rot: 4 },
+  { left: "82%", dur: 30, delay: 14, sway: 14, rot: -3 },
 ];
 
 const HEARTS = [
-  { left: "12%", dur: 22, delay: 1.5, size: 14 },
-  { left: "28%", dur: 24, delay: 8, size: 11 },
-  { left: "44%", dur: 26, delay: 3, size: 16 },
-  { left: "60%", dur: 23, delay: 10, size: 12 },
-  { left: "78%", dur: 25, delay: 5, size: 14 },
-  { left: "92%", dur: 22, delay: 7, size: 10 },
+  { left: "28%", dur: 24, delay: 2, size: 14 },
+  { left: "62%", dur: 26, delay: 9, size: 12 },
+  { left: "88%", dur: 22, delay: 5, size: 11 },
 ];
 
-const SPARKLES = Array.from({ length: 22 }, (_, i) => ({
+/* Performance — zayıf cihazlarda 22 sparkle GPU yormak (jank).
+   12'ye düşürüldü, ambient hissi korunuyor. */
+const SPARKLES = Array.from({ length: 12 }, (_, i) => ({
   left: `${(i * 91) % 100}%`,
   top: `${(i * 47 + 7) % 100}%`,
   dur: 4 + ((i * 7) % 6),
