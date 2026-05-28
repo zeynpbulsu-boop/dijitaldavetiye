@@ -529,8 +529,10 @@ export const OLEA_THEME: LuxeEditionTheme = {
   waxSealSrc: "/olea/wax-seal.png",
   watermarkSrc: "/olea/watermark.png",
   coverScene: "/olea/cover.jpg",
-  /* PR #28 — Etsy 2026 PoC refresh */
-  envelopePaperSrc: "/olea/envelope-on-linen.jpg",
+  /* PR #28 — Etsy 2026 PoC refresh.
+     envelopePaperSrc geçici olarak kaldırıldı — full-bleed dark olive
+     zarf fotoğrafı yeşil ekran sorununa yol açıyordu. Sonraki turda
+     centered-card variant olarak yeniden eklenir. */
   floralCornerTl: "/olea/floral-corner-tl.png",
   floralCornerBr: "/olea/floral-corner-br.png",
   coupleFlourish: "do",
