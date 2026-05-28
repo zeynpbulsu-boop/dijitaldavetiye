@@ -643,7 +643,7 @@ const en: Messages = {
       { label: "Editions", href: "#themes" },
       { label: "How it works", href: "#how-it-works" },
       { label: "Pricing", href: "#pricing" },
-      { label: "Try the demo", href: "/order/blush-reverie" },
+      { label: "Try the demo", href: "/dev-preview/aethel" },
       { label: "Reviews", href: "#testimonials" },
     ],
     legal_links: [
@@ -987,7 +987,7 @@ const sr: Messages = {
       { label: "Izdanja", href: "#themes" },
       { label: "Kako funkcioniše", href: "#how-it-works" },
       { label: "Cenovnik", href: "#pricing" },
-      { label: "Probaj demo", href: "/order/blush-reverie" },
+      { label: "Probaj demo", href: "/dev-preview/aethel" },
       { label: "Utisci", href: "#testimonials" },
     ],
     legal_links: [
