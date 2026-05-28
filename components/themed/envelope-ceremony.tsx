@@ -257,7 +257,7 @@ export function EnvelopeCeremony({
           }
         >
           <WaxSealLuxe
-            size={460}
+            size={420}
             minSize={260}
             priority
             haloColor={haloColor}
