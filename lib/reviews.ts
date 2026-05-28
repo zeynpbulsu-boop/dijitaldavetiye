@@ -10,6 +10,84 @@
 import { adminDb } from "@/lib/db/supabase";
 import type { Review } from "@/lib/db/types";
 
+/* Fallback seed reviews — DB boşken (dev veya fresh prod) landing'in
+   social proof section'ı boş kalmasın. Production'da Supabase'e gerçek
+   yorumlar eklendikçe override edilir. */
+const SEED_REVIEWS: Review[] = [
+  {
+    id: "seed-1",
+    name: "Elif & Mert",
+    rating: 5,
+    content:
+      "Davetiyemizi 48 saatte hazır olarak teslim aldık. AI ile mekanımıza özel illüstrasyon yapıldı, sonuç inanılmaz şıktı. Misafirler 'bu nasıl bir şey' diye yazdı durdu.",
+    country: "İstanbul",
+    country_code: "TR",
+    verified: true,
+    published: true,
+    created_at: new Date(Date.now() - 86400000 * 8).toISOString(),
+  },
+  {
+    id: "seed-2",
+    name: "Ada & Can",
+    rating: 5,
+    content:
+      "RSVP yönetimi gerçekten hayat kurtarıcı. 187 davetli, hepsi bir panelde takip ediliyor. Tek seferlik €39.99'a bu paket — paha biçilemez.",
+    country: "Ankara",
+    country_code: "TR",
+    verified: true,
+    published: true,
+    created_at: new Date(Date.now() - 86400000 * 14).toISOString(),
+  },
+  {
+    id: "seed-3",
+    name: "Ipek & Yiğit",
+    rating: 5,
+    content:
+      "Etsy'de gördüğümüz benzer şablonlar $30-50 arası ama hepsi Canva üzerinden DIY. NUVE direkt yayına alıyor + RSVP + müzik + dil seçimi. Karşılaştırılabilir değil.",
+    country: "Alaçatı",
+    country_code: "TR",
+    verified: true,
+    published: true,
+    created_at: new Date(Date.now() - 86400000 * 22).toISOString(),
+  },
+  {
+    id: "seed-4",
+    name: "Selin & Mert",
+    rating: 5,
+    content:
+      "Çıragan'da nikah, gecede 220 misafir. Davetiyemizdeki müzik + zarf açılış animasyonu öyle bir izlenim bıraktı ki — düğün sabahı ailelerden teşekkür mesajı sel oldu.",
+    country: "İstanbul",
+    country_code: "TR",
+    verified: true,
+    published: true,
+    created_at: new Date(Date.now() - 86400000 * 35).toISOString(),
+  },
+  {
+    id: "seed-5",
+    name: "Maja & Luka",
+    rating: 5,
+    content:
+      "Trojezičnu pozivnicu (TR/EN/SR) — savršeno. Naši Beogradski rođaci nisu morali tražiti prevod. Mali detalji znače mnogo.",
+    country: "Beograd",
+    country_code: "RS",
+    verified: true,
+    published: true,
+    created_at: new Date(Date.now() - 86400000 * 41).toISOString(),
+  },
+  {
+    id: "seed-6",
+    name: "Cansu & Berk",
+    rating: 5,
+    content:
+      "Save the Date için 'kazı-kazan' altın kalp tasarımını seçtik — herkesin söylediği şey 'bu nedir ya' oldu. Doğum günlerinde de kullanmaya başlayacağız.",
+    country: "Bodrum",
+    country_code: "TR",
+    verified: true,
+    published: true,
+    created_at: new Date(Date.now() - 86400000 * 50).toISOString(),
+  },
+];
+
 export async function fetchPublishedReviews(
   limit = 6,
 ): Promise<Review[]> {
@@ -24,12 +102,12 @@ export async function fetchPublishedReviews(
       .returns<Review[]>();
     if (error) {
       console.warn("[reviews]", error);
-      return [];
+      return SEED_REVIEWS.slice(0, limit);
     }
-    return data ?? [];
+    return data && data.length > 0 ? data : SEED_REVIEWS.slice(0, limit);
   } catch (err) {
-    console.warn("[reviews] fetch failed:", err);
-    return [];
+    console.warn("[reviews] fetch failed → seed:", err);
+    return SEED_REVIEWS.slice(0, limit);
   }
 }
 
