@@ -5,9 +5,15 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { startCheckout } from "@/lib/payments/checkout-client";
-import { isTierSlug, type TierSlug } from "@/lib/payments/products";
+import { STANDARD_TIER } from "@/lib/payments/products";
 import { themeForSlug } from "@/lib/templates/themes";
 import { CustomCoverGenerator } from "@/components/order/custom-cover-generator";
+import type {
+  HotelItem,
+  PhotoItem,
+  EventType,
+  DbLocale,
+} from "@/lib/db/types";
 
 /* Luxe edition slug → real asset paths. */
 const LUXE_ASSETS: Record<string, { cover: string; seal: string }> = {
@@ -40,6 +46,12 @@ type DraftStore = { id: string; slug: string; admin_token: string };
 
 const STORAGE_PREFIX = "nuve.draft.";
 
+interface ScheduleItem {
+  time: string;
+  title: string;
+  desc?: string;
+}
+
 export default function OrderEditorPage() {
   const params = useParams<{ slug: string }>();
   const searchParams = useSearchParams();
@@ -47,25 +59,50 @@ export default function OrderEditorPage() {
   const templateSlug = params?.slug ?? "aethel";
   // Flat pricing (Faz 20): only one tier. Query param ignored.
   void searchParams;
-  const initialTier: TierSlug = "standard";
-  void isTierSlug; // type still used in import for callers
 
   const [draft, setDraft] = useState<DraftStore | null>(null);
   const [bootError, setBootError] = useState<string | null>(null);
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
-  const [tier, setTier] = useState<TierSlug>(initialTier);
 
-  // Form state
+  /* ─── IDENTITY ─── */
   const [p1, setP1] = useState("");
   const [p2, setP2] = useState("");
+  const [monogram, setMonogram] = useState("");
+  const [eventType, setEventType] = useState<EventType>("wedding");
+  const [locale, setLocale] = useState<DbLocale>("tr");
+
+  /* ─── LOGISTICS ─── */
   const [date, setDate] = useState("");
   const [venueName, setVenueName] = useState("");
   const [venueCity, setVenueCity] = useState("");
+  const [venueAddress, setVenueAddress] = useState("");
+
+  /* ─── STORY / COPY ─── */
   const [story, setStory] = useState("");
-  const [monogram, setMonogram] = useState("");
-  const [email, setEmail] = useState("");
-  // Premium custom cover URL (fal.ai Recraft v3 ile üretilen özel kapak)
+  const [greeting, setGreeting] = useState("");
+  const [heroEyebrow, setHeroEyebrow] = useState("");
+  const [footerNote, setFooterNote] = useState("");
+
+  /* ─── MEDIA ─── */
   const [customCoverUrl, setCustomCoverUrl] = useState<string | null>(null);
+  const [musicTrack, setMusicTrack] = useState("");
+  const [photos, setPhotos] = useState<PhotoItem[]>([]);
+
+  /* ─── PROGRAM (Schedule) ─── */
+  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+
+  /* ─── GIFT BLOCK ─── */
+  const [giftIban, setGiftIban] = useState("");
+  const [giftBank, setGiftBank] = useState("");
+  const [giftAccountHolder, setGiftAccountHolder] = useState("");
+  const [giftNote, setGiftNote] = useState("");
+
+  /* ─── HOTELS ─── */
+  const [hotels, setHotels] = useState<HotelItem[]>([]);
+
+  /* ─── CONTACT ─── */
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   /* ---------- Boot: load existing draft or create new ---------- */
   useEffect(() => {
@@ -89,15 +126,29 @@ export default function OrderEditorPage() {
             setDraft(stored);
             setP1(String(inv.partner_one_name ?? ""));
             setP2(String(inv.partner_two_name ?? ""));
+            setMonogram(String(inv.monogram_initials ?? ""));
+            setEventType((inv.event_type as EventType) ?? "wedding");
+            setLocale((inv.locale as DbLocale) ?? "tr");
             setDate(String(inv.wedding_date ?? ""));
             setVenueName(String(inv.venue_name ?? ""));
             setVenueCity(String(inv.venue_city ?? ""));
+            setVenueAddress(String(inv.venue_address ?? ""));
             setStory(String(inv.story_text ?? ""));
-            setMonogram(String(inv.monogram_initials ?? ""));
-            setEmail(String(inv.owner_email ?? ""));
+            setGreeting(String(inv.greeting ?? ""));
+            setHeroEyebrow(String(inv.hero_eyebrow ?? ""));
+            setFooterNote(String(inv.footer_note ?? ""));
             setCustomCoverUrl(
               typeof inv.hero_media_url === "string" ? inv.hero_media_url : null
             );
+            setMusicTrack(String(inv.music_track ?? ""));
+            setPhotos(Array.isArray(inv.photos) ? (inv.photos as PhotoItem[]) : []);
+            setGiftIban(String(inv.gift_iban ?? ""));
+            setGiftBank(String(inv.gift_bank ?? ""));
+            setGiftAccountHolder(String(inv.gift_account_holder ?? ""));
+            setGiftNote(String(inv.gift_note ?? ""));
+            setHotels(Array.isArray(inv.hotels) ? (inv.hotels as HotelItem[]) : []);
+            setEmail(String(inv.owner_email ?? ""));
+            setPhone(String(inv.owner_phone ?? ""));
             return;
           }
           // Token invalid / not found → clear and create fresh
@@ -107,11 +158,11 @@ export default function OrderEditorPage() {
         }
       }
 
-      // Create fresh draft
+      // Create fresh draft (flat €39.99 tier = "standard")
       const create = await fetch("/api/invitations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ template_slug: templateSlug, tier }),
+        body: JSON.stringify({ template_slug: templateSlug, tier: STANDARD_TIER }),
       });
       if (!create.ok) {
         const err = await create.text();
@@ -177,7 +228,7 @@ export default function OrderEditorPage() {
     setPaying(true);
     try {
       await startCheckout({
-        tier,
+        tier: STANDARD_TIER,
         invitationId: draft.id,
         email: email || undefined,
         name: p1 && p2 ? `${p1} & ${p2}` : undefined,
@@ -186,6 +237,55 @@ export default function OrderEditorPage() {
       alert(err instanceof Error ? err.message : "Ödeme başlatılamadı.");
       setPaying(false);
     }
+  }
+
+  /* ---------- Schedule helpers ---------- */
+  function updateSchedule(next: ScheduleItem[]) {
+    setSchedule(next);
+    // Schedule stored as JSONB array on backend later (no DB col yet);
+    // for now persisted via story_text fallback omitted, persisted to
+    // a future schedule column if added.
+  }
+  function addScheduleItem() {
+    updateSchedule([...schedule, { time: "", title: "", desc: "" }]);
+  }
+  function removeScheduleItem(idx: number) {
+    updateSchedule(schedule.filter((_, i) => i !== idx));
+  }
+  function patchScheduleItem(idx: number, patch: Partial<ScheduleItem>) {
+    updateSchedule(
+      schedule.map((it, i) => (i === idx ? { ...it, ...patch } : it)),
+    );
+  }
+
+  /* ---------- Hotels helpers ---------- */
+  function persistHotels(next: HotelItem[]) {
+    setHotels(next);
+    persist({ hotels: next });
+  }
+  function addHotel() {
+    persistHotels([...hotels, { name: "" }]);
+  }
+  function removeHotel(idx: number) {
+    persistHotels(hotels.filter((_, i) => i !== idx));
+  }
+  function patchHotel(idx: number, patch: Partial<HotelItem>) {
+    persistHotels(hotels.map((h, i) => (i === idx ? { ...h, ...patch } : h)));
+  }
+
+  /* ---------- Photos helpers ---------- */
+  function persistPhotos(next: PhotoItem[]) {
+    setPhotos(next);
+    persist({ photos: next });
+  }
+  function addPhoto() {
+    persistPhotos([...photos, { url: "", caption: "" }]);
+  }
+  function removePhoto(idx: number) {
+    persistPhotos(photos.filter((_, i) => i !== idx));
+  }
+  function patchPhoto(idx: number, patch: Partial<PhotoItem>) {
+    persistPhotos(photos.map((p, i) => (i === idx ? { ...p, ...patch } : p)));
   }
 
   /* ---------- UI ---------- */
@@ -317,9 +417,46 @@ export default function OrderEditorPage() {
             </div>
           </Section>
 
+          <Section label="Etkinlik">
+            <Row>
+              <Field label="Etkinlik tipi" hint="Başlık ve metinler buna göre uyarlanır.">
+                <select
+                  value={eventType}
+                  onChange={(e) => {
+                    const v = e.target.value as EventType;
+                    setEventType(v);
+                    persist({ event_type: v });
+                  }}
+                  className={inputClass}
+                >
+                  <option value="wedding">Düğün</option>
+                  <option value="engagement">Nişan</option>
+                  <option value="henna">Kına Gecesi</option>
+                  <option value="save_the_date">Save the Date</option>
+                  <option value="birthday">Doğum Günü</option>
+                </select>
+              </Field>
+              <Field label="Dil" hint="Misafirlerinin göreceği varsayılan dil.">
+                <select
+                  value={locale}
+                  onChange={(e) => {
+                    const v = e.target.value as DbLocale;
+                    setLocale(v);
+                    persist({ locale: v });
+                  }}
+                  className={inputClass}
+                >
+                  <option value="tr">Türkçe</option>
+                  <option value="en">English</option>
+                  <option value="sr">Srpski</option>
+                </select>
+              </Field>
+            </Row>
+          </Section>
+
           <Section label="Çift">
             <Row>
-              <Field label="Birinci isim">
+              <Field label="Birinci isim" hint="Davetiyede önce yazılan.">
                 <input
                   type="text"
                   value={p1}
@@ -328,7 +465,7 @@ export default function OrderEditorPage() {
                   className={inputClass}
                 />
               </Field>
-              <Field label="İkinci isim">
+              <Field label="İkinci isim" hint="& işaretinden sonra yazılan.">
                 <input
                   type="text"
                   value={p2}
@@ -338,12 +475,12 @@ export default function OrderEditorPage() {
                 />
               </Field>
             </Row>
-            <Field label="Monogram (iki harf ya da N&E)">
+            <Field label="Monogram" hint="Mührde basılı olacak — iki harf veya N&E.">
               <input
                 type="text"
                 value={monogram}
                 onChange={bind(setMonogram, "monogram_initials")}
-                placeholder="N&E"
+                placeholder="E&M"
                 maxLength={6}
                 className={inputClass}
               />
@@ -352,7 +489,7 @@ export default function OrderEditorPage() {
 
           <Section label="Tarih ve mekân">
             <Row>
-              <Field label="Düğün tarihi">
+              <Field label="Etkinlik tarihi" hint="Geri sayım buna göre işler.">
                 <input
                   type="date"
                   value={date}
@@ -360,7 +497,7 @@ export default function OrderEditorPage() {
                   className={inputClass}
                 />
               </Field>
-              <Field label="Şehir">
+              <Field label="Şehir" hint="Misafirler için yön belirleyici.">
                 <input
                   type="text"
                   value={venueCity}
@@ -370,13 +507,54 @@ export default function OrderEditorPage() {
                 />
               </Field>
             </Row>
-            <Field label="Mekân adı">
+            <Field label="Mekân adı" hint="Yalı, otel, bahçe — tam adı.">
               <input
                 type="text"
                 value={venueName}
                 onChange={bind(setVenueName, "venue_name")}
                 placeholder="Aman Yalı"
                 className={inputClass}
+              />
+            </Field>
+            <Field
+              label="Açık adres"
+              hint="Misafirler harita üzerinden yön alacak — açık sokak/yol bilgisi."
+            >
+              <input
+                type="text"
+                value={venueAddress}
+                onChange={bind(setVenueAddress, "venue_address")}
+                placeholder="Cevatpaşa Mah. 2024 Sok. No:3"
+                className={inputClass}
+              />
+            </Field>
+          </Section>
+
+          <Section label="Karşılama metinleri">
+            <Field
+              label="Zarftaki karşılama"
+              hint="Davetiye açılmadan önce zarfın üstündeki tek satır."
+            >
+              <input
+                type="text"
+                value={greeting}
+                onChange={bind(setGreeting, "greeting")}
+                placeholder="Bir davet sizi bekliyor"
+                className={inputClass}
+                maxLength={80}
+              />
+            </Field>
+            <Field
+              label="Hero üst yazısı"
+              hint="Hero kısmında, isimlerin üstünde küçük tanıtım."
+            >
+              <input
+                type="text"
+                value={heroEyebrow}
+                onChange={bind(setHeroEyebrow, "hero_eyebrow")}
+                placeholder="Evleniyoruz"
+                className={inputClass}
+                maxLength={40}
               />
             </Field>
           </Section>
@@ -393,11 +571,72 @@ export default function OrderEditorPage() {
             </Field>
           </Section>
 
-          {/* ÖZEL KAPAK — Premium add-on (TDI Premium tier paritesi).
-              Müşteri venue + atmosfer prompt'u yazar, fal.ai Recraft v3
-              ile per-couple custom cover üretilir. Mevcut hero_media_url
-              DB field'ına persist edilir. */}
-          <Section label="Özel Kapak (Premium)">
+          {/* PROGRAM — schedule items list, couples can add/remove. */}
+          <Section label="Program">
+            <p className="mb-4 text-[13px] leading-[1.6] text-brand-mute">
+              Misafirlerin günü saat saat takip etmesi için. İstersen
+              tek satır, istersen 5-6 maddelik tam program ekle.
+            </p>
+            <ul className="space-y-3">
+              {schedule.map((it, i) => (
+                <li
+                  key={i}
+                  className="rounded-[8px] border border-brand-ink/12 bg-paper p-4"
+                >
+                  <Row>
+                    <Field label="Saat">
+                      <input
+                        type="time"
+                        value={it.time}
+                        onChange={(e) => patchScheduleItem(i, { time: e.target.value })}
+                        className={inputClass}
+                      />
+                    </Field>
+                    <Field label="Başlık">
+                      <input
+                        type="text"
+                        value={it.title}
+                        onChange={(e) => patchScheduleItem(i, { title: e.target.value })}
+                        placeholder="Tören · Bahçede"
+                        className={inputClass}
+                      />
+                    </Field>
+                  </Row>
+                  <Field label="Açıklama (opsiyonel)">
+                    <input
+                      type="text"
+                      value={it.desc ?? ""}
+                      onChange={(e) => patchScheduleItem(i, { desc: e.target.value })}
+                      placeholder="Mum ışığında nikah ve fotoğraf seansı"
+                      className={inputClass}
+                    />
+                  </Field>
+                  <button
+                    type="button"
+                    onClick={() => removeScheduleItem(i)}
+                    className="mt-2 text-[11px] uppercase tracking-[0.2em] text-brand-mute hover:text-red-700"
+                  >
+                    × Sil
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={addScheduleItem}
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-dashed border-brand-ink/30 px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-brand-ink/70 transition hover:border-brand-cognac hover:text-brand-cognac"
+            >
+              + Program satırı ekle
+            </button>
+          </Section>
+
+          {/* ÖZEL KAPAK — AI custom cover (€39.99 paketine dahil). */}
+          <Section label="Özel kapak (AI illüstrasyon)">
+            <p className="mb-4 text-[13px] leading-[1.6] text-brand-mute">
+              Mekânının veya sahnenin tarifini yaz, sana özel illüstrasyon
+              üretelim. <strong>€39.99 pakete dahil</strong> — istediğin kadar
+              varyant üretebilirsin.
+            </p>
             <CustomCoverGenerator
               edition={templateSlug}
               initialUrl={customCoverUrl}
@@ -408,40 +647,253 @@ export default function OrderEditorPage() {
             />
           </Section>
 
-          <Section label="Sana nasıl ulaşalım">
-            <Field label="E-posta">
+          {/* GALERİ — couple foto URL'leri (şimdilik URL paste; sonra Supabase upload). */}
+          <Section label="Fotoğraf galerisi">
+            <p className="mb-4 text-[13px] leading-[1.6] text-brand-mute">
+              Sevdiğiniz fotolardan 4-8 tane ekleyin. Polaroid çerçeveli mosaic
+              olarak görünür. Fotonun internetteki tam URL'si yeterli.
+            </p>
+            <ul className="space-y-3">
+              {photos.map((p, i) => (
+                <li
+                  key={i}
+                  className="rounded-[8px] border border-brand-ink/12 bg-paper p-4"
+                >
+                  <Field label="Foto URL">
+                    <input
+                      type="url"
+                      value={p.url}
+                      onChange={(e) => patchPhoto(i, { url: e.target.value })}
+                      placeholder="https://images.unsplash.com/..."
+                      className={inputClass}
+                    />
+                  </Field>
+                  <Field label="Caption (opsiyonel)">
+                    <input
+                      type="text"
+                      value={p.caption ?? ""}
+                      onChange={(e) => patchPhoto(i, { caption: e.target.value })}
+                      placeholder="our first trip"
+                      className={inputClass}
+                    />
+                  </Field>
+                  <button
+                    type="button"
+                    onClick={() => removePhoto(i)}
+                    className="mt-2 text-[11px] uppercase tracking-[0.2em] text-brand-mute hover:text-red-700"
+                  >
+                    × Sil
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={addPhoto}
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-dashed border-brand-ink/30 px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-brand-ink/70 transition hover:border-brand-cognac hover:text-brand-cognac"
+            >
+              + Foto ekle
+            </button>
+          </Section>
+
+          <Section label="Müzik">
+            <Field
+              label="Çalacak parça (etiket)"
+              hint="Sayfa müziği için kullanılacak şarkı adı / sanatçı bilgisi. Ses linki sonra eklenecek."
+            >
               <input
-                type="email"
-                value={email}
-                onChange={bind(setEmail, "owner_email")}
-                placeholder="info@nuve.app"
+                type="text"
+                value={musicTrack}
+                onChange={bind(setMusicTrack, "music_track")}
+                placeholder="Clair de Lune · Claude Debussy"
                 className={inputClass}
               />
             </Field>
           </Section>
 
-          {/* Flat pricing — every NUVE invitation is €39.99 regardless of edition */}
+          <Section label="Hediye / IBAN (opsiyonel)">
+            <p className="mb-4 text-[13px] leading-[1.6] text-brand-mute">
+              Misafirler hediye için banka bilgilerine ulaşabilsin. Hiçbir
+              alan zorunlu değil — boş bırakırsan section gizlenir.
+            </p>
+            <Row>
+              <Field label="IBAN">
+                <input
+                  type="text"
+                  value={giftIban}
+                  onChange={bind(setGiftIban, "gift_iban")}
+                  placeholder="TR00 0000 0000 0000 0000 0000 00"
+                  className={inputClass}
+                />
+              </Field>
+              <Field label="Banka">
+                <input
+                  type="text"
+                  value={giftBank}
+                  onChange={bind(setGiftBank, "gift_bank")}
+                  placeholder="Garanti BBVA"
+                  className={inputClass}
+                />
+              </Field>
+            </Row>
+            <Field label="Hesap sahibi">
+              <input
+                type="text"
+                value={giftAccountHolder}
+                onChange={bind(setGiftAccountHolder, "gift_account_holder")}
+                placeholder="Elif & Mert"
+                className={inputClass}
+              />
+            </Field>
+            <Field label="Açıklama (opsiyonel)">
+              <input
+                type="text"
+                value={giftNote}
+                onChange={bind(setGiftNote, "gift_note")}
+                placeholder="Açıklamaya isimlerinizi yazmayı unutmayın"
+                className={inputClass}
+              />
+            </Field>
+          </Section>
+
+          <Section label="Otel önerileri">
+            <p className="mb-4 text-[13px] leading-[1.6] text-brand-mute">
+              Şehir dışından gelen misafirler için 3-5 otel öner. Liste
+              boşsa bu bölüm davetiyede gizlenir.
+            </p>
+            <ul className="space-y-3">
+              {hotels.map((h, i) => (
+                <li
+                  key={i}
+                  className="rounded-[8px] border border-brand-ink/12 bg-paper p-4"
+                >
+                  <Row>
+                    <Field label="Otel adı">
+                      <input
+                        type="text"
+                        value={h.name}
+                        onChange={(e) => patchHotel(i, { name: e.target.value })}
+                        placeholder="Alavya Hotel"
+                        className={inputClass}
+                      />
+                    </Field>
+                    <Field label="Mesafe / konum">
+                      <input
+                        type="text"
+                        value={h.address ?? ""}
+                        onChange={(e) => patchHotel(i, { address: e.target.value })}
+                        placeholder="12 dk · Alaçatı merkez"
+                        className={inputClass}
+                      />
+                    </Field>
+                  </Row>
+                  <Row>
+                    <Field label="Fiyat (opsiyonel)">
+                      <input
+                        type="text"
+                        value={h.price ?? ""}
+                        onChange={(e) => patchHotel(i, { price: e.target.value })}
+                        placeholder="€220"
+                        className={inputClass}
+                      />
+                    </Field>
+                    <Field label="Booking linki">
+                      <input
+                        type="url"
+                        value={h.url ?? ""}
+                        onChange={(e) => patchHotel(i, { url: e.target.value })}
+                        placeholder="https://..."
+                        className={inputClass}
+                      />
+                    </Field>
+                  </Row>
+                  <Field label="Açıklama (opsiyonel)">
+                    <input
+                      type="text"
+                      value={h.note ?? ""}
+                      onChange={(e) => patchHotel(i, { note: e.target.value })}
+                      placeholder="Taş ev · spa + bahçe"
+                      className={inputClass}
+                    />
+                  </Field>
+                  <button
+                    type="button"
+                    onClick={() => removeHotel(i)}
+                    className="mt-2 text-[11px] uppercase tracking-[0.2em] text-brand-mute hover:text-red-700"
+                  >
+                    × Sil
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={addHotel}
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-dashed border-brand-ink/30 px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-brand-ink/70 transition hover:border-brand-cognac hover:text-brand-cognac"
+            >
+              + Otel ekle
+            </button>
+          </Section>
+
+          <Section label="Footer notu">
+            <Field
+              label="Davetiyenin altındaki kısa söz"
+              hint="Sayfanın en altında, isimlerinizin üstünde küçük bir vedalaşma."
+            >
+              <input
+                type="text"
+                value={footerNote}
+                onChange={bind(setFooterNote, "footer_note")}
+                placeholder="Bizimle olmanız bizi onurlandırır"
+                className={inputClass}
+                maxLength={120}
+              />
+            </Field>
+          </Section>
+
+          <Section label="Sana nasıl ulaşalım">
+            <p className="mb-4 text-[13px] leading-[1.6] text-brand-mute">
+              Ödeme makbuzu, admin panel linki ve RSVP bildirimleri için.
+              Sadece sen göreceksin.
+            </p>
+            <Row>
+              <Field label="E-posta" hint="Zorunlu — ödeme + admin link buraya.">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={bind(setEmail, "owner_email")}
+                  placeholder="elif@gmail.com"
+                  className={inputClass}
+                />
+              </Field>
+              <Field label="Telefon (opsiyonel)" hint="WhatsApp bildirimi için.">
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={bind(setPhone, "owner_phone")}
+                  placeholder="+90 555 000 00 00"
+                  className={inputClass}
+                />
+              </Field>
+            </Row>
+          </Section>
+
+          {/* Flat pricing — €39.99, hepsi dahil */}
           <Section label="Toplam">
             <div className="flex items-baseline gap-3 rounded-[8px] border border-brand-cognac/40 bg-brand-cognac/5 px-5 py-4">
               <span className="font-display text-[34px] leading-none text-brand-ink">
                 €39,99
               </span>
               <span className="text-[12px] uppercase tracking-[0.22em] text-brand-ink/60">
-                tek seferlik · 1 yıl yayın
+                tek seferlik · 1 yıl yayın · hepsi dahil
               </span>
             </div>
-            <p className="mt-2 text-[12px] text-brand-ink/55">
-              Hangi tasarımı seçersen seç, fiyat sabit. KDV ve banka komisyonu Dodo Payments tarafında dahil edilir.
+            <p className="mt-3 text-[12px] leading-[1.6] text-brand-ink/65">
+              Bütün özellikler dahil: AI özel kapak, sınırsız fotoğraf,
+              program, otel önerileri, harita, RSVP, müzik, çoklu dil ve özel
+              alan adı. Hiçbir ek ücret yok. KDV + banka komisyonu Dodo
+              Payments tarafında.
             </p>
-            <button
-              type="button"
-              onClick={() => setTier("standard")}
-              className="hidden"
-              aria-hidden
-            >
-              {/* keeps the tier state referenced; UI is hidden */}
-              standard
-            </button>
           </Section>
 
           {/* Pay CTA */}
@@ -718,13 +1170,26 @@ function Row({ children }: { children: React.ReactNode }) {
   return <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">{children}</div>;
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.18em] text-brand-mute">
         {label}
       </span>
       {children}
+      {hint && (
+        <span className="mt-1.5 block text-[11px] leading-[1.5] text-brand-ink/55">
+          {hint}
+        </span>
+      )}
     </label>
   );
 }

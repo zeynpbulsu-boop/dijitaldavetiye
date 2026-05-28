@@ -20,20 +20,47 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const EDITABLE_FIELDS = [
+  /* identity */
   "partner_one_name",
   "partner_two_name",
+  "monogram_initials",
+  /* logistics */
   "wedding_date",
   "venue_name",
   "venue_city",
   "venue_address",
+  "venue_lat",
+  "venue_lng",
+  /* copy / luxe overrides */
   "story_text",
+  "greeting",
+  "hero_eyebrow",
+  "hero_cta",
+  "envelope_cta",
+  "footer_note",
+  /* media */
   "music_url",
   "music_track_id",
-  "monogram_initials",
-  "owner_email",
-  "owner_phone",
+  "music_track",
+  "hero_media_url",
+  "wax_seal_color",
+  "photos",
+  /* event meta */
+  "event_type",
   "locale",
   "tier",
+  /* gift block */
+  "gift_iban",
+  "gift_bank",
+  "gift_account_holder",
+  "gift_note",
+  /* hotels */
+  "hotels",
+  /* feature flags */
+  "enable_scratch_reveal",
+  /* contact */
+  "owner_email",
+  "owner_phone",
 ] as const;
 
 function readToken(req: NextRequest): string | null {
