@@ -71,13 +71,6 @@ export function EnvelopeCeremony({
     else setTimeOfDay("Hoş geldiniz.");
   }, []);
 
-  /* Realistic crack path — sıfır şard, sadece 2 yarım mühür.
-     Wax gerçek hayatta net bir crackline boyunca ikiye ayrılır,
-     onlarca random fragment'a parçalanmaz. */
-  const crackPath =
-    "polygon(0% 0%, 47% 0%, 51% 18%, 46% 36%, 52% 54%, 47% 72%, 51% 100%, 0% 100%)";
-  const crackPathRight =
-    "polygon(47% 0%, 100% 0%, 100% 100%, 51% 100%, 47% 72%, 52% 54%, 46% 36%, 51% 18%)";
 
   function open() {
     if (stage !== "sealed") return;
@@ -165,22 +158,10 @@ export function EnvelopeCeremony({
           </div>
         ) : (
           <>
-            {/* Chapel watermark — 5% opacity arkada (fallback) */}
+            {/* Chapel watermark — 4.5% opacity, ortamı bezeyen taze
+                bir leaf wreath. Eski SVG X çizgileri kaldırıldı
+                (yeni gerçek zarf component'i ortada zaten var). */}
             <ChapelWatermark position="absolute" opacity={0.05} maxWidth={900} bgColor={bgColor} src={watermarkSrc} />
-
-            {/* Envelope flap çizgileri (SVG fallback) */}
-            <svg
-              aria-hidden
-              className="pointer-events-none absolute inset-0 h-full w-full"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              style={{ mixBlendMode: "multiply", opacity: 0.32 }}
-            >
-              <line x1="0" y1="0" x2="50" y2="50" stroke={inkColor} strokeWidth="0.15" strokeOpacity="0.45" />
-              <line x1="100" y1="0" x2="50" y2="50" stroke={inkColor} strokeWidth="0.15" strokeOpacity="0.45" />
-              <line x1="0" y1="100" x2="50" y2="50" stroke={inkColor} strokeWidth="0.1" strokeOpacity="0.25" />
-              <line x1="100" y1="100" x2="50" y2="50" stroke={inkColor} strokeWidth="0.1" strokeOpacity="0.25" />
-            </svg>
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0"
@@ -215,108 +196,138 @@ export function EnvelopeCeremony({
           </motion.p>
         )}
 
-        {/* PREMIUM REALISTIC BREAK SEQUENCE
-            ─────────────────────────────────
-            Eski: 12 random şard + halo burst + büyük scale pulse
-                  (cartoony, photoshop fake hissi).
-            Yeni: tek crack line boyunca mühür İKİ yarıma bölünür,
-                  yer çekimiyle aşağı düşer + dışa dönerek dağılır.
-            Aynı PNG iki kopya, birbirinin tamamlayıcısı clip-path
-            ile yarılanır → "split mühür" gibi görünür. */}
-
-        {/* SINGLE SEAL — clip-path split geçici olarak kaldırıldı,
-            mühür ortada görünmeli. Breaking sekansı opening'de yer
-            yukarı + scale yapar, "fly out" tek parça halinde. Split
-            animasyon stable görünüm sağlandıktan sonra yeniden ele
-            alınır. */}
-        <motion.div
+        {/* REAL ENVELOPE — Etsy 2026 paritesi.
+            Dikdörtgen krem zarf gövdesi + üst flap (triangle clip).
+            Flap'in ortasında küçük mühür (zarf üstünde stamp).
+            Open click → flap yukarı rotateX ile açılır (3D perspective),
+            sonra zarf tüm sahneden yukarı kayıp solar. */}
+        <div
           className="relative z-10"
-          animate={
-            stage === "breaking"
-              ? {
-                  rotate: [-6, -3, -9, -5, -7],
-                  scale: [1, 1.02, 0.99, 1.01, 1],
-                }
-              : stage === "opening"
-              ? {
-                  y: -120,
-                  scale: 1.25,
-                  opacity: 0,
-                  rotate: -22,
-                }
-              : {
-                  rotate: -6,
-                }
-          }
-          transition={
-            stage === "breaking"
-              ? { duration: 0.9, ease: "easeInOut" }
-              : stage === "opening"
-              ? { duration: 1.4, ease: [0.22, 1, 0.36, 1] }
-              : { duration: 0.6, ease: "easeOut" }
-          }
+          style={{
+            perspective: "900px",
+            width: "clamp(280px, 38vw, 460px)",
+            height: "clamp(200px, 27vw, 320px)",
+          }}
         >
-          <WaxSealLuxe
-            size={420}
-            minSize={260}
-            priority
-            haloColor={haloColor}
-            rotate={-6}
-            bgColor={bgColor}
-            src={waxSealSrc}
-            tintColor={waxSealTint}
-          />
-        </motion.div>
-
-        {/* CRACK LINE — ince koyu çatlak, breaking'in son frame'inde
-            220ms görünür, sonra opening'de yarıklar açılırken solar. */}
-        <AnimatePresence>
-          {(stage === "breaking" || stage === "opening") && (
-            <motion.div
+          {/* Body — sabit, perde gibi kalır */}
+          <motion.div
+            className="absolute inset-0"
+            animate={
+              stage === "opening"
+                ? { y: -180, scale: 0.95, opacity: 0 }
+                : { y: 0, scale: 1, opacity: 1 }
+            }
+            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              background:
+                "linear-gradient(180deg, #FBFAF6 0%, #F4EFE4 100%)",
+              borderRadius: 4,
+              boxShadow:
+                "0 24px 60px -22px rgba(43,30,22,0.32), 0 6px 14px -6px rgba(43,30,22,0.18), inset 0 0 0 0.5px rgba(43,30,22,0.12)",
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {/* Lower V fold lines (envelope bottom) */}
+            <svg
               aria-hidden
-              key="crack"
-              className="pointer-events-none absolute z-[11]"
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: stage === "breaking" ? [0, 0, 0.65, 0.45] : 0,
-              }}
-              transition={{
-                duration: stage === "breaking" ? 0.9 : 0.4,
-                times: stage === "breaking" ? [0, 0.55, 0.78, 1] : undefined,
-                ease: "easeOut",
-              }}
-              style={{
-                width: 4,
-                height: 360,
-                background:
-                  "linear-gradient(180deg, transparent 0%, rgba(20,16,12,0.42) 18%, rgba(20,16,12,0.62) 50%, rgba(20,16,12,0.42) 82%, transparent 100%)",
-                filter: "blur(0.3px)",
-                transform: "translateX(-1px) skewX(2deg)",
-              }}
-            />
-          )}
-        </AnimatePresence>
+              viewBox="0 0 100 70"
+              preserveAspectRatio="none"
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-full w-full"
+              style={{ opacity: 0.35 }}
+            >
+              <line x1="0" y1="100" x2="50" y2="55" stroke={inkColor} strokeWidth="0.18" strokeOpacity="0.6" />
+              <line x1="100" y1="100" x2="50" y2="55" stroke={inkColor} strokeWidth="0.18" strokeOpacity="0.6" />
+            </svg>
+          </motion.div>
 
-        {/* White light flash — 220ms, çok hafif (mührün kırıldığı
-            anda parlama). Halo burst kaldırıldı (Photoshop hissi). */}
-        <AnimatePresence>
-          {stage === "breaking" && (
-            <motion.div
+          {/* FLAP — üstte trapezoid, click'te rotateX ile açılır */}
+          <motion.div
+            className="absolute z-10 origin-top"
+            style={{
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "60%",
+              background:
+                "linear-gradient(180deg, #F8F2E6 0%, #EDE4D2 100%)",
+              clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+              WebkitClipPath: "polygon(0 0, 100% 0, 50% 100%)",
+              transformOrigin: "50% 0%",
+              transformStyle: "preserve-3d",
+              backfaceVisibility: "hidden",
+              filter:
+                stage === "opening"
+                  ? undefined
+                  : "drop-shadow(0 8px 18px rgba(43,30,22,0.18))",
+            }}
+            animate={
+              stage === "breaking"
+                ? { rotateX: [0, -4, 2, -3, 0] }
+                : stage === "opening"
+                ? { rotateX: -178, y: -190, opacity: 0 }
+                : { rotateX: 0 }
+            }
+            transition={
+              stage === "breaking"
+                ? { duration: 0.6, ease: "easeInOut" }
+                : stage === "opening"
+                ? { duration: 1.5, ease: [0.34, 1, 0.4, 1] }
+                : { duration: 0.4, ease: "easeOut" }
+            }
+          >
+            {/* Flap iç fold çizgisi */}
+            <svg
               aria-hidden
-              key="flash"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.35, 0] }}
-              transition={{
-                duration: 0.4,
-                times: [0, 0.4, 1],
-                delay: 0.55,
-                ease: "easeOut",
-              }}
-              className="pointer-events-none absolute inset-0"
-              style={{ background: "#ffffff" }}
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              className="pointer-events-none absolute inset-0 h-full w-full"
+            >
+              <line x1="0" y1="0" x2="50" y2="100" stroke={inkColor} strokeWidth="0.18" strokeOpacity="0.45" />
+              <line x1="100" y1="0" x2="50" y2="100" stroke={inkColor} strokeWidth="0.18" strokeOpacity="0.45" />
+            </svg>
+          </motion.div>
+
+          {/* WAX SEAL on flap — küçük (~70-90px), flap'in alt-orta noktasında.
+              Flap açıldığında mühür de uçar (kırılır gibi opacity drop). */}
+          <motion.div
+            className="absolute z-20"
+            style={{
+              top: "calc(60% - 38px)",
+              left: "50%",
+              width: "clamp(70px, 9vw, 96px)",
+              height: "clamp(70px, 9vw, 96px)",
+              transform: "translateX(-50%)",
+            }}
+            animate={
+              stage === "breaking"
+                ? { scale: [1, 1.03, 0.99, 1.02, 1], rotate: [-3, -1, -5, -2, -3] }
+                : stage === "opening"
+                ? { y: -120, scale: 0.85, opacity: 0, rotate: -18 }
+                : { rotate: -3, scale: 1 }
+            }
+            transition={
+              stage === "breaking"
+                ? { duration: 0.6, ease: "easeInOut" }
+                : stage === "opening"
+                ? { duration: 1.0, ease: [0.22, 1, 0.36, 1] }
+                : { duration: 0.4, ease: "easeOut" }
+            }
+          >
+            <WaxSealLuxe
+              size={96}
+              minSize={70}
+              priority
+              haloColor={haloColor}
+              rotate={-3}
+              bgColor={bgColor}
+              src={waxSealSrc}
+              tintColor={waxSealTint}
             />
-          )}
-        </AnimatePresence>
+          </motion.div>
+        </div>
+
+        {/* Light flash kaldırıldı — gerçek zarf açılışında flash yok,
+            sadece flap'in rotateX hareketi yeterli. */}
 
         {/* CTA — incecik pill, mail icon + shimmer. PR #22: mail icon
             eklendi (PL paritesi). */}
