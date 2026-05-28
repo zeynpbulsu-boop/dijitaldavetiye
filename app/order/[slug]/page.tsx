@@ -288,6 +288,31 @@ export default function OrderEditorPage() {
     persistPhotos(photos.map((p, i) => (i === idx ? { ...p, ...patch } : p)));
   }
 
+  /* ---------- Completion progress (form % filled) ----------
+     14 important field/section → ratio of filled. Couples görsel
+     olarak ne kadar tamamladıklarını görsünler. */
+  const completionItems = [
+    p1.length > 0,
+    p2.length > 0,
+    monogram.length > 0,
+    date.length > 0,
+    venueName.length > 0,
+    venueCity.length > 0,
+    venueAddress.length > 0,
+    story.length > 0,
+    greeting.length > 0 || heroEyebrow.length > 0,
+    schedule.length > 0,
+    photos.length > 0,
+    !!customCoverUrl,
+    giftIban.length > 0,
+    hotels.length > 0,
+    email.length > 0,
+  ];
+  const completedCount = completionItems.filter(Boolean).length;
+  const completionPct = Math.round(
+    (completedCount / completionItems.length) * 100,
+  );
+
   /* ---------- UI ---------- */
   if (bootError) {
     return (
@@ -332,19 +357,66 @@ export default function OrderEditorPage() {
         {/* LEFT — form */}
         <div className="col-span-12 lg:col-span-7">
           <header className="mb-10 border-b border-brand-ink/12 pb-6">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-cognac">
-              — Editör
-            </span>
-            <h1
-              className="mt-3 font-display text-brand-ink"
-              style={{ fontSize: "clamp(32px, 4vw, 48px)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
-            >
-              Davetinin{" "}
-              <span className="italic text-brand-cognac">hikâyesi</span>.
-            </h1>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-cognac">
+                  — Editör
+                </span>
+                <h1
+                  className="mt-3 font-display text-brand-ink"
+                  style={{
+                    fontSize: "clamp(32px, 4vw, 48px)",
+                    lineHeight: 1.05,
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  Davetinin{" "}
+                  <span className="italic text-brand-cognac">hikâyesi</span>.
+                </h1>
+              </div>
+              {/* Progress badge — 15 alanın kaçı dolu */}
+              <div className="hidden flex-shrink-0 sm:block">
+                <div className="flex items-center gap-3 rounded-full border border-brand-ink/15 bg-paper px-4 py-2">
+                  <div className="relative h-9 w-9">
+                    <svg viewBox="0 0 36 36" className="h-9 w-9 -rotate-90">
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="14"
+                        fill="none"
+                        stroke="rgba(43,30,22,0.1)"
+                        strokeWidth="3"
+                      />
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="14"
+                        fill="none"
+                        stroke="rgb(140,90,60)"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeDasharray={`${(completionPct / 100) * 88} 88`}
+                        style={{ transition: "stroke-dasharray 0.6s ease" }}
+                      />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold text-brand-ink">
+                      {completionPct}%
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-brand-mute">
+                      Tamamlandı
+                    </span>
+                    <span className="text-[11px] text-brand-ink">
+                      {completedCount}/{completionItems.length} alan
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
             <p className="mt-3 max-w-[520px] text-[14px] leading-relaxed text-brand-ink/70">
               Tüm değişiklikler kendiliğinden kaydediliyor. Hazır olduğunda
-              aşağıdan ödemeyi tamamla — davetiyen 48 saatte canlıya alınır.
+              aşağıdan ödemeyi tamamla — davetiyen anında canlıya alınır.
             </p>
           </header>
 
