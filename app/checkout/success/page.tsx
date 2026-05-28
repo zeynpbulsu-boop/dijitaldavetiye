@@ -5,19 +5,14 @@ import { useT } from "@/lib/i18n/provider";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
-const TIER_LABEL: Record<string, string> = {
-  sade: "Sade",
-  klasik: "Klasik",
-  premium: "Premium",
-};
+/* Tier kavramı kalktı (tek paket €39.99). Eski multi-tier label'ları
+   kaldırıldı. */
 
 function SuccessInner() {
   const t = useT();
   const params = useSearchParams();
-  const tier = params.get("tier") ?? "";
   const paymentId = params.get("payment_id") ?? "";
   const status = params.get("status") ?? "";
-  const tierLabel = TIER_LABEL[tier] ?? "";
   const isPending = status === "processing";
 
   return (
@@ -39,12 +34,6 @@ function SuccessInner() {
           className="mx-auto mt-7 max-w-[580px] text-brand-ink/75"
           style={{ fontSize: "17px", lineHeight: 1.65 }}
         >
-          {tierLabel && (
-            <>
-              <span className="font-medium text-brand-ink">{tierLabel}</span>
-              {t.checkout.success.body_prefix}
-            </>
-          )}
           {t.checkout.success.body_main}
         </p>
 
