@@ -25,15 +25,20 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 async function loadLive(slug: string): Promise<Invitation | null> {
-  const supabase = adminDb();
-  const { data, error } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("slug", slug)
-    .single<Invitation>();
-  if (error || !data) return null;
-  if (data.status !== "live") return null;
-  return data;
+  try {
+    const supabase = adminDb();
+    const { data, error } = await supabase
+      .from("invitations")
+      .select("*")
+      .eq("slug", slug)
+      .single<Invitation>();
+    if (error || !data) return null;
+    if (data.status !== "live") return null;
+    return data;
+  } catch (err) {
+    console.warn("[i] loadLive failed:", err);
+    return null;
+  }
 }
 
 export async function generateMetadata({

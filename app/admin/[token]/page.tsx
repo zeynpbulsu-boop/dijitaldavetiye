@@ -34,27 +34,34 @@ type RsvpRow = Pick<
 async function loadByToken(
   token: string,
 ): Promise<{ invitation: Invitation; rsvps: RsvpRow[] } | null> {
-  const supabase = adminDb();
-  const { data: inv, error: invErr } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("admin_token", token)
-    .single<Invitation>();
-  if (invErr || !inv) return null;
+  try {
+    const supabase = adminDb();
+    const { data: inv, error: invErr } = await supabase
+      .from("invitations")
+      .select("*")
+      .eq("admin_token", token)
+      .single<Invitation>();
+    if (invErr || !inv) return null;
 
-  const { data: rsvps, error: rErr } = await supabase
-    .from("rsvps")
-    .select(
-      "id, guest_name, guest_email, attendance, plus_one, plus_one_name, menu_choice, allergies, note, created_at",
-    )
-    .eq("invitation_id", inv.id)
-    .order("created_at", { ascending: false });
+    const { data: rsvps, error: rErr } = await supabase
+      .from("rsvps")
+      .select(
+        "id, guest_name, guest_email, attendance, plus_one, plus_one_name, menu_choice, allergies, note, created_at",
+      )
+      .eq("invitation_id", inv.id)
+      .order("created_at", { ascending: false });
 
-  if (rErr) {
-    console.error("[admin] failed to load RSVPs", rErr);
+    if (rErr) {
+      console.error("[admin] failed to load RSVPs", rErr);
+    }
+
+    return { invitation: inv, rsvps: (rsvps ?? []) as RsvpRow[] };
+  } catch (err) {
+    /* Supabase env missing / unreachable → graceful 404 fallback
+       instead of leaking 500. */
+    console.warn("[admin] loadByToken failed:", err);
+    return null;
   }
-
-  return { invitation: inv, rsvps: (rsvps ?? []) as RsvpRow[] };
 }
 
 export default async function AdminPage({

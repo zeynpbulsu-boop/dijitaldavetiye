@@ -36,14 +36,20 @@ export const metadata: Metadata = {
 };
 
 async function loadByToken(token: string): Promise<Invitation | null> {
-  const supabase = adminDb();
-  const { data, error } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("admin_token", token)
-    .single<Invitation>();
-  if (error || !data) return null;
-  return data;
+  try {
+    const supabase = adminDb();
+    const { data, error } = await supabase
+      .from("invitations")
+      .select("*")
+      .eq("admin_token", token)
+      .single<Invitation>();
+    if (error || !data) return null;
+    return data;
+  } catch (err) {
+    /* Supabase env eksik / unreachable → 404 fallback, 500 leak yok. */
+    console.warn("[editor] loadByToken failed:", err);
+    return null;
+  }
 }
 
 export default async function EditorPage({
