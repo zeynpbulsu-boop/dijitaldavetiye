@@ -224,105 +224,49 @@ export function EnvelopeCeremony({
             Aynı PNG iki kopya, birbirinin tamamlayıcısı clip-path
             ile yarılanır → "split mühür" gibi görünür. */}
 
-        {/* SEAL CONTAINER — fluid clamp size, iki yarım absolute
-            inset-0 ile bunun içine overlay'lenir → tam üst üste binerler. */}
-        <div
+        {/* SINGLE SEAL — clip-path split geçici olarak kaldırıldı,
+            mühür ortada görünmeli. Breaking sekansı opening'de yer
+            yukarı + scale yapar, "fly out" tek parça halinde. Split
+            animasyon stable görünüm sağlandıktan sonra yeniden ele
+            alınır. */}
+        <motion.div
           className="relative z-10"
-          style={{
-            width: "clamp(260px, 35vw, 460px)",
-            height: "clamp(260px, 35vw, 460px)",
-          }}
+          animate={
+            stage === "breaking"
+              ? {
+                  rotate: [-6, -3, -9, -5, -7],
+                  scale: [1, 1.02, 0.99, 1.01, 1],
+                }
+              : stage === "opening"
+              ? {
+                  y: -120,
+                  scale: 1.25,
+                  opacity: 0,
+                  rotate: -22,
+                }
+              : {
+                  rotate: -6,
+                }
+          }
+          transition={
+            stage === "breaking"
+              ? { duration: 0.9, ease: "easeInOut" }
+              : stage === "opening"
+              ? { duration: 1.4, ease: [0.22, 1, 0.36, 1] }
+              : { duration: 0.6, ease: "easeOut" }
+          }
         >
-          {/* LEFT half */}
-          <motion.div
-            className="absolute inset-0"
-            style={{
-              clipPath: crackPath,
-              WebkitClipPath: crackPath,
-            }}
-            animate={
-              stage === "breaking"
-                ? {
-                    x: [0, -2, 1, -3, 0],
-                    rotate: [-6, -4, -8, -5, -7],
-                    scale: [1, 0.99, 1.005, 0.995, 1],
-                  }
-                : stage === "opening"
-                ? {
-                    x: -180,
-                    y: 220,
-                    rotate: -52,
-                    opacity: 0,
-                  }
-                : {
-                    rotate: -6,
-                  }
-            }
-            transition={
-              stage === "breaking"
-                ? { duration: 0.9, ease: "easeInOut" }
-                : stage === "opening"
-                ? { duration: 1.6, ease: [0.34, 0.07, 0.5, 1] }
-                : { duration: 0.6, ease: "easeOut" }
-            }
-          >
-            <WaxSealLuxe
-              size={460}
-              minSize={260}
-              priority
-              haloColor={haloColor}
-              rotate={-6}
-              bgColor={bgColor}
-              src={waxSealSrc}
-              tintColor={waxSealTint}
-            />
-          </motion.div>
-
-          {/* RIGHT half — overlays the left half exactly. */}
-          <motion.div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              clipPath: crackPathRight,
-              WebkitClipPath: crackPathRight,
-            }}
-            animate={
-              stage === "breaking"
-                ? {
-                    x: [0, 2, -1, 3, 0],
-                    rotate: [-6, -8, -4, -7, -5],
-                    scale: [1, 0.995, 1.005, 0.99, 1],
-                  }
-                : stage === "opening"
-                ? {
-                    x: 180,
-                    y: 220,
-                    rotate: 40,
-                    opacity: 0,
-                  }
-                : {
-                    rotate: -6,
-                  }
-            }
-            transition={
-              stage === "breaking"
-                ? { duration: 0.9, ease: "easeInOut" }
-                : stage === "opening"
-                ? { duration: 1.6, ease: [0.34, 0.07, 0.5, 1], delay: 0.05 }
-                : { duration: 0.6, ease: "easeOut" }
-            }
-          >
-            <WaxSealLuxe
-              size={460}
-              minSize={260}
-              priority={false}
-              haloColor={haloColor}
-              rotate={-6}
-              bgColor={bgColor}
-              src={waxSealSrc}
-              tintColor={waxSealTint}
-            />
-          </motion.div>
-        </div>
+          <WaxSealLuxe
+            size={460}
+            minSize={260}
+            priority
+            haloColor={haloColor}
+            rotate={-6}
+            bgColor={bgColor}
+            src={waxSealSrc}
+            tintColor={waxSealTint}
+          />
+        </motion.div>
 
         {/* CRACK LINE — ince koyu çatlak, breaking'in son frame'inde
             220ms görünür, sonra opening'de yarıklar açılırken solar. */}
