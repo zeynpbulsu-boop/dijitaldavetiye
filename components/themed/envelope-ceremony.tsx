@@ -196,192 +196,84 @@ export function EnvelopeCeremony({
           </motion.p>
         )}
 
-        {/* REAL ENVELOPE — Etsy 2026 paritesi.
-            Dikdörtgen krem zarf gövdesi + üst flap (triangle clip).
-            Flap'in ortasında küçük mühür (zarf üstünde stamp).
-            Open click → flap yukarı rotateX ile açılır (3D perspective),
-            sonra zarf tüm sahneden yukarı kayıp solar. */}
-        <div
-          className="relative z-10"
-          style={{
-            perspective: "900px",
-            width: "clamp(280px, 38vw, 460px)",
-            height: "clamp(200px, 27vw, 320px)",
-          }}
-        >
-          {/* Body — sabit, perde gibi kalır */}
-          <motion.div
-            className="absolute inset-0"
-            animate={
-              stage === "opening"
-                ? { y: -180, scale: 0.95, opacity: 0 }
-                : { y: 0, scale: 1, opacity: 1 }
-            }
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              background:
-                "linear-gradient(180deg, #FBFAF6 0%, #F4EFE4 100%)",
-              borderRadius: 4,
-              boxShadow:
-                "0 24px 60px -22px rgba(43,30,22,0.32), 0 6px 14px -6px rgba(43,30,22,0.18), inset 0 0 0 0.5px rgba(43,30,22,0.12)",
-              transformStyle: "preserve-3d",
-            }}
-          >
-            {/* Lower V fold lines (envelope bottom) */}
-            <svg
-              aria-hidden
-              viewBox="0 0 100 70"
-              preserveAspectRatio="none"
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-full w-full"
-              style={{ opacity: 0.35 }}
-            >
-              <line x1="0" y1="100" x2="50" y2="55" stroke={inkColor} strokeWidth="0.18" strokeOpacity="0.6" />
-              <line x1="100" y1="100" x2="50" y2="55" stroke={inkColor} strokeWidth="0.18" strokeOpacity="0.6" />
-            </svg>
-          </motion.div>
-
-          {/* FLAP — üstte trapezoid, click'te rotateX ile açılır */}
-          <motion.div
-            className="absolute z-10 origin-top"
-            style={{
-              top: 0,
-              left: 0,
-              right: 0,
-              height: "60%",
-              background:
-                "linear-gradient(180deg, #F8F2E6 0%, #EDE4D2 100%)",
-              clipPath: "polygon(0 0, 100% 0, 50% 100%)",
-              WebkitClipPath: "polygon(0 0, 100% 0, 50% 100%)",
-              transformOrigin: "50% 0%",
-              transformStyle: "preserve-3d",
-              backfaceVisibility: "hidden",
-              filter:
-                stage === "opening"
-                  ? undefined
-                  : "drop-shadow(0 8px 18px rgba(43,30,22,0.18))",
-            }}
-            animate={
-              stage === "breaking"
-                ? { rotateX: [0, -4, 2, -3, 0] }
-                : stage === "opening"
-                ? { rotateX: -178, y: -190, opacity: 0 }
-                : { rotateX: 0 }
-            }
-            transition={
-              stage === "breaking"
-                ? { duration: 0.6, ease: "easeInOut" }
-                : stage === "opening"
-                ? { duration: 1.5, ease: [0.34, 1, 0.4, 1] }
-                : { duration: 0.4, ease: "easeOut" }
-            }
-          >
-            {/* Flap iç fold çizgisi */}
-            <svg
-              aria-hidden
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              className="pointer-events-none absolute inset-0 h-full w-full"
-            >
-              <line x1="0" y1="0" x2="50" y2="100" stroke={inkColor} strokeWidth="0.18" strokeOpacity="0.45" />
-              <line x1="100" y1="0" x2="50" y2="100" stroke={inkColor} strokeWidth="0.18" strokeOpacity="0.45" />
-            </svg>
-          </motion.div>
-
-          {/* WAX SEAL on flap — küçük (~70-90px), flap'in alt-orta noktasında.
-              Flap açıldığında mühür de uçar (kırılır gibi opacity drop). */}
-          <motion.div
-            className="absolute z-20"
-            style={{
-              top: "calc(60% - 38px)",
-              left: "50%",
-              width: "clamp(70px, 9vw, 96px)",
-              height: "clamp(70px, 9vw, 96px)",
-              transform: "translateX(-50%)",
-            }}
-            animate={
-              stage === "breaking"
-                ? { scale: [1, 1.03, 0.99, 1.02, 1], rotate: [-3, -1, -5, -2, -3] }
-                : stage === "opening"
-                ? { y: -120, scale: 0.85, opacity: 0, rotate: -18 }
-                : { rotate: -3, scale: 1 }
-            }
-            transition={
-              stage === "breaking"
-                ? { duration: 0.6, ease: "easeInOut" }
-                : stage === "opening"
-                ? { duration: 1.0, ease: [0.22, 1, 0.36, 1] }
-                : { duration: 0.4, ease: "easeOut" }
-            }
-          >
-            <WaxSealLuxe
-              size={96}
-              minSize={70}
-              priority
-              haloColor={haloColor}
-              rotate={-3}
-              bgColor={bgColor}
-              src={waxSealSrc}
-              tintColor={waxSealTint}
-            />
-          </motion.div>
-        </div>
-
-        {/* Light flash kaldırıldı — gerçek zarf açılışında flash yok,
-            sadece flap'in rotateX hareketi yeterli. */}
-
-        {/* CTA — incecik pill, mail icon + shimmer. PR #22: mail icon
-            eklendi (PL paritesi). */}
+        {/* REAL ENVELOPE PHOTO — Etsy 2026 paritesi.
+            Tek photorealistic shot: kapalı olive zarf + üzerinde basılı
+            mühür (fal.ai flux-pro ultra render). CSS-drawn yapı yerine
+            gerçek fotoğraf → fake/photoshop hissi yok.
+            Click → fotoğraf scale up + fade out (kameranın yaklaşması
+            hissi), envelope ceremony unmount, content görünür. */}
         <motion.button
           type="button"
           onClick={open}
           aria-label={ctaLabel}
-          data-cursor="magnetic"
-          data-cursor-label={ctaLabel}
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: stage === "sealed" ? 1 : 0, y: 0 }}
-          transition={{ duration: 1.2, delay: 1.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-20 mt-[-90px] sm:mt-[-120px] inline-flex items-center justify-center gap-3 overflow-hidden px-9 py-3.5 transition-all hover:tracking-[0.42em]"
+          className="relative z-10 block cursor-pointer overflow-hidden rounded-md p-0"
           style={{
-            border: `0.5px solid ${inkColor}88`,
-            color: inkColor,
-            background: `${bgColor}E6`,
-            borderRadius: 999,
-            fontSize: 11,
-            letterSpacing: "0.36em",
-            textTransform: "uppercase",
-            fontWeight: 400,
-            fontFamily: "var(--font-display), Georgia, serif",
-            cursor: "pointer",
-            backdropFilter: "blur(8px)",
-            boxShadow: "0 6px 22px rgba(0,0,0,0.18)",
+            width: "clamp(280px, 42vw, 520px)",
+            aspectRatio: "4 / 3",
+            border: "none",
+            background: "transparent",
+            boxShadow:
+              "0 32px 70px -28px rgba(43,30,22,0.42), 0 10px 20px -8px rgba(43,30,22,0.22)",
           }}
+          whileHover={
+            stage === "sealed"
+              ? { y: -6, scale: 1.015, boxShadow: "0 40px 90px -28px rgba(43,30,22,0.5)" }
+              : undefined
+          }
+          whileTap={stage === "sealed" ? { scale: 0.99 } : undefined}
+          animate={
+            stage === "breaking"
+              ? { scale: [1, 1.02, 0.995, 1.01, 1], rotate: [0, -0.4, 0.3, -0.2, 0] }
+              : stage === "opening"
+              ? { scale: 1.35, opacity: 0 }
+              : { scale: 1, opacity: 1, rotate: 0 }
+          }
+          transition={
+            stage === "breaking"
+              ? { duration: 0.7, ease: "easeInOut" }
+              : stage === "opening"
+              ? { duration: 1.6, ease: [0.22, 1, 0.36, 1] }
+              : { duration: 0.5, ease: "easeOut" }
+          }
         >
-          <span
+          <Image
+            src="/olea/envelope-sealed.jpg"
+            alt="Davetiye zarfı"
+            fill
+            sizes="(max-width: 640px) 90vw, 520px"
+            priority
+            style={{ objectFit: "cover" }}
+          />
+          {/* Subtle warm vignette + hover glow */}
+          <div
             aria-hidden
-            className="absolute inset-0 pointer-events-none"
+            className="pointer-events-none absolute inset-0"
             style={{
-              background: `linear-gradient(110deg, transparent 0%, transparent 42%, ${inkColor}24 50%, transparent 58%, transparent 100%)`,
-              animation: "shimmerSweep 5s ease-in-out infinite",
+              background:
+                "radial-gradient(ellipse at center, transparent 55%, rgba(43,30,22,0.12) 100%)",
             }}
           />
-          {/* Mail icon — PL paritesi */}
-          <svg
-            aria-hidden
-            width="14"
-            height="11"
-            viewBox="0 0 18 14"
-            fill="none"
-            className="relative"
-            style={{ color: inkColor }}
-          >
-            <rect x="0.75" y="0.75" width="16.5" height="12.5" rx="1.5" stroke="currentColor" strokeWidth="1" />
-            <path d="M1 2 L 9 8 L 17 2" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-          </svg>
-          <span className="relative">{ctaLabel}</span>
         </motion.button>
 
-        {/* Hint kaldırıldı — Pressed Love paritesi. CTA mührün altında
-            bütünleşik, ek metin albeni'yi düşürüyor. */}
+        {/* HINT — zarfın altında ince calligraphic ipucu metni.
+            Zarf zaten clickable, eski pill button kaldırıldı.
+            "Click the envelope to open." Etsy paritesi. */}
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: stage === "sealed" ? 1 : 0, y: 0 }}
+          transition={{ duration: 1.0, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 mt-8 text-center italic sm:mt-10"
+          style={{
+            color: inkColor,
+            opacity: 0.75,
+            fontFamily: "var(--font-calligraphy), 'Pinyon Script', Georgia, serif",
+            fontSize: "clamp(18px, 2.4vw, 26px)",
+            fontWeight: 400,
+            letterSpacing: "0.01em",
+          }}
+        >
+          Zarfa dokun, davetiyeyi aç
+        </motion.p>
       </motion.div>
     </AnimatePresence>
   );
