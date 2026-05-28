@@ -18,6 +18,12 @@ import { CurrencyProvider } from "@/lib/currency/provider";
 import { LenisProvider } from "@/lib/motion/lenis-provider";
 import { AudioProvider } from "@/lib/audio/audio-context";
 import { MotionConfig } from "framer-motion";
+import {
+  JsonLd,
+  organizationSchema,
+  websiteSchema,
+  productSchema,
+} from "@/components/seo/json-ld";
 
 /**
  * Body: Inter Tight — modern grotesk, default body across NUVE.
@@ -139,16 +145,26 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "tr_TR",
-    alternateLocale: ["en_US"],
-    title: "NUVE — An invitation, made with intention",
-    description: "Editorial digital wedding invitations. Made by hand. 48-hour delivery.",
+    alternateLocale: ["en_US", "sr_RS"],
+    title: "NUVE — Premium Dijital Davetiye, €39.99 (Hepsi Dahil)",
+    description:
+      "Düğün, doğum günü, baby shower… her etkinlik için premium dijital davetiye. AI özel kapak, RSVP, harita, müzik, çoklu dil — tek paket €39.99.",
     siteName: "NUVE",
     url: BASE_URL,
+    images: [
+      {
+        url: "/aethel/cover.jpg",
+        width: 1200,
+        height: 800,
+        alt: "NUVE — premium dijital davetiye",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NUVE",
-    description: "An invitation, made with intention.",
+    title: "NUVE — Premium Dijital Davetiye",
+    description: "€39.99 · Her etkinlik dahil · AI özel kapak + RSVP + harita + müzik.",
+    images: ["/aethel/cover.jpg"],
   },
   robots: {
     index: true,
@@ -201,6 +217,13 @@ export default function RootLayout({
       ].join(" ")}
     >
       <body>
+        {/* JSON-LD structured data — Organization + WebSite + Product.
+            Tüm sayfalarda mevcut, Google/ChatGPT/Perplexity için
+            yapısal arama görünürlüğü. */}
+        <JsonLd
+          data={[organizationSchema(), websiteSchema(), productSchema()]}
+        />
+
         {/* FAZ C.8 — skip link for keyboard users. Hidden until focused. */}
         <a href="#main" className="skip-link">
           Ana içeriğe atla
