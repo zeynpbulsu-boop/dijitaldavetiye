@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, ThemeV2Data } from "@/lib/themes-v2/types";
 import { DustParticles } from "./atmosphere";
+import { THEME_CEREMONY } from "@/lib/themes-v2/assets";
 
 const CURTAIN_MS = 1250;
 const AMBIENT_VOLUME = 0.4;
@@ -145,6 +146,7 @@ export function OpeningCeremony({
 }) {
   const reduced = useReducedMotion();
   const { palette } = meta;
+  const ceremony = THEME_CEREMONY[meta.slug];
   const [gone, setGone] = useState(false);
 
   // Unmount after the curtain finishes so it never blocks interaction.
@@ -169,6 +171,18 @@ export function OpeningCeremony({
   const panelBg = `linear-gradient(180deg, ${palette.bg} 0%, ${palette.countdownBg} 140%)`;
   const curtain = { duration: reduced ? 0.3 : CURTAIN_MS / 1000, ease: [0.76, 0, 0.24, 1] as const };
 
+  // When a real cover texture exists, split one image across the two panels
+  // (each shows its half) so the parting curtain looks like one luxe sheet.
+  const panelStyle = (side: "left" | "right"): CSSProperties =>
+    ceremony?.coverTexture
+      ? {
+          backgroundImage: `linear-gradient(180deg, ${palette.bg}cc 0%, ${palette.countdownBg}aa 140%), url(${ceremony.coverTexture})`,
+          backgroundSize: "100vw 100%, 100vw 100%",
+          backgroundPosition: `${side} center, ${side} center`,
+          backgroundColor: palette.bg,
+        }
+      : { background: panelBg };
+
   return (
     <div
       className="fixed inset-0 z-[60] overflow-hidden"
@@ -178,14 +192,14 @@ export function OpeningCeremony({
       {/* Two panels that part like a curtain */}
       <motion.div
         className="absolute inset-y-0 left-0 w-1/2"
-        style={{ background: panelBg }}
+        style={panelStyle("left")}
         initial={false}
         animate={opened ? { x: "-101%" } : { x: 0 }}
         transition={curtain}
       />
       <motion.div
         className="absolute inset-y-0 right-0 w-1/2"
-        style={{ background: panelBg }}
+        style={panelStyle("right")}
         initial={false}
         animate={opened ? { x: "101%" } : { x: 0 }}
         transition={curtain}
@@ -213,7 +227,7 @@ export function OpeningCeremony({
           {data.eyebrow}
         </motion.p>
 
-        <WaxSeal monogram={data.monogram} palette={palette} reduced={!!reduced} />
+        <WaxSeal monogram={data.monogram} palette={palette} reduced={!!reduced} sealSrc={ceremony?.seal} />
 
         <motion.p
           className="mt-10"
@@ -263,15 +277,17 @@ function WaxSeal({
   monogram,
   palette,
   reduced,
+  sealSrc,
 }: {
   monogram: string;
   palette: ThemeV2Meta["palette"];
   reduced: boolean;
+  sealSrc?: string;
 }) {
   return (
     <motion.div
       className="relative flex items-center justify-center"
-      style={{ width: 128, height: 128 }}
+      style={{ width: 132, height: 132 }}
       initial={reduced ? false : { opacity: 0, scale: 0.7 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.4, duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
@@ -285,34 +301,47 @@ function WaxSeal({
         animate={reduced ? undefined : { scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
       />
-      <svg width="128" height="128" viewBox="0 0 128 128" className="relative">
-        <circle cx="64" cy="64" r="52" fill="none" stroke={palette.accent} strokeWidth="1" opacity="0.55" />
-        <circle cx="64" cy="64" r="46" fill="none" stroke={palette.accent} strokeWidth="0.6" opacity="0.4" />
-        {/* tick ring */}
-        {Array.from({ length: 48 }).map((_, i) => {
-          const a = (i / 48) * Math.PI * 2;
-          const r1 = 49;
-          const r2 = 51.5;
-          return (
-            <line
-              key={i}
-              x1={(64 + Math.cos(a) * r1).toFixed(2)}
-              y1={(64 + Math.sin(a) * r1).toFixed(2)}
-              x2={(64 + Math.cos(a) * r2).toFixed(2)}
-              y2={(64 + Math.sin(a) * r2).toFixed(2)}
-              stroke={palette.accent}
-              strokeWidth="0.5"
-              opacity="0.35"
-            />
-          );
-        })}
-      </svg>
+      {sealSrc ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={sealSrc}
+          alt=""
+          aria-hidden
+          className="relative h-full w-full object-contain"
+          style={{ filter: "drop-shadow(0 6px 14px rgba(0,0,0,0.45))" }}
+        />
+      ) : (
+        <svg width="128" height="128" viewBox="0 0 128 128" className="relative">
+          <circle cx="64" cy="64" r="52" fill="none" stroke={palette.accent} strokeWidth="1" opacity="0.55" />
+          <circle cx="64" cy="64" r="46" fill="none" stroke={palette.accent} strokeWidth="0.6" opacity="0.4" />
+          {/* tick ring */}
+          {Array.from({ length: 48 }).map((_, i) => {
+            const a = (i / 48) * Math.PI * 2;
+            const r1 = 49;
+            const r2 = 51.5;
+            return (
+              <line
+                key={i}
+                x1={(64 + Math.cos(a) * r1).toFixed(2)}
+                y1={(64 + Math.sin(a) * r1).toFixed(2)}
+                x2={(64 + Math.cos(a) * r2).toFixed(2)}
+                y2={(64 + Math.sin(a) * r2).toFixed(2)}
+                stroke={palette.accent}
+                strokeWidth="0.5"
+                opacity="0.35"
+              />
+            );
+          })}
+        </svg>
+      )}
       <span
         className="absolute"
         style={{
           fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
-          fontSize: 40,
-          color: palette.accent,
+          fontSize: sealSrc ? 34 : 40,
+          // On the real gold seal, render the monogram as if engraved into the wax.
+          color: sealSrc ? "rgba(70,48,12,0.62)" : palette.accent,
+          textShadow: sealSrc ? "0 1px 0.5px rgba(255,238,196,0.5)" : undefined,
           lineHeight: 1,
         }}
       >

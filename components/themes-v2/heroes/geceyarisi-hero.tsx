@@ -12,7 +12,7 @@ import {
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
-import { THEME_ASSETS } from "@/lib/themes-v2/assets";
+import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 
 interface Star {
   x: number;
@@ -100,26 +100,49 @@ export function GeceyarisiHero({ meta, data }: ThemeV2Props) {
     >
       <AtmosphereDefs />
 
-      {/* Painted backdrop + gold foliage with slow Ken-Burns + far parallax */}
+      {/* Cinematic backdrop: fal.ai night-sky VIDEO (poster = painted still as a
+          graceful fallback) with far parallax; gold foliage frame on top. */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         style={{ y: reduced ? 0 : yFar }}
       >
+        {THEME_VIDEO.geceyarisi ? (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video
+            className="absolute inset-0 h-full w-full object-cover opacity-95"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={THEME_ASSETS.geceyarisi.bg}
+            aria-hidden
+          >
+            <source src={THEME_VIDEO.geceyarisi} type="video/mp4" />
+          </video>
+        ) : (
+          <motion.div
+            className="absolute inset-0"
+            animate={reduced ? undefined : { scale: [1, 1.08, 1] }}
+            transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <picture>
+              <source srcSet={THEME_ASSETS.geceyarisi.bg?.replace(".png", ".webp")} type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={THEME_ASSETS.geceyarisi.bg}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full object-cover opacity-95"
+              />
+            </picture>
+          </motion.div>
+        )}
         <motion.div
           className="absolute inset-0"
-          animate={reduced ? undefined : { scale: [1, 1.08, 1] }}
-          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+          animate={reduced ? undefined : { scale: [1, 1.06, 1] }}
+          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
         >
-          <picture>
-            <source srcSet={THEME_ASSETS.geceyarisi.bg?.replace(".png", ".webp")} type="image/webp" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={THEME_ASSETS.geceyarisi.bg}
-              alt=""
-              aria-hidden
-              className="absolute inset-0 h-full w-full object-cover opacity-95"
-            />
-          </picture>
           <picture>
             <source srcSet={THEME_ASSETS.geceyarisi.overlay?.replace(".png", ".webp")} type="image/webp" />
             {/* eslint-disable-next-line @next/next/no-img-element */}

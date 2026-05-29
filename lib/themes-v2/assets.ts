@@ -78,6 +78,32 @@ export const THEME_MUSIC: Partial<Record<ThemeV2Slug, string>> = {
   postakart: "/audio/aethel/clair-de-lune.mp3", // Debussy — Clair de Lune (shared)
 };
 
+/**
+ * Cinematic full-bleed hero VIDEO per theme (fal.ai-generated original clips).
+ * Optional — when present the hero renders a <video> backdrop (with the still
+ * bg image as poster fallback); when absent it falls back to the still + motion.
+ * Populated as each theme's clip is generated + web-optimized.
+ */
+export const THEME_VIDEO: Partial<Record<ThemeV2Slug, string>> = {
+  geceyarisi: "/themes-v2/geceyarisi/night-sky.mp4",
+};
+
+/**
+ * Realistic opening-ceremony assets per theme (fal.ai-generated). When a seal
+ * image is present the sealed cover uses it (with the couple monogram overlaid)
+ * instead of the flat SVG seal; coverTexture enriches the cover panels.
+ */
+export interface ThemeCeremonyAssets {
+  seal?: string;
+  coverTexture?: string;
+}
+export const THEME_CEREMONY: Partial<Record<ThemeV2Slug, ThemeCeremonyAssets>> = {
+  geceyarisi: {
+    seal: "/themes-v2/geceyarisi/wax-seal-gold.png",
+    coverTexture: "/themes-v2/geceyarisi/cover-texture.png",
+  },
+};
+
 /** Thumbnail used by /tasarimlar showcase grid. */
 export const THEME_THUMB: Record<ThemeV2Slug, string> = {
   celenk: "/themes-v2/thumbs/celenk.png",
