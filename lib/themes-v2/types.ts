@@ -68,6 +68,8 @@ export interface ThemeV2Data {
     name: string;
     address?: string;
     city?: string;
+    lat?: number | null;
+    lng?: number | null;
   };
   story: {
     title: string;
@@ -78,6 +80,15 @@ export interface ThemeV2Data {
   menu: MenuColumn[];
   extraInfo: string;
   footerNote: string;
+  /** Optional gift / bank-transfer block (rendered only when present). */
+  gift?: GiftInfo | null;
+}
+
+export interface GiftInfo {
+  iban?: string | null;
+  bank?: string | null;
+  accountHolder?: string | null;
+  note?: string | null;
 }
 
 export interface ThemeV2Props {

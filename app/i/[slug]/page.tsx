@@ -2,11 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { adminDb } from "@/lib/db/supabase";
 import type { Invitation } from "@/lib/db/types";
-import { dictionaries } from "@/lib/i18n/dictionaries";
-import { themeForSlug } from "@/lib/templates/themes";
-import { luxeThemeFromInvitation } from "@/lib/templates/luxe-bridge";
-import { LuxeEditionDemo } from "@/components/themed/luxe-edition-demo";
-import { InvitationView } from "./_invitation-view";
+import { ThemeRenderer } from "@/components/themes-v2/theme-renderer";
+import { invitationToThemeV2 } from "@/lib/themes-v2/bridge";
 
 /**
  * /i/[slug] — public invitation page.
@@ -67,47 +64,17 @@ export default async function PublicInvitationPage({
   const inv = await loadLive(params.slug);
   if (!inv) notFound();
 
-  /* FAZ A.3 — Demo → Production bridge. When the couple chose one of
-     the 6 luxe editions, render with `LuxeEditionDemo` so the live
-     invitation matches the demo they previewed. Everything else stays
-     on the legacy InvitationView until those templates migrate too. */
-  const luxeTheme = luxeThemeFromInvitation(inv);
-  if (luxeTheme) {
-    return <LuxeEditionDemo theme={luxeTheme} />;
-  }
-
-  const t = dictionaries[inv.locale];
-  const theme = themeForSlug(inv.template_slug);
-
-  const localeTag =
-    inv.locale === "tr" ? "tr-TR" : inv.locale === "sr" ? "sr-RS" : "en-US";
-  const dateLine = inv.wedding_date
-    ? new Date(inv.wedding_date).toLocaleDateString(localeTag, {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
-    : null;
-  const weekday = inv.wedding_date
-    ? new Date(inv.wedding_date).toLocaleDateString(localeTag, {
-        weekday: "long",
-      })
-    : null;
-
-  const monogram =
-    inv.monogram_initials ||
-    (inv.partner_one_name && inv.partner_two_name
-      ? `${inv.partner_one_name[0]}&${inv.partner_two_name[0]}`
-      : "N");
+  // Production render via the new themes-v2 cinematic system. The bridge maps
+  // the invitation row → { meta, data } and resolves any legacy edition slug to
+  // the nearest themes-v2 theme, so every live invitation uses the new system.
+  const { meta, data } = invitationToThemeV2(inv);
 
   return (
-    <InvitationView
-      inv={inv}
-      theme={theme}
-      t={t}
-      dateLine={dateLine}
-      weekday={weekday}
-      monogram={monogram}
+    <ThemeRenderer
+      meta={meta}
+      data={data}
+      rsvpSlug={inv.slug}
+      musicSrc={inv.music_url}
     />
   );
 }

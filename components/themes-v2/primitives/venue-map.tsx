@@ -30,8 +30,16 @@ export function VenueMap({
     .replace(/\s+/g, " ")
     .trim();
   const enc = encodeURIComponent(query);
-  const embed = `https://maps.google.com/maps?q=${enc}&z=15&output=embed`;
-  const directions = `https://www.google.com/maps/search/?api=1&query=${enc}`;
+  // Prefer exact coordinates (DB venue_lat/lng) for a precise pin; fall back
+  // to the address text query when coordinates aren't set.
+  const hasCoords = typeof v.lat === "number" && typeof v.lng === "number";
+  const coordQ = hasCoords ? `${v.lat},${v.lng}` : "";
+  const embed = hasCoords
+    ? `https://maps.google.com/maps?q=${coordQ}&z=16&output=embed`
+    : `https://maps.google.com/maps?q=${enc}&z=15&output=embed`;
+  const directions = hasCoords
+    ? `https://www.google.com/maps/search/?api=1&query=${coordQ}`
+    : `https://www.google.com/maps/search/?api=1&query=${enc}`;
 
   let calendar = "";
   if (data.date.iso) {

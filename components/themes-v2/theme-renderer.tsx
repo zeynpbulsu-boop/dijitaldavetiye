@@ -23,9 +23,10 @@ const HERO_BY_SLUG: Record<ThemeV2Slug, (p: ThemeV2Props) => JSX.Element> = {
 interface Props extends ThemeV2Props {
   rsvpSlug?: string;
   showBuyBadge?: boolean;
+  musicSrc?: string | null;
 }
 
-export function ThemeRenderer({ meta, data, rsvpSlug, showBuyBadge }: Props) {
+export function ThemeRenderer({ meta, data, rsvpSlug, showBuyBadge, musicSrc }: Props) {
   const Hero = HERO_BY_SLUG[meta.slug];
   return (
     <ThemeShell
@@ -34,6 +35,7 @@ export function ThemeRenderer({ meta, data, rsvpSlug, showBuyBadge }: Props) {
       hero={<Hero meta={meta} data={data} />}
       rsvpSlug={rsvpSlug}
       showBuyBadge={showBuyBadge}
+      musicSrc={musicSrc}
     />
   );
 }

@@ -7,6 +7,7 @@ import { CountdownBand } from "./primitives/countdown-band";
 import { PolaroidGallery } from "./primitives/polaroid-gallery";
 import { ProgramList } from "./primitives/program-list";
 import { VenueMap } from "./primitives/venue-map";
+import { GiftInfo } from "./primitives/gift-info";
 import { ExtraInfo } from "./primitives/extra-info";
 import { RsvpForm } from "./primitives/rsvp-form";
 import { AtmosphereDefs } from "./primitives/atmosphere";
@@ -22,6 +23,8 @@ interface Props extends ThemeV2Props {
   hero: ReactNode;
   showBuyBadge?: boolean;
   rsvpSlug?: string;
+  /** Per-invitation music override; falls back to the theme's default track. */
+  musicSrc?: string | null;
 }
 
 export function ThemeShell({
@@ -30,11 +33,24 @@ export function ThemeShell({
   hero,
   showBuyBadge = false,
   rsvpSlug,
+  musicSrc,
 }: Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
   const [opened, setOpened] = useState(false);
-  const audio = useAmbientAudio(THEME_MUSIC[meta.slug]);
+  const audio = useAmbientAudio(musicSrc || THEME_MUSIC[meta.slug]);
+
+  // Section visibility — a live invitation only shows sections it has data for
+  // (no placeholder/empty blocks). The /themes/[slug] preview uses full
+  // SAMPLE_DATA so every section appears there.
+  const showCountdown = Boolean(data.date.year);
+  const showGallery = Boolean(data.story.body) || data.photos.length > 0;
+  const showProgram = data.schedule.length > 0;
+  const showVenue = Boolean(
+    data.venue.name || (typeof data.venue.lat === "number" && typeof data.venue.lng === "number"),
+  );
+  const showGift = Boolean(data.gift?.iban);
+  const showExtra = Boolean(data.extraInfo && data.extraInfo.trim());
 
   // Mount-gate: framer-motion enter animations (initial → animate) only fire
   // on a fresh client mount, not on Next.js hydration of server markup — so a
@@ -62,26 +78,41 @@ export function ThemeShell({
         <>
           {hero}
 
-          <Reveal>
-            <CountdownBand meta={meta} date={data.date} />
-          </Reveal>
-          <Reveal>
-            <PolaroidGallery
-              meta={meta}
-              photos={data.photos}
-              title={data.story.title}
-              intro={data.story.body}
-            />
-          </Reveal>
-          <Reveal>
-            <ProgramList meta={meta} items={data.schedule} />
-          </Reveal>
-          <Reveal>
-            <VenueMap meta={meta} data={data} />
-          </Reveal>
-          <Reveal>
-            <ExtraInfo meta={meta} text={data.extraInfo} />
-          </Reveal>
+          {showCountdown && (
+            <Reveal>
+              <CountdownBand meta={meta} date={data.date} />
+            </Reveal>
+          )}
+          {showGallery && (
+            <Reveal>
+              <PolaroidGallery
+                meta={meta}
+                photos={data.photos}
+                title={data.story.title}
+                intro={data.story.body}
+              />
+            </Reveal>
+          )}
+          {showProgram && (
+            <Reveal>
+              <ProgramList meta={meta} items={data.schedule} />
+            </Reveal>
+          )}
+          {showVenue && (
+            <Reveal>
+              <VenueMap meta={meta} data={data} />
+            </Reveal>
+          )}
+          {showGift && data.gift && (
+            <Reveal>
+              <GiftInfo meta={meta} gift={data.gift} />
+            </Reveal>
+          )}
+          {showExtra && (
+            <Reveal>
+              <ExtraInfo meta={meta} text={data.extraInfo} />
+            </Reveal>
+          )}
           <Reveal>
             <RsvpForm meta={meta} slug={rsvpSlug} />
           </Reveal>

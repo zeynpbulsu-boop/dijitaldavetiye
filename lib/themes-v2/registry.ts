@@ -189,6 +189,12 @@ export const SAMPLE_DATA: ThemeV2Data = {
   extraInfo:
     "Davetlilerimize iletmek istediğimiz her şey için size özel bir alan. Kıyafet seçimi, çocuklara dair notlar, hediye tercihleri ya da ulaşım ayrıntıları… Buradan bu bölümü dilediğiniz gibi şekillendirebilirsiniz.",
   footerNote: "Sizleri aramızda görmek bizi çok mutlu edecek.",
+  gift: {
+    iban: "TR00 0000 0000 0000 0000 0000 00",
+    bank: "Örnek Bankası",
+    accountHolder: "Elif Yılmaz",
+    note: "Varlığınız bizim için en değerli hediye. Katkıda bulunmak isterseniz aşağıdaki hesap bilgilerini kullanabilirsiniz.",
+  },
 };
 
 export function getThemeV2(slug: ThemeV2Slug): ThemeV2Meta | undefined {
