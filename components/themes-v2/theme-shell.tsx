@@ -6,7 +6,7 @@ import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { CountdownBand } from "./primitives/countdown-band";
 import { PolaroidGallery } from "./primitives/polaroid-gallery";
 import { ProgramList } from "./primitives/program-list";
-import { MenuPanel } from "./primitives/menu-panel";
+import { VenueMap } from "./primitives/venue-map";
 import { ExtraInfo } from "./primitives/extra-info";
 import { RsvpForm } from "./primitives/rsvp-form";
 import { AtmosphereDefs } from "./primitives/atmosphere";
@@ -77,7 +77,7 @@ export function ThemeShell({
             <ProgramList meta={meta} items={data.schedule} />
           </Reveal>
           <Reveal>
-            <MenuPanel meta={meta} columns={data.menu} />
+            <VenueMap meta={meta} data={data} />
           </Reveal>
           <Reveal>
             <ExtraInfo meta={meta} text={data.extraInfo} />
