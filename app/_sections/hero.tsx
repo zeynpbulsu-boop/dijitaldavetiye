@@ -107,10 +107,10 @@ export function Hero() {
                 Davetiyeni tasarla →
               </Link>
               <Link
-                href="/dev-preview/aethel"
+                href="/themes/geceyarisi"
                 data-cursor="open"
                 data-cursor-label="Demo"
-                aria-label="Aethel davetiye demosunu gör"
+                aria-label="Davetiye demosunu gör"
                 className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-brand-ink/40 px-7 text-[12px] uppercase tracking-[0.22em] text-brand-ink transition hover:border-brand-cognac hover:text-brand-cognac"
               >
                 Demoyu gör

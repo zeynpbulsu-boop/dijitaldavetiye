@@ -1,33 +1,49 @@
 "use client";
 
 /**
- * TemplateCarousel — 6 luxe edition + "Yakında" placeholder.
+ * TemplateCarousel — the 7 themes-v2 cinematic templates.
  *
- * PR #18 refactor: kart markup'ı EditionCardTile'a taşındı, data
- * lib/templates/edition-cards.ts'te. /tasarimlar dedicated catalog
- * sayfası aynı data + tile'ı kullanıyor (bizevleniyoruz.net paritesi).
- *
- * Polish (PR #18):
- *  - Numbered display (01-06) her kartta
- *  - "Demoyu gör →" pill hover'da görünür (TDI paritesi)
- *  - "EN SEVİLEN" rozeti Aethel'da (bizevleniyoruz paritesi)
- *  - 7. kart "Yakında" placeholder (TDI Coming Soon paritesi)
- *  - Footer'da "Tüm koleksiyon →" link /tasarimlar'a gider
+ * Replaces the legacy luxe-edition carousel. Each card uses the theme's
+ * rendered preview thumbnail (SVG fallback) and links to /themes/[slug],
+ * the live cinematic preview (tap-to-open → video hero → full invitation).
  */
 
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect } from "react";
-import { editionCards } from "@/lib/templates/edition-cards";
-import {
-  EditionCardTile,
-  ComingSoonTile,
-} from "@/components/edition-card-tile";
+import { listThemesV2 } from "@/lib/themes-v2/registry";
+import { THEME_THUMB } from "@/lib/themes-v2/assets";
+import type { ThemeV2Slug } from "@/lib/themes-v2/types";
+import { CelenkThumb } from "@/components/themes-v2/thumbs/celenk-thumb";
+import { PolaroidThumb } from "@/components/themes-v2/thumbs/polaroid-thumb";
+import { KurdeleThumb } from "@/components/themes-v2/thumbs/kurdele-thumb";
+import { FenerThumb } from "@/components/themes-v2/thumbs/fener-thumb";
+import { DefterThumb } from "@/components/themes-v2/thumbs/defter-thumb";
+import { GeceyarisiThumb } from "@/components/themes-v2/thumbs/geceyarisi-thumb";
+import { PostakartThumb } from "@/components/themes-v2/thumbs/postakart-thumb";
+
+const SVG_THUMB: Record<ThemeV2Slug, React.ComponentType> = {
+  celenk: CelenkThumb,
+  polaroid: PolaroidThumb,
+  kurdele: KurdeleThumb,
+  fener: FenerThumb,
+  defter: DefterThumb,
+  geceyarisi: GeceyarisiThumb,
+  postakart: PostakartThumb,
+};
+
+/** Small editorial badge per theme (purely cosmetic). */
+const BADGE: Partial<Record<ThemeV2Slug, string>> = {
+  geceyarisi: "EN SEVİLEN",
+  celenk: "YENİ",
+  fener: "YENİ",
+};
 
 export function TemplateCarousel() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-15%" });
   const railRef = useRef<HTMLDivElement>(null);
+  const themes = listThemesV2();
 
   // Click-and-drag horizontal pan for desktop.
   useEffect(() => {
@@ -51,15 +67,13 @@ export function TemplateCarousel() {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - rail.offsetLeft;
-      const walk = (x - startX) * 1.15;
-      rail.scrollLeft = scrollStart - walk;
+      rail.scrollLeft = scrollStart - (x - startX) * 1.15;
     };
 
     rail.addEventListener("mousedown", down);
     window.addEventListener("mouseup", up);
     rail.addEventListener("mousemove", move);
     rail.addEventListener("mouseleave", up);
-
     return () => {
       rail.removeEventListener("mousedown", down);
       window.removeEventListener("mouseup", up);
@@ -69,13 +83,8 @@ export function TemplateCarousel() {
   }, []);
 
   return (
-    <section
-      id="themes"
-      ref={ref}
-      className="border-b border-line bg-bg py-20 lg:py-32"
-    >
+    <section id="themes" ref={ref} className="border-b border-line bg-bg py-20 lg:py-32">
       <div className="container-wide">
-        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -88,27 +97,20 @@ export function TemplateCarousel() {
             </span>
             <h2
               className="mt-4 font-display text-brand-ink"
-              style={{
-                fontSize: "clamp(36px, 5vw, 72px)",
-                lineHeight: 0.98,
-                letterSpacing: "-0.025em",
-              }}
+              style={{ fontSize: "clamp(36px, 5vw, 72px)", lineHeight: 0.98, letterSpacing: "-0.025em" }}
             >
-              Altı edisyon,{" "}
-              <span className="italic text-brand-cognac">altı hikâye</span>.
+              Yedi tema,{" "}
+              <span className="italic text-brand-cognac">yedi hikâye</span>.
             </h2>
-            <p className="mt-3 max-w-[540px] text-[14px] leading-[1.7] text-brand-mute">
-              Her edisyon kendi mührü, sahnesi, ornament ailesi ve fontuyla
-              tasarlandı &mdash; tek bir kalıbın renk varyantı değil.
-              Tıklayın, demoyu gezin.
+            <p className="mt-3 max-w-[560px] text-[14px] leading-[1.7] text-brand-mute">
+              Her tema kendi sinematik açılışı, video sahnesi, mührü ve fontuyla
+              tasarlandı &mdash; tek bir kalıbın renk varyantı değil. Tıklayın,
+              demoyu gezin.
             </p>
           </div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-brand-mute">
-            Sürükle →
-          </p>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-brand-mute">Sürükle →</p>
         </motion.div>
 
-        {/* Rail */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
@@ -117,17 +119,79 @@ export function TemplateCarousel() {
           className="no-scrollbar -mx-5 flex cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 lg:-mx-8 lg:gap-7 lg:px-8"
           style={{ scrollPaddingLeft: 24 }}
         >
-          {editionCards.map((card) => (
-            <EditionCardTile
-              key={card.slug}
-              card={card}
-              isCarouselSlide
-            />
-          ))}
-          <ComingSoonTile isCarouselSlide />
+          {themes.map((theme, i) => {
+            const Svg = SVG_THUMB[theme.slug];
+            return (
+              <Link
+                key={theme.slug}
+                href={`/themes/${theme.slug}`}
+                data-cursor="magnetic"
+                data-cursor-label="Demoyu gör"
+                aria-label={`${theme.name} demosunu gör`}
+                className="group relative w-[300px] shrink-0 snap-start overflow-hidden rounded-sm border border-brand-ink/10 bg-paper transition hover:-translate-y-1 hover:border-brand-cognac/40 hover:shadow-xl sm:w-[340px] lg:w-[380px]"
+              >
+                <div
+                  className="relative aspect-[3/4] overflow-hidden"
+                  style={{ backgroundColor: theme.palette.bg }}
+                >
+                  <picture>
+                    <source srcSet={THEME_THUMB[theme.slug]} type="image/png" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={THEME_THUMB[theme.slug]}
+                      alt={`${theme.name} davetiye teması`}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </picture>
+                  <div className="absolute inset-0 -z-10">
+                    <Svg />
+                  </div>
+
+                  {/* Number top-left */}
+                  <span
+                    className="absolute left-5 top-5 font-display text-white/90"
+                    style={{ fontSize: 22, textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+
+                  {/* Vibe / badge top-right */}
+                  <span
+                    className="absolute right-4 top-5 rounded-full bg-white/85 px-3 py-1 text-[9px] font-semibold uppercase text-brand-ink"
+                    style={{ letterSpacing: "0.24em" }}
+                  >
+                    {BADGE[theme.slug] ?? theme.mood}
+                  </span>
+
+                  {/* Hover gradient + pill */}
+                  <div
+                    className="absolute inset-0 opacity-0 transition group-hover:opacity-100"
+                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)" }}
+                  />
+                  <span className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/95 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-ink opacity-0 transition group-hover:opacity-100">
+                    Demoyu gör →
+                  </span>
+                </div>
+
+                <div className="p-6 sm:p-7">
+                  <h3
+                    className="font-display text-brand-ink"
+                    style={{ fontSize: 26, lineHeight: 1.05, letterSpacing: "-0.012em" }}
+                  >
+                    {theme.name}
+                  </h3>
+                  <p className="mt-2 text-[13px] text-brand-mute">{theme.tagline}</p>
+                </div>
+              </Link>
+            );
+          })}
         </motion.div>
 
-        {/* Footer CTA */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -135,8 +199,8 @@ export function TemplateCarousel() {
           className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between"
         >
           <p className="text-[13px] text-brand-mute">
-            Her edisyon kendi mührü, sahnesi, ornament ailesi ve fontuyla
-            tasarlandı &mdash; tek bir kalıbın renk varyantı değil.
+            Her tema sinematik video sahnesi, gerçek mühür açılışı ve kamu-malı
+            klasik müzikle gelir &mdash; hepsi tek paket içinde.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -149,7 +213,7 @@ export function TemplateCarousel() {
               Tüm koleksiyon →
             </Link>
             <Link
-              href="/order/aethel"
+              href="/tasarimlar"
               data-cursor="magnetic"
               data-cursor-label="Tasarla"
               aria-label="Davetiye tasarlamaya başla"
