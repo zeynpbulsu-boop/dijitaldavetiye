@@ -1,0 +1,323 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import type { ThemeV2Meta, ThemeV2Data } from "@/lib/themes-v2/types";
+import { DustParticles } from "./atmosphere";
+
+const CURTAIN_MS = 1250;
+const AMBIENT_VOLUME = 0.4;
+
+/* ── Ambient audio ───────────────────────────────────────────────────
+ * Self-contained <audio> with graceful fallback: the toggle only becomes
+ * `available` once the file actually loads, so there's never a dead control
+ * when a theme has no track yet. Autoplay is started from the tap-to-open
+ * gesture (browsers block un-gestured audio). */
+export function useAmbientAudio(src?: string) {
+  const ref = useRef<HTMLAudioElement | null>(null);
+  const raf = useRef<number | null>(null);
+  const [available, setAvailable] = useState(false);
+  const [muted, setMuted] = useState(false);
+
+  useEffect(() => {
+    if (!src || typeof Audio === "undefined") return;
+    const audio = new Audio();
+    audio.loop = true;
+    audio.preload = "auto";
+    audio.volume = 0;
+    const onReady = () => setAvailable(true);
+    const onErr = () => setAvailable(false);
+    audio.addEventListener("canplaythrough", onReady);
+    audio.addEventListener("error", onErr);
+    audio.src = src;
+    ref.current = audio;
+    return () => {
+      audio.removeEventListener("canplaythrough", onReady);
+      audio.removeEventListener("error", onErr);
+      audio.pause();
+      ref.current = null;
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+  }, [src]);
+
+  const fadeTo = useCallback((target: number, ms: number) => {
+    const audio = ref.current;
+    if (!audio) return;
+    if (raf.current) cancelAnimationFrame(raf.current);
+    const from = audio.volume;
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const k = Math.min(1, (now - t0) / ms);
+      audio.volume = from + (target - from) * k;
+      if (k < 1) raf.current = requestAnimationFrame(step);
+    };
+    raf.current = requestAnimationFrame(step);
+  }, []);
+
+  const start = useCallback(() => {
+    const audio = ref.current;
+    if (!audio || muted) return;
+    audio.play().then(() => fadeTo(AMBIENT_VOLUME, 1600)).catch(() => {});
+  }, [muted, fadeTo]);
+
+  const toggle = useCallback(() => {
+    const next = !muted;
+    setMuted(next);
+    const audio = ref.current;
+    if (!audio) return;
+    if (next) {
+      fadeTo(0, 400);
+    } else {
+      audio.play().then(() => fadeTo(AMBIENT_VOLUME, 900)).catch(() => {});
+    }
+  }, [muted, fadeTo]);
+
+  return { available, muted, start, toggle };
+}
+
+/* ── Floating sound toggle (bottom-right) ────────────────────────────── */
+export function AmbientToggle({
+  muted,
+  onToggle,
+  palette,
+}: {
+  muted: boolean;
+  onToggle: () => void;
+  palette: ThemeV2Meta["palette"];
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={muted ? "Müziği aç" : "Müziği kapat"}
+      className="fixed bottom-5 right-5 z-40 flex h-11 w-11 items-center justify-center rounded-full backdrop-blur transition hover:scale-105"
+      style={{
+        backgroundColor: `${palette.paper}d9`,
+        border: `1px solid ${palette.accent}55`,
+        color: palette.accent,
+        boxShadow: "0 6px 22px -8px rgba(0,0,0,0.4)",
+      }}
+    >
+      <SoundIcon muted={muted} />
+      {!muted && <PulseRing color={palette.accent} />}
+    </button>
+  );
+}
+
+function SoundIcon({ muted }: { muted: boolean }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none" />
+      {muted ? (
+        <path d="M17 9l5 6M22 9l-5 6" />
+      ) : (
+        <>
+          <path d="M16.5 8.5a5 5 0 0 1 0 7" />
+          <path d="M19 6a8 8 0 0 1 0 12" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+function PulseRing({ color }: { color: string }) {
+  return (
+    <motion.span
+      className="pointer-events-none absolute inset-0 rounded-full"
+      style={{ border: `1px solid ${color}` }}
+      animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+      transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
+    />
+  );
+}
+
+/* ── The opening ceremony — sealed cover that parts on tap ────────────── */
+export function OpeningCeremony({
+  meta,
+  data,
+  opened,
+  onOpen,
+}: {
+  meta: ThemeV2Meta;
+  data: ThemeV2Data;
+  opened: boolean;
+  onOpen: () => void;
+}) {
+  const reduced = useReducedMotion();
+  const { palette } = meta;
+  const [gone, setGone] = useState(false);
+
+  // Unmount after the curtain finishes so it never blocks interaction.
+  useEffect(() => {
+    if (!opened) return;
+    const t = window.setTimeout(() => setGone(true), reduced ? 320 : CURTAIN_MS + 120);
+    return () => window.clearTimeout(t);
+  }, [opened, reduced]);
+
+  // Lock scroll while the cover is up.
+  useEffect(() => {
+    if (gone) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [gone]);
+
+  if (gone) return null;
+
+  const panelBg = `linear-gradient(180deg, ${palette.bg} 0%, ${palette.countdownBg} 140%)`;
+  const curtain = { duration: reduced ? 0.3 : CURTAIN_MS / 1000, ease: [0.76, 0, 0.24, 1] as const };
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] overflow-hidden"
+      style={{ pointerEvents: opened ? "none" : "auto" }}
+      aria-hidden={opened}
+    >
+      {/* Two panels that part like a curtain */}
+      <motion.div
+        className="absolute inset-y-0 left-0 w-1/2"
+        style={{ background: panelBg }}
+        initial={false}
+        animate={opened ? { x: "-101%" } : { x: 0 }}
+        transition={curtain}
+      />
+      <motion.div
+        className="absolute inset-y-0 right-0 w-1/2"
+        style={{ background: panelBg }}
+        initial={false}
+        animate={opened ? { x: "101%" } : { x: 0 }}
+        transition={curtain}
+      />
+
+      {/* Center invitation seal — fades out as the curtain parts */}
+      <motion.button
+        type="button"
+        onClick={onOpen}
+        aria-label="Davetiyeyi aç"
+        className="absolute inset-0 z-10 flex w-full cursor-pointer flex-col items-center justify-center px-6 text-center"
+        initial={false}
+        animate={opened ? { opacity: 0, scale: 1.08 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: opened ? 0.5 : 0.6 }}
+      >
+        <DustParticles color={palette.accent} count={22} opacity={0.4} />
+
+        <motion.p
+          className="mb-9 text-[10px] uppercase"
+          style={{ color: palette.accent, letterSpacing: "0.5em" }}
+          initial={reduced ? false : { opacity: 0, y: -8 }}
+          animate={{ opacity: 0.85, y: 0 }}
+          transition={{ delay: 0.3, duration: 1 }}
+        >
+          {data.eyebrow}
+        </motion.p>
+
+        <WaxSeal monogram={data.monogram} palette={palette} reduced={!!reduced} />
+
+        <motion.p
+          className="mt-10"
+          style={{
+            fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
+            fontSize: "clamp(38px, 6vw, 62px)",
+            color: palette.ink,
+            lineHeight: 1,
+          }}
+          initial={reduced ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 1.2 }}
+        >
+          {data.partnerOne} &amp; {data.partnerTwo}
+        </motion.p>
+
+        <motion.div
+          className="mt-9 flex flex-col items-center gap-2"
+          initial={reduced ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.1, duration: 1 }}
+        >
+          <span className="text-[9.5px] uppercase" style={{ color: palette.inkSoft, letterSpacing: "0.42em" }}>
+            Açmak için dokun
+          </span>
+          <motion.svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke={palette.accent}
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            animate={reduced ? undefined : { y: [0, 5, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <path d="M3 6l5 5 5-5" />
+          </motion.svg>
+        </motion.div>
+      </motion.button>
+    </div>
+  );
+}
+
+/* ── Wax-seal medallion with the couple's monogram ───────────────────── */
+function WaxSeal({
+  monogram,
+  palette,
+  reduced,
+}: {
+  monogram: string;
+  palette: ThemeV2Meta["palette"];
+  reduced: boolean;
+}) {
+  return (
+    <motion.div
+      className="relative flex items-center justify-center"
+      style={{ width: 128, height: 128 }}
+      initial={reduced ? false : { opacity: 0, scale: 0.7 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.4, duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
+    >
+      {/* breathing glow */}
+      <motion.span
+        className="pointer-events-none absolute inset-0 rounded-full"
+        style={{
+          background: `radial-gradient(circle, ${palette.accent}55 0%, ${palette.accent}00 70%)`,
+        }}
+        animate={reduced ? undefined : { scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <svg width="128" height="128" viewBox="0 0 128 128" className="relative">
+        <circle cx="64" cy="64" r="52" fill="none" stroke={palette.accent} strokeWidth="1" opacity="0.55" />
+        <circle cx="64" cy="64" r="46" fill="none" stroke={palette.accent} strokeWidth="0.6" opacity="0.4" />
+        {/* tick ring */}
+        {Array.from({ length: 48 }).map((_, i) => {
+          const a = (i / 48) * Math.PI * 2;
+          const r1 = 49;
+          const r2 = 51.5;
+          return (
+            <line
+              key={i}
+              x1={(64 + Math.cos(a) * r1).toFixed(2)}
+              y1={(64 + Math.sin(a) * r1).toFixed(2)}
+              x2={(64 + Math.cos(a) * r2).toFixed(2)}
+              y2={(64 + Math.sin(a) * r2).toFixed(2)}
+              stroke={palette.accent}
+              strokeWidth="0.5"
+              opacity="0.35"
+            />
+          );
+        })}
+      </svg>
+      <span
+        className="absolute"
+        style={{
+          fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
+          fontSize: 40,
+          color: palette.accent,
+          lineHeight: 1,
+        }}
+      >
+        {monogram}
+      </span>
+    </motion.div>
+  );
+}

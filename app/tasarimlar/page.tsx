@@ -3,24 +3,23 @@ import { Nav } from "../_sections/nav";
 import { Footer } from "../_sections/footer";
 import { ScrollProgress } from "../_sections/scroll-progress";
 import { StickyCta } from "../_sections/sticky-cta";
-import { TasarimlarCatalog } from "./_catalog";
+import { ShowcaseGrid } from "@/components/themes-v2/showcase-grid";
 
 /**
- * /tasarimlar — Dedicated edition catalog.
+ * /tasarimlar — 7 v2 tasarım koleksiyonu.
  *
- * bizevleniyoruz.net/tasarimlar paritesi: 10 template (NUVE'de 6 + 1
- * coming soon), kategori chip filtreleri (Tümü / Düğün / Save the
- * Date / Doğum Günü / Nişan), grid layout. Server component meta
- * burada, client interaktif catalog _catalog.tsx'te.
+ * SVG-tabanlı, sıfırdan yazılmış 7 imza şablonu:
+ * Çelenk, Polaroid, Kurdele, Fener, Defter, Geceyarısı, Postakart.
+ * Her birinin kendi imza animasyonu, dokusu ve hikâyesi var.
  */
 
 export const metadata: Metadata = {
-  title: "Tasarımlar · Tüm Edisyonlar",
+  title: "Tasarımlar — 7 imza şablonu",
   description:
-    "NUVE'nin altı luxe edisyonu — Aethel's Chapel, Nocturne, Candéla, Mistral, Olea, Aurora. Her edisyon kendi mührü, sahnesi ve fontuyla.",
+    "NUVE'nin yedi imza şablonu — Çelenk, Polaroid, Kurdele, Fener, Defter, Geceyarısı, Postakart. Her birinin kendi animasyonu ve karakteri var.",
   openGraph: {
-    title: "NUVE — Altı edisyon, altı hikâye",
-    description: "Premium dijital davetiye edisyonları. Her birinin kendi sahnesi var.",
+    title: "NUVE — 7 imza şablonu, 7 anı",
+    description: "SVG ile çizilmiş, doğal dokulu premium dijital davetiyeler.",
   },
 };
 
@@ -30,7 +29,7 @@ export default function TasarimlarPage() {
       <ScrollProgress />
       <Nav />
       <main id="main">
-        <TasarimlarCatalog />
+        <ShowcaseGrid />
       </main>
       <Footer />
       <StickyCta />
