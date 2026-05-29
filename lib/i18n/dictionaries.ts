@@ -300,7 +300,7 @@ const tr: Messages = {
       { label: "Şablonlar", href: "#themes" },
       { label: "Nasıl Çalışır", href: "#how-it-works" },
       { label: "Fiyatlar", href: "#pricing" },
-      { label: "Demoyu Dene", href: "/dev-preview/aethel" },
+      { label: "Demoyu Dene", href: "/themes/geceyarisi" },
       { label: "Yorumlar", href: "#testimonials" },
     ],
     legal_links: [
@@ -643,7 +643,7 @@ const en: Messages = {
       { label: "Editions", href: "#themes" },
       { label: "How it works", href: "#how-it-works" },
       { label: "Pricing", href: "#pricing" },
-      { label: "Try the demo", href: "/dev-preview/aethel" },
+      { label: "Try the demo", href: "/themes/geceyarisi" },
       { label: "Reviews", href: "#testimonials" },
     ],
     legal_links: [
@@ -987,7 +987,7 @@ const sr: Messages = {
       { label: "Izdanja", href: "#themes" },
       { label: "Kako funkcioniše", href: "#how-it-works" },
       { label: "Cenovnik", href: "#pricing" },
-      { label: "Probaj demo", href: "/dev-preview/aethel" },
+      { label: "Probaj demo", href: "/themes/geceyarisi" },
       { label: "Utisci", href: "#testimonials" },
     ],
     legal_links: [
