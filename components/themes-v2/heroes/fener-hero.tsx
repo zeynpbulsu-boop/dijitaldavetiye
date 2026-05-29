@@ -12,7 +12,7 @@ import {
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, DustParticles, PaperGrain, makeRng, r3 } from "../primitives/atmosphere";
-import { THEME_ASSETS } from "@/lib/themes-v2/assets";
+import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 
 /* ── Tunables (no magic numbers in markup) ──────────────────────────── */
 const MAIN_BULBS = 22;
@@ -215,28 +215,48 @@ export function FenerHero({ meta, data }: ThemeV2Props) {
         />
       </motion.div>
 
-      {/* ── Venue sketch backdrop with slow Ken-Burns + parallax ────── */}
+      {/* ── Cinematic golden-hour VIDEO backdrop (BOTTOM-most visual layer)
+          with parallax; poster = the venue sketch still as a graceful
+          fallback. When no clip exists yet, the still keeps its Ken-Burns
+          push so the scene still breathes. ─────────────────────────────── */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         style={{ x: reduced ? undefined : xScene, y: reduced ? 0 : yScene }}
       >
-        <motion.div
-          className="absolute inset-0"
-          animate={reduced ? undefined : { scale: [1, 1.07, 1] }}
-          transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <picture>
-            <source srcSet={THEME_ASSETS.fener.illustration?.replace(".png", ".webp")} type="image/webp" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={THEME_ASSETS.fener.illustration}
-              alt=""
-              aria-hidden
-              className="absolute inset-0 h-full w-full object-cover"
-              style={{ opacity: 0.42, filter: "saturate(0.85) brightness(0.7)" }}
-            />
-          </picture>
-        </motion.div>
+        {THEME_VIDEO.fener ? (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={THEME_ASSETS.fener.illustration}
+            aria-hidden
+            style={{ opacity: 0.42, filter: "saturate(0.85) brightness(0.7)" }}
+          >
+            <source src={THEME_VIDEO.fener} type="video/mp4" />
+          </video>
+        ) : (
+          <motion.div
+            className="absolute inset-0"
+            animate={reduced ? undefined : { scale: [1, 1.07, 1] }}
+            transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <picture>
+              <source srcSet={THEME_ASSETS.fener.illustration?.replace(".png", ".webp")} type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={THEME_ASSETS.fener.illustration}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ opacity: 0.42, filter: "saturate(0.85) brightness(0.7)" }}
+              />
+            </picture>
+          </motion.div>
+        )}
       </motion.div>
 
       {/* ── Warm bokeh overlay (Ken-Burns, slightly faster than backdrop) ── */}

@@ -13,7 +13,7 @@ import {
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, PaperGrain, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
-import { THEME_ASSETS } from "@/lib/themes-v2/assets";
+import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 
 /**
  * Postakart — a vintage Ayvalık travel postcard that is PERPETUALLY ALIVE.
@@ -107,27 +107,46 @@ export function PostakartHero({ meta, data }: ThemeV2Props) {
     >
       <AtmosphereDefs />
 
-      {/* Aged paper backdrop (real fal.ai texture) with slow Ken-Burns + scroll parallax */}
+      {/* Bottom-most visual layer: cinematic fal.ai VIDEO backdrop (poster = aged
+          paper still as a graceful fallback) with scroll parallax. When no clip
+          exists yet it falls back to the still + slow Ken-Burns. The floating
+          postcard and all content layer on top and stay readable. */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         style={{ y: reduced ? 0 : yBackdrop }}
       >
-        <motion.div
-          className="absolute inset-0"
-          animate={reduced ? undefined : { scale: [1, 1.07, 1] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <picture>
-            <source srcSet={THEME_ASSETS.postakart.texture?.replace(".png", ".webp")} type="image/webp" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={THEME_ASSETS.postakart.texture}
-              alt=""
-              aria-hidden
-              className="absolute inset-0 h-full w-full object-cover opacity-75"
-            />
-          </picture>
-        </motion.div>
+        {THEME_VIDEO.postakart ? (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video
+            className="absolute inset-0 h-full w-full object-cover opacity-75"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={THEME_ASSETS.postakart.texture}
+            aria-hidden
+          >
+            <source src={THEME_VIDEO.postakart} type="video/mp4" />
+          </video>
+        ) : (
+          <motion.div
+            className="absolute inset-0"
+            animate={reduced ? undefined : { scale: [1, 1.07, 1] }}
+            transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <picture>
+              <source srcSet={THEME_ASSETS.postakart.texture?.replace(".png", ".webp")} type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={THEME_ASSETS.postakart.texture}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full object-cover opacity-75"
+              />
+            </picture>
+          </motion.div>
+        )}
       </motion.div>
 
       {/* Aged backdrop accents */}

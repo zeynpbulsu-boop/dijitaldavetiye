@@ -85,7 +85,13 @@ export const THEME_MUSIC: Partial<Record<ThemeV2Slug, string>> = {
  * Populated as each theme's clip is generated + web-optimized.
  */
 export const THEME_VIDEO: Partial<Record<ThemeV2Slug, string>> = {
+  celenk: "/themes-v2/celenk/hero-video.mp4",
+  polaroid: "/themes-v2/polaroid/hero-video.mp4",
+  kurdele: "/themes-v2/kurdele/hero-video.mp4",
+  fener: "/themes-v2/fener/hero-video.mp4",
+  defter: "/themes-v2/defter/hero-video.mp4",
   geceyarisi: "/themes-v2/geceyarisi/night-sky.mp4",
+  postakart: "/themes-v2/postakart/hero-video.mp4",
 };
 
 /**
@@ -98,10 +104,16 @@ export interface ThemeCeremonyAssets {
   coverTexture?: string;
 }
 export const THEME_CEREMONY: Partial<Record<ThemeV2Slug, ThemeCeremonyAssets>> = {
+  celenk: { seal: "/themes-v2/celenk/wax-seal.png", coverTexture: "/themes-v2/celenk/cover-texture.png" },
+  polaroid: { seal: "/themes-v2/polaroid/wax-seal.png", coverTexture: "/themes-v2/polaroid/cover-texture.png" },
+  kurdele: { seal: "/themes-v2/kurdele/wax-seal.png", coverTexture: "/themes-v2/kurdele/cover-texture.png" },
+  fener: { seal: "/themes-v2/fener/wax-seal.png", coverTexture: "/themes-v2/fener/cover-texture.png" },
+  defter: { seal: "/themes-v2/defter/wax-seal.png", coverTexture: "/themes-v2/defter/cover-texture.png" },
   geceyarisi: {
     seal: "/themes-v2/geceyarisi/wax-seal-gold.png",
     coverTexture: "/themes-v2/geceyarisi/cover-texture.png",
   },
+  postakart: { seal: "/themes-v2/postakart/wax-seal.png", coverTexture: "/themes-v2/postakart/cover-texture.png" },
 };
 
 /** Thumbnail used by /tasarimlar showcase grid. */

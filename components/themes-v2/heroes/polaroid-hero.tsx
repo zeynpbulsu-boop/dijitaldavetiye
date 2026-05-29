@@ -12,7 +12,7 @@ import {
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, DustParticles, PaperGrain, makeRng, r3 } from "../primitives/atmosphere";
-import { THEME_ASSETS } from "@/lib/themes-v2/assets";
+import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 
 type SceneName = "sunset" | "mountain" | "field" | "shore";
 
@@ -116,6 +116,43 @@ export function PolaroidHero({ meta, data }: ThemeV2Props) {
       style={{ backgroundColor: palette.bg }}
     >
       <AtmosphereDefs />
+
+      {/* Cinematic full-bleed VIDEO backdrop — the BOTTOM-most visual layer.
+          The first polaroid scene doubles as the poster so there's a graceful
+          still fallback while the mp4 loads or if it's missing. A soft scrim
+          sits on top of the video so the kraft stack + name card stay readable.
+          When no clip exists we render nothing extra and the kraft background
+          below stays exactly as before. */}
+      {THEME_VIDEO.polaroid && (
+        <motion.div
+          className="pointer-events-none absolute inset-0"
+          style={{ y: reduced ? 0 : yBg, x: reduced ? 0 : xBg }}
+        >
+          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={THEME_ASSETS.polaroid.scenes?.[0]}
+            aria-hidden
+          >
+            <source src={THEME_VIDEO.polaroid} type="video/mp4" />
+          </video>
+          {/* Warm scrim — lifts the kraft grain, vignette and centre card off
+              the moving footage so foreground content stays legible. */}
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(58,42,31,0.34) 0%, rgba(58,42,31,0.2) 40%, rgba(58,42,31,0.42) 100%)",
+            }}
+          />
+        </motion.div>
+      )}
 
       {/* Kraft grain + soft vignette + warm light-leak drift on the slow
           background layer (scroll + pointer parallax). */}

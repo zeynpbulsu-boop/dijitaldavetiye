@@ -19,7 +19,7 @@ import {
   makeRng,
   r3,
 } from "../primitives/atmosphere";
-import { THEME_ASSETS } from "@/lib/themes-v2/assets";
+import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 
 /**
  * Çelenk — a perpetually ALIVE watercolor wreath.
@@ -104,47 +104,65 @@ export function CelenkHero({ meta, data }: ThemeV2Props) {
     >
       <AtmosphereDefs />
 
-      {/* ── Watercolor backdrop: slow Ken-Burns + slowest parallax ──
-          Layered twice (multiply + soft screen) and lifted to ~0.78 so the
-          painting feels present and lush rather than faint and sparse. */}
+      {/* ── Watercolor backdrop ──
+          Cinematic full-bleed VIDEO when a clip exists (poster = painted still
+          as a graceful fallback while it loads / if it's missing); otherwise the
+          original still painting with a slow Ken-Burns push. Both ride the
+          slowest parallax depth and sit as the BOTTOM-most visual layer. */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         style={{ x: reduced ? 0 : xBg, y: reduced ? 0 : yBg }}
       >
-        <motion.div
-          className="absolute inset-0"
-          animate={reduced ? undefined : { scale: [1, 1.06, 1] }}
-          transition={{ duration: 24, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% 45%" }}
-        >
-          <picture>
-            <source
-              srcSet={THEME_ASSETS.celenk.bg?.replace(".png", ".webp")}
-              type="image/webp"
-            />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={THEME_ASSETS.celenk.bg}
-              alt=""
-              aria-hidden
-              className="absolute inset-0 h-full w-full object-cover opacity-[0.78] mix-blend-multiply"
-            />
-          </picture>
-          {/* Soft second pass adds depth + a richer painted glow */}
-          <picture>
-            <source
-              srcSet={THEME_ASSETS.celenk.bg?.replace(".png", ".webp")}
-              type="image/webp"
-            />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={THEME_ASSETS.celenk.bg}
-              alt=""
-              aria-hidden
-              className="absolute inset-0 h-[112%] w-[112%] -translate-x-[6%] -translate-y-[6%] object-cover opacity-30 mix-blend-soft-light"
-            />
-          </picture>
-        </motion.div>
+        {THEME_VIDEO.celenk ? (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={THEME_ASSETS.celenk.bg}
+            aria-hidden
+          >
+            <source src={THEME_VIDEO.celenk} type="video/mp4" />
+          </video>
+        ) : (
+          <motion.div
+            className="absolute inset-0"
+            animate={reduced ? undefined : { scale: [1, 1.06, 1] }}
+            transition={{ duration: 24, repeat: Infinity, ease: "easeInOut" }}
+            style={{ transformOrigin: "50% 45%" }}
+          >
+            <picture>
+              <source
+                srcSet={THEME_ASSETS.celenk.bg?.replace(".png", ".webp")}
+                type="image/webp"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={THEME_ASSETS.celenk.bg}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full object-cover opacity-[0.78] mix-blend-multiply"
+              />
+            </picture>
+            {/* Soft second pass adds depth + a richer painted glow */}
+            <picture>
+              <source
+                srcSet={THEME_ASSETS.celenk.bg?.replace(".png", ".webp")}
+                type="image/webp"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={THEME_ASSETS.celenk.bg}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-[112%] w-[112%] -translate-x-[6%] -translate-y-[6%] object-cover opacity-30 mix-blend-soft-light"
+              />
+            </picture>
+          </motion.div>
+        )}
       </motion.div>
 
       {/* Breathing watercolor washes for additional living tint */}

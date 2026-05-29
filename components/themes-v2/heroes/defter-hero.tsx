@@ -11,7 +11,7 @@ import {
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, PaperGrain, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
-import { THEME_ASSETS } from "@/lib/themes-v2/assets";
+import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 
 /**
  * Defter — Premium open notebook spread that NEVER stops breathing.
@@ -89,27 +89,46 @@ export function DefterHero({ meta, data }: ThemeV2Props) {
     >
       <AtmosphereDefs />
 
-      {/* Real linen texture — slow Ken-Burns drift + far parallax */}
+      {/* Cinematic bottom layer: fal.ai linen-table VIDEO (poster = the linen
+          still as a graceful fallback) with far parallax. The notebook, pressed
+          flower and content all layer ON TOP, reading as a journal resting on a
+          live table. Absent a clip we keep the original Ken-Burns linen still. */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         style={{ y: reduced ? 0 : yLinen, x: reduced ? 0 : xLinen }}
       >
-        <motion.div
-          className="absolute inset-[-6%]"
-          animate={reduced ? undefined : { scale: [1, 1.07, 1], x: ["0%", "-1.5%", "0%"] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <picture>
-            <source srcSet={THEME_ASSETS.defter.texture?.replace(".png", ".webp")} type="image/webp" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={THEME_ASSETS.defter.texture}
-              alt=""
-              aria-hidden
-              className="h-full w-full object-cover opacity-60"
-            />
-          </picture>
-        </motion.div>
+        {THEME_VIDEO.defter ? (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video
+            className="absolute inset-0 h-full w-full object-cover opacity-60"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={THEME_ASSETS.defter.texture}
+            aria-hidden
+          >
+            <source src={THEME_VIDEO.defter} type="video/mp4" />
+          </video>
+        ) : (
+          <motion.div
+            className="absolute inset-[-6%]"
+            animate={reduced ? undefined : { scale: [1, 1.07, 1], x: ["0%", "-1.5%", "0%"] }}
+            transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <picture>
+              <source srcSet={THEME_ASSETS.defter.texture?.replace(".png", ".webp")} type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={THEME_ASSETS.defter.texture}
+                alt=""
+                aria-hidden
+                className="h-full w-full object-cover opacity-60"
+              />
+            </picture>
+          </motion.div>
+        )}
       </motion.div>
 
       {/* Linen weave bg accent */}

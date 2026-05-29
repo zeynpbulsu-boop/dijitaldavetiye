@@ -19,7 +19,7 @@ import {
   makeRng,
   r3,
 } from "../primitives/atmosphere";
-import { THEME_ASSETS } from "@/lib/themes-v2/assets";
+import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 
 /**
  * Kurdele — the LIVING pressed-paper letter.
@@ -80,29 +80,61 @@ export function KurdeleHero({ meta, data }: ThemeV2Props) {
     >
       <AtmosphereDefs />
 
-      {/* Real vellum paper backdrop — slow Ken-Burns + parallax so the
-          grain never sits perfectly still. */}
+      {/* Bottom-most full-bleed backdrop. When a cinematic clip exists we play
+          a fal.ai VIDEO (poster = the vellum still, a graceful fallback) as the
+          deepest layer with vellum parallax; otherwise the real vellum paper
+          still with a slow Ken-Burns so the grain never sits perfectly still. */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         style={{ x: reduced ? 0 : xVellum, y: reduced ? 0 : yVellum }}
       >
-        <motion.div
-          className="absolute inset-0"
-          animate={reduced ? undefined : { scale: [1.04, 1.1, 1.04] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <picture>
-            <source srcSet={THEME_ASSETS.kurdele.texture?.replace(".png", ".webp")} type="image/webp" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={THEME_ASSETS.kurdele.texture}
-              alt=""
-              aria-hidden
-              className="absolute inset-0 h-full w-full object-cover opacity-80"
-            />
-          </picture>
-        </motion.div>
+        {THEME_VIDEO.kurdele ? (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={THEME_ASSETS.kurdele.texture}
+            aria-hidden
+          >
+            <source src={THEME_VIDEO.kurdele} type="video/mp4" />
+          </video>
+        ) : (
+          <motion.div
+            className="absolute inset-0"
+            animate={reduced ? undefined : { scale: [1.04, 1.1, 1.04] }}
+            transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <picture>
+              <source srcSet={THEME_ASSETS.kurdele.texture?.replace(".png", ".webp")} type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={THEME_ASSETS.kurdele.texture}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full object-cover opacity-80"
+              />
+            </picture>
+          </motion.div>
+        )}
       </motion.div>
+
+      {/* Soft cream scrim — only over the video backdrop, lifting the letter
+          card's legibility while staying transparent at the edges so the clip
+          reads through. (The still backdrop already sits at 80% opacity.) */}
+      {THEME_VIDEO.kurdele && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(244,241,234,0.55) 0%, rgba(244,241,234,0.32) 46%, rgba(244,241,234,0.12) 74%)",
+          }}
+        />
+      )}
 
       {/* Hand-painted blue wash blot — corner accent that breathes
           (opacity + scale loop) and drifts with the deeper parallax. */}
