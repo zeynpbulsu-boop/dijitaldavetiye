@@ -64,7 +64,18 @@ export const THEME_ASSETS: Record<ThemeV2Slug, ThemeAssets> = {
  * tap-to-open gesture (browsers require a user gesture for autoplay).
  */
 export const THEME_MUSIC: Partial<Record<ThemeV2Slug, string>> = {
-  geceyarisi: "/themes-v2/geceyarisi/ambient.mp3",
+  // Public-domain classical (composers d. 1849–1925 → compositions are PD
+  // worldwide), already shipped in /public/audio. Reused here by theme mood so
+  // the ambient toggle works with zero new files and zero licensing risk.
+  // NOTE: the file NAMES are misleading legacy paths — the actual audio is the
+  // classical piece noted in each comment.
+  geceyarisi: "/audio/aurora/comptine-dun-autre-ete.mp3", // Beethoven — Moonlight Sonata, Mvt I
+  celenk: "/audio/candela/la-vie-en-rose-instrumental.mp3", // Satie — Gymnopédie No. 1
+  kurdele: "/audio/nocturne/chopin-nocturne.mp3", // Chopin — Nocturne Op. 9 No. 2
+  defter: "/audio/aethel/clair-de-lune.mp3", // Debussy — Clair de Lune
+  fener: "/audio/olea/lemon-tree-acoustic.mp3", // Pachelbel — Canon in D
+  polaroid: "/audio/mistral/sagapo-instrumental.mp3", // Satie — Gnossienne No. 1
+  postakart: "/audio/aethel/clair-de-lune.mp3", // Debussy — Clair de Lune (shared)
 };
 
 /** Thumbnail used by /tasarimlar showcase grid. */
