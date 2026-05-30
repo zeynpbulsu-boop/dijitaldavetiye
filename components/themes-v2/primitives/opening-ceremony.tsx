@@ -28,12 +28,18 @@ export function useAmbientAudio(src?: string) {
     audio.volume = 0;
     const onReady = () => setAvailable(true);
     const onErr = () => setAvailable(false);
-    audio.addEventListener("canplaythrough", onReady);
+    // `canplaythrough` tüm dosya buffer'lanınca ateşlenir → 5MB mp3 + CDN'siz
+    // yavaş sunucuda çok geç/hiç → toggle görünmez, müzik "yok" sanılır.
+    // `loadedmetadata`/`canplay` çok daha erken ateşlenir; gerçek çalma zaten
+    // kullanıcı hareketiyle (tap-to-open / toggle) olduğundan bu güvenli.
+    audio.addEventListener("loadedmetadata", onReady);
+    audio.addEventListener("canplay", onReady);
     audio.addEventListener("error", onErr);
     audio.src = src;
     ref.current = audio;
     return () => {
-      audio.removeEventListener("canplaythrough", onReady);
+      audio.removeEventListener("loadedmetadata", onReady);
+      audio.removeEventListener("canplay", onReady);
       audio.removeEventListener("error", onErr);
       audio.pause();
       ref.current = null;
