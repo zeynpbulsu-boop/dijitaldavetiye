@@ -30,7 +30,7 @@ export default function Image() {
         style={{
           width: "100%",
           height: "100%",
-          background: `radial-gradient(120% 120% at 50% 20%, ${C.paper} 0%, ${C.bg} 60%)`,
+          background: `linear-gradient(160deg, ${C.paper} 0%, ${C.bg} 62%)`,
           color: C.ink,
           display: "flex",
           flexDirection: "column",

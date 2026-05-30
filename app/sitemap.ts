@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { templateMeta } from "@/lib/templates/registry";
 import { editionCards } from "@/lib/templates/edition-cards";
+import { listThemesV2 } from "@/lib/themes-v2/registry";
 
 const BASE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuve.co"
@@ -22,6 +23,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
      above for reference if surfacing new public URLs in the future. */
   void editionCards;
   const editionUrls: MetadataRoute.Sitemap = [];
+
+  /* themes-v2 demo pages — asıl ürün showcase (sinematik canlı demolar).
+     Legacy /templates/<slug>'dan yüksek öncelikli; ana indeksleme hedefi. */
+  const themeUrls: MetadataRoute.Sitemap = listThemesV2().map((t) => ({
+    url: `${BASE_URL}/themes/${t.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.9,
+  }));
 
   /* Catalog index */
   const catalogUrls: MetadataRoute.Sitemap = [
@@ -57,6 +67,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    ...themeUrls,
     ...catalogUrls,
     ...editionUrls,
     ...templateUrls,
