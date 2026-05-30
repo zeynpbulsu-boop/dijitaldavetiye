@@ -135,7 +135,12 @@ export function ThemeShell({
             <AmbientToggle muted={audio.muted} onToggle={audio.toggle} palette={palette} />
           )}
           {embed?.platform === "youtube" && embed.videoId && (
-            <YouTubeMusic videoId={embed.videoId} meta={meta} opened={opened} />
+            <YouTubeMusic
+              videoId={embed.videoId}
+              meta={meta}
+              opened={opened}
+              start={embed.start}
+            />
           )}
         </>
       )}

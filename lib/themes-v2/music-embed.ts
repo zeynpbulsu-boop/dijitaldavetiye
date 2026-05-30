@@ -21,6 +21,24 @@ export interface MusicEmbed {
   height: number;
   /** YouTube video ID — IFrame API ile jest üzerine otomatik çalma için. */
   videoId?: string;
+  /** Başlangıç saniyesi (URL'deki t= / start= → şarkının "güzel yeri"). */
+  start?: number;
+}
+
+/** YouTube linkindeki t= / start= zaman damgasını saniyeye çevirir
+ *  ("63", "63s", "1m3s", "1h2m3s" → 63). */
+function parseTimeParam(url: string): number | undefined {
+  const m = url.match(/[?&#](?:t|start)=([0-9hms]+)/i);
+  if (!m) return undefined;
+  const v = m[1];
+  if (/^\d+$/.test(v)) return parseInt(v, 10) || undefined;
+  const hms = v.match(/(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/i);
+  if (!hms) return undefined;
+  const secs =
+    parseInt(hms[1] || "0", 10) * 3600 +
+    parseInt(hms[2] || "0", 10) * 60 +
+    parseInt(hms[3] || "0", 10);
+  return secs || undefined;
 }
 
 /** Bir Spotify/YouTube/Apple Music linkini resmi embed oynatıcıya çevirir. */
@@ -46,11 +64,13 @@ export function parseMusicEmbed(raw?: string | null): MusicEmbed | null {
     /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/|music\.youtube\.com\/watch\?(?:.*&)?v=)([A-Za-z0-9_-]{11})/i,
   );
   if (yt) {
+    const start = parseTimeParam(url);
     return {
       platform: "youtube",
-      embedUrl: `https://www.youtube.com/embed/${yt[1]}?rel=0&modestbranding=1`,
+      embedUrl: `https://www.youtube.com/embed/${yt[1]}?rel=0&modestbranding=1${start ? `&start=${start}` : ""}`,
       height: 200,
       videoId: yt[1],
+      start,
     };
   }
 

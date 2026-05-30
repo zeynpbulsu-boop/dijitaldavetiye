@@ -27,7 +27,7 @@ export function generateMetadata({
 // Demo'da müziği göstermek için örnek — YouTube linki (mühre basınca ARKADA
 // otomatik çalar, resmi oynatıcı = telif lisanslı). Gerçek davetiyede çift kendi
 // şarkı linkini editörden ekler (music_url). YouTube → otomatik; Spotify/Apple → elle.
-const SAMPLE_SONG = "https://www.youtube.com/watch?v=2Vv-BfVoq4g";
+const SAMPLE_SONG = "https://www.youtube.com/watch?v=2Vv-BfVoq4g&t=60";
 
 export default function ThemePreviewPage({
   params,

@@ -6,12 +6,12 @@ import type { ThemeV2Meta } from "@/lib/themes-v2/types";
 
 /**
  * YouTubeMusic — çiftin şarkısı, mühre basar basmaz ARKADA otomatik çalar.
- *
- * Tarayıcılar sesli autoplay'i yalnızca kullanıcı hareketi sonrası izinli kılar;
- * mühre dokunma (opened=true) o hareketi sağlar → IFrame API `playVideo()` ile
- * sesli başlatırız. Telifli kayıt YouTube'un resmi oynatıcısında çalar (lisans
- * platformda) — dosya bizde barınmaz, sıfır risk. Loop + native kontroller +
- * kapat butonu. Küçük köşe oynatıcı (ToS uyumlu görünür embed, arka plan hissi).
+ * VIDEO GÖRÜNMEZ: YouTube iframe'i opak bir "şarkı çalıyor" şeridi tamamen
+ * örter (iframe render edilir → ses güvenle çalar; ama kullanıcı yalnızca ince
+ * şeridi görür). Şarkı, linkteki t=/start= saniyesinden ("güzel yer") başlar ve
+ * loop'ta da oradan döner. Telifli kayıt YouTube'un resmi oynatıcısında çalar →
+ * bizde dosya yok, sıfır risk. Sesli autoplay yalnızca kullanıcı hareketi
+ * (mühre dokunma = opened) sonrası başlatılır.
  */
 
 interface YTPlayer {
@@ -19,14 +19,19 @@ interface YTPlayer {
   pauseVideo(): void;
   mute(): void;
   unMute(): void;
+  seekTo(seconds: number, allowSeekAhead: boolean): void;
   destroy(): void;
+}
+interface YTEvent {
+  data: number;
+  target: YTPlayer;
 }
 interface YTPlayerOptions {
   videoId: string;
   width?: string | number;
   height?: string | number;
   playerVars?: Record<string, number | string>;
-  events?: { onReady?: () => void };
+  events?: { onReady?: (e: YTEvent) => void; onStateChange?: (e: YTEvent) => void };
 }
 declare global {
   interface Window {
@@ -34,6 +39,9 @@ declare global {
     onYouTubeIframeAPIReady?: () => void;
   }
 }
+
+const ENDED = 0;
+const PLAYING = 1;
 
 let apiPromise: Promise<void> | null = null;
 function ensureYouTubeApi(): Promise<void> {
@@ -63,23 +71,28 @@ export function YouTubeMusic({
   videoId,
   meta,
   opened,
+  start = 0,
 }: {
   videoId: string;
   meta: ThemeV2Meta;
   opened: boolean;
+  start?: number;
 }) {
   const { palette } = meta;
   const mountRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<YTPlayer | null>(null);
+  const startRef = useRef(start);
+  startRef.current = start;
   const [ready, setReady] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     const host = mountRef.current;
     if (!host) return;
-    // YT.Player verilen elemanı iframe ile DEĞİŞTİRİR. React'in yönettiği div'i
-    // korumak için imperatif bir alt hedef ekliyoruz; React ona dokunmaz.
+    // YT.Player verilen elemanı iframe ile değiştirir → React'in yönetmediği
+    // imperatif bir hedef ekliyoruz.
     const target = document.createElement("div");
     host.appendChild(target);
     ensureYouTubeApi().then(() => {
@@ -89,16 +102,31 @@ export function YouTubeMusic({
         width: "100%",
         height: "100%",
         playerVars: {
-          loop: 1,
-          playlist: videoId, // tek videoyu loop'lamak için gerekli
+          start: Math.floor(startRef.current),
           playsinline: 1,
           modestbranding: 1,
           rel: 0,
-          controls: 1,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          iv_load_policy: 3,
         },
         events: {
           onReady: () => {
             if (!cancelled) setReady(true);
+          },
+          onStateChange: (e) => {
+            if (cancelled) return;
+            // Bittiğinde "güzel yerden" yeniden başlat (loop).
+            if (e.data === ENDED) {
+              try {
+                e.target.seekTo(startRef.current, true);
+                e.target.playVideo();
+              } catch {
+                /* ignore */
+              }
+            }
+            setPlaying(e.data === PLAYING);
           },
         },
       });
@@ -114,11 +142,11 @@ export function YouTubeMusic({
     };
   }, [videoId]);
 
-  // Mühre basınca (opened) sesli otomatik başlat — kullanıcı-hareketi penceresi
-  // içinde olduğu için tarayıcı sesli oynatmaya izin verir.
+  // Mühre basınca: güzel yerden başlat, sesi aç, çal (kullanıcı-hareketi penceresi).
   useEffect(() => {
     if (opened && ready && !dismissed) {
       try {
+        playerRef.current?.seekTo(startRef.current, true);
         playerRef.current?.unMute();
         playerRef.current?.playVideo();
       } catch {
@@ -129,51 +157,115 @@ export function YouTubeMusic({
 
   if (dismissed) return null;
 
+  const togglePlay = () => {
+    const p = playerRef.current;
+    if (!p) return;
+    try {
+      if (playing) p.pauseVideo();
+      else {
+        p.unMute();
+        p.playVideo();
+      }
+    } catch {
+      /* ignore */
+    }
+  };
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed bottom-4 right-4 z-40 w-[min(78vw,288px)] overflow-hidden rounded-2xl"
-      style={{
-        backgroundColor: palette.paper,
-        border: `1px solid ${palette.accent}40`,
-        boxShadow: "0 18px 50px -22px rgba(0,0,0,0.55)",
-      }}
+      transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed bottom-4 right-4 z-40 overflow-hidden rounded-full"
+      style={{ width: 232, boxShadow: "0 14px 40px -18px rgba(0,0,0,0.5)" }}
     >
-      <div
-        className="flex items-center justify-between px-3 py-2"
-        style={{ borderBottom: `1px solid ${palette.accent}26` }}
-      >
-        <span
-          className="flex items-center gap-2 text-[10px] uppercase"
-          style={{ color: palette.accent, letterSpacing: "0.26em", fontWeight: 500 }}
-        >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-            <path d="M9 18V5l12-2v13" />
-            <circle cx="6" cy="18" r="3" />
-            <circle cx="18" cy="16" r="3" />
-          </svg>
-          Bizim Şarkımız
-        </span>
-        <button
-          type="button"
-          onClick={() => {
-            try {
-              playerRef.current?.pauseVideo();
-            } catch {
-              /* ignore */
-            }
-            setDismissed(true);
+      <div className="relative" style={{ height: 48 }}>
+        {/* Gizli YouTube oynatıcı — render edilir (ses çalar) ama opak şerit örter. */}
+        <div
+          ref={mountRef}
+          aria-hidden
+          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 96 }}
+        />
+        {/* Üstte opak "şarkı çalıyor" şeridi — videoyu tamamen kapatır. */}
+        <div
+          className="absolute inset-0 flex items-center justify-between gap-2 px-3"
+          style={{
+            backgroundColor: palette.paper,
+            border: `1px solid ${palette.accent}40`,
+            borderRadius: 999,
           }}
-          aria-label="Müziği kapat"
-          className="text-[16px] leading-none transition hover:opacity-70"
-          style={{ color: palette.inkSoft }}
         >
-          &times;
-        </button>
+          <span
+            className="flex items-center gap-2 truncate text-[10px] uppercase"
+            style={{ color: palette.accent, letterSpacing: "0.2em", fontWeight: 500 }}
+          >
+            <EqBars color={palette.accent} active={playing} />
+            Bizim Şarkımız
+          </span>
+          <div className="flex items-center gap-0.5">
+            <button
+              type="button"
+              onClick={togglePlay}
+              aria-label={playing ? "Duraklat" : "Çal"}
+              className="flex h-7 w-7 items-center justify-center rounded-full transition hover:scale-110"
+              style={{ color: palette.accent }}
+            >
+              {playing ? (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="5" width="4" height="14" rx="1" />
+                  <rect x="14" y="5" width="4" height="14" rx="1" />
+                </svg>
+              ) : (
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  playerRef.current?.pauseVideo();
+                } catch {
+                  /* ignore */
+                }
+                setDismissed(true);
+              }}
+              aria-label="Kapat"
+              className="flex h-7 w-7 items-center justify-center rounded-full transition hover:opacity-70"
+              style={{ color: palette.inkSoft }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
-      <div ref={mountRef} className="aspect-video w-full" />
     </motion.div>
+  );
+}
+
+function EqBars({ color, active }: { color: string; active: boolean }) {
+  if (!active) {
+    return (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.6" aria-hidden>
+        <path d="M9 18V5l12-2v13" />
+        <circle cx="6" cy="18" r="3" />
+        <circle cx="18" cy="16" r="3" />
+      </svg>
+    );
+  }
+  return (
+    <span className="inline-flex items-end gap-[2px]" style={{ height: 11 }} aria-hidden>
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          style={{ width: 2, backgroundColor: color, borderRadius: 1 }}
+          animate={{ height: [4, 11, 5, 9, 4] }}
+          transition={{ duration: 0.9 + i * 0.2, repeat: Infinity, ease: "easeInOut" }}
+        />
+      ))}
+    </span>
   );
 }

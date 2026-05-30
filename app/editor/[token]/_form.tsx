@@ -200,17 +200,28 @@ export function EditorForm({
 
       <Group title="Müzik" eyebrow="— Şarkınız">
         <p className="text-[13px] leading-[1.7] text-brand-mute">
-          <strong className="text-brand-ink">YouTube</strong> şarkı linki yapıştırın
-          — davet açılır açılmaz (mühre basınca) şarkı arkada <strong className="text-brand-ink">otomatik</strong> çalar.
-          Spotify / Apple Music linkleri de çalışır ama elle oynatılır (otomatik
-          başlatılamaz). Telifli şarkılar resmi oynatıcıda yasal çalar — boş
-          bırakırsanız temanın kamu-malı klasik müziği kullanılır.
+          <strong className="text-brand-ink">YouTube</strong> şarkı linki yapıştırın —
+          davet açılır açılmaz (mühre basınca) şarkı{" "}
+          <strong className="text-brand-ink">arkada otomatik</strong> çalar. Video
+          görünmez; sadece ince bir &quot;şarkı çalıyor&quot; şeridi durur.
+        </p>
+        <p className="text-[13px] leading-[1.7] text-brand-mute">
+          <strong className="text-brand-ink">İpucu —</strong> şarkının en güzel yerinden
+          başlasın: YouTube&apos;da o ana gel →{" "}
+          <em>Paylaş → &quot;Şu andan başlat&quot;</em> kutusunu işaretle → linki kopyala
+          (sonunda <code>&amp;t=63</code> gibi olur). Sistem otomatik o saniyeden başlatır,
+          loop&apos;ta da oradan döner.
+        </p>
+        <p className="text-[13px] leading-[1.7] text-brand-mute">
+          Spotify / Apple Music linkleri de çalışır ama elle oynatılır. Boş bırakırsan
+          temanın kamu-malı klasik müziği kullanılır. (Telifli şarkılar resmi oynatıcıda
+          yasal çalar.)
         </p>
         <Field
-          label="Şarkı linki (YouTube önerilir · Spotify / Apple de olur)"
+          label="Şarkı linki (YouTube önerilir — otomatik arka plan)"
           name="music_url"
           defaultValue={invitation.music_url ?? ""}
-          placeholder="https://www.youtube.com/watch?v=…"
+          placeholder="https://www.youtube.com/watch?v=…&t=63"
         />
       </Group>
 
