@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 
 /**
  * Shared atmosphere primitives — paper grain, watercolor washes,
@@ -243,7 +243,6 @@ export function DustParticles({
   // kaynaklarından biriydi. Görünüm birebir aynı: yükselip solan toz zerreleri.
   return (
     <div
-      data-dust
       className="pointer-events-none absolute inset-0 overflow-hidden"
       aria-hidden
       style={{ opacity }}
@@ -251,16 +250,18 @@ export function DustParticles({
       {particles.map((p, i) => (
         <span
           key={i}
-          style={{
-            position: "absolute",
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: p.r * 2,
-            height: p.r * 2,
-            borderRadius: "9999px",
-            backgroundColor: color,
-            animation: `dust-rise ${p.dur}s linear ${p.delay}s infinite`,
-          }}
+          className="dust-particle"
+          style={
+            {
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: p.r * 2,
+              height: p.r * 2,
+              backgroundColor: color,
+              "--dust-dur": `${p.dur}s`,
+              "--dust-delay": `${p.delay}s`,
+            } as CSSProperties
+          }
         />
       ))}
     </div>

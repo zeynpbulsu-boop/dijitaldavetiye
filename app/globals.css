@@ -532,9 +532,18 @@ html {
     opacity: 0;
   }
 }
+/* .dust-particle keyframe'i CSS'ten referanslar → cssnano discardUnused her
+   ortamda korur (inline-only animation prod build'de purge ediliyordu).
+   Süre/gecikme her zerre için --dust-dur / --dust-delay ile gelir. */
+.dust-particle {
+  position: absolute;
+  border-radius: 9999px;
+  animation: dust-rise var(--dust-dur, 18s) linear var(--dust-delay, 0s)
+    infinite;
+}
 @media (prefers-reduced-motion: reduce) {
-  [data-dust] > span {
-    animation: none !important;
-    opacity: 0 !important;
+  .dust-particle {
+    animation: none;
+    opacity: 0;
   }
 }
