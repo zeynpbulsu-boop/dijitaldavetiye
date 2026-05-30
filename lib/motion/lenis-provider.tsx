@@ -36,18 +36,23 @@ export function LenisProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) {
-      setReduced(true);
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    // Dokunmatik cihazlarda (telefon/tablet) native scroll çok daha akıcı;
+    // JS smooth-scroll orada "kasma"/floaty his yaratıyor. Lenis SADECE
+    // fine-pointer (mouse/trackpad) cihazlarda çalışsın. Mobil = native scroll.
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    if (prefersReduced || coarsePointer) {
+      setReduced(prefersReduced);
       return;
     }
     if (typeof requestAnimationFrame === "undefined") return;
 
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 2,
       wheelMultiplier: 1,
     });
     lenisRef.current = lenis;

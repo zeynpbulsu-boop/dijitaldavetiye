@@ -238,33 +238,32 @@ export function DustParticles({
     }));
   }, [count]);
 
+  // SVG SMIL `cy` animasyonu (main-thread paint) yerine CSS transform/opacity
+  // (GPU compositor). 7 hero'da sürekli çalıştığı için bu, en büyük "kasma"
+  // kaynaklarından biriydi. Görünüm birebir aynı: yükselip solan toz zerreleri.
   return (
-    <svg
-      className="pointer-events-none absolute inset-0 h-full w-full"
+    <div
+      data-dust
+      className="pointer-events-none absolute inset-0 overflow-hidden"
       aria-hidden
       style={{ opacity }}
     >
       {particles.map((p, i) => (
-        <circle key={i} cx={`${p.x}%`} cy={`${p.y}%`} r={p.r} fill={color}>
-          <animate
-            attributeName="cy"
-            from={`${p.y}%`}
-            to={`${p.y - 30}%`}
-            dur={`${p.dur}s`}
-            begin={`${p.delay}s`}
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="opacity"
-            values="0;1;1;0"
-            keyTimes="0;0.1;0.9;1"
-            dur={`${p.dur}s`}
-            begin={`${p.delay}s`}
-            repeatCount="indefinite"
-          />
-        </circle>
+        <span
+          key={i}
+          style={{
+            position: "absolute",
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: p.r * 2,
+            height: p.r * 2,
+            borderRadius: "9999px",
+            backgroundColor: color,
+            animation: `dust-rise ${p.dur}s linear ${p.delay}s infinite`,
+          }}
+        />
       ))}
-    </svg>
+    </div>
   );
 }
 

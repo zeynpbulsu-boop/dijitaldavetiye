@@ -511,3 +511,30 @@ html {
     background-size: 200px 200px;
   }
 }
+
+/* DustParticles — GPU-composited drift (transform + opacity).
+   SMIL `cy` paint'i yerine; sürekli tam-ekran SVG repaint'ini önler →
+   özellikle mobilde "kasma"yı azaltır. Yükselip solan toz zerreleri,
+   görsel olarak birebir aynı. */
+@keyframes dust-rise {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, -30vh, 0);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-dust] > span {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}

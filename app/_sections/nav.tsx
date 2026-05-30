@@ -60,7 +60,7 @@ export function Nav() {
           backgroundColor: scrolled
             ? "rgba(242, 238, 230, 0.78)"
             : "rgba(242, 238, 230, 0)",
-          backdropFilter: scrolled ? "blur(14px) saturate(1.1)" : "blur(0px)",
+          backdropFilter: scrolled ? "blur(8px) saturate(1.08)" : "blur(0px)",
           borderBottomColor: scrolled
             ? "rgba(43, 30, 22, 0.08)"
             : "rgba(43, 30, 22, 0)",
