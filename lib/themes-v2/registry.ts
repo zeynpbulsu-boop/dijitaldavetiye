@@ -135,6 +135,8 @@ export const SAMPLE_DATA: ThemeV2Data = {
     name: "Cunda Adası — Sahil Köşkü",
     city: "Ayvalık · Balıkesir",
     address: "Lale Sokak No 7, Cunda Adası",
+    lat: 39.3436,
+    lng: 26.6741,
   },
   story: {
     title: "Anılarımız",
@@ -187,7 +189,7 @@ export const SAMPLE_DATA: ThemeV2Data = {
     },
   ],
   extraInfo:
-    "Davetlilerimize iletmek istediğimiz her şey için size özel bir alan. Kıyafet seçimi, çocuklara dair notlar, hediye tercihleri ya da ulaşım ayrıntıları… Buradan bu bölümü dilediğiniz gibi şekillendirebilirsiniz.",
+    "Kıyafet — Şık günlük / kokteyl; adada zemin yer yer taş olduğu için rahat ayakkabı öneririz. · Ulaşım — Ayvalık merkezden Cunda'ya köprü üzerinden ~10 dk; köşkün otoparkı misafirlerimize açıktır. · Konaklama — Cunda ve Ayvalık'taki anlaşmalı butik oteller için bizimle iletişime geçebilirsiniz. · Çocuklar — Minik misafirlerimiz için oyun alanı ve bakıcı hizmeti bulunacaktır.",
   footerNote: "Sizleri aramızda görmek bizi çok mutlu edecek.",
   gift: {
     iban: "TR00 0000 0000 0000 0000 0000 00",
