@@ -131,6 +131,7 @@ export async function saveInvitation(
     envelope_cta: trimOrNull(formData.get("envelope_cta")),
     footer_note: trimOrNull(formData.get("footer_note")),
     music_track: trimOrNull(formData.get("music_track")),
+    music_url: trimOrNull(formData.get("music_url")),
 
     /* Migration 005 — wax seal tint. hero_media_url + photos /api/upload
        üzerinden yönetiliyor, bu form'da yok. */

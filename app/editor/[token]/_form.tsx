@@ -198,6 +198,21 @@ export function EditorForm({
         )}
       </Group>
 
+      <Group title="Müzik" eyebrow="— Şarkınız">
+        <p className="text-[13px] leading-[1.7] text-brand-mute">
+          Spotify, YouTube veya Apple Music şarkı linkini yapıştırın — davetiyede
+          &quot;Bizim Şarkımız&quot; bölümünde resmi oynatıcı görünür. Telifli
+          şarkılar platform üzerinden yasal çalar. Boş bırakırsanız temanın
+          kamu-malı klasik müziği kullanılır.
+        </p>
+        <Field
+          label="Şarkı linki (Spotify / YouTube / Apple Music)"
+          name="music_url"
+          defaultValue={invitation.music_url ?? ""}
+          placeholder="https://open.spotify.com/track/…"
+        />
+      </Group>
+
       <Group title="Hediye / IBAN" eyebrow="— Banka Bilgileri">
         <p className="text-[13px] leading-[1.7] text-brand-mute">
           IBAN doluysa davetiyenin sonunda &quot;kopyala&quot; butonuyla bir

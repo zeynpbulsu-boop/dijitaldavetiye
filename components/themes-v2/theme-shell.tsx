@@ -18,6 +18,8 @@ import {
   useAmbientAudio,
 } from "./primitives/opening-ceremony";
 import { THEME_MUSIC } from "@/lib/themes-v2/assets";
+import { MusicEmbedSection } from "./primitives/music-embed";
+import { parseMusicEmbed } from "@/lib/themes-v2/music-embed";
 
 interface Props extends ThemeV2Props {
   hero: ReactNode;
@@ -38,7 +40,10 @@ export function ThemeShell({
   const { palette } = meta;
   const reduced = useReducedMotion();
   const [opened, setOpened] = useState(false);
-  const audio = useAmbientAudio(musicSrc || THEME_MUSIC[meta.slug]);
+  // Çiftin müziği: music_url bir Spotify/YouTube linkiyse RESMİ embed oynatıcı
+  // (telif platformda kalır); aksi halde ambient mp3 (override veya tema default).
+  const embed = parseMusicEmbed(musicSrc);
+  const audio = useAmbientAudio(embed ? undefined : musicSrc || THEME_MUSIC[meta.slug]);
 
   // Section visibility — a live invitation only shows sections it has data for
   // (no placeholder/empty blocks). The /themes/[slug] preview uses full
@@ -93,6 +98,11 @@ export function ThemeShell({
               />
             </Reveal>
           )}
+          {embed && (
+            <Reveal>
+              <MusicEmbedSection meta={meta} embed={embed} />
+            </Reveal>
+          )}
           {showProgram && (
             <Reveal>
               <ProgramList meta={meta} items={data.schedule} />
@@ -120,7 +130,7 @@ export function ThemeShell({
           <ThemeFooter meta={meta} data={data} reduced={!!reduced} />
 
           <OpeningCeremony meta={meta} data={data} opened={opened} onOpen={handleOpen} />
-          {audio.available && (
+          {!embed && audio.available && (
             <AmbientToggle muted={audio.muted} onToggle={audio.toggle} palette={palette} />
           )}
         </>

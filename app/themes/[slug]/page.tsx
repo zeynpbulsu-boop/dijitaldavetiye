@@ -24,6 +24,11 @@ export function generateMetadata({
   };
 }
 
+// Demo'da "Bizim Şarkımız" bölümünü göstermek için örnek — resmi Spotify embed
+// (yasal: telif lisanslı platformda). Gerçek davetiyede çift kendi şarkı linkini
+// (Spotify/YouTube/Apple) editörden ekler (music_url).
+const SAMPLE_SONG = "https://open.spotify.com/track/0tgVpDi06FyKpA1z0VMD4v";
+
 export default function ThemePreviewPage({
   params,
 }: {
@@ -31,5 +36,7 @@ export default function ThemePreviewPage({
 }) {
   const meta = getThemeV2(params.slug as ThemeV2Slug);
   if (!meta) notFound();
-  return <ThemeRenderer meta={meta} data={SAMPLE_DATA} showBuyBadge />;
+  return (
+    <ThemeRenderer meta={meta} data={SAMPLE_DATA} musicSrc={SAMPLE_SONG} showBuyBadge />
+  );
 }
