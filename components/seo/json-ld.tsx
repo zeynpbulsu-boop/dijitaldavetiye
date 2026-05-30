@@ -82,7 +82,7 @@ export function productSchema() {
     image: `${BASE_URL}/og.jpg`,
     offers: {
       "@type": "Offer",
-      url: `${BASE_URL}/order/aethel`,
+      url: `${BASE_URL}/order/geceyarisi`,
       priceCurrency: "EUR",
       price: "39.99",
       availability: "https://schema.org/InStock",

@@ -6,7 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { startCheckout } from "@/lib/payments/checkout-client";
 import { STANDARD_TIER } from "@/lib/payments/products";
-import { themeForSlug } from "@/lib/templates/themes";
+import { resolveThemeV2Slug } from "@/lib/themes-v2/bridge";
+import { THEMES_V2 } from "@/lib/themes-v2/registry";
+import { THEME_THUMB, THEME_CEREMONY } from "@/lib/themes-v2/assets";
 import { CustomCoverGenerator } from "@/components/order/custom-cover-generator";
 import type {
   HotelItem,
@@ -15,15 +17,15 @@ import type {
   DbLocale,
 } from "@/lib/db/types";
 
-/* Luxe edition slug → real asset paths. */
-const LUXE_ASSETS: Record<string, { cover: string; seal: string }> = {
-  aethel: { cover: "/aethel/cover.jpg", seal: "/aethel/wax-seal-luxe.png" },
-  nocturne: { cover: "/nocturne/cover.jpg", seal: "/nocturne/wax-seal.png" },
-  candela: { cover: "/candela/cover.jpg", seal: "/candela/wax-seal.png" },
-  mistral: { cover: "/mistral/cover.jpg", seal: "/mistral/wax-seal.png" },
-  olea: { cover: "/olea/cover.jpg", seal: "/olea/wax-seal.png" },
-  aurora: { cover: "/aurora/cover.jpg", seal: "/aurora/wax-seal.png" },
-};
+/** Derive whether a hex background is dark (for legibility overlays). */
+function isHexDark(hex: string): boolean {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return false;
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 128;
+}
 
 /**
  * /order/[slug] — invitation editor.
@@ -56,7 +58,7 @@ export default function OrderEditorPage() {
   const params = useParams<{ slug: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const templateSlug = params?.slug ?? "aethel";
+  const templateSlug = params?.slug ?? "geceyarisi";
   // Flat pricing (Faz 20): only one tier. Query param ignored.
   void searchParams;
 
@@ -426,24 +428,16 @@ export default function OrderEditorPage() {
               Her tasarımın kendi atmosferi, müziği ve sahnesi var. Aşağıdan
               istediğin zaman değiştirebilirsin — formdaki bilgiler korunur.
             </p>
-            <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-              {(["aethel","nocturne","candela","mistral","olea","aurora"] as const).map((slug) => {
-                const isActive = templateSlug === slug;
-                const displayName = {
-                  aethel: "Aethel",
-                  nocturne: "Nocturne",
-                  candela: "Candéla",
-                  mistral: "Mistral",
-                  olea: "Olea",
-                  aurora: "Aurora",
-                }[slug];
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+              {Object.values(THEMES_V2).map((t) => {
+                const isActive = resolveThemeV2Slug(templateSlug) === t.slug;
                 return (
                   <Link
-                    key={slug}
-                    href={`/order/${slug}`}
+                    key={t.slug}
+                    href={`/order/${t.slug}`}
                     data-cursor="view"
-                    data-cursor-label={displayName}
-                    aria-label={`${displayName} tasarımına geç`}
+                    data-cursor-label={t.name}
+                    aria-label={`${t.name} tasarımına geç`}
                     aria-current={isActive ? "true" : undefined}
                     className={`group relative overflow-hidden rounded-[8px] transition-all duration-300 ${
                       isActive
@@ -453,10 +447,10 @@ export default function OrderEditorPage() {
                   >
                     <div className="relative aspect-[3/4]">
                       <Image
-                        src={LUXE_ASSETS[slug]?.cover ?? "/aethel/cover.jpg"}
-                        alt={displayName}
+                        src={THEME_THUMB[t.slug]}
+                        alt={t.name}
                         fill
-                        sizes="(max-width: 640px) 33vw, 16vw"
+                        sizes="(max-width: 640px) 33vw, 14vw"
                         style={{ objectFit: "cover" }}
                       />
                       <div
@@ -471,7 +465,7 @@ export default function OrderEditorPage() {
                           className="block text-center text-[10px] uppercase tracking-[0.22em] text-white"
                           style={{ fontFamily: "var(--font-display), serif" }}
                         >
-                          {displayName}
+                          {t.name}
                         </span>
                       </div>
                       {isActive && (
@@ -986,9 +980,25 @@ export default function OrderEditorPage() {
         <aside className="col-span-12 lg:col-span-5">
           <div className="sticky top-24">
             {(() => {
-              const theme = themeForSlug(templateSlug);
-              const luxe = LUXE_ASSETS[templateSlug];
-              const initials = monogram || (p1 && p2 ? `${p1[0]}&${p2[0]}` : (p1?.[0] ?? p2?.[0] ?? "N"));
+              const v2slug = resolveThemeV2Slug(templateSlug);
+              const v2 = THEMES_V2[v2slug];
+              const pal = v2.palette;
+              const isDark = isHexDark(pal.bg);
+              const theme = {
+                name: v2.name,
+                bg: pal.bg,
+                ink: pal.ink,
+                inkSoft: pal.inkSoft,
+                accent: pal.accent,
+                monogramText: pal.accent,
+                monogramFill: pal.paper,
+                ruleColor: pal.accent,
+                spark: pal.countdownBg,
+                isDark,
+              };
+              const cover = THEME_THUMB[v2slug];
+              const sealSrc = THEME_CEREMONY[v2slug]?.seal;
+              const initials = monogram || (p1 && p2 ? `${p1[0]}&${p2[0]}` : (p1?.[0] ?? p2?.[0] ?? "♥"));
               return (
                 <div className="overflow-hidden rounded-[12px] border border-brand-ink/12 bg-paper shadow-[0_12px_40px_-16px_rgba(43,30,22,0.18)]">
                   {/* Preview header */}
@@ -1011,14 +1021,14 @@ export default function OrderEditorPage() {
                     }}
                   >
                     {/* Cover scene background — custom (premium) varsa onu, yoksa edition default */}
-                    {(customCoverUrl || luxe) && (
+                    {(customCoverUrl || cover) && (
                       <div
                         aria-hidden
                         className="pointer-events-none absolute inset-0"
                         style={{ opacity: theme.isDark ? 0.4 : 0.55 }}
                       >
                         <Image
-                          src={customCoverUrl ?? luxe!.cover}
+                          src={customCoverUrl ?? cover}
                           alt=""
                           fill
                           sizes="(max-width: 1024px) 100vw, 460px"
@@ -1049,10 +1059,10 @@ export default function OrderEditorPage() {
 
                       {/* Real wax seal asset (luxe) veya fallback CSS daire */}
                       <div className="mt-6 flex h-[88px] w-[88px] items-center justify-center">
-                        {luxe ? (
+                        {sealSrc ? (
                           <div className="relative h-full w-full">
                             <Image
-                              src={luxe.seal}
+                              src={sealSrc}
                               alt=""
                               fill
                               sizes="88px"
@@ -1169,7 +1179,7 @@ export default function OrderEditorPage() {
 
                   {/* "Demoyu tam aç" CTA — kullanıcı edition'ı full deneyimle inceleyebilir */}
                   <Link
-                    href={`/dev-preview/${templateSlug}`}
+                    href={`/themes/${v2slug}`}
                     target="_blank"
                     rel="noopener"
                     data-cursor="open"

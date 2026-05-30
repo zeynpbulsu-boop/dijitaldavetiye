@@ -62,7 +62,7 @@ export function StickyCta() {
       }}
     >
       <Link
-        href="/order/aethel"
+        href="/order/geceyarisi"
         data-cursor="magnetic"
         data-cursor-label="Başla"
         aria-label="Davetiye tasarlamaya başla — €39.99 tek fiyat"

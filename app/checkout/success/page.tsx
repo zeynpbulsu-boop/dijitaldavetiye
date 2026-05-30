@@ -51,7 +51,7 @@ function SuccessInner() {
             {t.checkout.success.cta_home}
           </Link>
           <Link
-            href="/order/aethel"
+            href="/order/geceyarisi"
             className="inline-flex items-center gap-2 rounded-full bg-brand-cognac px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-cream transition hover:bg-brand-ink"
           >
             {t.checkout.success.cta_editor}

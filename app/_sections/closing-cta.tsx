@@ -64,7 +64,7 @@ export function ClosingCta() {
         >
           <Magnetic strength={0.34} radius={160}>
           <Link
-            href="/order/aethel"
+            href="/order/geceyarisi"
             data-cursor="cta"
             className="group inline-flex items-center gap-2 rounded-full bg-brand-cognac px-8 py-4 text-[13px] font-semibold uppercase tracking-[0.22em] text-brand-cream shadow-[0_10px_30px_-8px_rgba(140,90,60,0.55)] transition-all duration-300 hover:bg-brand-ink hover:shadow-[0_18px_40px_-10px_rgba(43,30,22,0.45)]"
           >

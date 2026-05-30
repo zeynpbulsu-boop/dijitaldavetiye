@@ -98,7 +98,7 @@ export function Hero() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/order/aethel"
+                href="/order/geceyarisi"
                 data-cursor="magnetic"
                 data-cursor-label="Tasarla"
                 aria-label="Davetiyeni tasarlamaya başla"
@@ -161,33 +161,33 @@ export function Hero() {
                 className="absolute left-1/2 top-2 z-10 h-5 w-24 -translate-x-1/2 rounded-full bg-brand-ink/90"
               />
 
-              {/* Davetiye demosu — phone içinde, yeni premium Aethel cover */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#F2EEE4] px-6 text-center">
-                {/* Full-bleed cinematic cover (v2) — premium fal.ai render */}
+              {/* Davetiye demosu — Geceyarısı (amiral tema, themes-v2) */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0E1730] px-6 text-center">
+                {/* Sinematik nebula backdrop (Geceyarısı) */}
                 <Image
-                  src="/aethel/cover.jpg"
+                  src="/themes-v2/geceyarisi/nebula-bg.png"
                   alt=""
                   fill
                   sizes="420px"
                   priority
                   style={{ objectFit: "cover" }}
                 />
-                {/* Soft overlay legibility için — cream wash */}
+                {/* Soft overlay legibility için — gece washı */}
                 <div
                   aria-hidden
                   className="absolute inset-0"
                   style={{
                     background:
-                      "linear-gradient(180deg, rgba(242,238,228,0.35) 0%, rgba(242,238,228,0.55) 45%, rgba(242,238,228,0.78) 100%)",
+                      "linear-gradient(180deg, rgba(14,23,48,0.3) 0%, rgba(14,23,48,0.5) 45%, rgba(14,23,48,0.82) 100%)",
                   }}
                 />
                 <div className="relative z-10 mt-12 flex flex-col items-center gap-4">
-                  <span className="text-[9px] uppercase tracking-[0.4em] text-[#5E6650]">
-                    Evleniyoruz
+                  <span className="text-[9px] uppercase tracking-[0.4em]" style={{ color: "#D4A852" }}>
+                    Save the Date
                   </span>
                   <div className="relative h-32 w-32">
                     <Image
-                      src="/aethel/wax-seal-luxe.png"
+                      src="/themes-v2/geceyarisi/wax-seal-gold.png"
                       alt="Wax seal"
                       fill
                       sizes="128px"
@@ -196,20 +196,21 @@ export function Hero() {
                     />
                   </div>
                   <h3
-                    className="px-2 italic text-[#2E3326]"
+                    className="px-2 italic"
                     style={{
                       fontFamily: "var(--font-calligraphy)",
                       fontSize: "clamp(36px, 8vw, 52px)",
                       lineHeight: 1.05,
+                      color: "#F0E2BF",
                     }}
                   >
-                    Defne &amp; Aras
+                    Elif &amp; Can
                   </h3>
-                  <span className="text-[10px] uppercase tracking-[0.42em] text-[#5E6650]">
-                    12 Eylül 2026
+                  <span className="text-[10px] uppercase tracking-[0.42em]" style={{ color: "#D4A852" }}>
+                    15 Haziran 2026
                   </span>
-                  <span className="text-[10px] italic text-[#5E6650]">
-                    Aethel&apos;s Chapel · Toscana
+                  <span className="text-[10px] italic" style={{ color: "#A8B0C8" }}>
+                    Cunda Adası · Ayvalık
                   </span>
                 </div>
               </div>

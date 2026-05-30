@@ -215,7 +215,7 @@ export function Pricing() {
             {/* CTA */}
             <div className="relative mt-10 flex flex-col items-center gap-3">
               <Link
-                href="/order/aethel"
+                href="/order/geceyarisi"
                 data-cursor="magnetic"
                 data-cursor-label="Tasarla"
                 aria-label="Davetiyeni tasarlamaya başla"

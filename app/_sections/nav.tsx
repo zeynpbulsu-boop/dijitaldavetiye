@@ -103,7 +103,7 @@ export function Nav() {
 
             <Magnetic strength={0.28} radius={110}>
             <Link
-              href="/order/aethel"
+              href="/order/geceyarisi"
               data-cursor="cta"
               aria-label={t.nav.cta_aria}
               className="btn-couture group"
