@@ -165,7 +165,7 @@ export function Hero() {
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0E1730] px-6 text-center">
                 {/* Sinematik nebula backdrop (Geceyarısı) */}
                 <Image
-                  src="/themes-v2/geceyarisi/nebula-bg.png"
+                  src="/themes-v2/geceyarisi/nebula-bg.webp"
                   alt=""
                   fill
                   sizes="420px"
@@ -187,7 +187,7 @@ export function Hero() {
                   </span>
                   <div className="relative h-32 w-32">
                     <Image
-                      src="/themes-v2/geceyarisi/wax-seal-gold.png"
+                      src="/themes-v2/geceyarisi/wax-seal-gold.webp"
                       alt="Wax seal"
                       fill
                       sizes="128px"

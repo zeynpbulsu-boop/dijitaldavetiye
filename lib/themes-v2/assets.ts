@@ -24,36 +24,36 @@ export interface ThemeAssets {
 
 export const THEME_ASSETS: Record<ThemeV2Slug, ThemeAssets> = {
   celenk: {
-    bg: "/themes-v2/celenk/watercolor-bg.png",
-    accent: "/themes-v2/celenk/gypsophila-cluster.png",
+    bg: "/themes-v2/celenk/watercolor-bg.webp",
+    accent: "/themes-v2/celenk/gypsophila-cluster.webp",
   },
   polaroid: {
     scenes: [
-      "/themes-v2/polaroid/scene-sunset.png",
-      "/themes-v2/polaroid/scene-mountain.png",
-      "/themes-v2/polaroid/scene-field.png",
-      "/themes-v2/polaroid/scene-shore.png",
+      "/themes-v2/polaroid/scene-sunset.webp",
+      "/themes-v2/polaroid/scene-mountain.webp",
+      "/themes-v2/polaroid/scene-field.webp",
+      "/themes-v2/polaroid/scene-shore.webp",
     ],
   },
   kurdele: {
-    texture: "/themes-v2/kurdele/vellum-texture.png",
-    accent: "/themes-v2/kurdele/blue-wash.png",
+    texture: "/themes-v2/kurdele/vellum-texture.webp",
+    accent: "/themes-v2/kurdele/blue-wash.webp",
   },
   fener: {
-    illustration: "/themes-v2/fener/venue-sketch.png",
-    overlay: "/themes-v2/fener/bokeh-overlay.png",
+    illustration: "/themes-v2/fener/venue-sketch.webp",
+    overlay: "/themes-v2/fener/bokeh-overlay.webp",
   },
   defter: {
-    texture: "/themes-v2/defter/linen-texture.png",
-    accent: "/themes-v2/defter/pressed-flower.png",
+    texture: "/themes-v2/defter/linen-texture.webp",
+    accent: "/themes-v2/defter/pressed-flower.webp",
   },
   geceyarisi: {
-    bg: "/themes-v2/geceyarisi/nebula-bg.png",
-    overlay: "/themes-v2/geceyarisi/foliage-gold.png",
+    bg: "/themes-v2/geceyarisi/nebula-bg.webp",
+    overlay: "/themes-v2/geceyarisi/foliage-gold.webp",
   },
   postakart: {
-    illustration: "/themes-v2/postakart/ayvalik-landscape.png",
-    texture: "/themes-v2/postakart/aged-paper.png",
+    illustration: "/themes-v2/postakart/ayvalik-landscape.webp",
+    texture: "/themes-v2/postakart/aged-paper.webp",
   },
 };
 
@@ -104,25 +104,25 @@ export interface ThemeCeremonyAssets {
   coverTexture?: string;
 }
 export const THEME_CEREMONY: Partial<Record<ThemeV2Slug, ThemeCeremonyAssets>> = {
-  celenk: { seal: "/themes-v2/celenk/wax-seal.png", coverTexture: "/themes-v2/celenk/cover-texture.png" },
-  polaroid: { seal: "/themes-v2/polaroid/wax-seal.png", coverTexture: "/themes-v2/polaroid/cover-texture.png" },
-  kurdele: { seal: "/themes-v2/kurdele/wax-seal.png", coverTexture: "/themes-v2/kurdele/cover-texture.png" },
-  fener: { seal: "/themes-v2/fener/wax-seal.png", coverTexture: "/themes-v2/fener/cover-texture.png" },
-  defter: { seal: "/themes-v2/defter/wax-seal.png", coverTexture: "/themes-v2/defter/cover-texture.png" },
+  celenk: { seal: "/themes-v2/celenk/wax-seal.webp", coverTexture: "/themes-v2/celenk/cover-texture.webp" },
+  polaroid: { seal: "/themes-v2/polaroid/wax-seal.webp", coverTexture: "/themes-v2/polaroid/cover-texture.webp" },
+  kurdele: { seal: "/themes-v2/kurdele/wax-seal.webp", coverTexture: "/themes-v2/kurdele/cover-texture.webp" },
+  fener: { seal: "/themes-v2/fener/wax-seal.webp", coverTexture: "/themes-v2/fener/cover-texture.webp" },
+  defter: { seal: "/themes-v2/defter/wax-seal.webp", coverTexture: "/themes-v2/defter/cover-texture.webp" },
   geceyarisi: {
-    seal: "/themes-v2/geceyarisi/wax-seal-gold.png",
-    coverTexture: "/themes-v2/geceyarisi/cover-texture.png",
+    seal: "/themes-v2/geceyarisi/wax-seal-gold.webp",
+    coverTexture: "/themes-v2/geceyarisi/cover-texture.webp",
   },
-  postakart: { seal: "/themes-v2/postakart/wax-seal.png", coverTexture: "/themes-v2/postakart/cover-texture.png" },
+  postakart: { seal: "/themes-v2/postakart/wax-seal.webp", coverTexture: "/themes-v2/postakart/cover-texture.webp" },
 };
 
 /** Thumbnail used by /tasarimlar showcase grid. */
 export const THEME_THUMB: Record<ThemeV2Slug, string> = {
-  celenk: "/themes-v2/thumbs/celenk.png",
-  polaroid: "/themes-v2/thumbs/polaroid.png",
-  kurdele: "/themes-v2/thumbs/kurdele.png",
-  fener: "/themes-v2/thumbs/fener.png",
-  defter: "/themes-v2/thumbs/defter.png",
-  geceyarisi: "/themes-v2/thumbs/geceyarisi.png",
-  postakart: "/themes-v2/thumbs/postakart.png",
+  celenk: "/themes-v2/thumbs/celenk.webp",
+  polaroid: "/themes-v2/thumbs/polaroid.webp",
+  kurdele: "/themes-v2/thumbs/kurdele.webp",
+  fener: "/themes-v2/thumbs/fener.webp",
+  defter: "/themes-v2/thumbs/defter.webp",
+  geceyarisi: "/themes-v2/thumbs/geceyarisi.webp",
+  postakart: "/themes-v2/thumbs/postakart.webp",
 };
