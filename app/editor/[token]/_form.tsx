@@ -155,54 +155,48 @@ export function EditorForm({
         </Row>
       </Group>
 
-      {showLuxeFields && (
-        <Group title="Lüks içerik" eyebrow="— Kopya">
-          <p className="text-[13px] leading-[1.7] text-brand-mute">
-            Boş bırakılan alanlar için seçtiğiniz edisyonun varsayılan
-            metinleri gösterilir.
-          </p>
-          <Field
-            label="Karşılama (zarf)"
-            name="greeting"
-            defaultValue={invitation.greeting ?? ""}
-            placeholder="Bir davet sizi bekliyor"
-          />
+      {/* Davetiye metni — her temada kullanılan kopya alanları. Boş kalanlar
+          için temanın varsayılanı gösterilir. CTA + müzik etiketi yalnızca
+          eski luxe edisyonlarında görünür (themes-v2 bunları kullanmaz). */}
+      <Group title="Davetiye metni" eyebrow="— Kopya">
+        <p className="text-[13px] leading-[1.7] text-brand-mute">
+          Boş bıraktığınız alanlar için temanın varsayılan metni gösterilir.
+        </p>
+        <Field
+          label="Karşılama (zarf)"
+          name="greeting"
+          defaultValue={invitation.greeting ?? ""}
+          placeholder="Bir davet sizi bekliyor"
+        />
+        <Field
+          label="Hero eyebrow"
+          name="hero_eyebrow"
+          defaultValue={invitation.hero_eyebrow ?? ""}
+          placeholder="Düğün törenimize davetlisiniz"
+        />
+        <Field
+          label="Footer alt-yazı"
+          name="footer_note"
+          defaultValue={invitation.footer_note ?? ""}
+          placeholder="Bizimle olmanız bizi onurlandırır"
+        />
+        {showLuxeFields && (
           <Row>
-            <Field
-              label="Hero eyebrow"
-              name="hero_eyebrow"
-              defaultValue={invitation.hero_eyebrow ?? ""}
-              placeholder="Evleniyoruz"
-            />
             <Field
               label="Hero CTA"
               name="hero_cta"
               defaultValue={invitation.hero_cta ?? ""}
               placeholder="Bizimle olur musun?"
             />
-          </Row>
-          <Row>
             <Field
               label="Zarf açma CTA"
               name="envelope_cta"
               defaultValue={invitation.envelope_cta ?? ""}
               placeholder="Davetiyeyi Aç"
             />
-            <Field
-              label="Müzik parçası"
-              name="music_track"
-              defaultValue={invitation.music_track ?? ""}
-              placeholder="Clair de Lune · Claude Debussy"
-            />
           </Row>
-          <Field
-            label="Footer alt-yazı"
-            name="footer_note"
-            defaultValue={invitation.footer_note ?? ""}
-            placeholder="Bizimle olmanız bizi onurlandırır"
-          />
-        </Group>
-      )}
+        )}
+      </Group>
 
       <Group title="Hediye / IBAN" eyebrow="— Banka Bilgileri">
         <p className="text-[13px] leading-[1.7] text-brand-mute">
