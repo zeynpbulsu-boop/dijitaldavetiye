@@ -151,20 +151,13 @@ export const metadata: Metadata = {
       "Düğün, doğum günü, baby shower… her etkinlik için premium dijital davetiye. AI özel kapak, RSVP, harita, müzik, çoklu dil — tek paket €39.99.",
     siteName: "NUVE",
     url: BASE_URL,
-    images: [
-      {
-        url: "/aethel/cover.jpg",
-        width: 1200,
-        height: 800,
-        alt: "NUVE — premium dijital davetiye",
-      },
-    ],
+    // og:image — app/opengraph-image.tsx (file convention) sağlar.
   },
   twitter: {
     card: "summary_large_image",
     title: "NUVE — Premium Dijital Davetiye",
     description: "€39.99 · Her etkinlik dahil · AI özel kapak + RSVP + harita + müzik.",
-    images: ["/aethel/cover.jpg"],
+    // twitter:image — opengraph-image.tsx'e düşer (file convention).
   },
   robots: {
     index: true,

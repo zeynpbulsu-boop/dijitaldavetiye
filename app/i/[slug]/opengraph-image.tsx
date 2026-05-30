@@ -1,33 +1,31 @@
 /**
- * /i/[slug] OG image — FAZ C.2.
+ * /i/[slug] OG image — themes-v2 aware.
  *
  * Per-invitation share preview (WhatsApp, iMessage, Telegram, X, FB,
- * Slack). Theme-aware: pulls the bg / ink / accent + couple names so
- * the chip looks like the invitation, not a generic NUVE banner.
+ * Slack). Düğün davetiyeleri sürekli paylaşılır — link önizlemesi
+ * davetiyenin KENDİ temasına benzemeli, generic banner değil.
  *
- * Edge runtime so we don't pay a cold-start tax on a route that
- * social crawlers hammer in parallel. `ImageResponse` returns a PNG;
- * size 1200×630 is the canonical Open Graph dimension and also
- * Twitter's `summary_large_image`.
+ * Tema çözümü `/i/[slug]` sayfasıyla AYNI yoldan gider
+ * (resolveThemeV2Slug): yani önizleme, açılan davetiyeyle birebir
+ * aynı paleti kullanır. Legacy slug'lar da bridge üzerinden v2'ye
+ * eşlenir, böylece eski davetiyeler bile doğru renkte görünür.
  *
- * The route hits Supabase via the service-role key (already wired up
- * elsewhere). On any failure we fall back to a neutral cream chip
- * with the NUVE wordmark — better than a blank link preview.
+ * `ImageResponse` PNG döndürür; 1200×630 kanonik Open Graph ölçüsü
+ * (Twitter `summary_large_image` ile de uyumlu). Supabase'e
+ * service-role ile gider; herhangi bir hata olursa nötr krem çipe
+ * düşer — boş link önizlemesinden iyidir.
  */
 
 import { ImageResponse } from "next/og";
 import { adminDb } from "@/lib/db/supabase";
-import { LUXE_THEMES, type LuxeEditionSlug } from "@/lib/design/luxe-themes";
+import { THEMES_V2 } from "@/lib/themes-v2/registry";
+import { resolveThemeV2Slug } from "@/lib/themes-v2/bridge";
 import type { Invitation } from "@/lib/db/types";
 
 export const runtime = "nodejs";
 export const contentType = "image/png";
 export const size = { width: 1200, height: 630 };
 export const alt = "NUVE — Davetiye";
-
-function isLuxe(slug: string): slug is LuxeEditionSlug {
-  return slug in LUXE_THEMES;
-}
 
 async function loadLive(slug: string): Promise<Invitation | null> {
   try {
@@ -44,35 +42,37 @@ async function loadLive(slug: string): Promise<Invitation | null> {
   }
 }
 
+/** "YYYY-MM-DD" → "DD.MM.YYYY" (locale'den bağımsız, kıramaz). */
+function formatDate(raw?: string | null): string {
+  if (!raw) return "";
+  const [y, m, d] = raw.split("-");
+  if (!y || !m || !d) return "";
+  return `${d}.${m}.${y}`;
+}
+
 const FALLBACK = {
   bg: "#F6F1EA",
   ink: "#1F1B17",
+  inkSoft: "#6B5847",
   accent: "#B8895A",
   couple: "NUVE",
-  date: "",
-  venue: "",
 };
 
 export default async function Image({ params }: { params: { slug: string } }) {
   const inv = await loadLive(params.slug);
-  const theme =
-    inv && isLuxe(inv.template_slug) ? LUXE_THEMES[inv.template_slug] : null;
+  const theme = inv ? THEMES_V2[resolveThemeV2Slug(inv.template_slug)] : null;
+  const pal = theme?.palette;
 
-  const bg = theme?.bg ?? FALLBACK.bg;
-  const ink = theme?.ink ?? FALLBACK.ink;
-  const accent = theme?.accent ?? FALLBACK.accent;
+  const bg = pal?.bg ?? FALLBACK.bg;
+  const ink = pal?.ink ?? FALLBACK.ink;
+  const inkSoft = pal?.inkSoft ?? FALLBACK.inkSoft;
+  const accent = pal?.accent ?? FALLBACK.accent;
   const couple =
     inv?.partner_one_name && inv?.partner_two_name
       ? `${inv.partner_one_name} & ${inv.partner_two_name}`
-      : theme?.coupleName ?? FALLBACK.couple;
-  const dateLine = inv?.wedding_date
-    ? inv.wedding_date
-        .split("-")
-        .reverse()
-        .map((s, i) => (i === 1 ? s : s))
-        .join(".")
-    : "";
-  const venue = inv?.venue_name ?? theme?.venue ?? "";
+      : FALLBACK.couple;
+  const dateLine = formatDate(inv?.wedding_date);
+  const venue = inv?.venue_name ?? "";
 
   return new ImageResponse(
     (
@@ -86,17 +86,29 @@ export default async function Image({ params }: { params: { slug: string } }) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          padding: 80,
+          padding: 64,
           fontFamily: "Georgia, serif",
         }}
       >
+        {/* İnce accent çerçeve — premium dokunuş */}
+        <div
+          style={{
+            position: "absolute",
+            top: 32,
+            left: 32,
+            right: 32,
+            bottom: 32,
+            border: `1px solid ${accent}`,
+            opacity: 0.45,
+          }}
+        />
+
         <div
           style={{
             fontSize: 22,
             letterSpacing: "0.5em",
             textTransform: "uppercase",
             color: accent,
-            opacity: 0.8,
           }}
         >
           NUVE
@@ -104,7 +116,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
 
         <div
           style={{
-            marginTop: 56,
+            marginTop: 52,
             fontSize: 96,
             lineHeight: 1.05,
             letterSpacing: "-0.005em",
@@ -125,8 +137,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
               fontSize: 24,
               letterSpacing: "0.32em",
               textTransform: "uppercase",
-              color: ink,
-              opacity: 0.7,
+              color: inkSoft,
             }}
           >
             {dateLine && <span>{dateLine}</span>}
@@ -148,12 +159,12 @@ export default async function Image({ params }: { params: { slug: string } }) {
         <div
           style={{
             position: "absolute",
-            bottom: 56,
+            bottom: 52,
             fontSize: 18,
             letterSpacing: "0.42em",
             textTransform: "uppercase",
             color: accent,
-            opacity: 0.6,
+            opacity: 0.7,
           }}
         >
           Dijital Davetiye
