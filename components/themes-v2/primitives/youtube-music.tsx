@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MutableRefObject } from "react";
 import { motion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
 
@@ -72,11 +72,14 @@ export function YouTubeMusic({
   meta,
   opened,
   start = 0,
+  playRef,
 }: {
   videoId: string;
   meta: ThemeV2Meta;
   opened: boolean;
   start?: number;
+  /** Mühre-basma jesti içinde doğrudan çağrılacak play fonksiyonu buraya kaydedilir. */
+  playRef?: MutableRefObject<(() => void) | null>;
 }) {
   const { palette } = meta;
   const mountRef = useRef<HTMLDivElement | null>(null);
@@ -154,6 +157,26 @@ export function YouTubeMusic({
       }
     }
   }, [opened, ready, dismissed]);
+
+  // Play fonksiyonunu parent'a (theme-shell handleOpen) kaydet → mühre-basma
+  // click handler'ının İÇİNDE senkron çağrılır (en güvenilir sesli autoplay).
+  useEffect(() => {
+    if (!playRef) return;
+    playRef.current = () => {
+      const p = playerRef.current;
+      if (!p) return;
+      try {
+        p.seekTo(startRef.current, true);
+        p.unMute();
+        p.playVideo();
+      } catch {
+        /* ignore */
+      }
+    };
+    return () => {
+      playRef.current = null;
+    };
+  }, [playRef]);
 
   if (dismissed) return null;
 

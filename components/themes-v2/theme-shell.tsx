@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { CountdownBand } from "./primitives/countdown-band";
@@ -67,9 +67,14 @@ export function ThemeShell({
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
+  // YouTube müziğini mühre-basma JESTİNİN İÇİNDE doğrudan başlatmak için.
+  // (Effect gecikmesi yerine senkron çağrı → iOS dahil sesli autoplay en güvenilir.)
+  const musicPlayRef = useRef<(() => void) | null>(null);
+
   const handleOpen = () => {
     setOpened(true);
     audio.start();
+    musicPlayRef.current?.();
   };
 
   return (
@@ -140,6 +145,7 @@ export function ThemeShell({
               meta={meta}
               opened={opened}
               start={embed.start}
+              playRef={musicPlayRef}
             />
           )}
         </>
