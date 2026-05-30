@@ -200,16 +200,17 @@ export function EditorForm({
 
       <Group title="Müzik" eyebrow="— Şarkınız">
         <p className="text-[13px] leading-[1.7] text-brand-mute">
-          Spotify, YouTube veya Apple Music şarkı linkini yapıştırın — davetiyede
-          &quot;Bizim Şarkımız&quot; bölümünde resmi oynatıcı görünür. Telifli
-          şarkılar platform üzerinden yasal çalar. Boş bırakırsanız temanın
-          kamu-malı klasik müziği kullanılır.
+          <strong className="text-brand-ink">YouTube</strong> şarkı linki yapıştırın
+          — davet açılır açılmaz (mühre basınca) şarkı arkada <strong className="text-brand-ink">otomatik</strong> çalar.
+          Spotify / Apple Music linkleri de çalışır ama elle oynatılır (otomatik
+          başlatılamaz). Telifli şarkılar resmi oynatıcıda yasal çalar — boş
+          bırakırsanız temanın kamu-malı klasik müziği kullanılır.
         </p>
         <Field
-          label="Şarkı linki (Spotify / YouTube / Apple Music)"
+          label="Şarkı linki (YouTube önerilir · Spotify / Apple de olur)"
           name="music_url"
           defaultValue={invitation.music_url ?? ""}
-          placeholder="https://open.spotify.com/track/…"
+          placeholder="https://www.youtube.com/watch?v=…"
         />
       </Group>
 

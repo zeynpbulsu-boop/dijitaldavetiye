@@ -24,10 +24,10 @@ export function generateMetadata({
   };
 }
 
-// Demo'da "Bizim Şarkımız" bölümünü göstermek için örnek — resmi Spotify embed
-// (yasal: telif lisanslı platformda). Gerçek davetiyede çift kendi şarkı linkini
-// (Spotify/YouTube/Apple) editörden ekler (music_url).
-const SAMPLE_SONG = "https://open.spotify.com/track/0tgVpDi06FyKpA1z0VMD4v";
+// Demo'da müziği göstermek için örnek — YouTube linki (mühre basınca ARKADA
+// otomatik çalar, resmi oynatıcı = telif lisanslı). Gerçek davetiyede çift kendi
+// şarkı linkini editörden ekler (music_url). YouTube → otomatik; Spotify/Apple → elle.
+const SAMPLE_SONG = "https://www.youtube.com/watch?v=2Vv-BfVoq4g";
 
 export default function ThemePreviewPage({
   params,

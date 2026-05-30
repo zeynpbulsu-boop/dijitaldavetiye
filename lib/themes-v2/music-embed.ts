@@ -19,6 +19,8 @@ export interface MusicEmbed {
   embedUrl: string;
   /** Oynatıcı yüksekliği (px) — platform/içerik tipine göre. */
   height: number;
+  /** YouTube video ID — IFrame API ile jest üzerine otomatik çalma için. */
+  videoId?: string;
 }
 
 /** Bir Spotify/YouTube/Apple Music linkini resmi embed oynatıcıya çevirir. */
@@ -48,6 +50,7 @@ export function parseMusicEmbed(raw?: string | null): MusicEmbed | null {
       platform: "youtube",
       embedUrl: `https://www.youtube.com/embed/${yt[1]}?rel=0&modestbranding=1`,
       height: 200,
+      videoId: yt[1],
     };
   }
 

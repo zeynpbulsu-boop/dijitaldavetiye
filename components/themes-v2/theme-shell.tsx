@@ -19,6 +19,7 @@ import {
 } from "./primitives/opening-ceremony";
 import { THEME_MUSIC } from "@/lib/themes-v2/assets";
 import { MusicEmbedSection } from "./primitives/music-embed";
+import { YouTubeMusic } from "./primitives/youtube-music";
 import { parseMusicEmbed } from "@/lib/themes-v2/music-embed";
 
 interface Props extends ThemeV2Props {
@@ -98,7 +99,7 @@ export function ThemeShell({
               />
             </Reveal>
           )}
-          {embed && (
+          {embed && embed.platform !== "youtube" && (
             <Reveal>
               <MusicEmbedSection meta={meta} embed={embed} />
             </Reveal>
@@ -132,6 +133,9 @@ export function ThemeShell({
           <OpeningCeremony meta={meta} data={data} opened={opened} onOpen={handleOpen} />
           {!embed && audio.available && (
             <AmbientToggle muted={audio.muted} onToggle={audio.toggle} palette={palette} />
+          )}
+          {embed?.platform === "youtube" && embed.videoId && (
+            <YouTubeMusic videoId={embed.videoId} meta={meta} opened={opened} />
           )}
         </>
       )}
