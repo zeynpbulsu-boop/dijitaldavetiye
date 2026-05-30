@@ -142,11 +142,11 @@ export const SAMPLE_DATA: ThemeV2Data = {
       "Bir bahar günü tanıştık. Küçük tesadüflerin büyük aşklara dönüştüğünü öğrendik. Bugün bu yolculuğun en güzel adımını sizlerle paylaşmanın heyecanını yaşıyoruz.",
   },
   photos: [
-    { caption: "İlk tanıştığımız gün", rotation: -3 },
-    { caption: "Mart 2024 · Kapadokya", rotation: 2 },
-    { caption: "Birlikte ilk yılbaşı", rotation: -1 },
-    { caption: "Evet dediği an", rotation: 3 },
-    { caption: "Bir nehir kenarı", rotation: -2 },
+    { src: "/themes-v2/polaroid/scene-field.webp", caption: "İlk tanıştığımız gün", rotation: -3 },
+    { src: "/themes-v2/polaroid/scene-mountain.webp", caption: "Mart 2024 · Kapadokya", rotation: 2 },
+    { src: "/themes-v2/polaroid/scene-sunset.webp", caption: "Birlikte ilk yılbaşı", rotation: -1 },
+    { src: "/themes-v2/postakart/ayvalik-landscape.webp", caption: "Evet dediği an", rotation: 3 },
+    { src: "/themes-v2/polaroid/scene-shore.webp", caption: "Bir nehir kenarı", rotation: -2 },
   ],
   schedule: [
     { time: "17:00", label: "Karşılama" },
