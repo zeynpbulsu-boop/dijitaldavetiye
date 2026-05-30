@@ -21,7 +21,10 @@ import { invitationToThemeV2 } from "@/lib/themes-v2/bridge";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-async function loadLive(slug: string): Promise<Invitation | null> {
+async function loadLive(
+  slug: string,
+  previewToken?: string,
+): Promise<Invitation | null> {
   try {
     const supabase = adminDb();
     const { data, error } = await supabase
@@ -30,7 +33,13 @@ async function loadLive(slug: string): Promise<Invitation | null> {
       .eq("slug", slug)
       .single<Invitation>();
     if (error || !data) return null;
+    // Önizleme: geçerli admin_token ile (panelden) draft/paid davetiye de görünür.
+    if (previewToken && previewToken === data.admin_token) return data;
     if (data.status !== "live") return null;
+    // 1 yıl dolunca (live_until geçmiş) yayından kalkmış say → 404.
+    if (data.live_until && new Date(data.live_until).getTime() < Date.now()) {
+      return null;
+    }
     return data;
   } catch (err) {
     console.warn("[i] loadLive failed:", err);
@@ -58,10 +67,12 @@ export async function generateMetadata({
 
 export default async function PublicInvitationPage({
   params,
+  searchParams,
 }: {
   params: { slug: string };
+  searchParams: { token?: string };
 }) {
-  const inv = await loadLive(params.slug);
+  const inv = await loadLive(params.slug, searchParams?.token);
   if (!inv) notFound();
 
   // Production render via the new themes-v2 cinematic system. The bridge maps
