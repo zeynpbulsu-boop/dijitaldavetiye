@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useState, useTransition } from "react";
+import { MapsVenuePicker } from "@/components/inputs/maps-venue-picker";
 import type { FormEvent } from "react";
 import type { Invitation } from "@/lib/db/types";
 import { saveInvitation, type SaveResult } from "./_actions";
@@ -127,32 +128,11 @@ export function EditorForm({
             placeholder="Toskana"
           />
         </Row>
-        <Field
-          label="Açık adres"
-          name="venue_address"
-          defaultValue={invitation.venue_address ?? ""}
-          placeholder="Via dei Cipressi, 18"
+        <MapsVenuePicker
+          defaultAddress={invitation.venue_address}
+          defaultLat={invitation.venue_lat}
+          defaultLng={invitation.venue_lng}
         />
-        <Row>
-          <Field
-            label="Enlem (latitude)"
-            name="venue_lat"
-            defaultValue={
-              invitation.venue_lat != null ? String(invitation.venue_lat) : ""
-            }
-            placeholder="41.0082"
-            hint="Google Maps'te pin'e sağ tıkla → koordinatı kopyala. İlk sayı."
-          />
-          <Field
-            label="Boylam (longitude)"
-            name="venue_lng"
-            defaultValue={
-              invitation.venue_lng != null ? String(invitation.venue_lng) : ""
-            }
-            placeholder="28.9784"
-            hint="İkinci sayı. İkisi de doluysa davetiyede harita çıkar."
-          />
-        </Row>
       </Group>
 
       {/* Davetiye metni — her temada kullanılan kopya alanları. Boş kalanlar
