@@ -16,6 +16,7 @@
 import { revalidatePath } from "next/cache";
 import { adminDb } from "@/lib/db/supabase";
 import type { DbLocale, EventType, Invitation } from "@/lib/db/types";
+import { resolveMapsCoords } from "@/lib/maps/resolve-link";
 
 /** Trimmed text → null when empty (so DB nulls fall back to luxe presets). */
 function trimOrNull(v: FormDataEntryValue | null): string | null {
@@ -104,6 +105,19 @@ export async function saveInvitation(
     return { ok: false, message: "Bu davetiye bulunamadı." };
   }
 
+  // Mekan koordinatı: önce yapıştırılan Google Maps linkinden çöz (API key
+  // GEREKMEZ); link yoksa/çözülemezse elle girilen lat/lng'ye düş.
+  let venueLat = coordOrNull(formData.get("venue_lat"), 90);
+  let venueLng = coordOrNull(formData.get("venue_lng"), 180);
+  const mapsUrl = trimOrNull(formData.get("venue_maps_url"));
+  if (mapsUrl) {
+    const coords = await resolveMapsCoords(mapsUrl);
+    if (coords) {
+      venueLat = coords.lat;
+      venueLng = coords.lng;
+    }
+  }
+
   const patch: Partial<Invitation> = {
     /* Etkinlik tipi + dil (migration 004 + 001). Enum guard ile
        beklenmeyen değerleri reddediyoruz; CHECK constraint zaten DB
@@ -146,8 +160,8 @@ export async function saveInvitation(
 
     /* Migration 007 — venue coords (B.3 map embed). Geçersiz veya
        aralık dışı değer → null (harita gizlenir). */
-    venue_lat: coordOrNull(formData.get("venue_lat"), 90),
-    venue_lng: coordOrNull(formData.get("venue_lng"), 180),
+    venue_lat: venueLat,
+    venue_lng: venueLng,
 
     /* Migration 008 — scratch reveal opt-in. */
     enable_scratch_reveal: formData.get("enable_scratch_reveal") === "on",

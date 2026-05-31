@@ -13,7 +13,6 @@
  */
 
 import { useEffect, useState, useTransition } from "react";
-import { MapsVenuePicker } from "@/components/inputs/maps-venue-picker";
 import type { FormEvent } from "react";
 import type { Invitation } from "@/lib/db/types";
 import { saveInvitation, type SaveResult } from "./_actions";
@@ -128,11 +127,25 @@ export function EditorForm({
             placeholder="Toskana"
           />
         </Row>
-        <MapsVenuePicker
-          defaultAddress={invitation.venue_address}
-          defaultLat={invitation.venue_lat}
-          defaultLng={invitation.venue_lng}
+        <Field
+          label="Açık adres"
+          name="venue_address"
+          defaultValue={invitation.venue_address ?? ""}
+          placeholder="Lale Sokak No 7, Cunda Adası"
         />
+        <Field
+          label="Google Maps linki"
+          name="venue_maps_url"
+          defaultValue=""
+          placeholder="https://maps.app.goo.gl/…"
+          hint="Google Maps'te salonu bul → Paylaş → Bağlantıyı kopyala → buraya yapıştır. Konumu otomatik çıkarırız; davetiyede harita + yol tarifi görünür. API key gerekmez."
+        />
+        {invitation.venue_lat != null && invitation.venue_lng != null && (
+          <p className="text-[12px] text-brand-mute">
+            📍 Kayıtlı konum: {invitation.venue_lat}, {invitation.venue_lng} —
+            değiştirmek için yeni link yapıştır.
+          </p>
+        )}
       </Group>
 
       {/* Davetiye metni — her temada kullanılan kopya alanları. Boş kalanlar
