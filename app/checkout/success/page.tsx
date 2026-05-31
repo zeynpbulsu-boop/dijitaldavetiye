@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useT } from "@/lib/i18n/provider";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 /* Tier kavramı kalktı (tek paket €39.99). Eski multi-tier label'ları
    kaldırıldı. */
@@ -14,6 +14,22 @@ function SuccessInner() {
   const paymentId = params.get("payment_id") ?? "";
   const status = params.get("status") ?? "";
   const isPending = status === "processing";
+
+  // Ödeme öncesi saklanan aktif siparişten editör linkini kur (yoksa genel sipariş).
+  const [editorHref, setEditorHref] = useState("/order/geceyarisi");
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem("nuve_active_order");
+      if (raw) {
+        const o = JSON.parse(raw) as { admin_token?: string };
+        if (o?.admin_token) {
+          setEditorHref(`/editor/${encodeURIComponent(o.admin_token)}`);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   return (
     <main className="grain min-h-[80vh] bg-bg py-24 lg:py-32">
@@ -51,7 +67,7 @@ function SuccessInner() {
             {t.checkout.success.cta_home}
           </Link>
           <Link
-            href="/order/geceyarisi"
+            href={editorHref}
             className="inline-flex items-center gap-2 rounded-full bg-brand-cognac px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-cream transition hover:bg-brand-ink"
           >
             {t.checkout.success.cta_editor}

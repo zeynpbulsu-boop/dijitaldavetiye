@@ -229,6 +229,13 @@ export default function OrderEditorPage() {
     if (!draft) return;
     setPaying(true);
     try {
+      // Ödeme sonrası /checkout/success'in editöre linkleyebilmesi için aktif siparişi sakla.
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(
+          "nuve_active_order",
+          JSON.stringify({ slug: draft.slug, admin_token: draft.admin_token }),
+        );
+      }
       await startCheckout({
         tier: STANDARD_TIER,
         invitationId: draft.id,
