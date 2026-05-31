@@ -2,14 +2,7 @@ import type { Metadata, Viewport } from "next";
 import {
   Inter_Tight,
   Cormorant_Garamond,
-  Playfair_Display,
-  DM_Serif_Display,
-  Tenor_Sans,
-  Fraunces,
-  Caveat,
-  DM_Sans,
   Pinyon_Script,
-  Great_Vibes,
 } from "next/font/google";
 import "./globals.css";
 import { CursorRing } from "@/components/effects/cursor-ring";
@@ -47,76 +40,14 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-/* ─── Edition-specific display fonts ───────────────────────────────
- * Each loads its own CSS variable so editions opt in via globals.css
- * [data-edition="..."] scope. Subset hint stays at latin+latin-ext for
- * Turkish coverage. font-display: swap so layout never blocks.
+/* Calligraphy script for couple names (Pinyon Script).
+ * Stroke-by-stroke SVG isim animasyonunda kullanılır — romantik, resmî
+ * düğün kaligrafisi. (Legacy edition fontları FAZ legacy-retirement'ta
+ * kaldırıldı; themes-v2 yalnızca --font-display + --font-calligraphy kullanır.)
  */
-
-// Nocturne — traditional luxury serif, art-deco letterpress
-const playfair = Playfair_Display({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-atelier",
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
-// Candéla — Didot stand-in, high-contrast neo-classical
-const dmSerif = DM_Serif_Display({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-mansion",
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
-// Mistral — Aegean clean serif (Ogg stand-in)
-const tenor = Tenor_Sans({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-bodrum",
-  weight: ["400"],
-  display: "swap",
-});
-
-// Aurora display — Fraunces variable, soft optical scaling
-const fraunces = Fraunces({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-aurora",
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
-// Aurora body — DM Sans, modern grotesk
-const dmSans = DM_Sans({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-aurora-body",
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-
-// Olea — signature handwriting (used sparingly for couple names)
-const caveat = Caveat({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-signature",
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-
-// FAZ 5 — Calligraphy script for couple names (Pinyon Script + Great Vibes)
-// Used in stroke-by-stroke SVG name animation. Romantic, formal wedding
-// calligraphy — completely different from signature handwriting (Caveat).
 const pinyon = Pinyon_Script({
   subsets: ["latin"],
   variable: "--font-calligraphy",
-  weight: ["400"],
-  display: "swap",
-});
-
-const greatVibes = Great_Vibes({
-  subsets: ["latin"],
-  variable: "--font-calligraphy-alt",
   weight: ["400"],
   display: "swap",
 });
@@ -199,14 +130,7 @@ export default function RootLayout({
       className={[
         inter.variable,
         cormorant.variable,
-        playfair.variable,
-        dmSerif.variable,
-        tenor.variable,
-        fraunces.variable,
-        dmSans.variable,
-        caveat.variable,
         pinyon.variable,
-        greatVibes.variable,
       ].join(" ")}
     >
       <body>

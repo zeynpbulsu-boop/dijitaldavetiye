@@ -105,7 +105,7 @@ export const EDITIONS: Record<EditionSlug, EditionMeta> = {
     heroInk: "#F2EFE0",
     ornamentColor: "#67784E",
     separatorIcon: "leaf",
-    calligraphyFont: "var(--font-signature)",
+    calligraphyFont: "var(--font-calligraphy)",
     bgMotif: "olive",
     bodyBg: "#F2EFE0",
     bodyInk: "#2D3320",
