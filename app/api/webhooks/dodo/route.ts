@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { Webhook } from "standardwebhooks";
 import { adminDb } from "@/lib/db/supabase";
-import { TIER_DAYS, type TierSlug } from "@/lib/db/types";
+import { type TierSlug } from "@/lib/db/types";
+import { computeLiveUntil } from "@/lib/db/lifecycle";
 import { sendEmail, paymentReceivedEmail } from "@/lib/email/send";
 
 /**
@@ -159,8 +160,7 @@ async function onPaymentSucceeded(
 
   const supabase = adminDb();
   const now = new Date();
-  const days = TIER_DAYS[tier] ?? 365;
-  const liveUntil = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+  const liveUntil = computeLiveUntil(tier, now.getTime());
 
   // Two paths:
   //   (a) The buyer started from an existing draft → metadata carries
@@ -175,7 +175,7 @@ async function onPaymentSucceeded(
       .update({
         status: "paid",
         paid_at: now.toISOString(),
-        live_until: liveUntil.toISOString(),
+        live_until: liveUntil,
         dodo_payment_id: data.payment_id,
         owner_email: data.customer?.email ?? undefined,
       })

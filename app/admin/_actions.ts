@@ -3,7 +3,8 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { adminDb } from "@/lib/db/supabase";
-import { TIER_DAYS, type TierSlug } from "@/lib/db/types";
+import { type TierSlug } from "@/lib/db/types";
+import { computeLiveUntil } from "@/lib/db/lifecycle";
 import {
   ADMIN_COOKIE,
   verifyPassword,
@@ -50,8 +51,7 @@ export async function publishInvitation(id: string): Promise<ActionResult> {
     .select("tier")
     .eq("id", id)
     .single<{ tier: TierSlug }>();
-  const days = TIER_DAYS[row?.tier ?? "standard"] ?? 365;
-  const liveUntil = new Date(Date.now() + days * 86_400_000).toISOString();
+  const liveUntil = computeLiveUntil(row?.tier, Date.now());
   const { error } = await db
     .from("invitations")
     .update({

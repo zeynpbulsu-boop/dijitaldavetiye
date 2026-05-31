@@ -2,6 +2,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { adminDb } from "@/lib/db/supabase";
 import type { Invitation } from "@/lib/db/types";
+import {
+  isInvitationLive,
+  isInvitationExpired,
+} from "@/lib/db/lifecycle";
 import { ThemeRenderer } from "@/components/themes-v2/theme-renderer";
 import { invitationToThemeV2 } from "@/lib/themes-v2/bridge";
 
@@ -37,13 +41,15 @@ async function loadLive(
     if (previewToken && previewToken === data.admin_token) {
       return { inv: data, expired: false };
     }
-    const past = data.live_until
-      ? new Date(data.live_until).getTime() < Date.now()
-      : false;
-    if (data.status === "live" && !past) return { inv: data, expired: false };
+    const nowMs = Date.now();
+    if (isInvitationLive(data.status, data.live_until, nowMs)) {
+      return { inv: data, expired: false };
+    }
     // 1 yıl dolmuş (live/archived + live_until geçmiş) → şık "süresi doldu" sayfası.
-    const expired = past && (data.status === "live" || data.status === "archived");
-    return { inv: null, expired };
+    return {
+      inv: null,
+      expired: isInvitationExpired(data.status, data.live_until, nowMs),
+    };
   } catch (err) {
     console.warn("[i] loadLive failed:", err);
     return { inv: null, expired: false };
