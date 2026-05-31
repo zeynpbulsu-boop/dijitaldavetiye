@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { adminDb } from "@/lib/db/supabase";
 import type { Invitation } from "@/lib/db/types";
-import { isLuxeSlug } from "@/lib/templates/luxe-bridge";
 import { EditorForm } from "./_form";
 import { GuestList } from "./_guest-list";
 import { MediaSection } from "./_media";
@@ -61,7 +60,8 @@ export default async function EditorPage({
   const inv = await loadByToken(token);
   if (!inv) notFound();
 
-  const showLuxeFields = isLuxeSlug(inv.template_slug);
+  // themes-v2 legacy "luxe" CTA alanlarını (hero_cta/envelope_cta) kullanmaz.
+  const showLuxeFields = false;
 
   return (
     <main className="min-h-[80vh] bg-bg py-12 lg:py-20">
