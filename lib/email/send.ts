@@ -89,11 +89,12 @@ function wrap(inner: string): string {
 </body></html>`;
 }
 
-/** Couple → confirmation that payment is in + admin URL */
+/** Couple → ödeme onayı + düzenleme (editör) + RSVP + public linkleri */
 export function paymentReceivedEmail(args: {
   to: string;
   coupleLine: string;
   tier: string;
+  editorUrl: string;
   adminUrl: string;
   publicUrl: string;
 }): SendArgs {
@@ -105,26 +106,41 @@ export function paymentReceivedEmail(args: {
         Teşekkürler.<br />
         <span style="font-style:italic;color:${cognac};">Davetiyen yola çıkıyor.</span>
       </p>
-      <p style="font-family:Inter,Arial,sans-serif;font-size:14px;line-height:1.65;color:rgba(43,30,22,0.78);margin:0 0 20px;">
-        Stüdyomuzdaki bir kişi <strong>${escapeHtml(args.coupleLine)}</strong> siparişine atandı.
-        ${escapeHtml(args.tier)} paketiyle, 48 saat içinde davetiyen canlıya alınacak.
+      <p style="font-family:Inter,Arial,sans-serif;font-size:14px;line-height:1.65;color:rgba(43,30,22,0.78);margin:0 0 22px;">
+        <strong>${escapeHtml(args.coupleLine)}</strong> · ${escapeHtml(args.tier)} paketi alındı.
+        Sıra detayları hazırlamada — birkaç dakika sürer.
       </p>
-      <p style="font-family:Inter,Arial,sans-serif;font-size:13px;line-height:1.65;color:rgba(43,30,22,0.78);margin:20px 0 8px;">
-        <strong>Admin paneli</strong> — RSVP yanıtlarını buradan takip edeceksin.
-        Bu linki kimseyle paylaşma.
+
+      <p style="font-family:Inter,Arial,sans-serif;font-size:13px;line-height:1.65;color:rgba(43,30,22,0.78);margin:0 0 10px;">
+        <strong>1 · Davetiyeni hazırla</strong> — isimler, tarih, mekân (Google Maps linki), müzik, fotoğraflar.
       </p>
-      <p style="margin:0 0 18px;"><a href="${args.adminUrl}" style="font-family:Inter,Arial,sans-serif;font-size:13px;color:${cognac};word-break:break-all;">${args.adminUrl}</a></p>
-      <p style="font-family:Inter,Arial,sans-serif;font-size:13px;line-height:1.65;color:rgba(43,30,22,0.78);margin:0 0 8px;">
-        <strong>Public davetiye linki</strong> — davetiye canlıya alındığında bu URL açılacak.
+      <p style="margin:0 0 22px;">
+        <a href="${args.editorUrl}" style="display:inline-block;background:${ink};color:#F6F1EA;font-family:Inter,Arial,sans-serif;font-size:13px;letter-spacing:0.04em;text-decoration:none;padding:12px 26px;border-radius:999px;">Davetiyeni Düzenle →</a>
       </p>
-      <p style="margin:0;"><a href="${args.publicUrl}" style="font-family:Inter,Arial,sans-serif;font-size:13px;color:${cognac};word-break:break-all;">${args.publicUrl}</a></p>
+      <p style="margin:0 0 22px;"><a href="${args.editorUrl}" style="font-family:Inter,Arial,sans-serif;font-size:12px;color:${cognac};word-break:break-all;">${args.editorUrl}</a></p>
+
+      <p style="font-family:Inter,Arial,sans-serif;font-size:13px;line-height:1.65;color:rgba(43,30,22,0.78);margin:0 0 14px;">
+        <strong>2 · Biz kontrol edip yayınlıyoruz</strong> — sen hazırlayınca davetiyeni gözden geçirip canlıya alıyoruz (en geç 48 saat).
+      </p>
+
+      <p style="font-family:Inter,Arial,sans-serif;font-size:13px;line-height:1.65;color:rgba(43,30,22,0.78);margin:0 0 6px;">
+        <strong>RSVP takibi</strong> — yanıtları buradan görürsün (bu linki paylaşma):
+      </p>
+      <p style="margin:0 0 16px;"><a href="${args.adminUrl}" style="font-family:Inter,Arial,sans-serif;font-size:12px;color:${cognac};word-break:break-all;">${args.adminUrl}</a></p>
+
+      <p style="font-family:Inter,Arial,sans-serif;font-size:13px;line-height:1.65;color:rgba(43,30,22,0.78);margin:0 0 6px;">
+        <strong>Davetiye linki</strong> — canlıya alınınca açılır, misafirlere bunu gönderirsin:
+      </p>
+      <p style="margin:0;"><a href="${args.publicUrl}" style="font-family:Inter,Arial,sans-serif;font-size:12px;color:${cognac};word-break:break-all;">${args.publicUrl}</a></p>
     `),
     text: [
       "Tesekkurler. Davetiyen yola cikiyor.",
       `${args.coupleLine} - ${args.tier}`,
       "",
-      `Admin: ${args.adminUrl}`,
-      `Davetiye: ${args.publicUrl}`,
+      `1) Davetiyeni duzenle: ${args.editorUrl}`,
+      `2) Biz kontrol edip yayinliyoruz (en gec 48 saat).`,
+      `RSVP takibi: ${args.adminUrl}`,
+      `Davetiye linki: ${args.publicUrl}`,
     ].join("\n"),
   };
 }

@@ -208,6 +208,7 @@ async function onPaymentSucceeded(
           to: recipient,
           coupleLine: couple,
           tier: String(row.tier).toUpperCase(),
+          editorUrl: `${base}/editor/${encodeURIComponent(row.admin_token)}`,
           adminUrl: `${base}/admin/${encodeURIComponent(row.admin_token)}`,
           publicUrl: `${base}/i/${row.slug}`,
         }),

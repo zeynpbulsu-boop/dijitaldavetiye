@@ -125,6 +125,26 @@ export default async function AdminPage({
           </div>
         </header>
 
+        {/* Hızlı aksiyonlar — davetiyeyi doldur/düzenle + canlı görünüm */}
+        <section className="mb-10 flex flex-wrap gap-3">
+          <a
+            href={`/editor/${encodeURIComponent(inv.admin_token)}`}
+            className="inline-flex items-center justify-center rounded-full bg-brand-ink px-6 py-2.5 text-[11px] uppercase tracking-[0.2em] text-bg transition hover:tracking-[0.26em]"
+          >
+            Davetiyeni Düzenle →
+          </a>
+          {inv.status === "live" && (
+            <a
+              href={`/i/${inv.slug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-full border border-brand-ink/25 px-6 py-2.5 text-[11px] uppercase tracking-[0.2em] text-brand-ink transition hover:border-brand-cognac hover:text-brand-cognac"
+            >
+              Canlı Davetiye ↗
+            </a>
+          )}
+        </section>
+
         {/* Quick stats */}
         <section className="mb-12 grid grid-cols-2 gap-4 md:grid-cols-4">
           <Stat label="Yes" value={yes} highlight />
