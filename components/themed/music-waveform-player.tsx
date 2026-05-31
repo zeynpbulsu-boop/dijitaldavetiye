@@ -54,7 +54,10 @@ export function MusicWaveformPlayer({
     const a = audioRef.current;
     if (!a || analyserRef.current) return;
     try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioCtx =
+        window.AudioContext ||
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
       const ctx = new AudioCtx();
       const src = ctx.createMediaElementSource(a);
       const analyser = ctx.createAnalyser();
