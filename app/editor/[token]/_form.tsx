@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useState, useTransition } from "react";
+import { SongPicker } from "@/components/inputs/song-picker";
 import type { FormEvent } from "react";
 import type { Invitation } from "@/lib/db/types";
 import { saveInvitation, type SaveResult } from "./_actions";
@@ -193,29 +194,12 @@ export function EditorForm({
 
       <Group title="Müzik" eyebrow="— Şarkınız">
         <p className="text-[13px] leading-[1.7] text-brand-mute">
-          <strong className="text-brand-ink">YouTube</strong> şarkı linki yapıştırın —
-          davet açılır açılmaz (mühre basınca) şarkı{" "}
-          <strong className="text-brand-ink">arkada otomatik</strong> çalar. Video
-          görünmez; sadece ince bir &quot;şarkı çalıyor&quot; şeridi durur.
+          Hazır şarkılardan birini seç ya da kendi linkini yapıştır. Popüler
+          (YouTube) şarkılar davet açılır açılmaz{" "}
+          <strong className="text-brand-ink">arkada otomatik</strong> çalar — video
+          görünmez, yalnızca ince bir &quot;şarkı çalıyor&quot; şeridi durur.
         </p>
-        <p className="text-[13px] leading-[1.7] text-brand-mute">
-          <strong className="text-brand-ink">İpucu —</strong> şarkının en güzel yerinden
-          başlasın: YouTube&apos;da o ana gel →{" "}
-          <em>Paylaş → &quot;Şu andan başlat&quot;</em> kutusunu işaretle → linki kopyala
-          (sonunda <code>&amp;t=63</code> gibi olur). Sistem otomatik o saniyeden başlatır,
-          loop&apos;ta da oradan döner.
-        </p>
-        <p className="text-[13px] leading-[1.7] text-brand-mute">
-          Spotify / Apple Music linkleri de çalışır ama elle oynatılır. Boş bırakırsan
-          temanın kamu-malı klasik müziği kullanılır. (Telifli şarkılar resmi oynatıcıda
-          yasal çalar.)
-        </p>
-        <Field
-          label="Şarkı linki (YouTube önerilir — otomatik arka plan)"
-          name="music_url"
-          defaultValue={invitation.music_url ?? ""}
-          placeholder="https://www.youtube.com/watch?v=…&t=63"
-        />
+        <SongPicker defaultValue={invitation.music_url} />
       </Group>
 
       <Group title="Hediye / IBAN" eyebrow="— Banka Bilgileri">
