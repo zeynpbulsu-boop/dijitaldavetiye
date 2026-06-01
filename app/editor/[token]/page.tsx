@@ -60,9 +60,6 @@ export default async function EditorPage({
   const inv = await loadByToken(token);
   if (!inv) notFound();
 
-  // themes-v2 legacy "luxe" CTA alanlarını (hero_cta/envelope_cta) kullanmaz.
-  const showLuxeFields = false;
-
   return (
     <main className="min-h-[80vh] bg-bg py-12 lg:py-20">
       <div className="container-wide max-w-[1400px]">
@@ -107,11 +104,7 @@ export default async function EditorPage({
               </div>
             </header>
 
-            <EditorForm
-              token={token}
-              invitation={inv}
-              showLuxeFields={showLuxeFields}
-            />
+            <EditorForm token={token} invitation={inv} />
 
             <hr className="my-14 border-brand-ink/12" />
 

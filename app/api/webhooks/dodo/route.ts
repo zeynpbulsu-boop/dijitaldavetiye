@@ -4,6 +4,7 @@ import { adminDb } from "@/lib/db/supabase";
 import { type TierSlug } from "@/lib/db/types";
 import { computeLiveUntil } from "@/lib/db/lifecycle";
 import { sendEmail, paymentReceivedEmail } from "@/lib/email/send";
+import { log } from "@/lib/log";
 
 /**
  * POST /api/webhooks/dodo
@@ -127,7 +128,7 @@ async function dispatch(event: DodoWebhookEvent): Promise<void> {
       return;
     case "payment.failed":
     case "payment.cancelled":
-      console.log(`[dodo-webhook] ${type}`, data.payment_id);
+      log.info("dodo-webhook", type, data.payment_id);
       return;
     case "payment.processing":
       return;
@@ -143,7 +144,7 @@ async function dispatch(event: DodoWebhookEvent): Promise<void> {
       console.warn(`[dodo-webhook] ${type}`, data.dispute_id);
       return;
     default:
-      console.log("[dodo-webhook] Unhandled event:", type);
+      log.info("dodo-webhook", "Unhandled event", type);
       return;
   }
 }
@@ -219,8 +220,9 @@ async function onPaymentSucceeded(
 
   // No invitation_id in metadata — record on webhook_events stays as
   // the only trail. Manual reconciliation via admin panel.
-  console.log(
-    "[dodo-webhook] payment.succeeded with no invitation_id (manual reconcile):",
+  log.info(
+    "dodo-webhook",
+    "payment.succeeded with no invitation_id (manual reconcile)",
     data.payment_id,
   );
 }

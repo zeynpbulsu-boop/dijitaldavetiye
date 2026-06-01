@@ -21,13 +21,11 @@ import { saveInvitation, type SaveResult } from "./_actions";
 interface EditorFormProps {
   token: string;
   invitation: Invitation;
-  showLuxeFields: boolean;
 }
 
 export function EditorForm({
   token,
   invitation,
-  showLuxeFields,
 }: EditorFormProps) {
   const [result, setResult] = useState<SaveResult | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -174,22 +172,6 @@ export function EditorForm({
           defaultValue={invitation.footer_note ?? ""}
           placeholder="Bizimle olmanız bizi onurlandırır"
         />
-        {showLuxeFields && (
-          <Row>
-            <Field
-              label="Hero CTA"
-              name="hero_cta"
-              defaultValue={invitation.hero_cta ?? ""}
-              placeholder="Bizimle olur musun?"
-            />
-            <Field
-              label="Zarf açma CTA"
-              name="envelope_cta"
-              defaultValue={invitation.envelope_cta ?? ""}
-              placeholder="Davetiyeyi Aç"
-            />
-          </Row>
-        )}
       </Group>
 
       <Group title="Müzik" eyebrow="— Şarkınız">

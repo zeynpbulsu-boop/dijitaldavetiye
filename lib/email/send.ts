@@ -8,6 +8,8 @@
  *   NUVE_FROM_EMAIL     (e.g. "NUVE <hello@nuve.app>") — optional, has a default
  */
 
+import { log } from "@/lib/log";
+
 type SendArgs = {
   to: string;
   subject: string;
@@ -22,16 +24,12 @@ const DEFAULT_FROM = "NUVE <hello@nuve.app>";
 export async function sendEmail(args: SendArgs): Promise<{ ok: boolean }> {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
-    console.log(
-      "[email] RESEND_API_KEY not set — skipped:",
-      args.subject,
-      "→",
-      args.to,
-    );
+    // PII: alıcı adresi log'a yazılmaz, sadece subject.
+    log.warn("email", "RESEND_API_KEY not set — skipped", args.subject);
     return { ok: false };
   }
   if (!args.to.includes("@")) {
-    console.warn("[email] Invalid 'to' address:", args.to);
+    log.warn("email", "Invalid 'to' address");
     return { ok: false };
   }
 
@@ -52,12 +50,12 @@ export async function sendEmail(args: SendArgs): Promise<{ ok: boolean }> {
     });
     if (!res.ok) {
       const body = await res.text();
-      console.warn("[email] Resend rejected:", res.status, body);
+      log.warn("email", "Resend rejected", { status: res.status, body });
       return { ok: false };
     }
     return { ok: true };
   } catch (err) {
-    console.warn("[email] Send failed:", err);
+    log.warn("email", "Send failed", err);
     return { ok: false };
   }
 }
