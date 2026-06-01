@@ -153,35 +153,6 @@ const tr: Messages = {
       { k: "Yayın", v: "Dahil" },
     ],
   },
-  testimonials: {
-    eyebrow: "Çiftlerden",
-    headline_prefix: "Bin çift buradan ",
-    headline_accent: "geçti",
-    rating: "4.97 · 412 yorum",
-    reviews: [
-      {
-        initials: "Z&K",
-        couple: "Zeynep & Kerem",
-        where: "İstanbul · Mart 2026",
-        quote:
-          "WhatsApp’a linki attığımız akşam, gece 11’e kadar 47 evet, 3 menü tercihi, iki alerji notu geldi. Annem bir an önce ekran görüntüsü almak istedi.",
-      },
-      {
-        initials: "D&M",
-        couple: "Defne & Mehmet",
-        where: "Bodrum · Nisan 2026",
-        quote:
-          "Mostar’da, Belgrad’da, Berlin’de ailelerimiz var. Her biri kendi diliyle açtı. Türk halalar duygulandı, Alman kuzenler etkilendi — bu küçük bir mucize.",
-      },
-      {
-        initials: "İ&O",
-        couple: "İrem & Onur",
-        where: "Ankara · Şubat 2026",
-        quote:
-          "Kâğıt davetiyeleri yıllarca saklayan biriyim. Bu da öyle olsun istedik — gönderdikten sonra basılı bir mock istedim, çekmecem için.",
-      },
-    ],
-  },
   pricing: {
     eyebrow: "Bir paket, şeffaf fiyat",
     headline_prefix: "Tek seferlik. ",
@@ -301,7 +272,7 @@ const tr: Messages = {
       { label: "Nasıl Çalışır", href: "#how-it-works" },
       { label: "Fiyatlar", href: "#pricing" },
       { label: "Demoyu Dene", href: "/themes/geceyarisi" },
-      { label: "Yorumlar", href: "#testimonials" },
+      { label: "Yorumlar", href: "#yorumlar" },
     ],
     legal_links: [
       { label: "Kullanım Şartları", href: "/legal/terms" },
@@ -494,35 +465,6 @@ const en: Messages = {
       { k: "Hosting", v: "Included" },
     ],
   },
-  testimonials: {
-    eyebrow: "From Couples",
-    headline_prefix: "A thousand couples have ",
-    headline_accent: "passed through",
-    rating: "4.97 · 412 reviews",
-    reviews: [
-      {
-        initials: "Z&K",
-        couple: "Zeynep & Kerem",
-        where: "Istanbul · March 2026",
-        quote:
-          "The evening we sent the link on WhatsApp, by eleven we had 47 yeses, three menu choices and two allergy notes. My mother wanted to screenshot it on the spot.",
-      },
-      {
-        initials: "D&M",
-        couple: "Defne & Mehmet",
-        where: "Bodrum · April 2026",
-        quote:
-          "We have family in Mostar, in Belgrade, in Berlin. Each opened it in their own language. Turkish aunts wept, German cousins were impressed — a small miracle.",
-      },
-      {
-        initials: "İ&O",
-        couple: "İrem & Onur",
-        where: "Ankara · February 2026",
-        quote:
-          "I'm the kind of person who keeps paper invitations for years. We wanted this one to feel the same — after we sent it I asked for a printed mock, just for my drawer.",
-      },
-    ],
-  },
   pricing: {
     eyebrow: "One package, transparent pricing",
     headline_prefix: "One payment. ",
@@ -644,7 +586,7 @@ const en: Messages = {
       { label: "How it works", href: "#how-it-works" },
       { label: "Pricing", href: "#pricing" },
       { label: "Try the demo", href: "/themes/geceyarisi" },
-      { label: "Reviews", href: "#testimonials" },
+      { label: "Reviews", href: "#yorumlar" },
     ],
     legal_links: [
       { label: "Terms of Use", href: "/legal/terms" },
@@ -838,35 +780,6 @@ const sr: Messages = {
       { k: "Hosting", v: "Uključen" },
     ],
   },
-  testimonials: {
-    eyebrow: "Od Parova",
-    headline_prefix: "Hiljadu parova ovuda ",
-    headline_accent: "prošlo",
-    rating: "4.97 · 412 utisaka",
-    reviews: [
-      {
-        initials: "Z&K",
-        couple: "Zeynep & Kerem",
-        where: "Istanbul · Mart 2026",
-        quote:
-          "Veče kada smo poslali link na WhatsApp-u, do jedanaest stigla su 47 potvrda, tri izbora menija i dve napomene o alergijama. Mama je odmah htela da napravi snimak ekrana.",
-      },
-      {
-        initials: "D&M",
-        couple: "Defne & Mehmet",
-        where: "Bodrum · April 2026",
-        quote:
-          "Familija nam je u Mostaru, Beogradu i Berlinu. Svako je otvorio pozivnicu na svom jeziku. Turske tetke su se rastužile, nemačke rodbine su bile dirnute — malo čudo.",
-      },
-      {
-        initials: "İ&O",
-        couple: "İrem & Onur",
-        where: "Ankara · Februar 2026",
-        quote:
-          "Ja sam od onih koji čuvaju papirne pozivnice godinama. Hteli smo da i ova ostavi isti utisak — kad smo je poslali, tražila sam štampani mock samo za fioku.",
-      },
-    ],
-  },
   pricing: {
     eyebrow: "Jedan paket, transparentna cena",
     headline_prefix: "Jednom plaćeno. ",
@@ -988,7 +901,7 @@ const sr: Messages = {
       { label: "Kako funkcioniše", href: "#how-it-works" },
       { label: "Cenovnik", href: "#pricing" },
       { label: "Probaj demo", href: "/themes/geceyarisi" },
-      { label: "Utisci", href: "#testimonials" },
+      { label: "Utisci", href: "#yorumlar" },
     ],
     legal_links: [
       { label: "Uslovi korišćenja", href: "/legal/terms" },

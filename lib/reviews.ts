@@ -10,9 +10,11 @@
 import { adminDb } from "@/lib/db/supabase";
 import type { Review } from "@/lib/db/types";
 
-/* Fallback seed reviews — DB boşken (dev veya fresh prod) landing'in
-   social proof section'ı boş kalmasın. Production'da Supabase'e gerçek
-   yorumlar eklendikçe override edilir. */
+/* Seed reviews — YALNIZCA geliştirme (dev) ortamında, social-proof
+   section'ı UI üstünde test edilebilsin diye. Production'da ASLA
+   gösterilmez: uydurma yorum gerçek ziyaretçiye servis etmek FTC/AB
+   sahte-yorum riskidir. Prod'da DB boşsa section tamamen gizlenir
+   (reviews.tsx length===0 → null); gerçek yorum eklendikçe görünür. */
 const SEED_REVIEWS: Review[] = [
   {
     id: "seed-1",
@@ -88,6 +90,14 @@ const SEED_REVIEWS: Review[] = [
   },
 ];
 
+/** Seed'ler yalnızca dev'de; production'da gerçek veri yoksa boş döner
+ *  → section gizlenir, uydurma yorum gösterilmez. */
+const USE_SEED = process.env.NODE_ENV !== "production";
+
+function fallbackReviews(limit: number): Review[] {
+  return USE_SEED ? SEED_REVIEWS.slice(0, limit) : [];
+}
+
 export async function fetchPublishedReviews(
   limit = 6,
 ): Promise<Review[]> {
@@ -102,12 +112,12 @@ export async function fetchPublishedReviews(
       .returns<Review[]>();
     if (error) {
       console.warn("[reviews]", error);
-      return SEED_REVIEWS.slice(0, limit);
+      return fallbackReviews(limit);
     }
-    return data && data.length > 0 ? data : SEED_REVIEWS.slice(0, limit);
+    return data && data.length > 0 ? data : fallbackReviews(limit);
   } catch (err) {
-    console.warn("[reviews] fetch failed → seed:", err);
-    return SEED_REVIEWS.slice(0, limit);
+    console.warn("[reviews] fetch failed:", err);
+    return fallbackReviews(limit);
   }
 }
 

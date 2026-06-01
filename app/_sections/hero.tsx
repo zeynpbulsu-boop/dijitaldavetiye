@@ -40,23 +40,20 @@ export function Hero() {
               — Premium Dijital Düğün Davetiyesi
             </span>
 
-            {/* Trust pill */}
-            <div className="mt-6 inline-flex flex-wrap items-center gap-3 rounded-full border border-brand-ink/15 bg-paper px-5 py-2">
-              <span className="font-display text-[15px] text-brand-cognac">
-                5
+            {/* Güven pill'i — dürüst hizmet vaatleri (uydurma yorum/sayı YOK). */}
+            <div className="mt-6 inline-flex flex-wrap items-center gap-2.5 rounded-full border border-brand-ink/15 bg-paper px-5 py-2 text-[11px] uppercase tracking-[0.18em] text-brand-mute">
+              <span aria-hidden="true" className="text-brand-cognac">
+                ✦
               </span>
-              <span aria-label="5 yıldız" className="text-[12px] text-brand-cognac">
-                ★★★★★
+              <span>El yapımı kalite</span>
+              <span aria-hidden="true" className="text-brand-ink/25">
+                ·
               </span>
-              <span className="text-[11px] uppercase tracking-[0.18em] text-brand-mute">
-                500+ mutlu çift
+              <span>48 saatte teslim</span>
+              <span aria-hidden="true" className="text-brand-ink/25">
+                ·
               </span>
-              <Link
-                href="#yorumlar"
-                className="text-[11px] uppercase tracking-[0.18em] text-brand-ink hover:text-brand-cognac"
-              >
-                Yorumları gör →
-              </Link>
+              <span>14 gün iade garantisi</span>
             </div>
 
             <h1

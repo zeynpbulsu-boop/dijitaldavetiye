@@ -123,18 +123,6 @@ export interface Messages {
     body_rest: string;
     specs: { k: string; v: string }[];
   };
-  testimonials: {
-    eyebrow: string;
-    headline_prefix: string;
-    headline_accent: string;
-    rating: string;
-    reviews: {
-      initials: string;
-      couple: string;
-      where: string;
-      quote: string;
-    }[];
-  };
   pricing: {
     eyebrow: string;
     headline_prefix: string;

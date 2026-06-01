@@ -89,13 +89,9 @@ export function productSchema() {
       priceValidUntil: "2027-12-31",
       seller: { "@type": "Organization", name: "NUVE Studio" },
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "500",
-      bestRating: "5",
-      worstRating: "1",
-    },
+    /* NOT: aggregateRating KASITLI yok. Gerçek yorum birikene kadar
+       uydurma puan (FTC/AB sahte-yorum riski + Google rich-snippet) servis
+       edilmez. Gerçek veriyle doldurulduğunda buraya eklenebilir. */
   };
 }
 
