@@ -12,7 +12,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-KEY = "7441b24e-10e4-445f-87ed-5ef928088a0b:82a7f49c3728ef622af17281125214a9"
+import os
+KEY = os.environ.get("FAL_KEY", "").strip()  # secret from env (none in source)
 HDR = {"Authorization": f"Key {KEY}", "Content-Type": "application/json"}
 
 OUT_BASE = Path(__file__).resolve().parent.parent / "public"

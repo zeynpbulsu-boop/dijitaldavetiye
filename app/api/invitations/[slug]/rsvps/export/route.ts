@@ -118,9 +118,18 @@ export async function GET(
   });
 }
 
-/** RFC 4180-safe quoting. */
+/**
+ * RFC 4180-safe quoting + CSV formül enjeksiyonu koruması.
+ *
+ * Misafir adı/notu `= + - @ \t \r` ile başlıyorsa Excel/Sheets bunu formül
+ * olarak çalıştırır (örn. =HYPERLINK(...), @SUM(...)). Bu tür hücrelerin
+ * başına tek tırnak eklenerek metin olarak kalması sağlanır.
+ */
 function csvCell(value: string | number | boolean): string {
-  const s = String(value);
+  let s = String(value);
+  if (/^[=+\-@\t\r]/.test(s)) {
+    s = `'${s}`;
+  }
   if (/[",\r\n]/.test(s)) {
     return `"${s.replace(/"/g, '""')}"`;
   }

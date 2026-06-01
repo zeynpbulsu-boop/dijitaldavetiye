@@ -36,9 +36,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
   }
 
-  const slug = String(body.invitation_slug ?? "").trim();
-  const guestName = String(body.guest_name ?? "").trim();
+  const slug = String(body.invitation_slug ?? "").trim().slice(0, 120);
+  const guestName = String(body.guest_name ?? "").trim().slice(0, MAX_NAME);
   const attendance = body.attendance as RsvpAttendance;
+  const guestEmailRaw = stringOrNull(body.guest_email);
 
   if (!slug) {
     return NextResponse.json(
@@ -55,6 +56,12 @@ export async function POST(req: NextRequest) {
   if (!ATTEND.includes(attendance)) {
     return NextResponse.json(
       { error: "attendance must be yes / no / maybe." },
+      { status: 400 },
+    );
+  }
+  if (guestEmailRaw && !isValidEmail(guestEmailRaw)) {
+    return NextResponse.json(
+      { error: "Geçerli bir e-posta gir veya boş bırak." },
       { status: 400 },
     );
   }
@@ -88,13 +95,13 @@ export async function POST(req: NextRequest) {
     .insert({
       invitation_id: inv.id,
       guest_name: guestName,
-      guest_email: stringOrNull(body.guest_email),
+      guest_email: guestEmailRaw,
       attendance,
       plus_one: Boolean(body.plus_one),
-      plus_one_name: stringOrNull(body.plus_one_name),
-      menu_choice: stringOrNull(body.menu_choice),
-      allergies: stringOrNull(body.allergies),
-      note: stringOrNull(body.note),
+      plus_one_name: capped(body.plus_one_name, MAX_NAME),
+      menu_choice: capped(body.menu_choice, MAX_MENU),
+      allergies: capped(body.allergies, MAX_NOTE),
+      note: capped(body.note, MAX_NOTE),
     })
     .select("id")
     .single();
@@ -111,7 +118,7 @@ export async function POST(req: NextRequest) {
      güncelle. Eşleşme önce email (case-insensitive), olmazsa isim
      (case-insensitive) üzerinden. Bulunamazsa walk-in olarak sadece
      rsvps tablosunda kalır. */
-  const guestEmailNormalized = stringOrNull(body.guest_email)?.toLowerCase();
+  const guestEmailNormalized = guestEmailRaw?.toLowerCase();
   const guestNameNormalized = guestName.toLowerCase();
   const attendanceToStatus = (a: RsvpAttendance) =>
     a === "yes" ? "confirmed" : a === "no" ? "declined" : "maybe";
@@ -145,8 +152,8 @@ export async function POST(req: NextRequest) {
           status: attendanceToStatus(attendance),
           rsvp_id: data.id,
           plus_one: Boolean(body.plus_one),
-          plus_one_name: stringOrNull(body.plus_one_name),
-          dietary_notes: stringOrNull(body.allergies),
+          plus_one_name: capped(body.plus_one_name, MAX_NAME),
+          dietary_notes: capped(body.allergies, MAX_NOTE),
         })
         .eq("id", matched.id);
     }
@@ -173,7 +180,7 @@ export async function POST(req: NextRequest) {
   }
 
   // FAZ C.6 — misafire onay e-postası, e-posta verildiyse
-  const guestEmail = stringOrNull(body.guest_email);
+  const guestEmail = guestEmailRaw;
   if (guestEmail) {
     const coupleLine =
       inv.partner_one_name && inv.partner_two_name
@@ -203,3 +210,19 @@ function stringOrNull(v: unknown): string | null {
   const trimmed = v.trim();
   return trimmed ? trimmed : null;
 }
+
+/** Trim + boş→null + maks uzunluk (public uçta veri-bloat/DoS koruması). */
+function capped(v: unknown, max: number): string | null {
+  const s = stringOrNull(v);
+  return s ? s.slice(0, max) : null;
+}
+
+/** Basit e-posta format kontrolü (kesin RFC değil, makul filtre). */
+function isValidEmail(s: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s) && s.length <= 200;
+}
+
+// Serbest-metin alan limitleri.
+const MAX_NAME = 120;
+const MAX_NOTE = 1000;
+const MAX_MENU = 200;

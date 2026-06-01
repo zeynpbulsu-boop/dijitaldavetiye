@@ -19,17 +19,24 @@
  *   { ok: true, url: string }
  *   { ok: false, error: string }
  *
- * Auth: şu an public (rate limit yok). Production'da slug + admin_token
- * check eklenmeli.
+ * Auth: ödeme ÖNCESİ sipariş akışından çağrıldığı için admin_token yok →
+ * public. Finansal-DoS'a karşı IP başına rate limit ile korunur. fal.ai
+ * anahtarı YALNIZCA env'den okunur (kaynak kodda secret YOK); yoksa uç
+ * fail-closed 503 döner.
  */
 
 import { NextResponse } from "next/server";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const FAL_KEY = process.env.FAL_KEY ?? "616e465e-8d9a-4e17-8cb7-51553467fcbe:58d59bb81e7ac4b162110e1eb29c4be1";
+const FAL_KEY = process.env.FAL_KEY;
 const FAL_ENDPOINT = "https://fal.run/fal-ai/recraft-v3";
+
+/** IP başına 10 dakikada 6 üretim — ücretli fal.ai çağrısını sınırlar. */
+const RL_LIMIT = 6;
+const RL_WINDOW_MS = 10 * 60 * 1000;
 
 /* Per-edition style lock — kullanıcı prompt'unun üstüne eklenir ki
    custom cover edition'ın atmosferiyle uyumlu çıksın. */
@@ -61,6 +68,23 @@ interface RequestBody {
 }
 
 export async function POST(req: Request) {
+  // Anahtar yoksa fail-closed — feature kapalı, sızıntı yok.
+  if (!FAL_KEY) {
+    return NextResponse.json(
+      { ok: false, error: "Özel kapak üretimi şu an kullanılamıyor." },
+      { status: 503 },
+    );
+  }
+
+  // Finansal-DoS koruması: IP başına rate limit (Date.now handler'da → güvenli).
+  const rl = rateLimit(`custom-cover:${clientIp(req)}`, RL_LIMIT, RL_WINDOW_MS, Date.now());
+  if (!rl.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Çok fazla deneme. Biraz sonra tekrar dene." },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } },
+    );
+  }
+
   let body: RequestBody;
   try {
     body = (await req.json()) as RequestBody;

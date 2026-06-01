@@ -5,7 +5,8 @@ FAZ 5 sync — Imagen4 ULTRA photoreal (sync endpoint, no queue).
 import time, json, urllib.request
 from pathlib import Path
 
-KEY = "616e465e-8d9a-4e17-8cb7-51553467fcbe:58d59bb81e7ac4b162110e1eb29c4be1"
+import os
+KEY = os.environ.get("FAL_KEY", "").strip()  # secret from env (none in source)
 HDR = {"Authorization": f"Key {KEY}", "Content-Type": "application/json"}
 OUT = Path(__file__).resolve().parent.parent / "public"
 

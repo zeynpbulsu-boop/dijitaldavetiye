@@ -14,7 +14,7 @@ Then run scripts/transparent-bg-all.py to alpha-clip the white.
 import os, sys, time, json, urllib.request, urllib.error
 from pathlib import Path
 
-KEY = "616e465e-8d9a-4e17-8cb7-51553467fcbe:58d59bb81e7ac4b162110e1eb29c4be1"
+KEY = os.environ.get("FAL_KEY", "").strip()  # secret from env (none in source)
 HDR = {"Authorization": f"Key {KEY}", "Content-Type": "application/json"}
 
 OUT_BASE = Path(__file__).resolve().parent.parent / "public"

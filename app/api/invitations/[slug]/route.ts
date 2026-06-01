@@ -48,7 +48,8 @@ const EDITABLE_FIELDS = [
   /* event meta */
   "event_type",
   "locale",
-  "tier",
+  /* NOT: "tier" KASITLI yok — ödenen tier hak (entitlement) belirler;
+     yalnızca Dodo webhook / admin değiştirir, müşteri token'ıyla DEĞİL. */
   /* gift block */
   "gift_iban",
   "gift_bank",

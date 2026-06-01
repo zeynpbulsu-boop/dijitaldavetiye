@@ -41,3 +41,24 @@ describe("resolveMapsCoords (tam URL, ağ yok)", () => {
     expect(await resolveMapsCoords("Cunda Adası, Ayvalık")).toBeNull();
   });
 });
+
+// SSRF koruması: Google Maps olmayan host'a koordinatsız link → fetch YOK, null.
+describe("resolveMapsCoords SSRF allow-list (ağ yok)", () => {
+  it("cloud metadata IP → null (host izinli değil, fetch edilmez)", async () => {
+    expect(
+      await resolveMapsCoords("https://169.254.169.254/latest/meta-data/"),
+    ).toBeNull();
+  });
+
+  it("localhost → null", async () => {
+    expect(await resolveMapsCoords("http://localhost:6379/")).toBeNull();
+  });
+
+  it("rastgele dış host → null", async () => {
+    expect(await resolveMapsCoords("https://evil.example.com/?x=1")).toBeNull();
+  });
+
+  it("http (https değil) google kısa link → null (sadece https)", async () => {
+    expect(await resolveMapsCoords("http://maps.app.goo.gl/abc")).toBeNull();
+  });
+});

@@ -18,9 +18,9 @@ export const dynamic = "force-dynamic";
 function authed(req: NextRequest): boolean {
   const secret = process.env.CRON_SECRET;
   if (!secret) return false;
-  const header = req.headers.get("authorization");
-  const key = req.nextUrl.searchParams.get("key");
-  return header === `Bearer ${secret}` || key === secret;
+  // Secret YALNIZCA Authorization header'ında — URL query'den (proxy/erişim
+  // logları, tarayıcı geçmişi, Referer) sızmasını önler.
+  return req.headers.get("authorization") === `Bearer ${secret}`;
 }
 
 export async function GET(req: NextRequest) {
