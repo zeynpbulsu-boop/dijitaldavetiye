@@ -82,4 +82,21 @@ describe("invitationToThemeV2 — null-güvenlik (/i crash etmesin)", () => {
   it("bozuk tarih → boş (crash yok)", () => {
     expect(invitationToThemeV2(mockInv({ wedding_date: "bozuk" })).data.date.year).toBe("");
   });
+
+  it("hotels yoksa [] (crash yok)", () => {
+    expect(invitationToThemeV2(mockInv()).data.hotels).toEqual([]);
+  });
+
+  it("hotels: name'i olanlar maplenir, boş name elenir", () => {
+    const { data } = invitationToThemeV2(
+      mockInv({
+        hotels: [
+          { name: "Otel A", price: "₺1000", url: "https://x" },
+          { name: "" },
+        ],
+      } as Partial<Invitation>),
+    );
+    expect(data.hotels).toHaveLength(1);
+    expect(data.hotels[0]).toMatchObject({ name: "Otel A", price: "₺1000" });
+  });
 });

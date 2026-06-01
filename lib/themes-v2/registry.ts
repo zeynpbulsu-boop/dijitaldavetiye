@@ -197,6 +197,21 @@ export const SAMPLE_DATA: ThemeV2Data = {
     accountHolder: "Elif Yılmaz",
     note: "Varlığınız bizim için en değerli hediye. Katkıda bulunmak isterseniz aşağıdaki hesap bilgilerini kullanabilirsiniz.",
   },
+  hotels: [
+    {
+      name: "Cunda Taş Otel",
+      address: "Cunda Adası, Ayvalık",
+      price: "₺3.500 / gece",
+      url: "https://maps.google.com",
+      note: "Düğün alanına 5 dk; misafirlerimize özel indirim için 'NUVE' deyin.",
+    },
+    {
+      name: "Ayvalık Sahil Butik",
+      address: "Sahil Yolu, Ayvalık",
+      price: "₺2.200 / gece",
+      note: "Deniz manzaralı, kahvaltı dahil.",
+    },
+  ],
 };
 
 export function getThemeV2(slug: ThemeV2Slug): ThemeV2Meta | undefined {

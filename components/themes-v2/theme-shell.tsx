@@ -8,6 +8,7 @@ import { PolaroidGallery } from "./primitives/polaroid-gallery";
 import { ProgramList } from "./primitives/program-list";
 import { VenueMap } from "./primitives/venue-map";
 import { GiftInfo } from "./primitives/gift-info";
+import { HotelsInfo } from "./primitives/hotels-info";
 import { ExtraInfo } from "./primitives/extra-info";
 import { RsvpForm } from "./primitives/rsvp-form";
 import { AtmosphereDefs } from "./primitives/atmosphere";
@@ -56,6 +57,7 @@ export function ThemeShell({
     data.venue.name || (typeof data.venue.lat === "number" && typeof data.venue.lng === "number"),
   );
   const showGift = Boolean(data.gift?.iban);
+  const showHotels = data.hotels.length > 0;
   const showExtra = Boolean(data.extraInfo && data.extraInfo.trim());
 
   // Mount-gate: framer-motion enter animations (initial → animate) only fire
@@ -142,6 +144,11 @@ export function ThemeShell({
           {showGift && data.gift && (
             <Reveal>
               <GiftInfo meta={meta} gift={data.gift} />
+            </Reveal>
+          )}
+          {showHotels && (
+            <Reveal>
+              <HotelsInfo meta={meta} hotels={data.hotels} />
             </Reveal>
           )}
           {showExtra && (

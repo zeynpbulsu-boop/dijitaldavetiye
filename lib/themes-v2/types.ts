@@ -82,6 +82,16 @@ export interface ThemeV2Data {
   footerNote: string;
   /** Optional gift / bank-transfer block (rendered only when present). */
   gift?: GiftInfo | null;
+  /** Konaklama önerileri — boşsa ThemeShell bu bölümü render etmez. */
+  hotels: HotelEntry[];
+}
+
+export interface HotelEntry {
+  name: string;
+  address?: string;
+  price?: string;
+  url?: string;
+  note?: string;
 }
 
 export interface GiftInfo {

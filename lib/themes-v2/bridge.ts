@@ -126,6 +126,17 @@ export function invitationToThemeV2(inv: Invitation): { meta: ThemeV2Meta; data:
       }
     : null;
 
+  // Konaklama önerileri (Migration 006 hotels JSONB) → canlı davetiyeye.
+  const hotels = (Array.isArray(inv.hotels) ? inv.hotels : [])
+    .filter((h) => h && h.name)
+    .map((h) => ({
+      name: h.name,
+      address: h.address || undefined,
+      price: h.price || undefined,
+      url: h.url || undefined,
+      note: h.note || undefined,
+    }));
+
   const data: ThemeV2Data = {
     coupleName,
     partnerOne: p1 || coupleName || "",
@@ -148,6 +159,7 @@ export function invitationToThemeV2(inv: Invitation): { meta: ThemeV2Meta; data:
     extraInfo: "", // no DB column yet → shell hides the notes section
     footerNote: (inv.footer_note ?? "").trim() || def.footer,
     gift,
+    hotels,
   };
 
   return { meta, data };
