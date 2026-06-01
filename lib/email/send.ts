@@ -144,6 +144,58 @@ export function paymentReceivedEmail(args: {
 }
 
 /** Guest → confirmation that their RSVP was received (FAZ C.6) */
+interface RsvpEmailStrings {
+  attend: { yes: string; no: string; maybe: string };
+  subjYes: string;
+  subjOther: string;
+  bodyYes: string;
+  bodyNo: string;
+  bodyMaybe: string;
+  saved: string;
+  date: string;
+  venue: string;
+  seeAgain: string;
+}
+
+const RSVP_EMAIL_I18N: Record<string, RsvpEmailStrings> = {
+  tr: {
+    attend: { yes: "Geliyorum", no: "Gelemiyorum", maybe: "Belki" },
+    subjYes: "yanıtın bize ulaştı",
+    subjOther: "yanıtın için teşekkürler",
+    bodyYes: "Görüşmek için sabırsızlanıyoruz, {name}.",
+    bodyNo: "Yanıtın için teşekkürler, {name}. Bizim için orada olmasan da yanımızdasın.",
+    bodyMaybe: "Yanıtın için teşekkürler, {name}. Kararını netleştirdiğinde haber verebilirsin.",
+    saved: "Yanıtın kaydedildi.",
+    date: "Tarih:",
+    venue: "Mekan:",
+    seeAgain: "Davetiyeyi tekrar görmek istersen:",
+  },
+  en: {
+    attend: { yes: "Attending", no: "Not attending", maybe: "Maybe" },
+    subjYes: "we got your response",
+    subjOther: "thank you for your response",
+    bodyYes: "We can't wait to see you, {name}.",
+    bodyNo: "Thank you for letting us know, {name}. You're with us even if you can't be there.",
+    bodyMaybe: "Thank you for your response, {name}. Let us know once you've decided.",
+    saved: "Your response is saved.",
+    date: "Date:",
+    venue: "Venue:",
+    seeAgain: "To see the invitation again:",
+  },
+  sr: {
+    attend: { yes: "Dolazim", no: "Ne dolazim", maybe: "Možda" },
+    subjYes: "stigao je tvoj odgovor",
+    subjOther: "hvala na odgovoru",
+    bodyYes: "Jedva čekamo da te vidimo, {name}.",
+    bodyNo: "Hvala što si nam javio/la, {name}. Sa nama si i ako ne možeš da budeš tu.",
+    bodyMaybe: "Hvala na odgovoru, {name}. Javi nam kada odlučiš.",
+    saved: "Tvoj odgovor je sačuvan.",
+    date: "Datum:",
+    venue: "Mesto:",
+    seeAgain: "Da ponovo vidiš pozivnicu:",
+  },
+};
+
 export function guestRsvpConfirmationEmail(args: {
   to: string;
   guestName: string;
@@ -152,29 +204,29 @@ export function guestRsvpConfirmationEmail(args: {
   weddingDate?: string | null;
   venue?: string | null;
   publicUrl: string;
+  locale?: string | null;
 }): SendArgs {
-  const attendanceLabel =
-    args.attendance === "yes"
-      ? "Geliyorum"
-      : args.attendance === "no"
-        ? "Gelemiyorum"
-        : "Belki";
+  const L = RSVP_EMAIL_I18N[args.locale ?? "tr"] ?? RSVP_EMAIL_I18N.tr;
+  const nameStrong = `<strong>${escapeHtml(args.guestName)}</strong>`;
+
+  const attendanceLabel = L.attend[args.attendance];
 
   const subject =
     args.attendance === "yes"
-      ? `${args.coupleLine} — yanıtın bize ulaştı`
-      : `${args.coupleLine} — yanıtın için teşekkürler`;
+      ? `${args.coupleLine} — ${L.subjYes}`
+      : `${args.coupleLine} — ${L.subjOther}`;
 
-  const headlineBody =
+  const bodyTemplate =
     args.attendance === "yes"
-      ? `Görüşmek için sabırsızlanıyoruz, <strong>${escapeHtml(args.guestName)}</strong>.`
+      ? L.bodyYes
       : args.attendance === "no"
-        ? `Yanıtın için teşekkürler, <strong>${escapeHtml(args.guestName)}</strong>. Bizim için orada olmasan da yanımızdasın.`
-        : `Yanıtın için teşekkürler, <strong>${escapeHtml(args.guestName)}</strong>. Kararını netleştirdiğinde haber verebilirsin.`;
+        ? L.bodyNo
+        : L.bodyMaybe;
+  const headlineBody = bodyTemplate.replace("{name}", nameStrong);
 
   const detailsBlock = [
-    args.weddingDate ? `<strong>Tarih:</strong> ${escapeHtml(args.weddingDate)}` : "",
-    args.venue ? `<strong>Mekan:</strong> ${escapeHtml(args.venue)}` : "",
+    args.weddingDate ? `<strong>${L.date}</strong> ${escapeHtml(args.weddingDate)}` : "",
+    args.venue ? `<strong>${L.venue}</strong> ${escapeHtml(args.venue)}` : "",
   ]
     .filter(Boolean)
     .join("<br />");
@@ -184,7 +236,7 @@ export function guestRsvpConfirmationEmail(args: {
     subject,
     html: wrap(`
       <p style="font-family:Georgia,serif;font-size:22px;line-height:1.35;color:${ink};margin:0 0 16px;">
-        Yanıtın kaydedildi.<br />
+        ${L.saved}<br />
         <span style="font-style:italic;color:${cognac};">${escapeHtml(attendanceLabel)}.</span>
       </p>
       <p style="font-family:Inter,Arial,sans-serif;font-size:14px;line-height:1.7;color:rgba(43,30,22,0.78);margin:0 0 18px;">
@@ -198,17 +250,17 @@ export function guestRsvpConfirmationEmail(args: {
           : ""
       }
       <p style="font-family:Inter,Arial,sans-serif;font-size:13px;line-height:1.65;color:rgba(43,30,22,0.78);margin:18px 0 8px;">
-        Davetiyeyi tekrar görmek istersen:
+        ${L.seeAgain}
       </p>
       <p style="margin:0;"><a href="${args.publicUrl}" style="font-family:Inter,Arial,sans-serif;font-size:13px;color:${cognac};word-break:break-all;">${args.publicUrl}</a></p>
     `),
     text: [
-      `Yanitin kaydedildi - ${attendanceLabel}`,
+      `${L.saved} - ${attendanceLabel}`,
       `${args.coupleLine}`,
-      args.weddingDate ? `Tarih: ${args.weddingDate}` : "",
-      args.venue ? `Mekan: ${args.venue}` : "",
+      args.weddingDate ? `${L.date} ${args.weddingDate}` : "",
+      args.venue ? `${L.venue} ${args.venue}` : "",
       "",
-      `Davetiye: ${args.publicUrl}`,
+      `${args.publicUrl}`,
     ]
       .filter(Boolean)
       .join("\n"),

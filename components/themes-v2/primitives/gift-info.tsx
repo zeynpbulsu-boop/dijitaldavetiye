@@ -3,18 +3,18 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, GiftInfo as GiftData } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 
 export function GiftInfo({
   meta,
   gift,
-  label = "Hediye",
 }: {
   meta: ThemeV2Meta;
   gift: GiftData;
-  label?: string;
 }) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const [copied, setCopied] = useState(false);
 
   const copyIban = () => {
@@ -39,8 +39,8 @@ export function GiftInfo({
         };
 
   const rows: Array<[string, string | null | undefined]> = [
-    ["Hesap Sahibi", gift.accountHolder],
-    ["Banka", gift.bank],
+    [str.gift.accountHolder, gift.accountHolder],
+    [str.gift.bank, gift.bank],
   ];
 
   return (
@@ -54,7 +54,7 @@ export function GiftInfo({
           className="text-[10px] uppercase sm:text-[10.5px]"
           style={{ color: palette.inkSoft, letterSpacing: "0.5em", fontWeight: 500 }}
         >
-          {label}
+          {str.gift.label}
         </motion.p>
 
         <motion.h2
@@ -62,7 +62,7 @@ export function GiftInfo({
           className="mt-6 font-display"
           style={{ fontWeight: 300, fontSize: "clamp(28px, 4.6vw, 46px)", color: palette.ink, lineHeight: 1.12 }}
         >
-          Varlığınız en büyük hediye
+          {str.gift.headline}
         </motion.h2>
 
         <motion.div {...reveal(0.12)} className="mx-auto my-7 flex items-center justify-center gap-3">
@@ -109,7 +109,7 @@ export function GiftInfo({
 
             <div className="flex flex-col gap-0.5">
               <span className="text-[9.5px] uppercase" style={{ color: palette.inkSoft, letterSpacing: "0.34em" }}>
-                IBAN
+                {str.gift.iban}
               </span>
               <div className="flex items-center justify-between gap-3">
                 <span
@@ -130,7 +130,7 @@ export function GiftInfo({
                     fontWeight: 500,
                   }}
                 >
-                  {copied ? "Kopyalandı" : "Kopyala"}
+                  {copied ? str.gift.copied : str.gift.copy}
                 </button>
               </div>
             </div>

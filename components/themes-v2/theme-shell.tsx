@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
+import { invitationStrings } from "@/lib/themes-v2/i18n";
+import { InvitationI18nProvider } from "./i18n-context";
 import { CountdownBand } from "./primitives/countdown-band";
 import { PolaroidGallery } from "./primitives/polaroid-gallery";
 import { ProgramList } from "./primitives/program-list";
@@ -59,6 +61,7 @@ export function ThemeShell({
   const showGift = Boolean(data.gift?.iban);
   const showHotels = data.hotels.length > 0;
   const showExtra = Boolean(data.extraInfo && data.extraInfo.trim());
+  const t = invitationStrings(data.locale);
 
   // Mount-gate: framer-motion enter animations (initial → animate) only fire
   // on a fresh client mount, not on Next.js hydration of server markup — so a
@@ -80,6 +83,7 @@ export function ThemeShell({
   };
 
   return (
+    <InvitationI18nProvider value={t}>
     <div
       className="relative min-h-screen overflow-hidden"
       style={{ backgroundColor: palette.bg, color: palette.ink }}
@@ -178,6 +182,7 @@ export function ThemeShell({
         </>
       )}
     </div>
+    </InvitationI18nProvider>
   );
 }
 

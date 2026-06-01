@@ -1,3 +1,5 @@
+import type { Locale } from "@/lib/i18n/types";
+
 export type ThemeV2Slug =
   | "celenk"
   | "polaroid"
@@ -57,6 +59,8 @@ export interface MenuColumn {
 }
 
 export interface ThemeV2Data {
+  /** Davetiyenin dili — arayüz metinleri bu dilde render edilir. */
+  locale: Locale;
   coupleName: string;
   partnerOne: string;
   partnerTwo: string;

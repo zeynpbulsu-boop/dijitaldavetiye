@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, HotelEntry } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 
 /**
  * HotelsInfo — çiftin önerdiği konaklama listesi (şehir dışı misafirler için).
@@ -12,14 +13,13 @@ import type { ThemeV2Meta, HotelEntry } from "@/lib/themes-v2/types";
 export function HotelsInfo({
   meta,
   hotels,
-  label = "Konaklama",
 }: {
   meta: ThemeV2Meta;
   hotels: HotelEntry[];
-  label?: string;
 }) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
 
   const reveal = (delay: number) =>
     reduced
@@ -50,7 +50,7 @@ export function HotelsInfo({
             fontWeight: 500,
           }}
         >
-          {label}
+          {str.hotels.label}
         </motion.p>
 
         <motion.h2
@@ -63,7 +63,7 @@ export function HotelsInfo({
             lineHeight: 1.12,
           }}
         >
-          Misafirlerimize öneriler
+          {str.hotels.headline}
         </motion.h2>
 
         <motion.div
@@ -158,7 +158,7 @@ export function HotelsInfo({
                     fontWeight: 500,
                   }}
                 >
-                  Rezervasyon / detay →
+                  {str.hotels.reserve}
                 </a>
               ) : null}
             </motion.div>

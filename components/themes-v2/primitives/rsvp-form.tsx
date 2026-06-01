@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
 import { bestTextOn } from "@/lib/themes-v2/contrast";
+import { useInvitationT } from "../i18n-context";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -13,9 +14,10 @@ interface Props {
 
 type Attendance = "yes" | "no" | "maybe" | null;
 
-export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props) {
+export function RsvpForm({ meta, slug }: Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [attendance, setAttendance] = useState<Attendance>(null);
@@ -73,7 +75,7 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
               fontWeight: 500,
             }}
           >
-            Yanıt
+            {str.rsvp.eyebrow}
           </p>
           <p
             className="mt-4 font-display italic"
@@ -84,7 +86,7 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
               filter: "url(#ink-bleed)",
             }}
           >
-            {title}
+            {str.rsvp.title}
           </p>
           <div className="mx-auto my-6 h-px w-14 opacity-50" style={{ background: palette.ink }} />
         </div>
@@ -119,13 +121,13 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
                 color: palette.ink,
               }}
             >
-              Teşekkürler {name.split(" ")[0]}
+              {str.rsvp.successTitle} {name.split(" ")[0]}
             </p>
             <p
               className="mt-3 font-display italic"
               style={{ fontSize: 16, color: palette.inkSoft, lineHeight: 1.65 }}
             >
-              Cevabın bize ulaştı. Görüşmek üzere.
+              {str.rsvp.successBody}
             </p>
           </motion.div>
         ) : (
@@ -142,7 +144,7 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
               boxShadow: "0 14px 32px -20px rgba(0,0,0,0.2)",
             }}
           >
-            <Field label="Ad Soyad" required ink={palette.ink} inkSoft={palette.inkSoft}>
+            <Field label={str.rsvp.name} required ink={palette.ink} inkSoft={palette.inkSoft}>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -158,7 +160,7 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
               />
             </Field>
 
-            <Field label="E-posta" ink={palette.ink} inkSoft={palette.inkSoft}>
+            <Field label={str.rsvp.email} ink={palette.ink} inkSoft={palette.inkSoft}>
               <input
                 type="email"
                 value={email}
@@ -183,14 +185,14 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
                   fontWeight: 500,
                 }}
               >
-                Katılım <span style={{ color: palette.accent }}>*</span>
+                {str.rsvp.attendance} <span style={{ color: palette.accent }}>*</span>
               </p>
               <div className="grid grid-cols-3 gap-2">
                 {(
                   [
-                    ["yes", "Evet"],
-                    ["maybe", "Belki"],
-                    ["no", "Hayır"],
+                    ["yes", str.rsvp.yes],
+                    ["maybe", str.rsvp.maybe],
+                    ["no", str.rsvp.no],
                   ] as const
                 ).map(([val, label]) => {
                   const active = attendance === val;
@@ -228,7 +230,7 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
                   className="h-4 w-4"
                   style={{ accentColor: palette.accent }}
                 />
-                <span className="font-display italic">+1 ile geleceğim</span>
+                <span className="font-display italic">{str.rsvp.plusOne}</span>
               </label>
               {plusOne && (
                 <motion.input
@@ -287,7 +289,7 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
                 boxShadow: "0 12px 28px -14px rgba(0,0,0,0.4)",
               }}
             >
-              {pending ? "Gönderiliyor…" : "Yanıtı Gönder"}
+              {pending ? str.rsvp.submitting : str.rsvp.submit}
             </button>
           </motion.form>
         )}

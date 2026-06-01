@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, InvitationDate } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -25,7 +26,7 @@ function diff(iso: string | undefined) {
   return { d, h, m, s, expired: false };
 }
 
-export function CountdownBand({ meta, date, label = "Geri Sayım" }: Props) {
+export function CountdownBand({ meta, date }: Props) {
   // Start from a deterministic placeholder so server and first client render
   // match exactly — calling Date.now() during render makes the static SSR
   // markup ("07") differ from the live client value ("06"), which forces
@@ -33,6 +34,7 @@ export function CountdownBand({ meta, date, label = "Geri Sayım" }: Props) {
   // after mount, below the fold, before the section scrolls into view.
   const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0, expired: false });
   const reduced = useReducedMotion();
+  const str = useInvitationT();
 
   useEffect(() => {
     setT(diff(date.iso));
@@ -56,10 +58,10 @@ export function CountdownBand({ meta, date, label = "Geri Sayım" }: Props) {
         };
 
   const cells: Array<[string, number, string]> = [
-    ["d", t.d, "Gün"],
-    ["h", t.h, "Saat"],
-    ["m", t.m, "Dakika"],
-    ["s", t.s, "Saniye"],
+    ["d", t.d, str.countdown.day],
+    ["h", t.h, str.countdown.hour],
+    ["m", t.m, str.countdown.minute],
+    ["s", t.s, str.countdown.second],
   ];
 
   return (
@@ -87,7 +89,7 @@ export function CountdownBand({ meta, date, label = "Geri Sayım" }: Props) {
           className="text-[10px] uppercase sm:text-[10.5px]"
           style={{ color: accent, letterSpacing: "0.5em", fontWeight: 500 }}
         >
-          {label}
+          {str.countdown.title}
         </motion.p>
 
         {/* Display heading — the wedding date as a calm serif statement */}
@@ -167,7 +169,7 @@ export function CountdownBand({ meta, date, label = "Geri Sayım" }: Props) {
               color: ink,
             }}
           >
-            Bugün büyük gün — bizimle olmanız bizi mutlu eder.
+            {str.countdown.passed}
           </motion.p>
         )}
       </div>

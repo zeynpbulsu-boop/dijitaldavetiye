@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
   const { data: inv, error: invErr } = await supabase
     .from("invitations")
     .select(
-      "id, status, owner_email, admin_token, partner_one_name, partner_two_name, wedding_date, venue_name, venue_city",
+      "id, status, owner_email, admin_token, partner_one_name, partner_two_name, wedding_date, venue_name, venue_city, locale",
     )
     .eq("slug", slug)
     .single();
@@ -198,6 +198,7 @@ export async function POST(req: NextRequest) {
         weddingDate: inv.wedding_date,
         venue: venueLine,
         publicUrl: `${base}/i/${slug}`,
+        locale: inv.locale,
       }),
     ).catch((err) => console.warn("[rsvp] guest email error:", err));
   }

@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, ScheduleItem } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -69,9 +70,10 @@ function ScheduleGlyph({ label, color }: { label: string; color: string }) {
   );
 }
 
-export function ProgramList({ meta, items, title = "Program" }: Props) {
+export function ProgramList({ meta, items }: Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
 
   const reveal = (delay: number) =>
     reduced
@@ -99,7 +101,7 @@ export function ProgramList({ meta, items, title = "Program" }: Props) {
             className="text-[10px] uppercase sm:text-[10.5px]"
             style={{ color: palette.inkSoft, letterSpacing: "0.5em", fontWeight: 500 }}
           >
-            Akış
+            {str.program.label}
           </motion.p>
 
           <motion.h2
@@ -113,7 +115,7 @@ export function ProgramList({ meta, items, title = "Program" }: Props) {
               letterSpacing: "0.01em",
             }}
           >
-            {title}
+            {str.program.label}
           </motion.h2>
 
           <motion.div

@@ -8,6 +8,7 @@ import {
 } from "@/lib/db/lifecycle";
 import { ThemeRenderer } from "@/components/themes-v2/theme-renderer";
 import { invitationToThemeV2 } from "@/lib/themes-v2/bridge";
+import { invitationStrings } from "@/lib/themes-v2/i18n";
 
 /**
  * /i/[slug] — public invitation page.
@@ -28,7 +29,7 @@ export const dynamic = "force-dynamic";
 async function loadLive(
   slug: string,
   previewToken?: string,
-): Promise<{ inv: Invitation | null; expired: boolean }> {
+): Promise<{ inv: Invitation | null; expired: boolean; locale?: string }> {
   try {
     const supabase = adminDb();
     const { data, error } = await supabase
@@ -49,6 +50,7 @@ async function loadLive(
     return {
       inv: null,
       expired: isInvitationExpired(data.status, data.live_until, nowMs),
+      locale: data.locale,
     };
   } catch (err) {
     console.warn("[i] loadLive failed:", err);
@@ -81,9 +83,9 @@ export default async function PublicInvitationPage({
   params: { slug: string };
   searchParams: { token?: string };
 }) {
-  const { inv, expired } = await loadLive(params.slug, searchParams?.token);
+  const { inv, expired, locale } = await loadLive(params.slug, searchParams?.token);
   if (!inv) {
-    if (expired) return <ExpiredInvitation />;
+    if (expired) return <ExpiredInvitation locale={locale} />;
     notFound();
   }
 
@@ -102,8 +104,10 @@ export default async function PublicInvitationPage({
   );
 }
 
-/** 1 yılı dolmuş (arşivlenmiş) davetiye için şık, markalı sayfa — çıplak 404 yerine. */
-function ExpiredInvitation() {
+/** 1 yılı dolmuş (arşivlenmiş) davetiye için şık, markalı sayfa — çıplak 404 yerine.
+ *  Davetiyenin diline göre yerelleştirilir (TR/EN/SR). */
+function ExpiredInvitation({ locale }: { locale?: string }) {
+  const t = invitationStrings(locale).expired;
   return (
     <main id="main" className="flex min-h-screen flex-col items-center justify-center bg-bg px-6 text-center">
       <p className="text-[11px] uppercase tracking-[0.5em] text-brand-cognac">
@@ -118,19 +122,18 @@ function ExpiredInvitation() {
           fontWeight: 300,
         }}
       >
-        Bu davetiyenin
+        {t.titleA}
         <br />
-        <span className="italic text-brand-cognac">süresi doldu</span>
+        <span className="italic text-brand-cognac">{t.titleB}</span>
       </h1>
       <p className="mt-7 max-w-[44ch] text-[15px] leading-[1.8] text-brand-mute">
-        Bu dijital davetiye bir yıl boyunca yayında kaldı ve nazikçe arşivlendi.
-        Güzel bir gündü — umarız siz de oradaydınız.
+        {t.body}
       </p>
       <a
         href="/"
         className="mt-10 inline-flex min-h-[48px] items-center justify-center rounded-full border border-brand-ink/30 px-7 text-[11px] uppercase tracking-[0.28em] text-brand-ink transition hover:border-brand-cognac hover:text-brand-cognac"
       >
-        Kendi davetiyeni oluştur →
+        {t.cta}
       </a>
     </main>
   );

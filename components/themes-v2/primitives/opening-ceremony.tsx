@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, ThemeV2Data } from "@/lib/themes-v2/types";
 import { DustParticles } from "./atmosphere";
 import { THEME_CEREMONY } from "@/lib/themes-v2/assets";
+import { useInvitationT } from "../i18n-context";
 
 const CURTAIN_MS = 1250;
 const AMBIENT_VOLUME = 0.4;
@@ -151,6 +152,7 @@ export function OpeningCeremony({
   onOpen: () => void;
 }) {
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const { palette } = meta;
   const ceremony = THEME_CEREMONY[meta.slug];
   const [gone, setGone] = useState(false);
@@ -257,7 +259,7 @@ export function OpeningCeremony({
           transition={{ delay: 1.1, duration: 1 }}
         >
           <span className="text-[9.5px] uppercase" style={{ color: palette.inkSoft, letterSpacing: "0.42em" }}>
-            Açmak için dokun
+            {str.ceremony.tapToOpen}
           </span>
           <motion.svg
             width="16"

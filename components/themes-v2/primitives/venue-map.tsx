@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, ThemeV2Data } from "@/lib/themes-v2/types";
 import { bestTextOn } from "@/lib/themes-v2/contrast";
+import { useInvitationT } from "../i18n-context";
 
 /* Calendar stamp from a FIXED iso → deterministic (no Date.now), hydration-safe. */
 function calStamp(iso: string, addHours = 0): string {
@@ -14,14 +15,13 @@ function calStamp(iso: string, addHours = 0): string {
 export function VenueMap({
   meta,
   data,
-  label = "Konum",
 }: {
   meta: ThemeV2Meta;
   data: ThemeV2Data;
-  label?: string;
 }) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const v = data.venue;
 
   const query = [v.name, v.address, v.city]
@@ -72,7 +72,7 @@ export function VenueMap({
           className="text-[10px] uppercase sm:text-[10.5px]"
           style={{ color: palette.inkSoft, letterSpacing: "0.5em", fontWeight: 500 }}
         >
-          {label}
+          {str.venue.label}
         </motion.p>
 
         <motion.h2
@@ -145,7 +145,7 @@ export function VenueMap({
               fontWeight: 500,
             }}
           >
-            Yol Tarifi
+            {str.venue.directions}
           </a>
           {calendar && (
             <a
