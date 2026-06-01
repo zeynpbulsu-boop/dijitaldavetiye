@@ -225,8 +225,19 @@ export default function OrderEditorPage() {
 
   /* ---------- Pay & publish ---------- */
   const [paying, setPaying] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
   async function onPay() {
     if (!draft) return;
+    // Boş/eksik zorunlu alanlarla ödeme → boş davetiye yayını engellenir.
+    if (!p1.trim() || !p2.trim()) {
+      setPayError("Devam etmeden önce iki ismi de gir — çiftin adları davetiyenin kalbi.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setPayError("Geçerli bir e-posta gir — makbuz ve düzenleme linki oraya gider.");
+      return;
+    }
+    setPayError(null);
     setPaying(true);
     try {
       // Ödeme sonrası /checkout/success'in editöre linkleyebilmesi için aktif siparişi sakla.
@@ -968,6 +979,20 @@ export default function OrderEditorPage() {
               Payments tarafında.
             </p>
           </Section>
+
+          {payError && (
+            <p
+              role="alert"
+              className="mt-10 rounded-xl px-4 py-3 text-[13.5px] leading-[1.5]"
+              style={{
+                color: "#B42318",
+                border: "1px solid rgba(180,35,24,0.3)",
+                background: "rgba(180,35,24,0.06)",
+              }}
+            >
+              {payError}
+            </p>
+          )}
 
           {/* Pay CTA */}
           <div className="mt-12 flex flex-col gap-4 border-t border-brand-ink/12 pt-8 sm:flex-row sm:items-center sm:justify-between">

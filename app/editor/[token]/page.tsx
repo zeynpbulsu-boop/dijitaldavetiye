@@ -80,19 +80,45 @@ export default async function EditorPage({
               >
                 Davetiyenizi düzenleyin
               </h1>
-              <p className="mt-3 max-w-[640px] text-[14px] leading-[1.7] text-brand-mute">
-                Değişiklikler kaydet butonuna bastığınızda yayına alınır.{" "}
-                <a
-                  href={`/i/${inv.slug}`}
-                  target="_blank"
-                  rel="noopener"
-                  data-cursor="open"
-                  data-cursor-label="Tam ekran"
-                  className="link-line text-brand-ink"
-                >
-                  Yayındaki sayfayı tam ekran aç ↗
-                </a>
-              </p>
+              {inv.status === "live" ? (
+                <p className="mt-3 max-w-[640px] text-[14px] leading-[1.7] text-brand-mute">
+                  Davetiyen{" "}
+                  <span className="text-brand-ink">yayında</span>. Yaptığın
+                  değişiklikler kaydedince anında yansır.{" "}
+                  <a
+                    href={`/i/${inv.slug}`}
+                    target="_blank"
+                    rel="noopener"
+                    data-cursor="open"
+                    data-cursor-label="Tam ekran"
+                    className="link-line text-brand-ink"
+                  >
+                    Tam ekran aç ↗
+                  </a>
+                </p>
+              ) : (
+                <div className="mt-4 max-w-[640px] rounded-xl border border-brand-cognac/30 bg-brand-cognac/[0.05] px-5 py-4">
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-brand-cognac">
+                    Davetiyen incelemede
+                  </p>
+                  <p className="mt-2 text-[14px] leading-[1.7] text-brand-mute">
+                    İçeriğini şimdi hazırla — kaydettiğin her şey saklanır.
+                    Ekibimiz son kontrolü yapıp davetiyeni{" "}
+                    <span className="text-brand-ink">en geç 48 saat içinde</span>{" "}
+                    yayına alır; hazır olduğunda e-posta göndeririz.{" "}
+                    <a
+                      href={`/i/${inv.slug}?token=${encodeURIComponent(token)}`}
+                      target="_blank"
+                      rel="noopener"
+                      data-cursor="open"
+                      data-cursor-label="Önizle"
+                      className="link-line text-brand-ink"
+                    >
+                      Önizlemeyi aç ↗
+                    </a>
+                  </p>
+                </div>
+              )}
               <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] uppercase tracking-[0.2em] text-brand-mute">
                 <span>
                   Şablon:{" "}
