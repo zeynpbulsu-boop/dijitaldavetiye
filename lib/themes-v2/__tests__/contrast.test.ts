@@ -8,6 +8,10 @@ describe("relativeLuminance", () => {
     expect(relativeLuminance("#000000")).toBeCloseTo(0, 2);
     expect(relativeLuminance("#FFFFFF")).toBeCloseTo(1, 2);
   });
+  it("3-haneli hex genişletilir (#fff → beyaz)", () => {
+    expect(relativeLuminance("#fff")).toBeCloseTo(1, 2);
+    expect(relativeLuminance("#000")).toBeCloseTo(0, 2);
+  });
 });
 
 describe("contrastRatio", () => {

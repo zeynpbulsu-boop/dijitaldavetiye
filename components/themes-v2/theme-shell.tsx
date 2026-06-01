@@ -105,8 +105,8 @@ export function ThemeShell({
         }}
       >
         {data.coupleName
-          ? `${data.coupleName} — Düğün Davetiyesi`
-          : "Düğün Davetiyesi"}
+          ? `${data.coupleName} — ${t.heading}`
+          : t.heading}
       </h1>
       <AtmosphereDefs />
       {showBuyBadge && <BuyBadge meta={meta} />}

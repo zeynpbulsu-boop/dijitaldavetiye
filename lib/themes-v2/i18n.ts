@@ -11,6 +11,8 @@ import type { Locale } from "@/lib/i18n/types";
  */
 
 export interface InvitationStrings {
+  /** Görünmez (sr-only) semantik sayfa başlığı eki — "{çift} — {heading}". */
+  heading: string;
   ceremony: { tapToOpen: string };
   countdown: {
     title: string;
@@ -57,6 +59,7 @@ export interface InvitationStrings {
 }
 
 const tr: InvitationStrings = {
+  heading: "Düğün Davetiyesi",
   ceremony: { tapToOpen: "Açmak için dokun" },
   countdown: {
     title: "Geri Sayım",
@@ -107,6 +110,7 @@ const tr: InvitationStrings = {
 };
 
 const en: InvitationStrings = {
+  heading: "Wedding Invitation",
   ceremony: { tapToOpen: "Tap to open" },
   countdown: {
     title: "Countdown",
@@ -157,6 +161,7 @@ const en: InvitationStrings = {
 };
 
 const sr: InvitationStrings = {
+  heading: "Pozivnica za venčanje",
   ceremony: { tapToOpen: "Dodirnite da otvorite" },
   countdown: {
     title: "Odbrojavanje",

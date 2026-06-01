@@ -222,7 +222,9 @@ export function guestRsvpConfirmationEmail(args: {
       : args.attendance === "no"
         ? L.bodyNo
         : L.bodyMaybe;
-  const headlineBody = bodyTemplate.replace("{name}", nameStrong);
+  // Fonksiyon-form: nameStrong içindeki olası `$&` vb. özel dizilerin
+  // String.replace tarafından yorumlanmasını engeller (isim bozulmaz).
+  const headlineBody = bodyTemplate.replace("{name}", () => nameStrong);
 
   const detailsBlock = [
     args.weddingDate ? `<strong>${L.date}</strong> ${escapeHtml(args.weddingDate)}` : "",

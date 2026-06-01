@@ -7,7 +7,9 @@
 
 /** #RRGGBB → 0..1 göreli parlaklık (WCAG 2.1 relative luminance). */
 export function relativeLuminance(hex: string): number {
-  const m = hex.replace("#", "");
+  let m = hex.replace("#", "").trim();
+  // 3-haneli (#abc) → 6-haneli (#aabbcc) genişlet — NaN'i önler.
+  if (m.length === 3) m = m[0] + m[0] + m[1] + m[1] + m[2] + m[2];
   const r = parseInt(m.slice(0, 2), 16) / 255;
   const g = parseInt(m.slice(2, 4), 16) / 255;
   const b = parseInt(m.slice(4, 6), 16) / 255;

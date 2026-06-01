@@ -21,6 +21,7 @@ describe("invitationStrings", () => {
   it("her dilde tüm bölümler dolu (eksik anahtar yok)", () => {
     for (const loc of ["tr", "en", "sr"] as const) {
       const s = invitationStrings(loc);
+      expect(s.heading).toBeTruthy();
       expect(s.rsvp.yes).toBeTruthy();
       expect(s.countdown.day).toBeTruthy();
       expect(s.venue.directions).toBeTruthy();
