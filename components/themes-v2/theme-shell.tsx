@@ -75,11 +75,15 @@ export function ThemeShell({
   // YouTube müziğini mühre-basma JESTİNİN İÇİNDE doğrudan başlatmak için.
   // (Effect gecikmesi yerine senkron çağrı → iOS dahil sesli autoplay en güvenilir.)
   const musicPlayRef = useRef<(() => void) | null>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   const handleOpen = () => {
     setOpened(true);
     audio.start();
     musicPlayRef.current?.();
+    // A11y: perde açılınca odağı davetiye başlığına taşı → klavye/ekran-okuyucu
+    // kullanıcısı kapanan perdede sıkışmadan içeriğe geçer (modal-açılış deseni).
+    window.setTimeout(() => headingRef.current?.focus(), 350);
   };
 
   return (
@@ -92,6 +96,8 @@ export function ThemeShell({
           calligraphy olduğundan ekran-okuyucu + heading yapısı için
           görünmez (sr-only) h1. Inline stil → Tailwind'e bağımlı değil. */}
       <h1
+        ref={headingRef}
+        tabIndex={-1}
         style={{
           position: "absolute",
           width: 1,
@@ -102,6 +108,7 @@ export function ThemeShell({
           clip: "rect(0,0,0,0)",
           whiteSpace: "nowrap",
           border: 0,
+          outline: "none",
         }}
       >
         {data.coupleName
