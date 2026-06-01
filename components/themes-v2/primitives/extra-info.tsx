@@ -35,7 +35,7 @@ export function ExtraInfo({ meta, text, title = "Ek Bilgiler" }: Props) {
         <motion.p
           {...reveal(0)}
           className="text-[10px] uppercase sm:text-[10.5px]"
-          style={{ color: palette.accent, letterSpacing: "0.46em", fontWeight: 500 }}
+          style={{ color: palette.inkSoft, letterSpacing: "0.46em", fontWeight: 500 }}
         >
           Not
         </motion.p>

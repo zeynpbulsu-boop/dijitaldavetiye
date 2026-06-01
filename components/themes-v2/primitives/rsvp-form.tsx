@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
+import { bestTextOn } from "@/lib/themes-v2/contrast";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -104,7 +105,7 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
               className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full"
               style={{
                 backgroundColor: palette.accent,
-                color: palette.paper,
+                color: bestTextOn(palette.accent),
               }}
             >
               <svg width="22" height="22" viewBox="0 0 22 22">
@@ -203,7 +204,7 @@ export function RsvpForm({ meta, title = "Katılımını Onayla", slug }: Props)
                         letterSpacing: "0.28em",
                         border: `1px solid ${active ? palette.accent : `${palette.ink}30`}`,
                         backgroundColor: active ? palette.accent : "transparent",
-                        color: active ? palette.paper : palette.ink,
+                        color: active ? bestTextOn(palette.accent) : palette.ink,
                         transform: active ? "scale(1.02)" : "scale(1)",
                         boxShadow: active ? "0 6px 14px -6px rgba(0,0,0,0.2)" : "none",
                       }}

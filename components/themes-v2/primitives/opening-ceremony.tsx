@@ -225,7 +225,7 @@ export function OpeningCeremony({
 
         <motion.p
           className="mb-9 text-[10px] uppercase"
-          style={{ color: palette.accent, letterSpacing: "0.5em" }}
+          style={{ color: palette.inkSoft, letterSpacing: "0.5em" }}
           initial={reduced ? false : { opacity: 0, y: -8 }}
           animate={{ opacity: 0.85, y: 0 }}
           transition={{ delay: 0.3, duration: 1 }}

@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, ThemeV2Data } from "@/lib/themes-v2/types";
+import { bestTextOn } from "@/lib/themes-v2/contrast";
 
 /* Calendar stamp from a FIXED iso → deterministic (no Date.now), hydration-safe. */
 function calStamp(iso: string, addHours = 0): string {
@@ -69,7 +70,7 @@ export function VenueMap({
         <motion.p
           {...reveal(0)}
           className="text-[10px] uppercase sm:text-[10.5px]"
-          style={{ color: palette.accent, letterSpacing: "0.5em", fontWeight: 500 }}
+          style={{ color: palette.inkSoft, letterSpacing: "0.5em", fontWeight: 500 }}
         >
           {label}
         </motion.p>
@@ -139,7 +140,7 @@ export function VenueMap({
             className="inline-flex w-full items-center justify-center rounded-full px-7 py-3 text-[10.5px] uppercase transition hover:scale-[1.02] sm:w-auto"
             style={{
               backgroundColor: palette.accent,
-              color: palette.bg,
+              color: bestTextOn(palette.accent),
               letterSpacing: "0.34em",
               fontWeight: 500,
             }}

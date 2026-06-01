@@ -73,7 +73,7 @@ export function PolaroidGallery({
           <motion.p
             {...reveal(0)}
             className="text-[10px] uppercase sm:text-[10.5px]"
-            style={{ color: palette.accent, letterSpacing: "0.5em", fontWeight: 500 }}
+            style={{ color: palette.inkSoft, letterSpacing: "0.5em", fontWeight: 500 }}
           >
             Hikâyemiz
           </motion.p>
