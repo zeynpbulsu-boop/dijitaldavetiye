@@ -44,6 +44,13 @@ export interface HotelItem {
   note?: string;
 }
 
+/** Migration 010 — gün-akışı / program (invitations.schedule JSONB array). */
+export interface ScheduleEntry {
+  time: string;
+  title: string;
+  desc?: string;
+}
+
 export interface Invitation {
   id: string;
   slug: string;
@@ -95,6 +102,9 @@ export interface Invitation {
   gift_account_holder: string | null;
   gift_note: string | null;
   hotels: HotelItem[];
+
+  /* Migration 010 — gün-akışı / program. */
+  schedule: ScheduleEntry[] | null;
 
   /* Migration 007 — venue koordinatları (B.3 map embed). */
   venue_lat: number | null;

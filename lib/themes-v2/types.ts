@@ -46,6 +46,7 @@ export interface PolaroidPhoto {
 export interface ScheduleItem {
   time: string;
   label: string;
+  desc?: string;
 }
 
 export interface MenuItem {

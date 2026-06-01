@@ -149,6 +149,9 @@ export default function OrderEditorPage() {
             setGiftAccountHolder(String(inv.gift_account_holder ?? ""));
             setGiftNote(String(inv.gift_note ?? ""));
             setHotels(Array.isArray(inv.hotels) ? (inv.hotels as HotelItem[]) : []);
+            setSchedule(
+              Array.isArray(inv.schedule) ? (inv.schedule as ScheduleItem[]) : [],
+            );
             setEmail(String(inv.owner_email ?? ""));
             setPhone(String(inv.owner_phone ?? ""));
             return;
@@ -262,9 +265,7 @@ export default function OrderEditorPage() {
   /* ---------- Schedule helpers ---------- */
   function updateSchedule(next: ScheduleItem[]) {
     setSchedule(next);
-    // Schedule stored as JSONB array on backend later (no DB col yet);
-    // for now persisted via story_text fallback omitted, persisted to
-    // a future schedule column if added.
+    persist({ schedule: next }); // Migration 010 — gün-akışı artık kalıcı
   }
   function addScheduleItem() {
     updateSchedule([...schedule, { time: "", title: "", desc: "" }]);

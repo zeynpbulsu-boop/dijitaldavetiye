@@ -126,6 +126,16 @@ export function invitationToThemeV2(inv: Invitation): { meta: ThemeV2Meta; data:
       }
     : null;
 
+  // Gün-akışı / program (Migration 010 schedule JSONB) → canlı davetiyeye.
+  // DB şekli { time, title, desc } → themes-v2 ScheduleItem { time, label, desc }.
+  const schedule = (Array.isArray(inv.schedule) ? inv.schedule : [])
+    .filter((s) => s && (s.title || s.time))
+    .map((s) => ({
+      time: (s.time ?? "").trim(),
+      label: (s.title ?? "").trim(),
+      desc: s.desc?.trim() || undefined,
+    }));
+
   // Konaklama önerileri (Migration 006 hotels JSONB) → canlı davetiyeye.
   const hotels = (Array.isArray(inv.hotels) ? inv.hotels : [])
     .filter((h) => h && h.name)
@@ -155,7 +165,7 @@ export function invitationToThemeV2(inv: Invitation): { meta: ThemeV2Meta; data:
     },
     story: { title: def.storyTitle, body: (inv.story_text ?? "").trim() },
     photos,
-    schedule: [], // no DB column yet → shell hides the program section
+    schedule, // Migration 010 — boşsa shell program section'ını gizler
     menu: [], // food menu removed from the product
     extraInfo: "", // no DB column yet → shell hides the notes section
     footerNote: (inv.footer_note ?? "").trim() || def.footer,

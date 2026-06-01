@@ -57,6 +57,8 @@ const EDITABLE_FIELDS = [
   "gift_note",
   /* hotels */
   "hotels",
+  /* program / gün-akışı (Migration 010) */
+  "schedule",
   /* feature flags */
   "enable_scratch_reveal",
   /* contact */

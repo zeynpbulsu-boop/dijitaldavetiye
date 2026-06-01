@@ -187,17 +187,31 @@ export function ProgramList({ meta, items }: Props) {
 
               {/* Label + glyph */}
               <span className="flex min-w-0 flex-1 items-baseline gap-3">
-                <span
-                  className="min-w-0 break-words font-display"
-                  style={{
-                    fontSize: "clamp(18px, 2.4vw, 25px)",
-                    color: palette.ink,
-                    lineHeight: 1.25,
-                    letterSpacing: "0.005em",
-                    fontWeight: 300,
-                  }}
-                >
-                  {item.label}
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span
+                    className="min-w-0 break-words font-display"
+                    style={{
+                      fontSize: "clamp(18px, 2.4vw, 25px)",
+                      color: palette.ink,
+                      lineHeight: 1.25,
+                      letterSpacing: "0.005em",
+                      fontWeight: 300,
+                    }}
+                  >
+                    {item.label}
+                  </span>
+                  {item.desc ? (
+                    <span
+                      className="mt-1 break-words"
+                      style={{
+                        fontSize: "13px",
+                        color: palette.inkSoft,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {item.desc}
+                    </span>
+                  ) : null}
                 </span>
                 <span className="ml-auto translate-y-[3px] self-start opacity-80">
                   <ScheduleGlyph label={item.label} color={palette.inkSoft} />

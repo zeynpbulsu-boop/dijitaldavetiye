@@ -87,6 +87,27 @@ describe("invitationToThemeV2 — null-güvenlik (/i crash etmesin)", () => {
     expect(invitationToThemeV2(mockInv()).data.hotels).toEqual([]);
   });
 
+  it("schedule: {time,title,desc} → {time,label,desc}, boş elenir", () => {
+    const { data } = invitationToThemeV2(
+      mockInv({
+        schedule: [
+          { time: "16:00", title: "Tören", desc: "Bahçe" },
+          { time: "", title: "" },
+        ],
+      } as Partial<Invitation>),
+    );
+    expect(data.schedule).toHaveLength(1);
+    expect(data.schedule[0]).toMatchObject({
+      time: "16:00",
+      label: "Tören",
+      desc: "Bahçe",
+    });
+  });
+
+  it("schedule yoksa [] (program section gizlenir)", () => {
+    expect(invitationToThemeV2(mockInv()).data.schedule).toEqual([]);
+  });
+
   it("hotels: name'i olanlar maplenir, boş name elenir", () => {
     const { data } = invitationToThemeV2(
       mockInv({

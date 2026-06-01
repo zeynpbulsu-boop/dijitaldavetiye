@@ -6,6 +6,7 @@ import { EditorForm } from "./_form";
 import { GuestList } from "./_guest-list";
 import { MediaSection } from "./_media";
 import { HotelsSection } from "./_hotels";
+import { ScheduleSection } from "./_schedule";
 import { EditorPreviewSticky } from "./_preview-iframe";
 
 /**
@@ -145,6 +146,14 @@ export default async function EditorPage({
             <HotelsSection
               token={token}
               hotels={Array.isArray(inv.hotels) ? inv.hotels : []}
+            />
+
+            <hr className="my-14 border-brand-ink/12" />
+
+            <ScheduleSection
+              token={token}
+              slug={inv.slug}
+              schedule={Array.isArray(inv.schedule) ? inv.schedule : []}
             />
 
             <hr className="my-14 border-brand-ink/12" />
