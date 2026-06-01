@@ -79,7 +79,8 @@ export function productSchema() {
     description:
       "Düğün, doğum günü, baby shower, nişan ve tüm etkinlikler için premium dijital davetiye. AI özel kapak, RSVP, harita, müzik, çoklu dil — hepsi dahil.",
     brand: { "@type": "Brand", name: "NUVE" },
-    image: `${BASE_URL}/og.jpg`,
+    // Dinamik OG route'u (statik /og.jpg yoktu → 404'tü).
+    image: `${BASE_URL}/opengraph-image`,
     offers: {
       "@type": "Offer",
       url: `${BASE_URL}/order/geceyarisi`,
@@ -105,6 +106,20 @@ export function faqSchema(
       "@type": "Question",
       name: it.question,
       acceptedAnswer: { "@type": "Answer", text: it.answer },
+    })),
+  };
+}
+
+/** BreadcrumbList — Google sonuçlarında breadcrumb rich result + gezinme sinyali. */
+export function breadcrumbSchema(items: Array<{ name: string; path: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      item: `${BASE_URL}${it.path}`,
     })),
   };
 }

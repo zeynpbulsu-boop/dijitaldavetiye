@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Gizlilik Politikası",
   description:
     "NUVE'nin kişisel verilerinizi nasıl topladığı, sakladığı ve kullandığına dair sade bir özet.",
+  alternates: { canonical: "/gizlilik" },
 };
 
 export default function PrivacyPage() {

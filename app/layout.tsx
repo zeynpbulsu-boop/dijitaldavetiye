@@ -101,11 +101,10 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
+    // Ana sayfa öz-canonical. NOT: dil değiştirme istemci tarafında, AYNI URL'de
+    // yapılıyor (ayrı /en route'u yok) → kırık hreflang yerine hreflang YOK.
+    // Child route'lar kendi canonical'larını set eder (homepage'e miras kalmasın).
     canonical: BASE_URL,
-    languages: {
-      "tr-TR": BASE_URL,
-      "en-US": `${BASE_URL}/en`,
-    },
   },
 };
 

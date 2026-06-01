@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: "KVKK Aydınlatma Metni",
   description:
     "NUVE platformunun 6698 sayılı KVKK kapsamında kişisel verilerin işlenmesine ilişkin aydınlatma metni.",
+  alternates: { canonical: "/kvkk" },
 };
 
 export default function KvkkPage() {

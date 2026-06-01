@@ -201,10 +201,11 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: PageProps): Metadata {
   const doc = DOCS[params.slug];
-  if (!doc) return { title: "Bulunamadı" };
+  if (!doc) return { title: "Bulunamadı", robots: { index: false, follow: false } };
   return {
     title: doc.title,
     description: doc.subtitle,
+    alternates: { canonical: `/legal/${params.slug}` },
     robots: { index: true, follow: true },
   };
 }
