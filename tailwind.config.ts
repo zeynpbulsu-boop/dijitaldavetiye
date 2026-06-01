@@ -93,7 +93,8 @@ const config: Config = {
           cream: "#F2EEE6",
           "cream-alt": "#EFE6DA",
           ink: "#2B1E16",
-          mute: "#7A6A5D",
+          // A11y: cream zemininde ~5.5:1 (WCAG AA) — eski #7A6A5D 4.48:1 idi.
+          mute: "#6E5E51",
           "rose-taupe": "#B98E78",
           cognac: "#8C5A3C",
         },

@@ -19,7 +19,7 @@ export function AdminLogin({ configured }: { configured: boolean }) {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-bg px-6">
+    <main id="main" className="flex min-h-screen items-center justify-center bg-bg px-6">
       <form
         action={onSubmit}
         className="w-full max-w-sm rounded-2xl border border-brand-ink/10 bg-paper p-8 shadow-ed-md"

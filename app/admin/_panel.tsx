@@ -64,7 +64,7 @@ export function AdminPanel({ invitations }: { invitations: Invitation[] }) {
   );
 
   return (
-    <main className="min-h-screen bg-bg px-5 py-10 sm:px-8">
+    <main id="main" className="min-h-screen bg-bg px-5 py-10 sm:px-8">
       <div className="mx-auto max-w-[1100px]">
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-brand-ink/10 pb-5">
           <div>

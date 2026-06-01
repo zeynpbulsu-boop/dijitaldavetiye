@@ -325,7 +325,7 @@ export default function OrderEditorPage() {
   /* ---------- UI ---------- */
   if (bootError) {
     return (
-      <main className="min-h-[80vh] bg-bg py-24">
+      <main id="main" className="min-h-[80vh] bg-bg py-24">
         <div className="container-narrow text-center">
           <h1 className="font-display text-[36px] text-brand-ink">
             Bir aksilik oldu
@@ -345,7 +345,7 @@ export default function OrderEditorPage() {
 
   if (!draft) {
     return (
-      <main className="grid min-h-[80vh] place-items-center bg-bg">
+      <main id="main" className="grid min-h-[80vh] place-items-center bg-bg">
         <p className="font-display italic text-brand-mute">taslağın hazırlanıyor…</p>
       </main>
     );
@@ -361,7 +361,7 @@ export default function OrderEditorPage() {
       : "";
 
   return (
-    <main className="min-h-screen bg-bg py-12 lg:py-16">
+    <main id="main" className="min-h-screen bg-bg py-12 lg:py-16">
       <div className="container-wide grid grid-cols-12 gap-8 lg:gap-12">
         {/* LEFT — form */}
         <div className="col-span-12 lg:col-span-7">

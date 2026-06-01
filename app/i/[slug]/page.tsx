@@ -105,7 +105,7 @@ export default async function PublicInvitationPage({
 /** 1 yılı dolmuş (arşivlenmiş) davetiye için şık, markalı sayfa — çıplak 404 yerine. */
 function ExpiredInvitation() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-bg px-6 text-center">
+    <main id="main" className="flex min-h-screen flex-col items-center justify-center bg-bg px-6 text-center">
       <p className="text-[11px] uppercase tracking-[0.5em] text-brand-cognac">
         NUVE
       </p>

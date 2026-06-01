@@ -61,7 +61,7 @@ export default async function EditorPage({
   if (!inv) notFound();
 
   return (
-    <main className="min-h-[80vh] bg-bg py-12 lg:py-20">
+    <main id="main" className="min-h-[80vh] bg-bg py-12 lg:py-20">
       <div className="container-wide max-w-[1400px]">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_400px] lg:gap-14">
           {/* LEFT — form chain */}

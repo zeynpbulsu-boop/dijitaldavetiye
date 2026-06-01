@@ -39,7 +39,7 @@ export function SongPicker({ defaultValue }: { defaultValue?: string | null }) {
       <div>
         <p className="mb-2 text-[12px] uppercase tracking-[0.18em] text-brand-mute">
           Popüler şarkılar{" "}
-          <span className="lowercase tracking-normal text-brand-mute/70">
+          <span className="lowercase tracking-normal text-brand-mute">
             — mühre basınca arkada otomatik çalar
           </span>
         </p>
@@ -49,7 +49,7 @@ export function SongPicker({ defaultValue }: { defaultValue?: string | null }) {
       <div>
         <p className="mb-2 text-[12px] uppercase tracking-[0.18em] text-brand-mute">
           Klasik{" "}
-          <span className="lowercase tracking-normal text-brand-mute/70">
+          <span className="lowercase tracking-normal text-brand-mute">
             — kamu malı, telifsiz
           </span>
         </p>

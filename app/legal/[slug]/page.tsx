@@ -214,7 +214,7 @@ export default function LegalPage({ params }: PageProps) {
   if (!doc) notFound();
 
   return (
-    <main className="min-h-[80vh] bg-bg py-20 lg:py-28">
+    <main id="main" className="min-h-[80vh] bg-bg py-20 lg:py-28">
       <div className="container-narrow max-w-[760px]">
         <Link
           href="/"

@@ -23,7 +23,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <main className="min-h-[80vh] bg-bg py-24 lg:py-32">
+    <main id="main" className="min-h-[80vh] bg-bg py-24 lg:py-32">
       <div className="container-narrow text-center">
         <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.32em] text-brand-cognac">
           — Bir aksilik oldu

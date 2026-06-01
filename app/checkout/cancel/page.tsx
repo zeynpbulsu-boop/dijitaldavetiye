@@ -11,7 +11,7 @@ function CancelInner() {
   useSearchParams();
 
   return (
-    <main className="grain min-h-[70vh] bg-bg py-24 lg:py-32">
+    <main id="main" className="grain min-h-[70vh] bg-bg py-24 lg:py-32">
       <div className="container-narrow text-center">
         <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.32em] text-brand-mute">
           — {t.checkout.cancel.eyebrow}

@@ -82,7 +82,7 @@ export default async function AdminPage({
     .filter((a): a is string => Boolean(a));
 
   return (
-    <main className="min-h-[80vh] bg-bg py-16 lg:py-24">
+    <main id="main" className="min-h-[80vh] bg-bg py-16 lg:py-24">
       <div className="container-wide max-w-[1100px]">
         <header className="mb-12 border-b border-brand-ink/12 pb-8">
           <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-cognac">

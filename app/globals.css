@@ -18,7 +18,8 @@
     --paper: 0 0% 100%;
     --ink: 23 32% 13%;
     --ink-soft: 27 14% 42%;
-    --muted: 27 15% 60%;
+    /* A11y: L60% → L38% (cream'de ~2.4:1 → ~5.5:1, WCAG AA). */
+    --muted: 27 15% 38%;
     --line: 36 25% 80%;
 
     /* Primary accent — rose-taupe + cognac (CTA fills) */

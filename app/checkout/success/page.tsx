@@ -32,7 +32,7 @@ function SuccessInner() {
   }, []);
 
   return (
-    <main className="grain min-h-[80vh] bg-bg py-24 lg:py-32">
+    <main id="main" className="grain min-h-[80vh] bg-bg py-24 lg:py-32">
       <div className="container-narrow text-center">
         <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.32em] text-brand-cognac">
           — {isPending ? t.checkout.success.pending_eyebrow : t.checkout.success.success_eyebrow}

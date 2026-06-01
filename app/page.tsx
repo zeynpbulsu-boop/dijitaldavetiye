@@ -47,7 +47,7 @@ export default function HomePage() {
       <ScrollProgress />
       <FloatingMotifs />
       <Nav />
-      <main>
+      <main id="main">
         <Hero />
         <TemplateCarousel />
         <HowItWorks />
