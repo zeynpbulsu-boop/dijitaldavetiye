@@ -231,7 +231,7 @@ export function FenerHero({ meta, data }: ThemeV2Props) {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             poster={THEME_ASSETS.fener.illustration}
             aria-hidden
             style={{ opacity: 0.42, filter: "saturate(0.85) brightness(0.7)" }}

@@ -96,7 +96,7 @@ export function KurdeleHero({ meta, data }: ThemeV2Props) {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             poster={THEME_ASSETS.kurdele.texture}
             aria-hidden
           >

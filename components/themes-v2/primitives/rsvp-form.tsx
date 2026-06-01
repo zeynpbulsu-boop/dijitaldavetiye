@@ -187,7 +187,12 @@ export function RsvpForm({ meta, slug }: Props) {
               >
                 {str.rsvp.attendance} <span style={{ color: palette.accent }}>*</span>
               </p>
-              <div className="grid grid-cols-3 gap-2">
+              <div
+                className="grid grid-cols-3 gap-2"
+                role="radiogroup"
+                aria-label={str.rsvp.attendance}
+                aria-required="true"
+              >
                 {(
                   [
                     ["yes", str.rsvp.yes],
@@ -200,6 +205,8 @@ export function RsvpForm({ meta, slug }: Props) {
                     <button
                       key={val}
                       type="button"
+                      role="radio"
+                      aria-checked={active}
                       onClick={() => setAttendance(val)}
                       className="rounded-full py-3 text-[11px] font-semibold uppercase transition"
                       style={{

@@ -105,7 +105,7 @@ export function DefterHero({ meta, data }: ThemeV2Props) {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             poster={THEME_ASSETS.defter.texture}
             aria-hidden
           >

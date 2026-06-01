@@ -123,7 +123,7 @@ export function PostakartHero({ meta, data }: ThemeV2Props) {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             poster={THEME_ASSETS.postakart.texture}
             aria-hidden
           >

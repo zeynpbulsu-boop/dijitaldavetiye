@@ -135,7 +135,7 @@ export function PolaroidHero({ meta, data }: ThemeV2Props) {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             poster={THEME_ASSETS.polaroid.scenes?.[0]}
             aria-hidden
           >

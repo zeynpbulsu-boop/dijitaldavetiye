@@ -114,7 +114,7 @@ export function GeceyarisiHero({ meta, data }: ThemeV2Props) {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             poster={THEME_ASSETS.geceyarisi.bg}
             aria-hidden
           >
