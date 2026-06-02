@@ -14,6 +14,7 @@
 import type { Invitation } from "@/lib/db/types";
 import type { ThemeV2Meta, ThemeV2Data, ThemeV2Slug, InvitationDate } from "./types";
 import { THEMES_V2 } from "./registry";
+import { defaultEyebrow } from "./i18n";
 
 const V2_SLUGS: ThemeV2Slug[] = [
   "celenk", "polaroid", "kurdele", "fener", "defter", "geceyarisi", "postakart",
@@ -99,6 +100,7 @@ export function invitationToThemeV2(inv: Invitation): { meta: ThemeV2Meta; data:
   const slug = resolveThemeV2Slug(inv.template_slug);
   const meta = THEMES_V2[slug];
   const locale = (["tr", "en", "sr"].includes(inv.locale) ? inv.locale : "tr") as "tr" | "en" | "sr";
+  const eventType = (inv.event_type ?? "wedding").trim() || "wedding";
   const def = DEFAULTS[locale];
 
   const p1 = (inv.partner_one_name ?? "").trim();
@@ -149,12 +151,12 @@ export function invitationToThemeV2(inv: Invitation): { meta: ThemeV2Meta; data:
 
   const data: ThemeV2Data = {
     locale,
-    eventType: (inv.event_type ?? "wedding").trim() || "wedding",
+    eventType,
     coupleName,
     partnerOne: p1 || coupleName || "",
     partnerTwo: p2,
     monogram,
-    eyebrow: (inv.hero_eyebrow ?? "").trim() || def.eyebrow,
+    eyebrow: (inv.hero_eyebrow ?? "").trim() || defaultEyebrow(locale, eventType),
     greeting: (inv.greeting ?? "").trim() || def.greeting,
     date: buildDate(inv.wedding_date, locale),
     venue: {

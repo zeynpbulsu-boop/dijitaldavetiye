@@ -250,3 +250,41 @@ export function eventHeading(
   const map = EVENT_HEADINGS[loc];
   return map[eventType ?? "wedding"] ?? map.wedding;
 }
+
+/**
+ * Hero eyebrow varsayılanı — etkinlik türüne + dile göre. Host kendi
+ * eyebrow'unu girmezse (boş bırakırsa) bu gösterilir; doğum günü davetiyesi
+ * artık "Düğün törenimize davetlisiniz" demez.
+ */
+const EVENT_EYEBROWS: Record<Locale, Record<string, string>> = {
+  tr: {
+    wedding: "Düğün törenimize davetlisiniz",
+    engagement: "Nişan törenimize davetlisiniz",
+    henna: "Kına gecemize davetlisiniz",
+    save_the_date: "Tarihi ajandanıza not edin",
+    birthday: "Doğum günü kutlamamıza davetlisiniz",
+  },
+  en: {
+    wedding: "You're invited to our wedding",
+    engagement: "You're invited to our engagement",
+    henna: "You're invited to our henna night",
+    save_the_date: "Save our date",
+    birthday: "You're invited to the birthday celebration",
+  },
+  sr: {
+    wedding: "Pozvani ste na naše venčanje",
+    engagement: "Pozvani ste na našu veridbu",
+    henna: "Pozvani ste na naše veče kane",
+    save_the_date: "Zabeležite naš datum",
+    birthday: "Pozvani ste na proslavu rođendana",
+  },
+};
+
+export function defaultEyebrow(
+  locale: Locale | string | null | undefined,
+  eventType: string | null | undefined,
+): string {
+  const loc = locale && locale in EVENT_EYEBROWS ? (locale as Locale) : "tr";
+  const map = EVENT_EYEBROWS[loc];
+  return map[eventType ?? "wedding"] ?? map.wedding;
+}

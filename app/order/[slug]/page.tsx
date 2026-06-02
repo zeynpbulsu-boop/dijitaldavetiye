@@ -232,8 +232,15 @@ export default function OrderEditorPage() {
   async function onPay() {
     if (!draft) return;
     // Boş/eksik zorunlu alanlarla ödeme → boş davetiye yayını engellenir.
-    if (!p1.trim() || !p2.trim()) {
-      setPayError("Devam etmeden önce iki ismi de gir — çiftin adları davetiyenin kalbi.");
+    // Çift-etkinlikler (düğün/nişan/kına) iki isim ister; doğum günü /
+    // save-the-date tek kişilik → tek isim yeter.
+    const coupleEvent = ["wedding", "engagement", "henna"].includes(eventType);
+    if (!p1.trim() || (coupleEvent && !p2.trim())) {
+      setPayError(
+        coupleEvent
+          ? "Devam etmeden önce iki ismi de gir — çiftin adları davetiyenin kalbi."
+          : "Devam etmeden önce ismi gir.",
+      );
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {

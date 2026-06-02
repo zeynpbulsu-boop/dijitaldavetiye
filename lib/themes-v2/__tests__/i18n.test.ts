@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { invitationStrings, eventHeading } from "../i18n";
+import { invitationStrings, eventHeading, defaultEyebrow } from "../i18n";
 
 describe("invitationStrings", () => {
   it("tr/en/sr farklı diller döndürür", () => {
@@ -48,5 +48,16 @@ describe("eventHeading — etkinlik türüne + dile göre başlık", () => {
     expect(eventHeading("tr", "xyz")).toBe("Düğün Davetiyesi");
     expect(eventHeading("tr", null)).toBe("Düğün Davetiyesi");
     expect(eventHeading("de", "birthday")).toBe(eventHeading("tr", "birthday"));
+  });
+});
+
+describe("defaultEyebrow — etkinlik-türüne göre hero eyebrow varsayılanı", () => {
+  it("doğum günü düğün eyebrow'u göstermez", () => {
+    expect(defaultEyebrow("tr", "birthday")).toBe("Doğum günü kutlamamıza davetlisiniz");
+    expect(defaultEyebrow("tr", "wedding")).toBe("Düğün törenimize davetlisiniz");
+  });
+  it("dile + fallback'e saygılı", () => {
+    expect(defaultEyebrow("en", "engagement")).toBe("You're invited to our engagement");
+    expect(defaultEyebrow("tr", null)).toBe("Düğün törenimize davetlisiniz");
   });
 });
