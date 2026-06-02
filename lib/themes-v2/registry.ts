@@ -117,6 +117,7 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
 
 export const SAMPLE_DATA: ThemeV2Data = {
   locale: "tr",
+  eventType: "wedding",
   coupleName: "Elif & Can",
   partnerOne: "Elif",
   partnerTwo: "Can",

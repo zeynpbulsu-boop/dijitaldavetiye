@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
-import { invitationStrings } from "@/lib/themes-v2/i18n";
+import { invitationStrings, eventHeading } from "@/lib/themes-v2/i18n";
 import { InvitationI18nProvider } from "./i18n-context";
 import { CountdownBand } from "./primitives/countdown-band";
 import { PolaroidGallery } from "./primitives/polaroid-gallery";
@@ -112,8 +112,8 @@ export function ThemeShell({
         }}
       >
         {data.coupleName
-          ? `${data.coupleName} — ${t.heading}`
-          : t.heading}
+          ? `${data.coupleName} — ${eventHeading(data.locale, data.eventType)}`
+          : eventHeading(data.locale, data.eventType)}
       </h1>
       <AtmosphereDefs />
       {showBuyBadge && <BuyBadge meta={meta} />}

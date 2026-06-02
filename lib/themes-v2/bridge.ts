@@ -149,6 +149,7 @@ export function invitationToThemeV2(inv: Invitation): { meta: ThemeV2Meta; data:
 
   const data: ThemeV2Data = {
     locale,
+    eventType: (inv.event_type ?? "wedding").trim() || "wedding",
     coupleName,
     partnerOne: p1 || coupleName || "",
     partnerTwo: p2,

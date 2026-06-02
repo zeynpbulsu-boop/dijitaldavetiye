@@ -62,6 +62,9 @@ export interface MenuColumn {
 export interface ThemeV2Data {
   /** Davetiyenin dili — arayüz metinleri bu dilde render edilir. */
   locale: Locale;
+  /** Etkinlik türü (wedding/engagement/henna/save_the_date/birthday) —
+   *  başlık ve meta bu türe göre uyarlanır. */
+  eventType: string;
   coupleName: string;
   partnerOne: string;
   partnerTwo: string;

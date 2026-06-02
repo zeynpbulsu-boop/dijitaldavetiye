@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { invitationStrings } from "../i18n";
+import { invitationStrings, eventHeading } from "../i18n";
 
 describe("invitationStrings", () => {
   it("tr/en/sr farklı diller döndürür", () => {
@@ -21,7 +21,6 @@ describe("invitationStrings", () => {
   it("her dilde tüm bölümler dolu (eksik anahtar yok)", () => {
     for (const loc of ["tr", "en", "sr"] as const) {
       const s = invitationStrings(loc);
-      expect(s.heading).toBeTruthy();
       expect(s.rsvp.yes).toBeTruthy();
       expect(s.countdown.day).toBeTruthy();
       expect(s.venue.directions).toBeTruthy();
@@ -29,5 +28,25 @@ describe("invitationStrings", () => {
       expect(s.hotels.reserve).toBeTruthy();
       expect(s.expired.body).toBeTruthy();
     }
+  });
+});
+
+describe("eventHeading — etkinlik türüne + dile göre başlık", () => {
+  it("etkinlik türüne göre farklı başlık", () => {
+    expect(eventHeading("tr", "wedding")).toBe("Düğün Davetiyesi");
+    expect(eventHeading("tr", "birthday")).toBe("Doğum Günü Daveti");
+    expect(eventHeading("tr", "engagement")).toBe("Nişan Davetiyesi");
+    expect(eventHeading("tr", "henna")).toBe("Kına Gecesi Daveti");
+  });
+
+  it("dile göre lokalize", () => {
+    expect(eventHeading("en", "birthday")).toBe("Birthday Invitation");
+    expect(eventHeading("sr", "wedding")).toBe("Pozivnica za venčanje");
+  });
+
+  it("bilinmeyen tür → düğün, bilinmeyen dil → TR fallback", () => {
+    expect(eventHeading("tr", "xyz")).toBe("Düğün Davetiyesi");
+    expect(eventHeading("tr", null)).toBe("Düğün Davetiyesi");
+    expect(eventHeading("de", "birthday")).toBe(eventHeading("tr", "birthday"));
   });
 });

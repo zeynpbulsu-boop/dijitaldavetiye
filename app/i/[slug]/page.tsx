@@ -8,7 +8,7 @@ import {
 } from "@/lib/db/lifecycle";
 import { ThemeRenderer } from "@/components/themes-v2/theme-renderer";
 import { invitationToThemeV2 } from "@/lib/themes-v2/bridge";
-import { invitationStrings } from "@/lib/themes-v2/i18n";
+import { invitationStrings, eventHeading } from "@/lib/themes-v2/i18n";
 
 /**
  * /i/[slug] — public invitation page.
@@ -65,13 +65,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { inv } = await loadLive(params.slug);
   if (!inv) return { title: "NUVE" };
+  // Etkinlik türü + dile göre — doğum günü/nişan davetiyesi "wedding" demez.
+  const heading = eventHeading(inv.locale, inv.event_type);
   const couple =
     inv.partner_one_name && inv.partner_two_name
       ? `${inv.partner_one_name} & ${inv.partner_two_name}`
-      : "Bir Davet";
+      : heading;
   return {
     title: `${couple} — NUVE`,
-    description: `${couple} · NUVE digital wedding invitation.`,
+    description: `${couple} · ${heading} · NUVE`,
     robots: { index: false, follow: false },
   };
 }

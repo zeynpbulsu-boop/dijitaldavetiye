@@ -11,8 +11,6 @@ import type { Locale } from "@/lib/i18n/types";
  */
 
 export interface InvitationStrings {
-  /** Görünmez (sr-only) semantik sayfa başlığı eki — "{çift} — {heading}". */
-  heading: string;
   ceremony: { tapToOpen: string };
   countdown: {
     title: string;
@@ -59,7 +57,6 @@ export interface InvitationStrings {
 }
 
 const tr: InvitationStrings = {
-  heading: "Düğün Davetiyesi",
   ceremony: { tapToOpen: "Açmak için dokun" },
   countdown: {
     title: "Geri Sayım",
@@ -110,7 +107,6 @@ const tr: InvitationStrings = {
 };
 
 const en: InvitationStrings = {
-  heading: "Wedding Invitation",
   ceremony: { tapToOpen: "Tap to open" },
   countdown: {
     title: "Countdown",
@@ -161,7 +157,6 @@ const en: InvitationStrings = {
 };
 
 const sr: InvitationStrings = {
-  heading: "Pozivnica za venčanje",
   ceremony: { tapToOpen: "Dodirnite da otvorite" },
   countdown: {
     title: "Odbrojavanje",
@@ -216,4 +211,42 @@ const STRINGS: Record<Locale, InvitationStrings> = { tr, en, sr };
 export function invitationStrings(locale: Locale | string | null | undefined): InvitationStrings {
   if (locale && locale in STRINGS) return STRINGS[locale as Locale];
   return tr;
+}
+
+/**
+ * Etkinlik türüne + dile göre davetiye başlığı (semantik h1 + meta).
+ * Landing "her etkinlik" vaat ediyor; doğum günü/nişan/kına davetiyesi artık
+ * "Düğün Davetiyesi" demiyor. Bilinmeyen tür/dil → düğün/TR fallback.
+ */
+const EVENT_HEADINGS: Record<Locale, Record<string, string>> = {
+  tr: {
+    wedding: "Düğün Davetiyesi",
+    engagement: "Nişan Davetiyesi",
+    henna: "Kına Gecesi Daveti",
+    save_the_date: "Save the Date",
+    birthday: "Doğum Günü Daveti",
+  },
+  en: {
+    wedding: "Wedding Invitation",
+    engagement: "Engagement Invitation",
+    henna: "Henna Night Invitation",
+    save_the_date: "Save the Date",
+    birthday: "Birthday Invitation",
+  },
+  sr: {
+    wedding: "Pozivnica za venčanje",
+    engagement: "Pozivnica za veridbu",
+    henna: "Pozivnica za veče kane",
+    save_the_date: "Sačuvajte datum",
+    birthday: "Pozivnica za rođendan",
+  },
+};
+
+export function eventHeading(
+  locale: Locale | string | null | undefined,
+  eventType: string | null | undefined,
+): string {
+  const loc = locale && locale in EVENT_HEADINGS ? (locale as Locale) : "tr";
+  const map = EVENT_HEADINGS[loc];
+  return map[eventType ?? "wedding"] ?? map.wedding;
 }
