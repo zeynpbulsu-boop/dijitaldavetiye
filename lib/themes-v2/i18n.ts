@@ -20,7 +20,7 @@ export interface InvitationStrings {
     second: string;
     passed: string;
   };
-  venue: { label: string; directions: string };
+  venue: { label: string; directions: string; addToCalendar: string };
   gift: {
     label: string;
     headline: string;
@@ -66,7 +66,7 @@ const tr: InvitationStrings = {
     second: "Saniye",
     passed: "Bugün büyük gün — sizi aramızda görmek isteriz.",
   },
-  venue: { label: "Konum", directions: "Yol Tarifi" },
+  venue: { label: "Konum", directions: "Yol Tarifi", addToCalendar: "Takvime Ekle" },
   gift: {
     label: "Hediye",
     headline: "Varlığınız en büyük hediye",
@@ -116,7 +116,7 @@ const en: InvitationStrings = {
     second: "Seconds",
     passed: "Today is the big day — we'd love to see you there.",
   },
-  venue: { label: "Location", directions: "Directions" },
+  venue: { label: "Location", directions: "Directions", addToCalendar: "Add to Calendar" },
   gift: {
     label: "Gift",
     headline: "Your presence is the greatest gift",
@@ -166,7 +166,7 @@ const sr: InvitationStrings = {
     second: "Sekundi",
     passed: "Danas je veliki dan — radujemo se što ćete biti s nama.",
   },
-  venue: { label: "Lokacija", directions: "Putanja" },
+  venue: { label: "Lokacija", directions: "Putanja", addToCalendar: "Dodaj u kalendar" },
   gift: {
     label: "Poklon",
     headline: "Vaše prisustvo je najveći poklon",

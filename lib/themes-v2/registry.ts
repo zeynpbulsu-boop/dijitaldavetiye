@@ -38,7 +38,7 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
     name: "Kurdele",
     tagline: "Zarif · Mavi kurdele · Mektup açılışı",
     mood: "feminine",
-    signature: "Kurdele çözülüyor, zarf açılıyor, mektup kayarak çıkıyor",
+    signature: "Mühür kırılıp perde açılıyor, saten kurdele dalgalanıyor, mektup nefes alıyor",
     palette: {
       bg: "#EEF2F0",
       paper: "#FBF8F2",
@@ -54,7 +54,7 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
     name: "Fener",
     tagline: "Bağ evi · Tap-to-light · Sinematik",
     mood: "cinematic",
-    signature: "Tıklayınca ampuller sırayla yanıyor, gündüz→gece geçiş",
+    signature: "Mühür kırılınca bağ evinin ampulleri sırayla yanıyor",
     palette: {
       bg: "#F2EAD7",
       paper: "#1E1810",
@@ -70,7 +70,7 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
     name: "Defter",
     tagline: "Keten kapak · Sayfa çevirme · Samimi",
     mood: "intimate",
-    signature: "Scroll'da sayfalar 3D çevriliyor, el yazısı mürekkep",
+    signature: "3D defter pointer'la eğiliyor, isimler ıslak mürekkep gibi beliriyor",
     palette: {
       bg: "#E5DCC4",
       paper: "#F5EEDE",

@@ -12,6 +12,7 @@ import {
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, PaperGrain, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
+import { CustomCover } from "../primitives/custom-cover";
 
 /**
  * Defter — Premium open notebook spread that NEVER stops breathing.
@@ -97,7 +98,9 @@ export function DefterHero({ meta, data }: ThemeV2Props) {
         className="pointer-events-none absolute inset-0"
         style={{ y: reduced ? 0 : yLinen, x: reduced ? 0 : xLinen }}
       >
-        {THEME_VIDEO.defter ? (
+        {data.heroMediaUrl ? (
+          <CustomCover src={data.heroMediaUrl} className="absolute inset-0 opacity-60" />
+        ) : THEME_VIDEO.defter ? (
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video
             className="absolute inset-0 h-full w-full object-cover opacity-60"

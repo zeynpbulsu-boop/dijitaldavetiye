@@ -162,7 +162,7 @@ export default async function EditorPage({
           </div>
 
           {/* RIGHT — sticky live preview iframe (desktop only) */}
-          <EditorPreviewSticky slug={inv.slug} />
+          <EditorPreviewSticky slug={inv.slug} token={token} />
         </div>
       </div>
     </main>

@@ -159,7 +159,7 @@ export function ShowcaseGrid() {
             Hepsi tek paket içinde — €39.99 · 12 ay yayında.
           </p>
           <Link
-            href="/#fiyat"
+            href="/#pricing"
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-cognac px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.36em] text-brand-cream transition hover:bg-brand-ink"
           >
             Davetiyeni oluştur

@@ -20,6 +20,7 @@ import {
   r3,
 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
+import { CustomCover } from "../primitives/custom-cover";
 
 /**
  * Kurdele — the LIVING pressed-paper letter.
@@ -88,7 +89,9 @@ export function KurdeleHero({ meta, data }: ThemeV2Props) {
         className="pointer-events-none absolute inset-0"
         style={{ x: reduced ? 0 : xVellum, y: reduced ? 0 : yVellum }}
       >
-        {THEME_VIDEO.kurdele ? (
+        {data.heroMediaUrl ? (
+          <CustomCover src={data.heroMediaUrl} className="absolute inset-0" />
+        ) : THEME_VIDEO.kurdele ? (
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video
             className="absolute inset-0 h-full w-full object-cover"

@@ -13,6 +13,7 @@ import {
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
+import { CustomCover } from "../primitives/custom-cover";
 
 interface Star {
   x: number;
@@ -106,7 +107,9 @@ export function GeceyarisiHero({ meta, data }: ThemeV2Props) {
         className="pointer-events-none absolute inset-0"
         style={{ y: reduced ? 0 : yFar }}
       >
-        {THEME_VIDEO.geceyarisi ? (
+        {data.heroMediaUrl ? (
+          <CustomCover src={data.heroMediaUrl} className="absolute inset-0 opacity-95" />
+        ) : THEME_VIDEO.geceyarisi ? (
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video
             className="absolute inset-0 h-full w-full object-cover opacity-95"

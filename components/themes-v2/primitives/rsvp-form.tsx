@@ -43,7 +43,7 @@ export function RsvpForm({ meta, slug }: Props) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            slug,
+            invitation_slug: slug,
             guest_name: name.trim(),
             guest_email: email.trim() || undefined,
             attendance,

@@ -14,6 +14,7 @@ import {
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, PaperGrain, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
+import { CustomCover } from "../primitives/custom-cover";
 
 /**
  * Postakart — a vintage Ayvalık travel postcard that is PERPETUALLY ALIVE.
@@ -115,7 +116,9 @@ export function PostakartHero({ meta, data }: ThemeV2Props) {
         className="pointer-events-none absolute inset-0"
         style={{ y: reduced ? 0 : yBackdrop }}
       >
-        {THEME_VIDEO.postakart ? (
+        {data.heroMediaUrl ? (
+          <CustomCover src={data.heroMediaUrl} className="absolute inset-0 opacity-75" />
+        ) : THEME_VIDEO.postakart ? (
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video
             className="absolute inset-0 h-full w-full object-cover opacity-75"

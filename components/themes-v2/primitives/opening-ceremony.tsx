@@ -8,6 +8,9 @@ import { THEME_CEREMONY } from "@/lib/themes-v2/assets";
 import { useInvitationT } from "../i18n-context";
 
 const CURTAIN_MS = 1250;
+/** Seal-crack micro-animation length — curtain waits for it, so the ritual
+ *  reads: mühür kırılır → perde açılır. */
+const CRACK_MS = 420;
 const AMBIENT_VOLUME = 0.4;
 
 /* ── Ambient audio ───────────────────────────────────────────────────
@@ -93,6 +96,7 @@ export function AmbientToggle({
   onToggle: () => void;
   palette: ThemeV2Meta["palette"];
 }) {
+  const reduced = useReducedMotion();
   return (
     <button
       type="button"
@@ -107,7 +111,7 @@ export function AmbientToggle({
       }}
     >
       <SoundIcon muted={muted} />
-      {!muted && <PulseRing color={palette.accent} />}
+      {!muted && !reduced && <PulseRing color={palette.accent} />}
     </button>
   );
 }
@@ -157,10 +161,13 @@ export function OpeningCeremony({
   const ceremony = THEME_CEREMONY[meta.slug];
   const [gone, setGone] = useState(false);
 
-  // Unmount after the curtain finishes so it never blocks interaction.
+  // Unmount after the crack + curtain finish so it never blocks interaction.
   useEffect(() => {
     if (!opened) return;
-    const t = window.setTimeout(() => setGone(true), reduced ? 320 : CURTAIN_MS + 120);
+    const t = window.setTimeout(
+      () => setGone(true),
+      reduced ? 320 : CRACK_MS + CURTAIN_MS + 120,
+    );
     return () => window.clearTimeout(t);
   }, [opened, reduced]);
 
@@ -177,17 +184,28 @@ export function OpeningCeremony({
   if (gone) return null;
 
   const panelBg = `linear-gradient(180deg, ${palette.bg} 0%, ${palette.countdownBg} 140%)`;
-  const curtain = { duration: reduced ? 0.3 : CURTAIN_MS / 1000, ease: [0.76, 0, 0.24, 1] as const };
+  // Curtain waits for the seal to crack first (except in reduced motion).
+  const curtain = {
+    duration: reduced ? 0.3 : CURTAIN_MS / 1000,
+    delay: reduced || !opened ? 0 : CRACK_MS / 1000,
+    ease: [0.76, 0, 0.24, 1] as const,
+  };
 
   // When a real cover texture exists, split one image across the two panels
   // (each shows its half) so the parting curtain looks like one luxe sheet.
+  // Wash alphas stay LOW (27/20%) — the fal.ai paper/linen texture is the
+  // luxury signal; drowning it in palette gradient reads as a flat empty wall.
   const panelStyle = (side: "left" | "right"): CSSProperties =>
     ceremony?.coverTexture
       ? {
-          backgroundImage: `linear-gradient(180deg, ${palette.bg}cc 0%, ${palette.countdownBg}aa 140%), url(${ceremony.coverTexture})`,
+          backgroundImage: `linear-gradient(180deg, ${palette.bg}44 0%, ${palette.countdownBg}33 140%), url(${ceremony.coverTexture})`,
           backgroundSize: "100vw 100%, 100vw 100%",
           backgroundPosition: `${side} center, ${side} center`,
           backgroundColor: palette.bg,
+          boxShadow:
+            side === "left"
+              ? "inset -18px 0 32px -22px rgba(0,0,0,0.35)"
+              : "inset 18px 0 32px -22px rgba(0,0,0,0.35)",
         }
       : { background: panelBg };
 
@@ -213,15 +231,28 @@ export function OpeningCeremony({
         transition={curtain}
       />
 
-      {/* Center invitation seal — fades out as the curtain parts */}
+      {/* Soft vignette — gives the flat cover sheet physical depth */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 120% 90% at 50% 42%, transparent 55%, rgba(0,0,0,0.16) 100%)",
+        }}
+        initial={false}
+        animate={{ opacity: opened ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+      />
+
+      {/* Center invitation seal — cracks on tap, then the curtain parts */}
       <motion.button
         type="button"
         onClick={onOpen}
         aria-label="Davetiyeyi aç"
         className="absolute inset-0 z-10 flex w-full cursor-pointer flex-col items-center justify-center px-6 text-center"
         initial={false}
-        animate={opened ? { opacity: 0, scale: 1.08 } : { opacity: 1, scale: 1 }}
-        transition={{ duration: opened ? 0.5 : 0.6 }}
+        animate={opened ? { opacity: 0, scale: 1.06 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: opened ? 0.55 : 0.6, delay: opened && !reduced ? 0.22 : 0 }}
       >
         <DustParticles color={palette.accent} count={22} opacity={0.4} />
 
@@ -235,22 +266,21 @@ export function OpeningCeremony({
           {data.eyebrow}
         </motion.p>
 
-        <WaxSeal monogram={data.monogram} palette={palette} reduced={!!reduced} sealSrc={ceremony?.seal} />
+        <WaxSeal
+          monogram={data.monogram}
+          palette={palette}
+          reduced={!!reduced}
+          sealSrc={ceremony?.seal}
+          opened={opened}
+        />
 
-        <motion.p
-          className="mt-10"
-          style={{
-            fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
-            fontSize: "clamp(38px, 6vw, 62px)",
-            color: palette.ink,
-            lineHeight: 1,
-          }}
-          initial={reduced ? false : { opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 1.2 }}
-        >
-          {data.partnerOne} &amp; {data.partnerTwo}
-        </motion.p>
+        <KineticNames
+          partnerOne={data.partnerOne}
+          partnerTwo={data.partnerTwo}
+          ink={palette.ink}
+          accent={palette.accent}
+          reduced={!!reduced}
+        />
 
         <motion.div
           className="mt-9 flex flex-col items-center gap-2"
@@ -280,46 +310,99 @@ export function OpeningCeremony({
   );
 }
 
-/* ── Wax-seal medallion with the couple's monogram ───────────────────── */
-function WaxSeal({
+/* ── Kinetic typography — isimler harf harf yükselerek belirir ──────────
+ * 2026'nın tanımlayıcı davetiye trendi; tüm temaların ilk ekranında ortak.
+ * Ekran okuyucular tek aria-label okur, harf span'leri dekoratiftir. */
+function KineticNames({
+  partnerOne,
+  partnerTwo,
+  ink,
+  accent,
+  reduced,
+}: {
+  partnerOne: string;
+  partnerTwo: string;
+  ink: string;
+  accent: string;
+  reduced: boolean;
+}) {
+  const label = `${partnerOne} & ${partnerTwo}`;
+  const base: CSSProperties = {
+    fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
+    fontSize: "clamp(38px, 6vw, 62px)",
+    color: ink,
+    lineHeight: 1.15,
+  };
+
+  if (reduced) {
+    return (
+      <p className="mt-10" style={base}>
+        {label}
+      </p>
+    );
+  }
+
+  // Harf gecikmeleri iki ismin toplam uzunluğuna göre sıkışır ki uzun
+  // isimlerde giriş 2 saniyeyi aşmasın.
+  const chars = [...partnerOne, "&", ...partnerTwo];
+  const step = Math.min(0.05, 1.4 / chars.length);
+  let idx = 0;
+  const charSpan = (ch: string, key: string, color?: string) => {
+    const delay = 0.55 + idx * step;
+    idx += 1;
+    return (
+      <motion.span
+        key={key}
+        aria-hidden
+        className="inline-block"
+        style={color ? { color } : undefined}
+        initial={{ opacity: 0, y: "0.32em", rotate: -3 }}
+        animate={{ opacity: 1, y: 0, rotate: 0 }}
+        transition={{ delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {ch === " " ? " " : ch}
+      </motion.span>
+    );
+  };
+
+  return (
+    <p className="mt-10" style={base} aria-label={label}>
+      {[...partnerOne].map((ch, i) => charSpan(ch, `a${i}`))}
+      {charSpan(" ", "s1")}
+      {charSpan("&", "amp", accent)}
+      {charSpan(" ", "s2")}
+      {[...partnerTwo].map((ch, i) => charSpan(ch, `b${i}`))}
+    </p>
+  );
+}
+
+/* ── Wax-seal medallion with the couple's monogram ─────────────────────
+ * 188px hero presence (Pressed Love ölçeği); on tap it CRACKS: the two
+ * clip-path halves rotate/translate apart before the curtain moves. */
+const SEAL_SIZE = "clamp(150px, 44vw, 188px)";
+
+function SealFace({
   monogram,
   palette,
-  reduced,
   sealSrc,
 }: {
   monogram: string;
   palette: ThemeV2Meta["palette"];
-  reduced: boolean;
   sealSrc?: string;
 }) {
   return (
-    <motion.div
-      className="relative flex items-center justify-center"
-      style={{ width: 132, height: 132 }}
-      initial={reduced ? false : { opacity: 0, scale: 0.7 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.4, duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
-    >
-      {/* breathing glow */}
-      <motion.span
-        className="pointer-events-none absolute inset-0 rounded-full"
-        style={{
-          background: `radial-gradient(circle, ${palette.accent}55 0%, ${palette.accent}00 70%)`,
-        }}
-        animate={reduced ? undefined : { scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      />
+    <>
       {sealSrc ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={sealSrc}
           alt=""
           aria-hidden
-          className="relative h-full w-full object-contain"
-          style={{ filter: "drop-shadow(0 6px 14px rgba(0,0,0,0.45))" }}
+          className="h-full w-full object-contain"
+          style={{ filter: "drop-shadow(0 8px 18px rgba(0,0,0,0.45))" }}
         />
       ) : (
-        <svg width="128" height="128" viewBox="0 0 128 128" className="relative">
+        <svg viewBox="0 0 128 128" className="h-full w-full">
           <circle cx="64" cy="64" r="52" fill="none" stroke={palette.accent} strokeWidth="1" opacity="0.55" />
           <circle cx="64" cy="64" r="46" fill="none" stroke={palette.accent} strokeWidth="0.6" opacity="0.4" />
           {/* tick ring */}
@@ -343,10 +426,10 @@ function WaxSeal({
         </svg>
       )}
       <span
-        className="absolute"
+        className="absolute inset-0 flex items-center justify-center"
         style={{
           fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
-          fontSize: sealSrc ? 34 : 40,
+          fontSize: sealSrc ? "clamp(40px, 11vw, 48px)" : "clamp(46px, 13vw, 56px)",
           // On the real gold seal, render the monogram as if engraved into the wax.
           color: sealSrc ? "rgba(70,48,12,0.62)" : palette.accent,
           textShadow: sealSrc ? "0 1px 0.5px rgba(255,238,196,0.5)" : undefined,
@@ -355,6 +438,71 @@ function WaxSeal({
       >
         {monogram}
       </span>
+    </>
+  );
+}
+
+function WaxSeal({
+  monogram,
+  palette,
+  reduced,
+  sealSrc,
+  opened,
+}: {
+  monogram: string;
+  palette: ThemeV2Meta["palette"];
+  reduced: boolean;
+  sealSrc?: string;
+  opened: boolean;
+}) {
+  const crack = { duration: CRACK_MS / 1000, ease: [0.5, 0.05, 0.6, 1] as const };
+  const cracking = opened && !reduced;
+
+  return (
+    <motion.div
+      className="relative"
+      style={{ width: SEAL_SIZE, height: SEAL_SIZE }}
+      initial={reduced ? false : { opacity: 0, scale: 0.7 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.4, duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
+    >
+      {/* breathing glow — dies instantly when the seal cracks */}
+      <motion.span
+        className="pointer-events-none absolute inset-0 rounded-full"
+        style={{
+          background: `radial-gradient(circle, ${palette.accent}55 0%, ${palette.accent}00 70%)`,
+        }}
+        animate={
+          cracking
+            ? { opacity: 0, scale: 1.3 }
+            : reduced
+              ? undefined
+              : { scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }
+        }
+        transition={cracking ? { duration: 0.35 } : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* Left half — clip-path'li iki yarım ters yönlere kırılır */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ clipPath: "polygon(0 0, 54% 0, 46% 100%, 0 100%)" }}
+        initial={false}
+        animate={cracking ? { x: -16, y: 5, rotate: -7, opacity: 0 } : { x: 0, y: 0, rotate: 0, opacity: 1 }}
+        transition={crack}
+      >
+        <SealFace monogram={monogram} palette={palette} sealSrc={sealSrc} />
+      </motion.div>
+
+      {/* Right half */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ clipPath: "polygon(54% 0, 100% 0, 100% 100%, 46% 100%)" }}
+        initial={false}
+        animate={cracking ? { x: 16, y: -4, rotate: 6, opacity: 0 } : { x: 0, y: 0, rotate: 0, opacity: 1 }}
+        transition={crack}
+      >
+        <SealFace monogram={monogram} palette={palette} sealSrc={sealSrc} />
+      </motion.div>
     </motion.div>
   );
 }

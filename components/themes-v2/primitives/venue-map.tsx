@@ -15,9 +15,12 @@ function calStamp(iso: string, addHours = 0): string {
 export function VenueMap({
   meta,
   data,
+  slug,
 }: {
   meta: ThemeV2Meta;
   data: ThemeV2Data;
+  /** Canlı davetiye slug'ı — varsa Takvime Ekle butonu .ics endpoint'ine gider */
+  slug?: string;
 }) {
   const { palette } = meta;
   const reduced = useReducedMotion();
@@ -42,8 +45,13 @@ export function VenueMap({
     ? `https://www.google.com/maps/search/?api=1&query=${coordQ}`
     : `https://www.google.com/maps/search/?api=1&query=${enc}`;
 
+  // Canlı davetiyede evrensel .ics dosyası (iPhone/Apple Calendar + Outlook +
+  // Google hepsi açar) — hazır /api/calendar/[slug] endpoint'i. Önizlemede
+  // (slug yok) Google Calendar linkine düşülür.
   let calendar = "";
-  if (data.date.iso) {
+  if (slug) {
+    calendar = `/api/calendar/${encodeURIComponent(slug)}`;
+  } else if (data.date.iso) {
     const title = encodeURIComponent(`${data.partnerOne} & ${data.partnerTwo} — Düğün`);
     calendar =
       `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}` +
@@ -150,8 +158,7 @@ export function VenueMap({
           {calendar && (
             <a
               href={calendar}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...(slug ? {} : { target: "_blank", rel: "noopener noreferrer" })}
               className="inline-flex w-full items-center justify-center rounded-full px-7 py-3 text-[10.5px] uppercase transition hover:scale-[1.02] sm:w-auto"
               style={{
                 border: `1px solid ${palette.accent}`,
@@ -160,7 +167,7 @@ export function VenueMap({
                 fontWeight: 500,
               }}
             >
-              Takvime Ekle
+              {str.venue.addToCalendar}
             </a>
           )}
         </motion.div>

@@ -15,11 +15,15 @@ import { useCallback, useEffect, useState } from "react";
 
 interface Props {
   slug: string;
+  /** Editör erişim token'ı — davetiye henüz live olmadan (paid/incelemede)
+   *  /i/[slug] token'sız istekte notFound döndüğü için iframe'e de eklenir. */
+  token?: string;
   /** Auto-refresh interval ms. Default: 12000 (12s, save debounce'tan sonra). */
   refreshIntervalMs?: number;
 }
 
-export function EditorPreviewSticky({ slug, refreshIntervalMs = 12000 }: Props) {
+export function EditorPreviewSticky({ slug, token, refreshIntervalMs = 12000 }: Props) {
+  const previewUrl = token ? `/i/${slug}?token=${encodeURIComponent(token)}` : `/i/${slug}`;
   const [key, setKey] = useState(0);
   const [loaded, setLoaded] = useState(false);
 
@@ -76,7 +80,7 @@ export function EditorPreviewSticky({ slug, refreshIntervalMs = 12000 }: Props) 
           )}
           <iframe
             key={key}
-            src={`/i/${slug}`}
+            src={previewUrl}
             title="Davetiye önizlemesi"
             sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
             loading="lazy"
@@ -95,7 +99,7 @@ export function EditorPreviewSticky({ slug, refreshIntervalMs = 12000 }: Props) 
         <p className="mt-3 text-[10.5px] leading-[1.55] text-brand-mute">
           Her kayıt sonrası ~12sn&apos;de otomatik yenilenir. Tam ekran için{" "}
           <a
-            href={`/i/${slug}`}
+            href={previewUrl}
             target="_blank"
             rel="noopener"
             className="underline-offset-2 hover:underline"

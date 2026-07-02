@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { invitationStrings, eventHeading } from "@/lib/themes-v2/i18n";
 import { InvitationI18nProvider } from "./i18n-context";
+import { CeremonyProvider } from "./ceremony-context";
 import { CountdownBand } from "./primitives/countdown-band";
 import { PolaroidGallery } from "./primitives/polaroid-gallery";
 import { ProgramList } from "./primitives/program-list";
@@ -88,6 +89,7 @@ export function ThemeShell({
 
   return (
     <InvitationI18nProvider value={t}>
+    <CeremonyProvider opened={opened}>
     <div
       className="relative min-h-screen overflow-hidden"
       style={{ backgroundColor: palette.bg, color: palette.ink }}
@@ -149,7 +151,7 @@ export function ThemeShell({
           )}
           {showVenue && (
             <Reveal>
-              <VenueMap meta={meta} data={data} />
+              <VenueMap meta={meta} data={data} slug={rsvpSlug} />
             </Reveal>
           )}
           {showGift && data.gift && (
@@ -189,6 +191,7 @@ export function ThemeShell({
         </>
       )}
     </div>
+    </CeremonyProvider>
     </InvitationI18nProvider>
   );
 }
@@ -290,7 +293,7 @@ function ThemeFooter({
 function BuyBadge({ meta }: { meta: ThemeV2Props["meta"] }) {
   return (
     <a
-      href="/#fiyat"
+      href={`/order/${meta.slug}`}
       className="fixed left-4 top-4 z-50 flex items-center gap-2 rounded-full px-4 py-2 text-[11px] backdrop-blur transition hover:scale-[1.02]"
       style={{
         backgroundColor: "rgba(255,255,255,0.82)",

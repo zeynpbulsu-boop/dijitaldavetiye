@@ -20,6 +20,7 @@ import {
   r3,
 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
+import { CustomCover } from "../primitives/custom-cover";
 
 /**
  * Çelenk — a perpetually ALIVE watercolor wreath.
@@ -113,7 +114,9 @@ export function CelenkHero({ meta, data }: ThemeV2Props) {
         className="pointer-events-none absolute inset-0"
         style={{ x: reduced ? 0 : xBg, y: reduced ? 0 : yBg }}
       >
-        {THEME_VIDEO.celenk ? (
+        {data.heroMediaUrl ? (
+          <CustomCover src={data.heroMediaUrl} className="absolute inset-0" />
+        ) : THEME_VIDEO.celenk ? (
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video
             className="absolute inset-0 h-full w-full object-cover"

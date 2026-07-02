@@ -13,6 +13,7 @@ import {
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, DustParticles, PaperGrain, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
+import { CustomCover } from "../primitives/custom-cover";
 
 type SceneName = "sunset" | "mountain" | "field" | "shore";
 
@@ -123,24 +124,28 @@ export function PolaroidHero({ meta, data }: ThemeV2Props) {
           sits on top of the video so the kraft stack + name card stay readable.
           When no clip exists we render nothing extra and the kraft background
           below stays exactly as before. */}
-      {THEME_VIDEO.polaroid && (
+      {(data.heroMediaUrl || THEME_VIDEO.polaroid) && (
         <motion.div
           className="pointer-events-none absolute inset-0"
           style={{ y: reduced ? 0 : yBg, x: reduced ? 0 : xBg }}
         >
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <video
-            className="absolute inset-0 h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster={THEME_ASSETS.polaroid.scenes?.[0]}
-            aria-hidden
-          >
-            <source src={THEME_VIDEO.polaroid} type="video/mp4" />
-          </video>
+          {data.heroMediaUrl ? (
+            <CustomCover src={data.heroMediaUrl} className="absolute inset-0" />
+          ) : (
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <video
+              className="absolute inset-0 h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={THEME_ASSETS.polaroid.scenes?.[0]}
+              aria-hidden
+            >
+              <source src={THEME_VIDEO.polaroid} type="video/mp4" />
+            </video>
+          )}
           {/* Warm scrim — lifts the kraft grain, vignette and centre card off
               the moving footage so foreground content stays legible. */}
           <div

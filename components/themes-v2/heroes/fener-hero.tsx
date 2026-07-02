@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   motion,
   useReducedMotion,
@@ -13,6 +13,8 @@ import {
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, DustParticles, PaperGrain, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
+import { CustomCover } from "../primitives/custom-cover";
+import { useCeremonyOpened } from "../ceremony-context";
 
 /* ── Tunables (no magic numbers in markup) ──────────────────────────── */
 const MAIN_BULBS = 22;
@@ -81,6 +83,8 @@ interface BokehOrb {
 export function FenerHero({ meta, data }: ThemeV2Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  // İmza etkileşim: ampuller perde açılınca sırayla yanar (tap-to-light).
+  const ceremonyOpened = useCeremonyOpened();
   const ref = useRef<HTMLElement>(null);
 
   /* ── Scroll parallax (depths move at different rates) ── */
@@ -223,7 +227,9 @@ export function FenerHero({ meta, data }: ThemeV2Props) {
         className="pointer-events-none absolute inset-0"
         style={{ x: reduced ? undefined : xScene, y: reduced ? 0 : yScene }}
       >
-        {THEME_VIDEO.fener ? (
+        {data.heroMediaUrl ? (
+          <CustomCover src={data.heroMediaUrl} className="absolute inset-0" style={{ opacity: 0.42, filter: "saturate(0.85) brightness(0.7)" }} />
+        ) : THEME_VIDEO.fener ? (
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video
             className="absolute inset-0 h-full w-full object-cover"
@@ -416,14 +422,15 @@ export function FenerHero({ meta, data }: ThemeV2Props) {
           <path d="M 180 180 Q 560 360 940 210" stroke={`${palette.accent}77`} strokeWidth="0.8" fill="none" />
           <path d="M 720 280 Q 900 240 1080 280" stroke={`${palette.accent}77`} strokeWidth="0.8" fill="none" />
 
-          {/* Pergola strand bulbs (perpetually flickering) */}
+          {/* Pergola strand bulbs — perde açılınca 80ms arayla sırayla yanar,
+              sonra kalıcı organik flicker'a geçer (registry imza vaadi) */}
           {pergolaBulbs.map((b, i) => (
-            <FlickerBulb key={`p-${i}`} bulb={b} dy={13} haloR={14} innerR={5} bulbR={4} reduced={!!reduced} accent={palette.accent} />
+            <FlickerBulb key={`p-${i}`} bulb={b} dy={13} haloR={14} innerR={5} bulbR={4} reduced={!!reduced} accent={palette.accent} lit={ceremonyOpened} order={i} />
           ))}
 
-          {/* Main strand bulbs (perpetually flickering) */}
+          {/* Main strand bulbs — pergola bittikten sonra devam eden sırayla */}
           {mainBulbs.map((b, i) => (
-            <FlickerBulb key={`m-${i}`} bulb={b} dy={20} haloR={28} innerR={12} bulbR={5} reduced={!!reduced} accent={palette.accent} />
+            <FlickerBulb key={`m-${i}`} bulb={b} dy={20} haloR={28} innerR={12} bulbR={5} reduced={!!reduced} accent={palette.accent} lit={ceremonyOpened} order={pergolaBulbs.length + i} />
           ))}
 
           {/* ── Lantern stands ──────────────────────────────── */}
@@ -569,10 +576,14 @@ export function FenerHero({ meta, data }: ThemeV2Props) {
   );
 }
 
-/* ── A single string-light bulb that glows + flickers forever ────────── *
- * Resting state is fully lit. The brightness/glow oscillation uses the
- * bulb's seeded `phase` and `dur` so the strand shimmers organically.
- * Under reduced-motion the bulb is steady (no flicker).                  */
+/* ── A single string-light bulb — sequential light-up, then flicker ──── *
+ * İmza etkileşim: perde açılana kadar sönük durur; `lit` olunca `order`ına
+ * göre 80ms arayla yanar (tap-to-light), yanış tamamlanınca seeded `phase`
+ * ve `dur` ile kalıcı organik flicker'a geçer. Reduced-motion'da hep sabit
+ * yanık (ne sıralı yanış ne flicker).                                     */
+const LIGHT_STAGGER_S = 0.08;
+const LIGHT_ON_S = 0.35;
+
 function FlickerBulb({
   bulb,
   dy,
@@ -581,6 +592,8 @@ function FlickerBulb({
   bulbR,
   reduced,
   accent,
+  lit,
+  order,
 }: {
   bulb: Bulb;
   dy: number;
@@ -589,11 +602,49 @@ function FlickerBulb({
   bulbR: number;
   reduced: boolean;
   accent: string;
+  /** Perde açıldı mı — false iken ampul sönük bekler */
+  lit: boolean;
+  /** Şeritteki sıra — sırayla yanma gecikmesi order*80ms */
+  order: number;
 }) {
+  const [flickering, setFlickering] = useState(reduced);
   const cy = r3(bulb.y + dy);
   const haloOsc = [bulb.peak * 0.4, bulb.peak * 0.6, bulb.peak * 0.34, bulb.peak * 0.52];
   const coreOsc = [bulb.peak * 0.78, bulb.peak, bulb.peak * 0.7, bulb.peak * 0.92];
   const flick = { duration: bulb.dur, delay: bulb.phase, repeat: Infinity, ease: "easeInOut" as const };
+  const turnOn = { duration: LIGHT_ON_S, delay: order * LIGHT_STAGGER_S, ease: "easeOut" as const };
+
+  // Yanış animasyonu bitince flicker fazına geç (en parlak ampulün gecikmesi baz).
+  useEffect(() => {
+    if (!lit || reduced || flickering) return;
+    const t = window.setTimeout(
+      () => setFlickering(true),
+      (order * LIGHT_STAGGER_S + LIGHT_ON_S) * 1000,
+    );
+    return () => window.clearTimeout(t);
+  }, [lit, reduced, flickering, order]);
+
+  const halo = reduced
+    ? { animate: { opacity: bulb.peak * 0.5 }, transition: undefined }
+    : !lit
+      ? { animate: { opacity: 0.05 }, transition: { duration: 0.2 } }
+      : !flickering
+        ? { animate: { opacity: bulb.peak * 0.55 }, transition: turnOn }
+        : { animate: { opacity: haloOsc }, transition: flick };
+  const core = reduced
+    ? { animate: { opacity: bulb.peak * 0.7 }, transition: undefined }
+    : !lit
+      ? { animate: { opacity: 0.08 }, transition: { duration: 0.2 } }
+      : !flickering
+        ? { animate: { opacity: bulb.peak * 0.85 }, transition: turnOn }
+        : { animate: { opacity: coreOsc }, transition: { ...flick, delay: r3(bulb.phase - 0.15) } };
+  const filament = reduced
+    ? { animate: { opacity: 1 }, transition: undefined }
+    : !lit
+      ? { animate: { opacity: 0.18 }, transition: { duration: 0.2 } }
+      : !flickering
+        ? { animate: { opacity: 1 }, transition: turnOn }
+        : { animate: { opacity: [0.86, 1, 0.82, 0.96] }, transition: { ...flick, delay: r3(bulb.phase - 0.15) } };
 
   return (
     <g>
@@ -602,34 +653,11 @@ function FlickerBulb({
       <rect x={r3(bulb.x - 2)} y={r3(bulb.y + dy - 9)} width="4" height="4" fill={accent} opacity="0.7" />
 
       {/* outer halo */}
-      <motion.circle
-        cx={bulb.x}
-        cy={cy}
-        r={haloR}
-        fill={accent}
-        style={{ filter: "blur(8px)" }}
-        animate={reduced ? { opacity: bulb.peak * 0.5 } : { opacity: haloOsc }}
-        transition={reduced ? undefined : flick}
-      />
+      <motion.circle cx={bulb.x} cy={cy} r={haloR} fill={accent} style={{ filter: "blur(8px)" }} {...halo} />
       {/* inner halo */}
-      <motion.circle
-        cx={bulb.x}
-        cy={cy}
-        r={innerR}
-        fill="#FFE7AC"
-        style={{ filter: "blur(3px)" }}
-        animate={reduced ? { opacity: bulb.peak * 0.7 } : { opacity: coreOsc }}
-        transition={reduced ? undefined : { ...flick, delay: r3(bulb.phase - 0.15) }}
-      />
+      <motion.circle cx={bulb.x} cy={cy} r={innerR} fill="#FFE7AC" style={{ filter: "blur(3px)" }} {...core} />
       {/* filament core */}
-      <motion.circle
-        cx={bulb.x}
-        cy={cy}
-        r={bulbR}
-        fill="#FFE3AC"
-        animate={reduced ? { opacity: 1 } : { opacity: [0.86, 1, 0.82, 0.96] }}
-        transition={reduced ? undefined : { ...flick, delay: r3(bulb.phase - 0.15) }}
-      />
+      <motion.circle cx={bulb.x} cy={cy} r={bulbR} fill="#FFE3AC" {...filament} />
     </g>
   );
 }

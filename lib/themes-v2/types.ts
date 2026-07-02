@@ -83,6 +83,9 @@ export interface ThemeV2Data {
     title: string;
     body: string;
   };
+  /** Çiftin özel kapağı (AI üretimi veya upload) — varsa hero'da tema
+   *  videosunun yerine en dip katman olarak render edilir. */
+  heroMediaUrl?: string | null;
   photos: PolaroidPhoto[];
   schedule: ScheduleItem[];
   menu: MenuColumn[];
