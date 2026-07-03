@@ -32,6 +32,27 @@ export function HoverVideoThumb({
 
   const wantsVideo = Boolean(videoSrc) && !reduced && !failed;
 
+  // Masaüstü: hover'ı KARTIN kendisinden dinle — kart içindeki gradient
+  // overlay'ler pointer'ı yuttuğu için iç div'in onMouseEnter'ı hiç
+  // tetiklenmiyordu (video paused+opacity:0 kalıyordu). En yakın <a>/<article>
+  // host'una bağlanınca overlay'ler sorun olmaktan çıkar.
+  useEffect(() => {
+    if (!wantsVideo || typeof window === "undefined") return;
+    if (!window.matchMedia("(hover: hover)").matches) return;
+    const host =
+      rootRef.current?.closest("a, article, [data-hover-video-host]") ??
+      rootRef.current;
+    if (!host) return;
+    const enter = () => setActive(true);
+    const leave = () => setActive(false);
+    host.addEventListener("mouseenter", enter);
+    host.addEventListener("mouseleave", leave);
+    return () => {
+      host.removeEventListener("mouseenter", enter);
+      host.removeEventListener("mouseleave", leave);
+    };
+  }, [wantsVideo]);
+
   // Mobil: hover yoksa in-view oynatma
   useEffect(() => {
     if (!wantsVideo || typeof window === "undefined") return;
@@ -58,12 +79,7 @@ export function HoverVideoThumb({
   }, [active]);
 
   return (
-    <div
-      ref={rootRef}
-      className="absolute inset-0"
-      onMouseEnter={wantsVideo ? () => setActive(true) : undefined}
-      onMouseLeave={wantsVideo ? () => setActive(false) : undefined}
-    >
+    <div ref={rootRef} className="absolute inset-0">
       <picture>
         <source srcSet={imgSrc} type="image/webp" />
         {/* eslint-disable-next-line @next/next/no-img-element */}

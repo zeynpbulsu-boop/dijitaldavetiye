@@ -10,7 +10,7 @@
 
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { listThemesV2 } from "@/lib/themes-v2/registry";
 import { THEME_THUMB, THEME_VIDEO } from "@/lib/themes-v2/assets";
 import { HoverVideoThumb } from "@/components/themes-v2/hover-video-thumb";
@@ -43,45 +43,7 @@ const BADGE: Partial<Record<ThemeV2Slug, string>> = {
 export function TemplateCarousel() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-15%" });
-  const railRef = useRef<HTMLDivElement>(null);
   const themes = listThemesV2();
-
-  // Click-and-drag horizontal pan for desktop.
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-    let isDown = false;
-    let startX = 0;
-    let scrollStart = 0;
-
-    const down = (e: MouseEvent) => {
-      isDown = true;
-      rail.classList.add("cursor-grabbing");
-      startX = e.pageX - rail.offsetLeft;
-      scrollStart = rail.scrollLeft;
-    };
-    const up = () => {
-      isDown = false;
-      rail.classList.remove("cursor-grabbing");
-    };
-    const move = (e: MouseEvent) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - rail.offsetLeft;
-      rail.scrollLeft = scrollStart - (x - startX) * 1.15;
-    };
-
-    rail.addEventListener("mousedown", down);
-    window.addEventListener("mouseup", up);
-    rail.addEventListener("mousemove", move);
-    rail.addEventListener("mouseleave", up);
-    return () => {
-      rail.removeEventListener("mousedown", down);
-      window.removeEventListener("mouseup", up);
-      rail.removeEventListener("mousemove", move);
-      rail.removeEventListener("mouseleave", up);
-    };
-  }, []);
 
   return (
     <section id="themes" ref={ref} className="border-b border-line bg-bg py-20 lg:py-32">
@@ -109,27 +71,27 @@ export function TemplateCarousel() {
               demoyu gezin.
             </p>
           </div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-brand-mute">Sürükle →</p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 1, delay: 0.15 }}
-          ref={railRef}
-          className="no-scrollbar -mx-5 flex cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 lg:-mx-8 lg:gap-7 lg:px-8"
-          style={{ scrollPaddingLeft: 24 }}
-        >
+        {/* Vitrin ilkesi: yedi dünya TEK BAKIŞTA — sürüklemeli karusel yerine
+            grid. Çeşitlilik ilk saniyede görülür; her kart hover'da kendi
+            sinematik klibini oynatır. */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
           {themes.map((theme, i) => {
             const Svg = SVG_THUMB[theme.slug];
             return (
-              <Link
+              <motion.div
                 key={theme.slug}
+                initial={{ opacity: 0, y: 22 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.1 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+              >
+              <Link
                 href={`/themes/${theme.slug}`}
                 data-cursor="magnetic"
                 data-cursor-label="Demoyu gör"
                 aria-label={`${theme.name} demosunu gör`}
-                className="group relative w-[300px] shrink-0 snap-start overflow-hidden rounded-sm border border-brand-ink/10 bg-paper transition hover:-translate-y-1 hover:border-brand-cognac/40 hover:shadow-xl sm:w-[340px] lg:w-[380px]"
+                className="group relative block overflow-hidden rounded-sm border border-brand-ink/10 bg-paper transition hover:-translate-y-1 hover:border-brand-cognac/40 hover:shadow-xl"
               >
                 <div
                   className="relative aspect-[3/4] overflow-hidden"
@@ -168,19 +130,44 @@ export function TemplateCarousel() {
                   </span>
                 </div>
 
-                <div className="p-6 sm:p-7">
+                <div className="p-4 sm:p-5">
                   <h3
                     className="font-display text-brand-ink"
-                    style={{ fontSize: 26, lineHeight: 1.05, letterSpacing: "-0.012em" }}
+                    style={{ fontSize: 22, lineHeight: 1.05, letterSpacing: "-0.012em" }}
                   >
                     {theme.name}
                   </h3>
-                  <p className="mt-2 text-[13px] text-brand-mute">{theme.tagline}</p>
+                  <p className="mt-1.5 truncate text-[12px] text-brand-mute">{theme.tagline}</p>
                 </div>
               </Link>
+              </motion.div>
             );
           })}
-        </motion.div>
+
+          {/* Sekizinci hücre: koleksiyonun büyüdüğünü söyleyen zarif kart */}
+          <motion.div
+            initial={{ opacity: 0, y: 22 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1 + themes.length * 0.07, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="flex h-full min-h-[280px] flex-col items-center justify-center gap-3 rounded-sm border border-dashed border-brand-ink/20 bg-paper/60 p-6 text-center">
+              <span
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-cognac/40 text-brand-cognac"
+                aria-hidden
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4L12 3z" />
+                </svg>
+              </span>
+              <p className="font-display italic text-brand-ink" style={{ fontSize: 19 }}>
+                Yeni tema yolda
+              </p>
+              <p className="text-[11.5px] leading-[1.6] text-brand-mute">
+                Koleksiyon her mevsim büyüyor.
+              </p>
+            </div>
+          </motion.div>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
