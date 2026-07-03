@@ -59,6 +59,10 @@ const EDITABLE_FIELDS = [
   "hotels",
   /* program / gün-akışı (Migration 010) */
   "schedule",
+  /* Tasarım değişimi — draft satın alma öncesi tema değiştirebilsin diye
+     editable (P1-6: eski akış her temada sıfır draft açıp veriyi kaybediyordu).
+     tier/entitlement'a dokunmaz. */
+  "template_slug",
   /* feature flags */
   "enable_scratch_reveal",
   /* contact */

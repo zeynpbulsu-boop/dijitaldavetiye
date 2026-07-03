@@ -11,6 +11,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 import {
   AtmosphereDefs,
   DustParticles,
@@ -48,6 +49,7 @@ import { CustomCover } from "../primitives/custom-cover";
 export function KurdeleHero({ meta, data }: ThemeV2Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const ref = useRef<HTMLElement>(null);
 
   /* ── Scroll parallax — three depths drift at different rates ───────── */
@@ -222,7 +224,7 @@ export function KurdeleHero({ meta, data }: ThemeV2Props) {
           color: palette.ink,
         }}
       >
-        Bir davet sizi bekliyor
+        {str.hero.awaitsYou}
       </motion.p>
 
       {/* The living letter — parallax + breath + lifting shadow. */}
@@ -294,6 +296,7 @@ function LivingLetter({
   monogram: string;
   reduced: boolean;
 }) {
+  const str = useInvitationT();
   return (
     <motion.div
       className="relative mx-auto"
@@ -341,7 +344,7 @@ function LivingLetter({
         </svg>
 
         <p className="text-[10.5px] uppercase" style={{ color: accent, letterSpacing: "0.42em" }}>
-          Save the Date
+          {str.hero.saveTheDate}
         </p>
 
         {/* Couple names — large calligraphy hierarchy. */}

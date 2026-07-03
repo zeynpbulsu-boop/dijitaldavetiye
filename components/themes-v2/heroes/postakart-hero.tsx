@@ -12,6 +12,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 import { AtmosphereDefs, PaperGrain, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 import { CustomCover } from "../primitives/custom-cover";
@@ -55,6 +56,7 @@ const POINTER_TILT_Y = 10;
 export function PostakartHero({ meta, data }: ThemeV2Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const ref = useRef<HTMLElement>(null);
   const [flipped, setFlipped] = useState(false);
 
@@ -232,7 +234,7 @@ export function PostakartHero({ meta, data }: ThemeV2Props) {
           letterSpacing: "0.02em",
         }}
       >
-        {flipped ? "← ön yüze dön" : "çevirmek için dokunun →"}
+        {flipped ? str.hero.flipBack : str.hero.flipHint}
       </motion.p>
     </section>
   );
@@ -246,6 +248,7 @@ function PostcardFront({
   reduced,
   sheen,
 }: ThemeV2Props & { edgeHeights: number[]; reduced: boolean; sheen: MotionValue<string> }) {
+  const str = useInvitationT();
   const { palette } = meta;
   return (
     <div
@@ -282,7 +285,13 @@ function PostcardFront({
       </motion.div>
       {/* SVG fallback (hidden behind, peeks if image fails) */}
       <div className="absolute inset-0 -z-10">
-        <FrontLandscape ink={palette.ink} accent={palette.accent} paper={palette.paper} edgeHeights={edgeHeights} />
+        <FrontLandscape
+          ink={palette.ink}
+          accent={palette.accent}
+          paper={palette.paper}
+          edgeHeights={edgeHeights}
+          city={data.venue.city || data.venue.name}
+        />
       </div>
 
       {/* Pointer-driven light sheen across the photo */}
@@ -329,7 +338,7 @@ function PostcardFront({
           className="text-[9.5px] uppercase"
           style={{ color: palette.accent, letterSpacing: "0.46em", fontWeight: 500 }}
         >
-          Save the Date
+          {str.hero.saveTheDate}
         </p>
         <p
           className="mt-3"
@@ -374,6 +383,7 @@ function PostcardBack({
   sheen,
   reduced,
 }: ThemeV2Props & { sheen: MotionValue<string>; reduced: boolean }) {
+  const str = useInvitationT();
   const { palette } = meta;
   return (
     <div
@@ -400,7 +410,7 @@ function PostcardBack({
             className="text-[10px] uppercase"
             style={{ color: palette.accent, letterSpacing: "0.42em", fontWeight: 500 }}
           >
-            Sevdiklerimize
+            {str.hero.toOurLoved}
           </p>
           <p
             className="mt-5 font-display italic"
@@ -530,12 +540,19 @@ function FrontLandscape({
   accent,
   paper,
   edgeHeights,
+  city,
 }: {
   ink: string;
   accent: string;
   paper: string;
   edgeHeights: number[];
+  /** Banner şehri — data.venue.city'den gelir; İstanbul düğünü Ayvalık
+   *  kartpostalı görmesin (P1-14). Uzun adlar otomatik küçülür. */
+  city?: string;
 }) {
+  const bannerCity = (city || "Ayvalık").trim();
+  // 7+ harfte fontu kademeli daralt ki banner çizgisinden taşmasın
+  const bannerSize = bannerCity.length <= 7 ? 52 : bannerCity.length <= 11 ? 40 : 30;
   return (
     <svg viewBox="0 0 800 530" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
       <defs>
@@ -623,12 +640,12 @@ function FrontLandscape({
         <text
           y="46"
           fontFamily="var(--font-display), serif"
-          fontSize="52"
+          fontSize={bannerSize}
           fontWeight="500"
           fill="#3A2918"
           letterSpacing="2.5"
         >
-          AYVALIK
+          {bannerCity.toLocaleUpperCase("tr-TR")}
         </text>
         <line x1="0" y1="58" x2="220" y2="58" stroke="#3A2918" strokeWidth="0.8" opacity="0.6" />
       </g>

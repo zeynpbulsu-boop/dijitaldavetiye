@@ -11,6 +11,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 import { AtmosphereDefs, DustParticles, PaperGrain, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 import { CustomCover } from "../primitives/custom-cover";
@@ -83,6 +84,7 @@ interface BokehOrb {
 export function FenerHero({ meta, data }: ThemeV2Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   // İmza etkileşim: ampuller perde açılınca sırayla yanar (tap-to-light).
   const ceremonyOpened = useCeremonyOpened();
   const ref = useRef<HTMLElement>(null);
@@ -522,7 +524,7 @@ export function FenerHero({ meta, data }: ThemeV2Props) {
           transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <p className="text-[10.5px] uppercase" style={{ color: palette.accent, letterSpacing: "0.5em", fontWeight: 500 }}>
-            Save the Date
+            {str.hero.saveTheDate}
           </p>
 
           <ShimmerNames

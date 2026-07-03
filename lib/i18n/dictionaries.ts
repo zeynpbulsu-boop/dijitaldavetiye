@@ -268,11 +268,10 @@ const tr: Messages = {
     col_contact: "İletişim",
     contact_body: "Bir sorun mu var? Bir soru mu? Bize yaz, aynı gün dönelim.",
     product_links: [
-      { label: "Şablonlar", href: "#themes" },
-      { label: "Nasıl Çalışır", href: "#how-it-works" },
-      { label: "Fiyatlar", href: "#pricing" },
+      { label: "Şablonlar", href: "/#themes" },
+      { label: "Nasıl Çalışır", href: "/#how-it-works" },
+      { label: "Fiyatlar", href: "/#pricing" },
       { label: "Demoyu Dene", href: "/themes/geceyarisi" },
-      { label: "Yorumlar", href: "#yorumlar" },
     ],
     legal_links: [
       { label: "Kullanım Şartları", href: "/legal/terms" },
@@ -582,11 +581,10 @@ const en: Messages = {
     col_contact: "Contact",
     contact_body: "A problem? A question? Write to us, we reply the same day.",
     product_links: [
-      { label: "Editions", href: "#themes" },
-      { label: "How it works", href: "#how-it-works" },
-      { label: "Pricing", href: "#pricing" },
+      { label: "Editions", href: "/#themes" },
+      { label: "How it works", href: "/#how-it-works" },
+      { label: "Pricing", href: "/#pricing" },
       { label: "Try the demo", href: "/themes/geceyarisi" },
-      { label: "Reviews", href: "#yorumlar" },
     ],
     legal_links: [
       { label: "Terms of Use", href: "/legal/terms" },
@@ -897,11 +895,10 @@ const sr: Messages = {
     col_contact: "Kontakt",
     contact_body: "Problem? Pitanje? Pišite nam, odgovaramo istog dana.",
     product_links: [
-      { label: "Izdanja", href: "#themes" },
-      { label: "Kako funkcioniše", href: "#how-it-works" },
-      { label: "Cenovnik", href: "#pricing" },
+      { label: "Izdanja", href: "/#themes" },
+      { label: "Kako funkcioniše", href: "/#how-it-works" },
+      { label: "Cenovnik", href: "/#pricing" },
       { label: "Probaj demo", href: "/themes/geceyarisi" },
-      { label: "Utisci", href: "#yorumlar" },
     ],
     legal_links: [
       { label: "Uslovi korišćenja", href: "/legal/terms" },

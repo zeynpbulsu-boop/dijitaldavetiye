@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, PolaroidPhoto } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, PaperGrain, makeRng, r3 } from "./atmosphere";
+import { useInvitationT } from "../i18n-context";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -26,11 +27,13 @@ const SCENE_TONES: ReadonlyArray<readonly [string, string]> = [
 export function PolaroidGallery({
   meta,
   photos,
-  title = "Anılarımız",
+  title,
   intro,
 }: Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
+  const heading = title ?? str.gallery.title;
 
   /* Seeded, render-stable per-photo geometry: a base tilt that feels
      hand-placed, plus a gentle perpetual sway phase. Deterministic →
@@ -89,7 +92,7 @@ export function PolaroidGallery({
               letterSpacing: "0.01em",
             }}
           >
-            {title}
+            {heading}
           </motion.h2>
 
           <motion.div
@@ -258,12 +261,19 @@ function Polaroid({
             style={{ backgroundColor: c1, borderRadius: 1 }}
           >
             {photo.src ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              // Ken Burns — statik baskıyı yavaşça nefes aldırır (hero'daki
+              // Scene diliyle tutarlı); reduced-motion'da sabit durur.
+              <motion.img
                 src={photo.src}
                 alt={photo.caption}
                 loading="lazy"
                 className="h-full w-full object-cover"
+                animate={reduced ? undefined : { scale: [1, 1.06, 1] }}
+                transition={{
+                  duration: 22 + (index % 3) * 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               />
             ) : (
               <PhotoScene c1={c1} c2={c2} index={index} />

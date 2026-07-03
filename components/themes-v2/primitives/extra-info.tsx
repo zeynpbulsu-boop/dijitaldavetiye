@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -11,9 +12,11 @@ interface Props {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function ExtraInfo({ meta, text, title = "Ek Bilgiler" }: Props) {
+export function ExtraInfo({ meta, text, title }: Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
+  const heading = title ?? str.extra.title;
 
   // Gentle, staggered reveal consistent with the VenueMap/Hero language.
   const reveal = (delay: number) =>
@@ -51,7 +54,7 @@ export function ExtraInfo({ meta, text, title = "Ek Bilgiler" }: Props) {
             filter: "url(#ink-bleed)",
           }}
         >
-          {title}
+          {heading}
         </motion.h2>
 
         {/* Composed divider: hairline · botanical sprig · hairline. */}

@@ -10,6 +10,7 @@ import {
   useSpring,
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 import { AtmosphereDefs, PaperGrain, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 import { CustomCover } from "../primitives/custom-cover";
@@ -41,6 +42,7 @@ import { CustomCover } from "../primitives/custom-cover";
 export function DefterHero({ meta, data }: ThemeV2Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const ref = useRef<HTMLElement>(null);
 
   /* ── Scroll parallax (depths drift apart as the page scrolls away) ── */
@@ -287,7 +289,7 @@ export function DefterHero({ meta, data }: ThemeV2Props) {
                 className="text-[10px] uppercase"
                 style={{ color: palette.accent, letterSpacing: "0.42em", fontWeight: 500 }}
               >
-                Davetiyemiz
+                {str.hero.ourInvitation}
               </p>
               <p
                 className="mt-6 font-display italic"

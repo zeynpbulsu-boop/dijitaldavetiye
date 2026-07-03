@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type MutableRefObject } from "react";
 import { motion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 
 /**
  * YouTubeMusic — çiftin şarkısı, mühre basar basmaz ARKADA otomatik çalar.
@@ -82,6 +83,7 @@ export function YouTubeMusic({
   playRef?: MutableRefObject<(() => void) | null>;
 }) {
   const { palette } = meta;
+  const str = useInvitationT();
   const mountRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<YTPlayer | null>(null);
   const startRef = useRef(start);
@@ -223,7 +225,7 @@ export function YouTubeMusic({
             style={{ color: palette.accent, letterSpacing: "0.2em", fontWeight: 500 }}
           >
             <EqBars color={palette.accent} active={playing} />
-            Bizim Şarkımız
+            {str.music.label}
           </span>
           <div className="flex items-center gap-0.5">
             <button

@@ -159,39 +159,10 @@ export const SAMPLE_DATA: ThemeV2Data = {
     { time: "20:00", label: "Yemek" },
     { time: "22:00", label: "Dans" },
   ],
-  menu: [
-    {
-      heading: "Başlangıçlar",
-      items: [
-        { name: "Mevsim yeşillikleri salatası", detail: "Keçi peyniri, ceviz, nar pekmezi" },
-        { name: "Levrek carpaccio", detail: "Limon, kapari, taze fesleğen" },
-        { name: "Mezeler tabağı", detail: "Humus, haydari, közlenmiş biber" },
-      ],
-    },
-    {
-      heading: "Ana Yemek",
-      items: [
-        { name: "Kuzu tandır", detail: "Patates püresi, kekikli sos" },
-        { name: "Izgara levrek", detail: "Limonlu sebze, sote ıspanak" },
-      ],
-    },
-    {
-      heading: "Tatlılar",
-      items: [
-        { name: "Düğün pastası", detail: "Vanilyalı bisküvi, yaz meyveleri" },
-        { name: "Sütlü tatlı seçkisi" },
-      ],
-    },
-    {
-      heading: "İçecekler",
-      items: [
-        { name: "Karşılama kokteyli", detail: "Köpüklü şarap, çilek" },
-        { name: "Şarap, bira, alkolsüz seçenekler" },
-      ],
-    },
-  ],
-  extraInfo:
-    "Kıyafet — Şık günlük / kokteyl; adada zemin yer yer taş olduğu için rahat ayakkabı öneririz. · Ulaşım — Ayvalık merkezden Cunda'ya köprü üzerinden ~10 dk; köşkün otoparkı misafirlerimize açıktır. · Konaklama — Cunda ve Ayvalık'taki anlaşmalı butik oteller için bizimle iletişime geçebilirsiniz. · Çocuklar — Minik misafirlerimiz için oyun alanı ve bakıcı hizmeti bulunacaktır.",
+  // Menü DB kolonu + editör alanı gelene kadar demo'da da gizli
+  // (parite: demoda görünen her bölüm satın alınan üründe de olmalı).
+  menu: [],
+  extraInfo: "", // parite: DB kolonu yok (bridge '' gönderiyor)
   footerNote: "Sizleri aramızda görmek bizi çok mutlu edecek.",
   gift: {
     iban: "TR00 0000 0000 0000 0000 0000 00",

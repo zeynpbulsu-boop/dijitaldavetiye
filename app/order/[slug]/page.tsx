@@ -106,13 +106,19 @@ export default function OrderEditorPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  /* ---------- Boot: load existing draft or create new ---------- */
+  /* ---------- Boot: load existing draft or create new ----------
+   * Draft anahtarı TEK'tir (nuve.draft.current) — eski model tema başına
+   * ayrı draft tutuyordu; "Tasarımı değiştir" tıklayan çift yeni temada
+   * bomboş bir formla karşılaşıp tüm verisini kaybediyordu (P1-6).
+   * Artık aynı draft korunur, yalnızca template_slug PATCH'lenir. */
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const storageKey = STORAGE_PREFIX + templateSlug;
+      const storageKey = STORAGE_PREFIX + "current";
+      const legacyKey = STORAGE_PREFIX + templateSlug;
       const raw = typeof window !== "undefined"
-        ? window.localStorage.getItem(storageKey)
+        ? window.localStorage.getItem(storageKey) ??
+          window.localStorage.getItem(legacyKey)
         : null;
 
       if (raw) {
@@ -125,6 +131,20 @@ export default function OrderEditorPage() {
           if (res.ok) {
             const inv = (await res.json()) as Record<string, unknown>;
             if (cancelled) return;
+            // Tek anahtara taşı (legacy'den geldiyse)
+            window.localStorage.setItem(storageKey, JSON.stringify(stored));
+            window.localStorage.removeItem(legacyKey);
+            // Farklı tema URL'inden gelindiyse: veri korunur, tema değişir
+            if (String(inv.template_slug ?? "") !== templateSlug) {
+              fetch(`/api/invitations/${stored.slug}`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${stored.admin_token}`,
+                },
+                body: JSON.stringify({ template_slug: templateSlug }),
+              }).catch(() => {});
+            }
             setDraft(stored);
             setP1(String(inv.partner_one_name ?? ""));
             setP2(String(inv.partner_two_name ?? ""));

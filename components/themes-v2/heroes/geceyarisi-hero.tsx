@@ -11,6 +11,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 import { AtmosphereDefs, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 import { CustomCover } from "../primitives/custom-cover";
@@ -38,6 +39,7 @@ interface Star {
 export function GeceyarisiHero({ meta, data }: ThemeV2Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const ref = useRef<HTMLElement>(null);
 
   /* ── Scroll parallax (different depths move at different rates) ── */
@@ -277,7 +279,7 @@ export function GeceyarisiHero({ meta, data }: ThemeV2Props) {
           <ArtDeco accent={palette.accent} />
 
           <p className="mt-6 text-[10.5px] uppercase" style={{ color: palette.accent, letterSpacing: "0.5em", fontWeight: 500 }}>
-            Save the Date
+            {str.hero.saveTheDate}
           </p>
 
           <ShimmerNames

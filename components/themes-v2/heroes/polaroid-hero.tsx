@@ -11,6 +11,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 import { AtmosphereDefs, DustParticles, PaperGrain, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 import { CustomCover } from "../primitives/custom-cover";
@@ -56,6 +57,7 @@ interface PolaroidSpec {
 export function PolaroidHero({ meta, data }: ThemeV2Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const ref = useRef<HTMLElement>(null);
 
   /* ── Scroll parallax — depths drift at different rates ── */
@@ -253,8 +255,9 @@ export function PolaroidHero({ meta, data }: ThemeV2Props) {
                   <PolaroidCard
                     ink={palette.ink}
                     paper={palette.paper}
-                    caption={p.caption}
+                    caption={data.photos[i]?.caption?.trim() || p.caption}
                     scene={p.scene}
+                    photoSrc={data.photos[i]?.src}
                     tapeColor={p.tapeColor ?? palette.accent}
                     reduced={!!reduced}
                   />
@@ -348,6 +351,7 @@ function PolaroidCard({
   paper,
   caption,
   scene,
+  photoSrc,
   tapeColor,
   reduced,
 }: {
@@ -355,6 +359,8 @@ function PolaroidCard({
   paper: string;
   caption: string;
   scene: SceneName;
+  /** Çiftin kendi fotoğrafı — varsa fal.ai sahnesinin yerine geçer (P1-14) */
+  photoSrc?: string;
   tapeColor: string;
   reduced: boolean;
 }) {
@@ -387,7 +393,20 @@ function PolaroidCard({
           className="relative h-[260px] w-full overflow-hidden"
           style={{ backgroundColor: "#D9CDB4" }}
         >
-          <Scene scene={scene} reduced={reduced} />
+          {photoSrc ? (
+            // Çiftin fotoğrafı — sahnedeki Ken Burns hissini korumak için
+            // yavaş scale döngüsü (reduced-motion'da statik)
+            <motion.img
+              src={photoSrc}
+              alt=""
+              aria-hidden
+              className="absolute inset-0 h-full w-full object-cover"
+              animate={reduced ? undefined : { scale: [1, 1.07, 1] }}
+              transition={{ duration: 24, repeat: Infinity, ease: "easeInOut" }}
+            />
+          ) : (
+            <Scene scene={scene} reduced={reduced} />
+          )}
           {/* Subtle vignette around photo */}
           <div
             className="pointer-events-none absolute inset-0"
@@ -435,6 +454,7 @@ function NameCard({
   venue: string;
   monogram: string;
 }) {
+  const str = useInvitationT();
   return (
     <div className="relative" style={{ width: 312 }}>
       {/* Soft scrim lifts the card off the busy stack behind it. */}
@@ -493,7 +513,7 @@ function NameCard({
             {monogram}
           </div>
           <p className="text-[9.5px] uppercase" style={{ color: accent, letterSpacing: "0.4em" }}>
-            Save the Date
+            {str.hero.saveTheDate}
           </p>
           <p
             className="mt-4"

@@ -12,6 +12,17 @@ import type { Locale } from "@/lib/i18n/types";
 
 export interface InvitationStrings {
   ceremony: { tapToOpen: string };
+  hero: {
+    saveTheDate: string;
+    awaitsYou: string;
+    ourInvitation: string;
+    toOurLoved: string;
+    flipHint: string;
+    flipBack: string;
+  };
+  music: { label: string; sub: string; tapToPlay: string };
+  gallery: { title: string };
+  extra: { title: string };
   countdown: {
     title: string;
     day: string;
@@ -70,6 +81,17 @@ export interface InvitationStrings {
 
 const tr: InvitationStrings = {
   ceremony: { tapToOpen: "Açmak için dokun" },
+  hero: {
+    saveTheDate: "Save the Date",
+    awaitsYou: "Bir davet sizi bekliyor",
+    ourInvitation: "Davetiyemiz",
+    toOurLoved: "Sevdiklerimize",
+    flipHint: "çevirmek için dokunun →",
+    flipBack: "← ön yüze dön",
+  },
+  music: { label: "Bizim Şarkımız", sub: "İlk dansımıza eşlik edin", tapToPlay: "çalmak için dokunun" },
+  gallery: { title: "Anılarımız" },
+  extra: { title: "Ek Bilgiler" },
   countdown: {
     title: "Geri Sayım",
     day: "Gün",
@@ -132,6 +154,17 @@ const tr: InvitationStrings = {
 
 const en: InvitationStrings = {
   ceremony: { tapToOpen: "Tap to open" },
+  hero: {
+    saveTheDate: "Save the Date",
+    awaitsYou: "An invitation awaits you",
+    ourInvitation: "Our Invitation",
+    toOurLoved: "To our loved ones",
+    flipHint: "tap to flip →",
+    flipBack: "← back to front",
+  },
+  music: { label: "Our Song", sub: "Join us for our first dance", tapToPlay: "tap to play" },
+  gallery: { title: "Our Memories" },
+  extra: { title: "Details" },
   countdown: {
     title: "Countdown",
     day: "Days",
@@ -194,6 +227,17 @@ const en: InvitationStrings = {
 
 const sr: InvitationStrings = {
   ceremony: { tapToOpen: "Dodirnite da otvorite" },
+  hero: {
+    saveTheDate: "Save the Date",
+    awaitsYou: "Pozivnica vas čeka",
+    ourInvitation: "Naša pozivnica",
+    toOurLoved: "Našim najdražima",
+    flipHint: "dodirnite da okrenete →",
+    flipBack: "← nazad na prednju stranu",
+  },
+  music: { label: "Naša pesma", sub: "Pridružite nam se za prvi ples", tapToPlay: "dodirnite za reprodukciju" },
+  gallery: { title: "Naše uspomene" },
+  extra: { title: "Dodatne informacije" },
   countdown: {
     title: "Odbrojavanje",
     day: "Dana",

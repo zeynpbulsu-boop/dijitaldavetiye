@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
 import type { MusicEmbed } from "@/lib/themes-v2/music-embed";
+import { useInvitationT } from "../i18n-context";
 
 const ALLOW: Record<MusicEmbed["platform"], string> = {
   spotify: "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture",
@@ -30,6 +31,7 @@ export function MusicEmbedSection({
 }) {
   const { palette } = meta;
   const reduced = useReducedMotion();
+  const str = useInvitationT();
 
   const reveal = (delay: number) =>
     reduced
@@ -52,7 +54,7 @@ export function MusicEmbedSection({
           className="text-[10px] uppercase sm:text-[10.5px]"
           style={{ color: palette.inkSoft, letterSpacing: "0.5em", fontWeight: 500 }}
         >
-          Bizim Şarkımız
+          {str.music.label}
         </motion.p>
 
         <motion.h2
@@ -65,7 +67,7 @@ export function MusicEmbedSection({
             lineHeight: 1.12,
           }}
         >
-          İlk dansımıza eşlik edin
+          {str.music.sub}
         </motion.h2>
 
         <motion.div
@@ -91,7 +93,7 @@ export function MusicEmbedSection({
           }}
         >
           <iframe
-            title="Bizim Şarkımız"
+            title={str.music.label}
             src={embed.embedUrl}
             width="100%"
             height={embed.height}
@@ -106,7 +108,7 @@ export function MusicEmbedSection({
           className="mt-4 text-[10px] uppercase"
           style={{ color: palette.inkSoft, letterSpacing: "0.32em" }}
         >
-          {PLATFORM_LABEL[embed.platform]} &middot; çalmak için dokunun
+          {PLATFORM_LABEL[embed.platform]} &middot; {str.music.tapToPlay}
         </motion.p>
       </div>
     </section>
