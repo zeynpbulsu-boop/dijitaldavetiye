@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, InvitationDate } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
+import { SlotDate } from "./slot-date";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -92,21 +93,25 @@ export function CountdownBand({ meta, date }: Props) {
           {str.countdown.title}
         </motion.p>
 
-        {/* Display heading — the wedding date as a calm serif statement */}
-        <motion.h2
-          {...reveal(0.05)}
-          className="mt-6 font-display"
-          style={{
-            fontWeight: 300,
-            fontSize: "clamp(30px, 5vw, 50px)",
-            color: ink,
-            lineHeight: 1.1,
-            letterSpacing: "0.01em",
-            fontVariantNumeric: "oldstyle-nums",
-          }}
-        >
-          {date.day} {date.month} {date.year}
-        </motion.h2>
+        {/* Tarih önce kalpli slot makinesiyle "bulunur" (görünüme girince
+            makaralar döner, kalpler süzülür), sonra bu sakin serif ifadeye
+            çözülür. Reduced-motion / iso yoksa doğrudan serif gösterilir. */}
+        <SlotDate meta={meta} date={date}>
+          <motion.h2
+            {...reveal(0.05)}
+            className="mt-6 font-display"
+            style={{
+              fontWeight: 300,
+              fontSize: "clamp(30px, 5vw, 50px)",
+              color: ink,
+              lineHeight: 1.1,
+              letterSpacing: "0.01em",
+              fontVariantNumeric: "oldstyle-nums",
+            }}
+          >
+            {date.day} {date.month} {date.year}
+          </motion.h2>
+        </SlotDate>
 
         {/* Divider with a small diamond ornament — same motif as VenueMap */}
         <motion.div
