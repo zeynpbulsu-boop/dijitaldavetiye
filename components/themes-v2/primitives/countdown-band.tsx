@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, InvitationDate } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
 import { SlotDate } from "./slot-date";
+import { contrastRatio } from "@/lib/themes-v2/contrast";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -45,7 +46,13 @@ export function CountdownBand({ meta, date }: Props) {
 
   const { palette } = meta;
   const ink = palette.countdownInk;
-  const accent = palette.accent;
+  // Accent, koyu bant üstünde 5 temada görünmüyordu (çelenk 1.00, postakart
+  // 1.03...). Kontrast ≥3 değilse süs rengi bant mürekkebine düşer — yeni
+  // temalar da otomatik kapsanır (K3: kontrast derleme kuralıdır).
+  const accent =
+    contrastRatio(palette.accent, palette.countdownBg) >= 3
+      ? palette.accent
+      : palette.countdownInk;
 
   // Mirrors VenueMap's reveal helper so this band shares the same motion grammar.
   const reveal = (delay: number) =>
@@ -65,14 +72,37 @@ export function CountdownBand({ meta, date }: Props) {
     ["s", t.s, str.countdown.second],
   ];
 
+  // Koyu temada (geceyarisi) bant zeminden hiç ayrışmıyor → ince accent
+  // hairline; açık temalarda gradyan köprüler zaten ayrımı veriyor.
+  const bandBlends = contrastRatio(palette.bg, palette.countdownBg) < 1.35;
+
   return (
     <section
       className="relative px-6 py-24 sm:py-28 lg:py-36"
       style={{
         backgroundColor: palette.countdownBg,
         color: ink,
+        borderTop: bandBlends ? `1px solid ${palette.accent}30` : undefined,
+        borderBottom: bandBlends ? `1px solid ${palette.accent}30` : undefined,
       }}
     >
+      {/* K4 "boya geçişi": bant sayfadan bıçakla kesilmiş gibi başlamasın —
+          üst/alt 64px, sayfa zemininden bant rengine eriyen köprü. */}
+      {!bandBlends && (
+        <>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-16"
+            style={{ background: `linear-gradient(180deg, ${palette.bg}, transparent)` }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
+            style={{ background: `linear-gradient(0deg, ${palette.bg}, transparent)` }}
+          />
+        </>
+      )}
+
       {/* Soft grain on band */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.12] mix-blend-screen"

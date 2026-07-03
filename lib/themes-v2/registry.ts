@@ -13,7 +13,7 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
       ink: "#3A2A1F",
       inkSoft: "#6B5847",
       accent: "#7A8870",
-      countdownBg: "#7A8870",
+      countdownBg: "#5F6E57", // accent ile birebir aynıydı; derin adaçayı → countdownInk 4.69 (AA)
       countdownInk: "#F4EDE5",
     },
   },
@@ -57,7 +57,7 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
     signature: "Mühür kırılınca bağ evinin ampulleri sırayla yanıyor",
     palette: {
       bg: "#F2EAD7",
-      paper: "#1E1810",
+      paper: "#FBF4E2", // koyu #1E1810 paylaşılan kart yüzeylerini kırıyordu (ink oranı 1.09→14.67)
       ink: "#2A1F14",
       inkSoft: "#6E5A40",
       accent: "#E8B05D",

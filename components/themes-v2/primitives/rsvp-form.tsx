@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition, type CSSProperties } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
-import { bestTextOn } from "@/lib/themes-v2/contrast";
+import { bestTextOn, relativeLuminance } from "@/lib/themes-v2/contrast";
 import { useInvitationT } from "../i18n-context";
 
 interface Props {
@@ -19,6 +19,9 @@ export function RsvpForm({ meta, slug }: Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
   const str = useInvitationT();
+  // Hata rengi zemin parlaklığına göre: açık temada bordo, koyu temada
+  // okunur gül tonu (geceyarisi'nde 3.29 → 7.84 kontrast).
+  const errorInk = relativeLuminance(palette.bg) > 0.5 ? "#B14848" : "#E29A93";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [attendance, setAttendance] = useState<Attendance>(null);
@@ -390,7 +393,7 @@ export function RsvpForm({ meta, slug }: Props) {
             </Field>
 
             {error && (
-              <p className="text-center text-[13px]" style={{ color: "#b14848" }}>
+              <p className="text-center text-[13px]" style={{ color: errorInk }}>
                 {error}
               </p>
             )}
@@ -425,7 +428,9 @@ function ConfettiBurst({ accent, ink }: { accent: string; ink: string }) {
   >([]);
 
   useEffect(() => {
-    const colors = [accent, ink, `${accent}99`, "#E8C77D"];
+    // Palet türevi konfeti — her tema kendi ailesinden patlar (sabit altın
+    // koyu/soğuk temalarda yabancı kalıyordu). Son renk: accent'in açık tint'i.
+    const colors = [accent, ink, `${accent}99`, tint(accent, 0.45)];
     setPieces(
       Array.from({ length: 28 }, (_, i) => {
         const angle = (i / 28) * Math.PI * 2 + Math.random() * 0.35;
@@ -494,4 +499,12 @@ function Field({
       {children}
     </div>
   );
+}
+
+/* Accent'i beyaza doğru k oranında açar — konfeti/parıltı tint'i için. */
+function tint(hex: string, k: number): string {
+  const m = hex.replace("#", "");
+  const c = (i: number) => parseInt(m.slice(i, i + 2), 16);
+  const mix = (v: number) => Math.round(v + (255 - v) * k).toString(16).padStart(2, "0");
+  return `#${mix(c(0))}${mix(c(2))}${mix(c(4))}`;
 }
