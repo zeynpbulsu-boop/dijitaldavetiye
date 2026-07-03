@@ -170,6 +170,8 @@ export function invitationToThemeV2(inv: Invitation): { meta: ThemeV2Meta; data:
     // Satılan "AI özel kapak" / yüklenen hero görseli — themes-v2 hero'ları
     // varsa bunu tema videosunun yerine dip katman olarak render eder.
     heroMediaUrl: (inv.hero_media_url ?? "").trim() || null,
+    // Editörün "Mühür rengi" seçimi — artık gerçekten render ediliyor.
+    waxSealColor: (inv.wax_seal_color ?? "").trim() || null,
     photos,
     schedule, // Migration 010 — boşsa shell program section'ını gizler
     menu: [], // food menu removed from the product

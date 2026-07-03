@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { adminDb } from "@/lib/db/supabase";
 import { isTierSlug } from "@/lib/payments/products";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 import type { InvitationInsert, DbLocale } from "@/lib/db/types";
 
 /**
@@ -41,6 +42,16 @@ function randomSlug(): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Uç herkese açık (order sayfası draft yaratıyor) → bot'ların yetim draft
+  // basmasına karşı IP başına sınır (custom-cover ile aynı desen).
+  const rl = rateLimit(`invitations:${clientIp(req)}`, 10, 60_000, Date.now());
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Çok fazla istek — lütfen biraz sonra tekrar deneyin." },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } },
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = (await req.json()) as Record<string, unknown>;
@@ -58,7 +69,7 @@ export async function POST(req: NextRequest) {
   }
   if (!isTierSlug(tier)) {
     return NextResponse.json(
-      { error: "tier must be one of: sade, klasik, premium." },
+      { error: 'tier must be "standard".' },
       { status: 400 },
     );
   }

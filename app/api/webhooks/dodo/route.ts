@@ -36,6 +36,10 @@ type DodoWebhookEvent = {
     currency?: string;
     metadata?: Record<string, string>;
     customer?: { email?: string; name?: string; customer_id?: string };
+    /* Ödemenin doğduğu checkout session — (b) fallback eşleşmesi için.
+       Dodo sürümüne göre iki addan biriyle gelebilir. */
+    checkout_session_id?: string;
+    session_id?: string;
   };
   [key: string]: unknown;
 };
@@ -218,11 +222,54 @@ async function onPaymentSucceeded(
     return;
   }
 
-  // No invitation_id in metadata — record on webhook_events stays as
-  // the only trail. Manual reconciliation via admin panel.
+  // (b) metadata.invitation_id yok/kayıp → checkout sırasında yazılan
+  // dodo_session_id ile ikinci arama. Bu da tutmazsa webhook_events kaydı
+  // manuel mutabakat için tek iz olarak kalır.
+  const sessionId = data.checkout_session_id ?? data.session_id;
+  if (sessionId) {
+    const { data: row, error } = await supabase
+      .from("invitations")
+      .update({
+        status: "paid",
+        paid_at: now.toISOString(),
+        live_until: liveUntil,
+        dodo_payment_id: data.payment_id,
+        owner_email: data.customer?.email ?? undefined,
+      })
+      .eq("dodo_session_id", sessionId)
+      .select(
+        "slug, admin_token, owner_email, partner_one_name, partner_two_name, tier",
+      )
+      .single();
+    if (!error && row) {
+      const recipient = row.owner_email ?? data.customer?.email;
+      if (recipient) {
+        const base = (
+          process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuve.app"
+        ).replace(/\/+$/, "");
+        const couple =
+          row.partner_one_name && row.partner_two_name
+            ? `${row.partner_one_name} & ${row.partner_two_name}`
+            : "Davetiyen";
+        await sendEmail(
+          paymentReceivedEmail({
+            to: recipient,
+            coupleLine: couple,
+            tier: String(row.tier).toUpperCase(),
+            editorUrl: `${base}/editor/${encodeURIComponent(row.admin_token)}`,
+            adminUrl: `${base}/admin/${encodeURIComponent(row.admin_token)}`,
+            publicUrl: `${base}/i/${row.slug}`,
+          }),
+        );
+      }
+      log.info("dodo-webhook", "matched by dodo_session_id", sessionId);
+      return;
+    }
+  }
+
   log.info(
     "dodo-webhook",
-    "payment.succeeded with no invitation_id (manual reconcile)",
+    "payment.succeeded with no invitation match (manual reconcile)",
     data.payment_id,
   );
 }

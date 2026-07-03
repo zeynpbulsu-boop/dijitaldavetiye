@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { dodo } from "@/lib/dodo";
+import { adminDb } from "@/lib/db/supabase";
 import { STANDARD_TIER, isTierSlug, tierFor } from "@/lib/payments/products";
 
 /**
@@ -87,6 +88,16 @@ export async function POST(req: NextRequest) {
         display_price_eur: String(tier.displayPriceEur),
       },
     });
+
+    // Webhook'un (b) yolu için: metadata.invitation_id bir sebeple kaybolursa
+    // ödeme dodo_session_id üzerinden davetiyeye eşlenebilsin.
+    if (body.invitationId) {
+      const { error: updErr } = await adminDb()
+        .from("invitations")
+        .update({ dodo_session_id: session.session_id })
+        .eq("id", body.invitationId);
+      if (updErr) console.error("[checkout] session_id yazılamadı:", updErr);
+    }
 
     return NextResponse.json({
       checkout_url: session.checkout_url,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MutableRefObject } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
 
@@ -84,13 +84,21 @@ export function YouTubeMusic({
 }) {
   const { palette } = meta;
   const str = useInvitationT();
+  const reduced = useReducedMotion();
   const mountRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<YTPlayer | null>(null);
   const startRef = useRef(start);
   startRef.current = start;
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const playingRef = useRef(false);
+  playingRef.current = playing;
   const [dismissed, setDismissed] = useState(false);
+  // Ready-yarışı: mühre basıldığında player henüz hazır değilse (yavaş şebeke)
+  // geç kalan playVideo() jest penceresi DIŞINDA kalır → iOS sesli autoplay'i
+  // bloklar ve misafir müziği hiç duymaz. Deneme 1.6s içinde PLAYING üretmezse
+  // şerit "çalmak için dokunun" moduna geçip dikkat çeker.
+  const [nudge, setNudge] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -157,8 +165,18 @@ export function YouTubeMusic({
       } catch {
         /* ignore */
       }
+      // Autoplay bloklandıysa (jest penceresi kaçtı) nudge göster.
+      const t = window.setTimeout(() => {
+        if (!playingRef.current) setNudge(true);
+      }, 1600);
+      return () => window.clearTimeout(t);
     }
   }, [opened, ready, dismissed]);
+
+  // Müzik gerçekten çalmaya başlayınca nudge'ı kapat.
+  useEffect(() => {
+    if (playing) setNudge(false);
+  }, [playing]);
 
   // Play fonksiyonunu parent'a (theme-shell handleOpen) kaydet → mühre-basma
   // click handler'ının İÇİNDE senkron çağrılır (en güvenilir sesli autoplay).
@@ -211,21 +229,30 @@ export function YouTubeMusic({
           aria-hidden
           style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 96 }}
         />
-        {/* Üstte opak "şarkı çalıyor" şeridi — videoyu tamamen kapatır. */}
-        <div
+        {/* Üstte opak "şarkı çalıyor" şeridi — videoyu tamamen kapatır.
+            Nudge modunda şeridin tamamı tıklanabilir + accent'le nabız atar. */}
+        <motion.div
           className="absolute inset-0 flex items-center justify-between gap-2 px-3"
           style={{
             backgroundColor: palette.paper,
-            border: `1px solid ${palette.accent}40`,
+            border: `1px solid ${nudge ? palette.accent : `${palette.accent}40`}`,
             borderRadius: 999,
+            cursor: nudge ? "pointer" : undefined,
           }}
+          onClick={nudge ? togglePlay : undefined}
+          animate={
+            nudge && !reduced
+              ? { scale: [1, 1.04, 1], boxShadow: [`0 0 0 0px ${palette.accent}00`, `0 0 0 6px ${palette.accent}2e`, `0 0 0 0px ${palette.accent}00`] }
+              : { scale: 1 }
+          }
+          transition={nudge && !reduced ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" } : undefined}
         >
           <span
             className="flex items-center gap-2 truncate text-[10px] uppercase"
             style={{ color: palette.accent, letterSpacing: "0.2em", fontWeight: 500 }}
           >
-            <EqBars color={palette.accent} active={playing} />
-            {str.music.label}
+            <EqBars color={palette.accent} active={playing} reduced={!!reduced} />
+            {nudge ? str.music.tapToPlay : str.music.label}
           </span>
           <div className="flex items-center gap-0.5">
             <button
@@ -265,13 +292,13 @@ export function YouTubeMusic({
               </svg>
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
 }
 
-function EqBars({ color, active }: { color: string; active: boolean }) {
+function EqBars({ color, active, reduced }: { color: string; active: boolean; reduced?: boolean }) {
   if (!active) {
     return (
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.6" aria-hidden>
@@ -286,9 +313,9 @@ function EqBars({ color, active }: { color: string; active: boolean }) {
       {[0, 1, 2].map((i) => (
         <motion.span
           key={i}
-          style={{ width: 2, backgroundColor: color, borderRadius: 1 }}
-          animate={{ height: [4, 11, 5, 9, 4] }}
-          transition={{ duration: 0.9 + i * 0.2, repeat: Infinity, ease: "easeInOut" }}
+          style={{ width: 2, backgroundColor: color, borderRadius: 1, height: reduced ? 7 + i * 2 : undefined }}
+          animate={reduced ? undefined : { height: [4, 11, 5, 9, 4] }}
+          transition={reduced ? undefined : { duration: 0.9 + i * 0.2, repeat: Infinity, ease: "easeInOut" }}
         />
       ))}
     </span>

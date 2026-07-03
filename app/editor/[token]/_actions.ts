@@ -175,7 +175,8 @@ export async function saveInvitation(
     venue_lng: venueLng,
 
     /* Migration 008 — scratch reveal opt-in. */
-    enable_scratch_reveal: formData.get("enable_scratch_reveal") === "on",
+    /* enable_scratch_reveal patch'ten çıkarıldı — formdaki toggle kaldırıldı
+       (themes-v2 tüketmiyor); mevcut DB değeri olduğu gibi korunur. */
   };
 
   const { error: updateErr } = await supabase

@@ -9,7 +9,7 @@
 **NUVE** — TR/Balkan premium dijital wedding davetiye platformu.
 
 - **Stack:** Next.js 14 App Router + TypeScript + Tailwind + framer-motion
-- **DB:** Supabase (invitations, rsvps, webhook_events)
+- **DB:** SELF-HOSTED Supabase (Coolify, liman.boosless.com) — supabase.com projesi ARTIK KULLANILMIYOR. Tablolar: invitations, rsvps, guests, webhook_events, reviews. Migration'lar self-hosted'a elle uygulanır (011_rsvp_side_count DEPLOY ÖNCESİ şart).
 - **Payment:** Dodo Payments (€39.99 flat per template) — LIVE keys eksik (FAZ 19.6 blocker)
 - **Deploy:** Coolify (self-hosted) → `coolify.bulsulabs.xyz`
 - **Live URL:** `http://b9ba0lj82z1m88uwltdc1w85.72.62.39.172.sslip.io`
@@ -27,17 +27,13 @@
 app/
   page.tsx                          # Landing
   _sections/                        # Hero, TemplateCarousel, HowItWorks, Pricing, FAQ, vb.
-  dev-preview/
-    aethel/page.tsx                 # 6 luxe demo (FAZ 5.10-5.12)
-    nocturne/page.tsx
-    mistral/page.tsx
-    candela/page.tsx
-    olea/page.tsx
-    aurora/page.tsx
-  templates/[slug]/page.tsx         # Şablon detay sayfası (carousel hedefi)
-  order/[slug]/page.tsx             # Sipariş başlangıç
-  i/[slug]/page.tsx                 # ★ Yayında olan gerçek davetiye (Demo→Prod bridge buraya bağlanacak)
-  editor/[slug]/page.tsx            # Çiftin düzenleme paneli
+  themes/[slug]/page.tsx            # ★ 7 themes-v2 canlı demosu (celenk, polaroid, kurdele,
+                                    #   fener, defter, geceyarisi, postakart)
+  tasarimlar/page.tsx               # Tema katalogu (ShowcaseGrid)
+  order/[slug]/page.tsx             # Sipariş formu (tek draft, tema değişiminde veri korunur)
+  i/[slug]/page.tsx                 # ★ Yayındaki gerçek davetiye — themes-v2 render eder
+                                    #   (lib/themes-v2/bridge.ts Invitation → ThemeV2Data)
+  editor/[token]/page.tsx           # Çiftin düzenleme paneli (admin_token route'ta)
   admin/page.tsx                    # Owner admin
 
 components/
@@ -177,15 +173,12 @@ git add -A && git commit -m "..." && git push origin main
 
 ### Live URL'ler
 
-| Edition | URL |
+| Sayfa | URL |
 |---|---|
-| Aethel | http://b9ba0lj82z1m88uwltdc1w85.72.62.39.172.sslip.io/dev-preview/aethel |
-| Nocturne | …/dev-preview/nocturne |
-| Candéla | …/dev-preview/candela |
-| Mistral | …/dev-preview/mistral |
-| Olea | …/dev-preview/olea |
-| Aurora | …/dev-preview/aurora |
-| Production /i/ | …/i/[slug] — burada slot-based render var, luxe henüz bağlı değil |
+| Landing | http://b9ba0lj82z1m88uwltdc1w85.72.62.39.172.sslip.io/ |
+| Katalog | …/tasarimlar |
+| Tema demoları | …/themes/{celenk,polaroid,kurdele,fener,defter,geceyarisi,postakart} |
+| Gerçek davetiye | …/i/[slug] — themes-v2 ile render edilir (bridge.ts) |
 
 ---
 
@@ -223,9 +216,9 @@ git add -A && git commit -m "..." && git push origin main
 
 ## ⚠️ Bilinen Sorunlar / Açık Kararlar
 
-1. **Demo ≠ Production:** `/dev-preview/*` izole. `/i/[slug]` hâlâ eski slot orchestration kullanıyor.
+1. ~~Demo ≠ Production~~ ÇÖZÜLDÜ: `/i/[slug]` themes-v2 render ediyor (bridge.ts).
 2. **Asset boyutu:** Watermark PNG'ler 5-9MB → mobile için felaket. Next/Image + WebP gerekli.
-3. **Editor UI uyumsuz:** Couple/venue/tarih hardcoded LuxeEditionTheme'lerde, editor sahibi düzenleyemiyor.
+3. ~~Editor UI uyumsuz~~ ÇÖZÜLDÜ: editor/[token] tüm çekirdek alanları düzenletiyor (story_text dahil).
 4. **i18n eksik:** LuxeEditionDemo TR strings'i theme prop'unda taşıyor, dictionary'e bağlı değil.
 5. **A11y:** prefers-reduced-motion bazı yerlerde eksik, focus ring hiç yok, kontrast audit edilmedi.
 6. **Dodo LIVE keys:** Test keys ile çalışıyor, gerçek satış için kullanıcıdan keys gerek.

@@ -272,6 +272,7 @@ export function OpeningCeremony({
           reduced={!!reduced}
           sealSrc={ceremony?.seal}
           opened={opened}
+          tint={data.waxSealColor ?? undefined}
         />
 
         <KineticNames
@@ -385,11 +386,15 @@ function SealFace({
   monogram,
   palette,
   sealSrc,
+  tint,
 }: {
   monogram: string;
   palette: ThemeV2Meta["palette"];
   sealSrc?: string;
+  /** wax_seal_color — SVG mühürde çizgi + monogram tonu; PNG'de dokunulmaz */
+  tint?: string;
 }) {
+  const sealColor = tint || palette.accent;
   return (
     <>
       {sealSrc ? (
@@ -403,8 +408,8 @@ function SealFace({
         />
       ) : (
         <svg viewBox="0 0 128 128" className="h-full w-full">
-          <circle cx="64" cy="64" r="52" fill="none" stroke={palette.accent} strokeWidth="1" opacity="0.55" />
-          <circle cx="64" cy="64" r="46" fill="none" stroke={palette.accent} strokeWidth="0.6" opacity="0.4" />
+          <circle cx="64" cy="64" r="52" fill="none" stroke={sealColor} strokeWidth="1" opacity="0.55" />
+          <circle cx="64" cy="64" r="46" fill="none" stroke={sealColor} strokeWidth="0.6" opacity="0.4" />
           {/* tick ring */}
           {Array.from({ length: 48 }).map((_, i) => {
             const a = (i / 48) * Math.PI * 2;
@@ -417,7 +422,7 @@ function SealFace({
                 y1={(64 + Math.sin(a) * r1).toFixed(2)}
                 x2={(64 + Math.cos(a) * r2).toFixed(2)}
                 y2={(64 + Math.sin(a) * r2).toFixed(2)}
-                stroke={palette.accent}
+                stroke={sealColor}
                 strokeWidth="0.5"
                 opacity="0.35"
               />
@@ -431,7 +436,7 @@ function SealFace({
           fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
           fontSize: sealSrc ? "clamp(40px, 11vw, 48px)" : "clamp(46px, 13vw, 56px)",
           // On the real gold seal, render the monogram as if engraved into the wax.
-          color: sealSrc ? "rgba(70,48,12,0.62)" : palette.accent,
+          color: sealSrc ? "rgba(70,48,12,0.62)" : sealColor,
           textShadow: sealSrc ? "0 1px 0.5px rgba(255,238,196,0.5)" : undefined,
           lineHeight: 1,
         }}
@@ -448,15 +453,19 @@ function WaxSeal({
   reduced,
   sealSrc,
   opened,
+  tint,
 }: {
   monogram: string;
   palette: ThemeV2Meta["palette"];
   reduced: boolean;
   sealSrc?: string;
   opened: boolean;
+  /** Editörden seçilen mühür rengi (wax_seal_color) — glow + SVG mühür tonu */
+  tint?: string;
 }) {
   const crack = { duration: CRACK_MS / 1000, ease: [0.5, 0.05, 0.6, 1] as const };
   const cracking = opened && !reduced;
+  const sealColor = tint || palette.accent;
 
   return (
     <motion.div
@@ -470,7 +479,7 @@ function WaxSeal({
       <motion.span
         className="pointer-events-none absolute inset-0 rounded-full"
         style={{
-          background: `radial-gradient(circle, ${palette.accent}55 0%, ${palette.accent}00 70%)`,
+          background: `radial-gradient(circle, ${sealColor}55 0%, ${sealColor}00 70%)`,
         }}
         animate={
           cracking
@@ -490,7 +499,7 @@ function WaxSeal({
         animate={cracking ? { x: -16, y: 5, rotate: -7, opacity: 0 } : { x: 0, y: 0, rotate: 0, opacity: 1 }}
         transition={crack}
       >
-        <SealFace monogram={monogram} palette={palette} sealSrc={sealSrc} />
+        <SealFace monogram={monogram} palette={palette} sealSrc={sealSrc} tint={tint} />
       </motion.div>
 
       {/* Right half */}
@@ -501,7 +510,7 @@ function WaxSeal({
         animate={cracking ? { x: 16, y: -4, rotate: 6, opacity: 0 } : { x: 0, y: 0, rotate: 0, opacity: 1 }}
         transition={crack}
       >
-        <SealFace monogram={monogram} palette={palette} sealSrc={sealSrc} />
+        <SealFace monogram={monogram} palette={palette} sealSrc={sealSrc} tint={tint} />
       </motion.div>
     </motion.div>
   );

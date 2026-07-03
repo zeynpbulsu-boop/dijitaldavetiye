@@ -86,6 +86,9 @@ export interface ThemeV2Data {
   /** Çiftin özel kapağı (AI üretimi veya upload) — varsa hero'da tema
    *  videosunun yerine en dip katman olarak render edilir. */
   heroMediaUrl?: string | null;
+  /** Editörden seçilen mühür rengi — açılış mühründe glow/monogram tonu
+   *  olarak kullanılır; boşsa edisyon paleti geçerli. */
+  waxSealColor?: string | null;
   photos: PolaroidPhoto[];
   schedule: ScheduleItem[];
   menu: MenuColumn[];

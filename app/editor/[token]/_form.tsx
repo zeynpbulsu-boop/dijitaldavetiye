@@ -236,28 +236,16 @@ export function EditorForm({
         />
       </Group>
 
-      <Group title="Sürpriz" eyebrow="— İnteraksiyon">
-        <p className="text-[13px] leading-[1.7] text-brand-mute">
-          Açıldığında Hero&apos;daki tarih satırı kazınana kadar gizlenir
-          (Pressed Love&apos;ın signature efekti). Mobil&apos;de parmakla,
-          desktop&apos;ta mouse ile kazınır.
-        </p>
-        <label className="inline-flex items-center gap-3 text-[14px] text-brand-ink">
-          <input
-            type="checkbox"
-            name="enable_scratch_reveal"
-            defaultChecked={invitation.enable_scratch_reveal}
-            className="h-5 w-5 accent-brand-cognac"
-          />
-          Tarihi kazıyarak ortaya çıkar
-        </label>
-      </Group>
+      {/* "Kazıyarak ortaya çıkar" toggle'ı kaldırıldı — eski luxe sistem
+          kalıntısıydı, themes-v2 render'ı hiç tüketmiyordu (müşteri açıp
+          kapatınca hiçbir şey değişmiyordu). Özellik geri gelirse toggle
+          da geri gelir. */}
 
       <Group title="Mühür rengi" eyebrow="— Tema">
         <p className="text-[13px] leading-[1.7] text-brand-mute">
-          Mühürün üzerinde mix-blend-multiply ile bindirilir; boş
-          bırakırsan edisyonun varsayılan rengi geçerli olur. Düğün
-          renklerine uyacak bir hex değer dene.
+          Davetiyenin açılış mühründe kullanılır; boş bırakırsan edisyonun
+          varsayılan rengi geçerli olur. Düğün renklerine uyacak bir ton
+          seçebilirsin.
         </p>
         <div className="flex items-center gap-3">
           <input

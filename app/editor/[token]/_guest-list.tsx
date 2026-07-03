@@ -201,6 +201,17 @@ export function GuestList({ token }: GuestListProps) {
           güncellenir. İsim veya e-posta eşleşmesi yoksa walk-in olarak ayrı
           satıra düşer.
         </p>
+        {guests.length > 0 && (
+          <a
+            href={`/api/guests/export?token=${encodeURIComponent(token)}`}
+            className="mt-3 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-cognac underline-offset-4 transition hover:underline"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16" />
+            </svg>
+            Excel&apos;e aktar (CSV)
+          </a>
+        )}
       </div>
 
       {/* Stats */}
