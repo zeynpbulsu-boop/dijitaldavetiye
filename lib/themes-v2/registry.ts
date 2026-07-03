@@ -126,12 +126,12 @@ export const SAMPLE_DATA: ThemeV2Data = {
   greeting:
     "En güzel hikâyemize başlamadan önce, bizimle paylaşmanızı çok isteriz.",
   date: {
-    day: "15",
-    month: "Haziran",
-    year: "2026",
-    weekday: "Pazar",
+    day: "22",
+    month: "Mayıs",
+    year: "2027",
+    weekday: "Cumartesi",
     time: "18:00 — 23:00",
-    iso: "2026-06-15T18:00:00+03:00",
+    iso: "2027-05-22T18:00:00+03:00",
   },
   venue: {
     name: "Cunda Adası — Sahil Köşkü",
