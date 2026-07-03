@@ -11,7 +11,7 @@ import type { Locale } from "@/lib/i18n/types";
  */
 
 export interface InvitationStrings {
-  ceremony: { tapToOpen: string };
+  ceremony: { tapToOpen: string; skip: string };
   hero: {
     saveTheDate: string;
     awaitsYou: string;
@@ -80,7 +80,7 @@ export interface InvitationStrings {
 }
 
 const tr: InvitationStrings = {
-  ceremony: { tapToOpen: "Açmak için dokun" },
+  ceremony: { tapToOpen: "Açmak için dokun", skip: "Atla" },
   hero: {
     saveTheDate: "Save the Date",
     awaitsYou: "Bir davet sizi bekliyor",
@@ -153,7 +153,7 @@ const tr: InvitationStrings = {
 };
 
 const en: InvitationStrings = {
-  ceremony: { tapToOpen: "Tap to open" },
+  ceremony: { tapToOpen: "Tap to open", skip: "Skip" },
   hero: {
     saveTheDate: "Save the Date",
     awaitsYou: "An invitation awaits you",
@@ -226,7 +226,7 @@ const en: InvitationStrings = {
 };
 
 const sr: InvitationStrings = {
-  ceremony: { tapToOpen: "Dodirnite da otvorite" },
+  ceremony: { tapToOpen: "Dodirnite da otvorite", skip: "Preskoči" },
   hero: {
     saveTheDate: "Save the Date",
     awaitsYou: "Pozivnica vas čeka",

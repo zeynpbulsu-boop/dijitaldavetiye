@@ -160,16 +160,20 @@ export function OpeningCeremony({
   const { palette } = meta;
   const ceremony = THEME_CEREMONY[meta.slug];
   const [gone, setGone] = useState(false);
+  // "Atla" ile açıldıysa ritüel kısaltılır: kırılma/perde beklenmez,
+  // 320ms fade ile doğrudan davetiyeye geçilir (rakip paritesi: Skip).
+  const [fast, setFast] = useState(false);
+  const quick = reduced || fast;
 
   // Unmount after the crack + curtain finish so it never blocks interaction.
   useEffect(() => {
     if (!opened) return;
     const t = window.setTimeout(
       () => setGone(true),
-      reduced ? 320 : CRACK_MS + CURTAIN_MS + 120,
+      quick ? 320 : CRACK_MS + CURTAIN_MS + 120,
     );
     return () => window.clearTimeout(t);
-  }, [opened, reduced]);
+  }, [opened, quick]);
 
   // Lock scroll while the cover is up.
   useEffect(() => {
@@ -186,8 +190,8 @@ export function OpeningCeremony({
   const panelBg = `linear-gradient(180deg, ${palette.bg} 0%, ${palette.countdownBg} 140%)`;
   // Curtain waits for the seal to crack first (except in reduced motion).
   const curtain = {
-    duration: reduced ? 0.3 : CURTAIN_MS / 1000,
-    delay: reduced || !opened ? 0 : CRACK_MS / 1000,
+    duration: quick ? 0.3 : CURTAIN_MS / 1000,
+    delay: quick || !opened ? 0 : CRACK_MS / 1000,
     ease: [0.76, 0, 0.24, 1] as const,
   };
 
@@ -215,6 +219,24 @@ export function OpeningCeremony({
       style={{ pointerEvents: opened ? "none" : "auto" }}
       aria-hidden={opened}
     >
+      {/* Atla — davetiyeyi tekrar açan/aceleci misafir ritüeli beklemesin.
+          Jest içinde onOpen çağrılır → müzik autoplay penceresi korunur. */}
+      <motion.button
+        type="button"
+        onClick={() => {
+          if (opened) return;
+          setFast(true);
+          onOpen();
+        }}
+        className="absolute right-5 top-6 z-20 text-[10px] uppercase transition hover:opacity-70"
+        style={{ color: palette.inkSoft, letterSpacing: "0.34em", fontWeight: 500 }}
+        initial={false}
+        animate={{ opacity: opened ? 0 : 0.75 }}
+        transition={{ duration: 0.3 }}
+      >
+        {str.ceremony.skip} →
+      </motion.button>
+
       {/* Two panels that part like a curtain */}
       <motion.div
         className="absolute inset-y-0 left-0 w-1/2"
@@ -252,7 +274,7 @@ export function OpeningCeremony({
         className="absolute inset-0 z-10 flex w-full cursor-pointer flex-col items-center justify-center px-6 text-center"
         initial={false}
         animate={opened ? { opacity: 0, scale: 1.06 } : { opacity: 1, scale: 1 }}
-        transition={{ duration: opened ? 0.55 : 0.6, delay: opened && !reduced ? 0.22 : 0 }}
+        transition={{ duration: opened ? 0.55 : 0.6, delay: opened && !quick ? 0.22 : 0 }}
       >
         <DustParticles color={palette.accent} count={22} opacity={0.4} />
 

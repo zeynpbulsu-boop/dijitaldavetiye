@@ -45,6 +45,22 @@ export function ThemeShell({
   const { palette } = meta;
   const reduced = useReducedMotion();
   const [opened, setOpened] = useState(false);
+  // Aynı oturumda davetiyeyi TEKRAR açan misafir ritüeli yeniden yaşamasın:
+  // ilk açılış sessionStorage'a yazılır, sonraki ziyarette seremoni hiç
+  // render edilmez (müzik yine de sağ-alt toggle'dan başlatılabilir).
+  const [ceremonySkipped, setCeremonySkipped] = useState(false);
+  const openedKey = `nuve.opened.${rsvpSlug ?? meta.slug}`;
+  useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem(openedKey) === "1") {
+        setCeremonySkipped(true);
+        setOpened(true);
+      }
+    } catch {
+      /* private mode vb. — sorun değil, ritüel oynar */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // Çiftin müziği: music_url bir Spotify/YouTube linkiyse RESMİ embed oynatıcı
   // (telif platformda kalır); aksi halde ambient mp3 (override veya tema default).
   const embed = parseMusicEmbed(musicSrc);
@@ -82,6 +98,11 @@ export function ThemeShell({
     setOpened(true);
     audio.start();
     musicPlayRef.current?.();
+    try {
+      window.sessionStorage.setItem(openedKey, "1");
+    } catch {
+      /* ignore */
+    }
     // A11y: perde açılınca odağı davetiye başlığına taşı → klavye/ekran-okuyucu
     // kullanıcısı kapanan perdede sıkışmadan içeriğe geçer (modal-açılış deseni).
     window.setTimeout(() => headingRef.current?.focus(), 350);
@@ -175,7 +196,9 @@ export function ThemeShell({
 
           <ThemeFooter meta={meta} data={data} reduced={!!reduced} />
 
-          <OpeningCeremony meta={meta} data={data} opened={opened} onOpen={handleOpen} />
+          {!ceremonySkipped && (
+            <OpeningCeremony meta={meta} data={data} opened={opened} onOpen={handleOpen} />
+          )}
           {!embed && audio.available && (
             <AmbientToggle muted={audio.muted} onToggle={audio.toggle} palette={palette} />
           )}
