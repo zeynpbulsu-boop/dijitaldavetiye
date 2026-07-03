@@ -15,6 +15,7 @@ import { useInvitationT } from "../i18n-context";
 import {
   AtmosphereDefs,
   DustParticles,
+  AmbientParticles,
   PaperGrain,
   WatercolorWash,
   makeRng,
@@ -199,6 +200,8 @@ export function KurdeleHero({ meta, data }: ThemeV2Props) {
 
       {/* Dusty-blue ambient particles drifting in the light. */}
       <DustParticles color={palette.accent} count={22} opacity={0.4} />
+      {/* Tema kişiliği: mavi saten kırpıntıları süzülerek düşer (P2-4) */}
+      <AmbientParticles variant="petal" color={palette.accent} count={12} opacity={0.5} />
 
       {/* Eyebrow + supporting line — premium wide-tracked hierarchy. */}
       <motion.p
@@ -385,7 +388,7 @@ function LivingLetter({
         <p
           className="font-display italic"
           style={{
-            fontSize: "clamp(18px, 2vw, 22px)",
+            fontSize: "clamp(26px, 3.6vw, 40px)",
             color: ink,
           }}
         >

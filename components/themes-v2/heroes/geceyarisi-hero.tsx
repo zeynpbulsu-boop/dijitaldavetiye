@@ -306,7 +306,7 @@ export function GeceyarisiHero({ meta, data }: ThemeV2Props) {
           <motion.p
             initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.7, duration: 1.4 }}
             className="font-display italic"
-            style={{ fontSize: "clamp(19px, 2.4vw, 28px)", color: palette.inkSoft, letterSpacing: "0.05em" }}
+            style={{ fontSize: "clamp(28px, 4vw, 44px)", color: palette.inkSoft, letterSpacing: "0.04em" }}
           >
             {data.date.day} · {data.date.month} · {data.date.year}
           </motion.p>

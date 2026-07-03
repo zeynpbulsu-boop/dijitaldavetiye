@@ -268,6 +268,92 @@ export function DustParticles({
   );
 }
 
+/* ── Tema-kişilikli ambient partiküller ─────────────────────────────
+ * DustParticles jenerik tozdur; bu katman edisyonun karakterini taşır:
+ *   petal   → salınarak DÜŞEN taç yaprağı (kurdele: mavi saten kırpıntısı)
+ *   firefly → süzülen + parlayan ateşböceği
+ *   star    → yerinde twinkle eden yıldız
+ *   ember   → yükselip sönümlenen kor / kağıt pulu (postakart)
+ * dust-particle ile aynı sözleşme: seeded konumlar (SSR-güvenli), CSS
+ * var'lı tek keyframe, yalnız transform+opacity, reduced-motion'da kapalı. */
+export type AmbientVariant = "petal" | "firefly" | "star" | "ember";
+
+const AMBIENT_ANIM: Record<AmbientVariant, string> = {
+  petal: "ambient-petal-fall",
+  firefly: "ambient-firefly",
+  star: "ambient-star-twinkle",
+  ember: "ambient-ember-rise",
+};
+
+export function AmbientParticles({
+  variant,
+  color,
+  count = 14,
+  opacity = 1,
+}: {
+  variant: AmbientVariant;
+  color: string;
+  count?: number;
+  opacity?: number;
+}) {
+  const particles = useMemo(() => {
+    const rnd = makeRng(count * 7907 + variant.length * 131);
+    return Array.from({ length: count }, () => {
+      const size =
+        variant === "petal" ? r3(6 + rnd() * 6) : variant === "ember" ? r3(2 + rnd() * 3) : r3(2 + rnd() * 3.5);
+      return {
+        x: r3(rnd() * 100),
+        // petal üstten, ember alttan doğar; firefly/star sahne içinde yaşar
+        y: variant === "petal" ? -6 : variant === "ember" ? 102 : r3(12 + rnd() * 70),
+        w: size,
+        h: variant === "petal" ? r3(size * 0.72) : size,
+        dur: r3(variant === "star" ? 2.5 + rnd() * 3 : 8 + rnd() * 9),
+        delay: r3(rnd() * -14),
+        tx: r3((rnd() - 0.5) * 18),
+        ty: r3((rnd() - 0.5) * 20),
+        rot: r3(200 + rnd() * 340),
+        peak: r3(0.45 + rnd() * 0.4),
+      };
+    });
+  }, [count, variant]);
+
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+      aria-hidden
+      style={{ opacity }}
+    >
+      {particles.map((p, i) => (
+        <span
+          key={i}
+          className={`ambient-particle ambient-particle--${variant}`}
+          style={
+            {
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: p.w,
+              height: p.h,
+              backgroundColor: color,
+              borderRadius: variant === "petal" ? "80% 0 55% 50% / 55% 0 80% 50%" : "9999px",
+              boxShadow:
+                variant === "firefly" || variant === "ember"
+                  ? `0 0 ${r3(p.w * 2.5)}px ${color}`
+                  : undefined,
+              "--amb-anim": AMBIENT_ANIM[variant],
+              "--amb-dur": `${p.dur}s`,
+              "--amb-delay": `${p.delay}s`,
+              "--amb-tx": `${p.tx}vw`,
+              "--amb-ty": `${p.ty}vh`,
+              "--amb-rot": `${p.rot}deg`,
+              "--amb-peak": `${p.peak}`,
+            } as CSSProperties
+          }
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ── Multi-layer watercolor wash — feels painted, not flat */
 export function WatercolorWash({
   layers,

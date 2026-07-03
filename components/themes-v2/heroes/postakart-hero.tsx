@@ -13,7 +13,7 @@ import {
 } from "framer-motion";
 import type { ThemeV2Props } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
-import { AtmosphereDefs, PaperGrain, DustParticles, makeRng, r3 } from "../primitives/atmosphere";
+import { AtmosphereDefs, PaperGrain, DustParticles, AmbientParticles, makeRng, r3 } from "../primitives/atmosphere";
 import { THEME_ASSETS, THEME_VIDEO } from "@/lib/themes-v2/assets";
 import { CustomCover } from "../primitives/custom-cover";
 
@@ -169,6 +169,8 @@ export function PostakartHero({ meta, data }: ThemeV2Props) {
       />
       <motion.div style={{ y: reduced ? 0 : yDust }} className="pointer-events-none absolute inset-0">
         <DustParticles color={palette.accent} count={20} opacity={0.42} />
+        {/* Tema kişiliği: eskimiş kağıt pulları kor gibi yükselir (P2-4) */}
+        <AmbientParticles variant="ember" color="#C9A26B" count={10} opacity={0.55} />
       </motion.div>
 
       {/* The held, floating postcard */}

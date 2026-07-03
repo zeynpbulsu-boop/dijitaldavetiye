@@ -318,7 +318,7 @@ export function CelenkHero({ meta, data }: ThemeV2Props) {
           <p
             className="font-display italic"
             style={{
-              fontSize: "clamp(18px, 2.1vw, 24px)",
+              fontSize: "clamp(26px, 3.6vw, 40px)",
               color: palette.ink,
               letterSpacing: "0.03em",
             }}

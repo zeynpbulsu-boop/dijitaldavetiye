@@ -441,3 +441,84 @@ html {
     opacity: 0;
   }
 }
+
+/* ── Tema-kişilikli ambient partiküller (atmosphere.tsx AmbientParticles) ──
+   dust-particle ile aynı sözleşme: süre/gecikme/sapma CSS var'larıyla gelir,
+   yalnız transform+opacity (GPU compositor), reduced-motion'da kapalı. */
+
+@keyframes ambient-petal-fall {
+  0% {
+    transform: translate3d(0, -6vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--amb-peak, 0.7);
+  }
+  85% {
+    opacity: var(--amb-peak, 0.7);
+  }
+  100% {
+    transform: translate3d(var(--amb-tx, 5vw), 106vh, 0) rotate(var(--amb-rot, 300deg));
+    opacity: 0;
+  }
+}
+
+@keyframes ambient-firefly {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  22% {
+    opacity: var(--amb-peak, 0.9);
+  }
+  50% {
+    transform: translate3d(var(--amb-tx, 6vw), var(--amb-ty, -9vh), 0);
+    opacity: 0.3;
+  }
+  78% {
+    opacity: var(--amb-peak, 0.9);
+  }
+}
+
+@keyframes ambient-star-twinkle {
+  0%, 100% {
+    transform: scale(0.85);
+    opacity: calc(var(--amb-peak, 0.9) * 0.35);
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: var(--amb-peak, 0.9);
+  }
+}
+
+@keyframes ambient-ember-rise {
+  0% {
+    transform: translate3d(0, 6vh, 0) scale(1);
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--amb-peak, 0.8);
+  }
+  80% {
+    opacity: calc(var(--amb-peak, 0.8) * 0.35);
+  }
+  100% {
+    transform: translate3d(var(--amb-tx, 3vw), -104vh, 0) scale(0.55);
+    opacity: 0;
+  }
+}
+
+.ambient-particle {
+  position: absolute;
+  animation: var(--amb-anim) var(--amb-dur, 12s) linear var(--amb-delay, 0s) infinite;
+}
+.ambient-particle--firefly,
+.ambient-particle--star {
+  animation-timing-function: ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-particle {
+    animation: none;
+    opacity: 0;
+  }
+}

@@ -551,9 +551,9 @@ export function FenerHero({ meta, data }: ThemeV2Props) {
           <p
             className="font-display italic"
             style={{
-              fontSize: "clamp(16px, 1.9vw, 20px)",
+              fontSize: "clamp(24px, 3.4vw, 38px)",
               color: "#F5E8C9",
-              letterSpacing: "0.05em",
+              letterSpacing: "0.04em",
             }}
           >
             {data.date.day} · {data.date.month.toLocaleLowerCase("tr-TR")} · {data.date.year}
