@@ -232,7 +232,10 @@ export function Pricing() {
         </motion.div>
 
         <p className="mt-8 text-center text-[11px] uppercase tracking-[0.22em] text-brand-mute">
-          Stripe + Dodo Payments · 14 gün para iade garantisi
+          Dodo Payments ile güvenli ödeme (Visa · Mastercard) · 14 gün para iade garantisi
+        </p>
+        <p className="mt-2 text-center text-[10.5px] tracking-[0.06em] text-brand-mute/80">
+          Tahsilat €39.99 olarak yapılır; ₺ ve $ karşılıkları yaklaşık değerdir.
         </p>
       </div>
     </section>

@@ -42,6 +42,18 @@ export interface InvitationStrings {
     maybe: string;
     no: string;
     plusOne: string;
+    namePlaceholder: string;
+    emailPlaceholder: string;
+    plusOnePlaceholder: string;
+    side: string;
+    sideBride: string;
+    sideGroom: string;
+    sideBoth: string;
+    guestCount: string;
+    dietary: string;
+    dietaryPlaceholder: string;
+    note: string;
+    notePlaceholder: string;
     submit: string;
     submitting: string;
     successTitle: string;
@@ -92,6 +104,18 @@ const tr: InvitationStrings = {
     maybe: "Belki",
     no: "Hayır",
     plusOne: "+1 ile geleceğim",
+    namePlaceholder: "Adınız ve soyadınız",
+    emailPlaceholder: "ornek@mail.com",
+    plusOnePlaceholder: "Misafirin adı",
+    side: "Hangi taraftan?",
+    sideBride: "Gelin",
+    sideGroom: "Damat",
+    sideBoth: "İkisi de",
+    guestCount: "Kaç kişi geliyorsunuz?",
+    dietary: "Diyet / alerji",
+    dietaryPlaceholder: "Vejetaryen, glutensiz, fındık alerjisi…",
+    note: "Notunuz",
+    notePlaceholder: "İletmek istediğiniz herhangi bir şey…",
     submit: "Yanıtı Gönder",
     submitting: "Gönderiliyor…",
     successTitle: "Teşekkürler",
@@ -142,6 +166,18 @@ const en: InvitationStrings = {
     maybe: "Maybe",
     no: "No",
     plusOne: "I'm bringing a +1",
+    namePlaceholder: "Your full name",
+    emailPlaceholder: "you@mail.com",
+    plusOnePlaceholder: "Guest's name",
+    side: "Whose side?",
+    sideBride: "Bride",
+    sideGroom: "Groom",
+    sideBoth: "Both",
+    guestCount: "How many of you are coming?",
+    dietary: "Dietary / allergies",
+    dietaryPlaceholder: "Vegetarian, gluten-free, nut allergy…",
+    note: "Your note",
+    notePlaceholder: "Anything you'd like us to know…",
     submit: "Send response",
     submitting: "Sending…",
     successTitle: "Thank you",
@@ -192,6 +228,18 @@ const sr: InvitationStrings = {
     maybe: "Možda",
     no: "Ne",
     plusOne: "Dolazim sa pratnjom (+1)",
+    namePlaceholder: "Vaše ime i prezime",
+    emailPlaceholder: "vi@mail.com",
+    plusOnePlaceholder: "Ime pratnje",
+    side: "Sa čije strane?",
+    sideBride: "Mlada",
+    sideGroom: "Mladoženja",
+    sideBoth: "Obe",
+    guestCount: "Koliko vas dolazi?",
+    dietary: "Ishrana / alergije",
+    dietaryPlaceholder: "Vegetarijanac, bez glutena, alergija na orahe…",
+    note: "Vaša poruka",
+    notePlaceholder: "Sve što želite da nam kažete…",
     submit: "Pošalji odgovor",
     submitting: "Šalje se…",
     successTitle: "Hvala",

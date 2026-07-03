@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { listThemesV2 } from "@/lib/themes-v2/registry";
-import { THEME_THUMB } from "@/lib/themes-v2/assets";
+import { THEME_THUMB, THEME_VIDEO } from "@/lib/themes-v2/assets";
+import { HoverVideoThumb } from "./hover-video-thumb";
 import { CelenkThumb } from "./thumbs/celenk-thumb";
 import { PolaroidThumb } from "./thumbs/polaroid-thumb";
 import { KurdeleThumb } from "./thumbs/kurdele-thumb";
@@ -84,11 +84,13 @@ export function ShowcaseGrid() {
                     className="relative aspect-[3/4] overflow-hidden"
                     style={{ backgroundColor: theme.palette.bg }}
                   >
-                    {/* Rendered thumbnail (premium fal.ai) with SVG fallback */}
-                    <ThumbImage
-                      renderedSrc={renderedThumb}
+                    {/* Rendered thumbnail (premium fal.ai) + hover'da hero
+                        klibi (SVG fallback korunur) */}
+                    <HoverVideoThumb
+                      videoSrc={THEME_VIDEO[theme.slug]}
+                      imgSrc={renderedThumb}
+                      alt={`${theme.name} davetiye şablonu`}
                       SvgFallback={SvgThumb}
-                      themeName={theme.name}
                     />
                     <div
                       className="absolute inset-0 opacity-0 transition group-hover:opacity-100"
@@ -167,40 +169,5 @@ export function ShowcaseGrid() {
         </div>
       </div>
     </section>
-  );
-}
-
-function ThumbImage({
-  renderedSrc,
-  SvgFallback,
-  themeName,
-}: {
-  renderedSrc: string;
-  SvgFallback: React.ComponentType;
-  themeName: string;
-}) {
-  // We can't easily check existence at runtime, but Next/Image will error
-  // if missing. Use onError on a native img + show SVG fallback.
-  return (
-    <>
-      <picture>
-        <source srcSet={renderedSrc} type="image/png" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={renderedSrc}
-          alt={`${themeName} davetiye şablonu`}
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
-          onError={(e) => {
-            // Hide broken img → SVG fallback shows
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-          }}
-        />
-      </picture>
-      <div className="absolute inset-0 -z-10">
-        <SvgFallback />
-      </div>
-    </>
   );
 }

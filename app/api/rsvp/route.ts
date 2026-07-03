@@ -89,6 +89,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Migration 011 — taraf + kişi sayısı (opsiyonel, eski istemciler göndermez)
+  const SIDES = ["bride", "groom", "both"] as const;
+  const side = SIDES.includes(body.side as (typeof SIDES)[number])
+    ? (body.side as string)
+    : null;
+  const guestCountRaw = Number(body.guest_count);
+  const guestCount =
+    Number.isInteger(guestCountRaw) && guestCountRaw >= 1 && guestCountRaw <= 20
+      ? guestCountRaw
+      : null;
+
   // 2 — Insert RSVP
   const { data, error: insErr } = await supabase
     .from("rsvps")
@@ -102,6 +113,8 @@ export async function POST(req: NextRequest) {
       menu_choice: capped(body.menu_choice, MAX_MENU),
       allergies: capped(body.allergies, MAX_NOTE),
       note: capped(body.note, MAX_NOTE),
+      side,
+      guest_count: guestCount,
     })
     .select("id")
     .single();

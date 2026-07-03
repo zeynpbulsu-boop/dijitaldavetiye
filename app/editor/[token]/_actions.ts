@@ -138,14 +138,25 @@ export async function saveInvitation(
     venue_address: trimOrNull(formData.get("venue_address")),
     wedding_date: isoDateOrNull(formData.get("wedding_date")),
 
-    /* Luxe copy overrides — added in migration 003 */
+    /* Luxe copy overrides — added in migration 003.
+       DİKKAT: yalnızca formda GERÇEKTEN bulunan alanlar patch'e girer
+       (formData.has). Aksi halde formda input'u olmayan kolonlar
+       (music_track, hero_cta, envelope_cta) her kayıtta sessizce NULL'a
+       ezilir — order formunda doldurulan veri ilk editör kaydında silinirdi. */
     greeting: trimOrNull(formData.get("greeting")),
     hero_eyebrow: trimOrNull(formData.get("hero_eyebrow")),
-    hero_cta: trimOrNull(formData.get("hero_cta")),
-    envelope_cta: trimOrNull(formData.get("envelope_cta")),
     footer_note: trimOrNull(formData.get("footer_note")),
-    music_track: trimOrNull(formData.get("music_track")),
     music_url: trimOrNull(formData.get("music_url")),
+    ...(formData.has("story_text")
+      ? { story_text: trimOrNull(formData.get("story_text")) }
+      : {}),
+    ...(formData.has("hero_cta") ? { hero_cta: trimOrNull(formData.get("hero_cta")) } : {}),
+    ...(formData.has("envelope_cta")
+      ? { envelope_cta: trimOrNull(formData.get("envelope_cta")) }
+      : {}),
+    ...(formData.has("music_track")
+      ? { music_track: trimOrNull(formData.get("music_track")) }
+      : {}),
 
     /* Migration 005 — wax seal tint. hero_media_url + photos /api/upload
        üzerinden yönetiliyor, bu form'da yok. */

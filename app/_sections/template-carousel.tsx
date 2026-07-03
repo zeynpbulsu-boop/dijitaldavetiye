@@ -12,7 +12,8 @@ import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect } from "react";
 import { listThemesV2 } from "@/lib/themes-v2/registry";
-import { THEME_THUMB } from "@/lib/themes-v2/assets";
+import { THEME_THUMB, THEME_VIDEO } from "@/lib/themes-v2/assets";
+import { HoverVideoThumb } from "@/components/themes-v2/hover-video-thumb";
 import type { ThemeV2Slug } from "@/lib/themes-v2/types";
 import { CelenkThumb } from "@/components/themes-v2/thumbs/celenk-thumb";
 import { PolaroidThumb } from "@/components/themes-v2/thumbs/polaroid-thumb";
@@ -134,23 +135,12 @@ export function TemplateCarousel() {
                   className="relative aspect-[3/4] overflow-hidden"
                   style={{ backgroundColor: theme.palette.bg }}
                 >
-                  <picture>
-                    <source srcSet={THEME_THUMB[theme.slug]} type="image/png" />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={THEME_THUMB[theme.slug]}
-                      alt={`${theme.name} davetiye teması`}
-                      loading="lazy"
-                      decoding="async"
-                      className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).style.display = "none";
-                      }}
-                    />
-                  </picture>
-                  <div className="absolute inset-0 -z-10">
-                    <Svg />
-                  </div>
+                  <HoverVideoThumb
+                    videoSrc={THEME_VIDEO[theme.slug]}
+                    imgSrc={THEME_THUMB[theme.slug]}
+                    alt={`${theme.name} davetiye teması`}
+                    SvgFallback={Svg}
+                  />
 
                   {/* Number top-left */}
                   <span

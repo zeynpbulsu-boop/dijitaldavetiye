@@ -172,6 +172,24 @@ export function EditorForm({
           defaultValue={invitation.footer_note ?? ""}
           placeholder="Bizimle olmanız bizi onurlandırır"
         />
+        {/* Hikâye — galeri bölümünün giriş metni. Order formunda vardı ama
+            ödeme sonrası düzenlenemiyordu (P1-7). */}
+        <label htmlFor="field-story_text" className="block space-y-1.5">
+          <span className="block text-[11px] font-medium uppercase tracking-[0.2em] text-brand-ink">
+            Hikâyeniz
+          </span>
+          <textarea
+            id="field-story_text"
+            name="story_text"
+            rows={4}
+            defaultValue={invitation.story_text ?? ""}
+            placeholder="Nasıl tanıştınız, bu güne nasıl geldiniz…"
+            className="block w-full resize-y rounded-md border border-brand-ink/15 bg-white px-3 py-2.5 text-[14px] leading-[1.6] text-brand-ink shadow-ed-sm transition placeholder:text-brand-ink/30 focus:border-brand-cognac focus:outline-none focus:ring-2 focus:ring-brand-cognac/30"
+          />
+          <span className="block text-[11px] leading-[1.5] text-brand-mute">
+            Davetiyede &quot;Hikâyemiz&quot; bölümünün metni. Boş bırakılırsa bölüm fotoğraflarla devam eder.
+          </span>
+        </label>
       </Group>
 
       <Group title="Müzik" eyebrow="— Şarkınız">

@@ -162,7 +162,7 @@ const tr: Messages = {
       "Bir fiyat, bir paket, hiç matematik yok. Hangi edisyonu beğenirsen beğen, davetiyen €39,99 — KDV ve banka komisyonu dahil.",
     badge_popular: "Tek Paket",
     cta_template: "{name} ile Başla",
-    reassurance: "7 gün koşulsuz iade · KDV dahil · Dodo Payments ile güvenli ödeme",
+    reassurance: "14 gün koşulsuz iade · KDV dahil · Dodo Payments ile güvenli ödeme",
     currency: "EUR",
     currency_symbol: "€",
     renewal_price_text: "yıllık €4",
@@ -257,7 +257,7 @@ const tr: Messages = {
       "Beş dakika ayır, biz davetiyeni 48 saatte teslim edelim. Ödeme gerektirmez — önce dene, sonra karar ver.",
     cta_primary: "Böyle bir davetiye istiyorum",
     cta_secondary: "Önce koleksiyona bak",
-    reassurance: ["48 saatte teslim", "7 gün koşulsuz iade", "Abonelik yok", "Türkçe destek"],
+    reassurance: ["48 saatte teslim", "14 gün koşulsuz iade", "Abonelik yok", "Türkçe destek"],
   },
   footer: {
     atelier_label: "Atelier",
@@ -475,7 +475,7 @@ const en: Messages = {
     badge_popular: "Single Package",
     cta_template: "Begin with {name}",
     reassurance:
-      "7-day no-questions refund · VAT included · Secure checkout via Dodo Payments",
+      "14-day no-questions refund · VAT included · Secure checkout via Dodo Payments",
     currency: "EUR",
     currency_symbol: "€",
     renewal_price_text: "€4 / year",
@@ -568,7 +568,7 @@ const en: Messages = {
     cta_secondary: "See the collection first",
     reassurance: [
       "48-hour delivery",
-      "7-day refund",
+      "14-day refund",
       "No subscription",
       "Multilingual support",
     ],
@@ -790,7 +790,7 @@ const sr: Messages = {
     badge_popular: "Jedan Paket",
     cta_template: "Počni sa {name}",
     reassurance:
-      "Povraćaj u 7 dana bez pitanja · PDV uključen · Sigurno plaćanje preko Dodo Paymentsa",
+      "Povraćaj u 14 dana bez pitanja · PDV uključen · Sigurno plaćanje preko Dodo Paymentsa",
     currency: "EUR",
     currency_symbol: "€",
     renewal_price_text: "€4 godišnje",
@@ -883,7 +883,7 @@ const sr: Messages = {
     cta_secondary: "Prvo pogledaj kolekciju",
     reassurance: [
       "Isporuka za 48 sati",
-      "Povraćaj u 7 dana",
+      "Povraćaj u 14 dana",
       "Bez pretplate",
       "Podrška na više jezika",
     ],

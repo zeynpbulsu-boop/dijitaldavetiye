@@ -18,6 +18,8 @@ type RsvpRow = {
   guest_name: string;
   guest_email: string | null;
   attendance: string;
+  side: string | null;
+  guest_count: number | null;
   plus_one: boolean;
   plus_one_name: string | null;
   menu_choice: string | null;
@@ -56,7 +58,7 @@ export async function GET(
   const { data: rsvps, error: rErr } = await supabase
     .from("rsvps")
     .select(
-      "guest_name, guest_email, attendance, plus_one, plus_one_name, menu_choice, allergies, note, created_at",
+      "guest_name, guest_email, attendance, side, guest_count, plus_one, plus_one_name, menu_choice, allergies, note, created_at",
     )
     .eq("invitation_id", inv.id)
     .order("created_at", { ascending: true });
@@ -73,6 +75,8 @@ export async function GET(
     "Guest name",
     "Email",
     "Attendance",
+    "Side",
+    "Guest count",
     "Plus one",
     "Plus-one name",
     "Menu",
@@ -87,6 +91,8 @@ export async function GET(
         r.guest_name,
         r.guest_email ?? "",
         r.attendance,
+        r.side ?? "",
+        r.guest_count != null ? String(r.guest_count) : "",
         r.plus_one ? "yes" : "no",
         r.plus_one_name ?? "",
         r.menu_choice ?? "",

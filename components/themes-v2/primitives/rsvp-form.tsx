@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition, type CSSProperties } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
 import { bestTextOn } from "@/lib/themes-v2/contrast";
@@ -13,6 +13,7 @@ interface Props {
 }
 
 type Attendance = "yes" | "no" | "maybe" | null;
+type Side = "bride" | "groom" | "both" | null;
 
 export function RsvpForm({ meta, slug }: Props) {
   const { palette } = meta;
@@ -21,8 +22,11 @@ export function RsvpForm({ meta, slug }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [attendance, setAttendance] = useState<Attendance>(null);
+  const [side, setSide] = useState<Side>(null);
+  const [guestCount, setGuestCount] = useState(1);
   const [plusOne, setPlusOne] = useState(false);
   const [plusOneName, setPlusOneName] = useState("");
+  const [dietary, setDietary] = useState("");
   const [note, setNote] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,8 +51,11 @@ export function RsvpForm({ meta, slug }: Props) {
             guest_name: name.trim(),
             guest_email: email.trim() || undefined,
             attendance,
+            side: side ?? undefined,
+            guest_count: attendance === "no" ? undefined : guestCount,
             plus_one: plusOne,
             plus_one_name: plusOne ? plusOneName.trim() || undefined : undefined,
+            allergies: dietary.trim() || undefined,
             note: note.trim() || undefined,
           }),
         });
@@ -96,13 +103,16 @@ export function RsvpForm({ meta, slug }: Props) {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-10 rounded-sm p-10 text-center"
+            className="relative mt-10 overflow-hidden rounded-sm p-10 text-center"
             style={{
               border: `1px solid ${palette.ink}24`,
               backgroundColor: palette.paper,
               boxShadow: "0 10px 30px -16px rgba(0,0,0,0.18)",
             }}
           >
+            {!reduced && attendance === "yes" && (
+              <ConfettiBurst accent={palette.accent} ink={palette.ink} />
+            )}
             <div
               className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full"
               style={{
@@ -148,7 +158,7 @@ export function RsvpForm({ meta, slug }: Props) {
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Adınız ve soyadınız"
+                placeholder={str.rsvp.namePlaceholder}
                 required
                 className="w-full bg-transparent pb-2 outline-none placeholder:opacity-40"
                 style={{
@@ -165,7 +175,7 @@ export function RsvpForm({ meta, slug }: Props) {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ornek@mail.com"
+                placeholder={str.rsvp.emailPlaceholder}
                 className="w-full bg-transparent pb-2 outline-none placeholder:opacity-40"
                 style={{
                   borderBottom: `1px solid ${palette.ink}40`,
@@ -225,6 +235,89 @@ export function RsvpForm({ meta, slug }: Props) {
               </div>
             </div>
 
+            {attendance !== "no" && (
+              <>
+                <div>
+                  <p
+                    className="mb-3 text-[10px] uppercase"
+                    style={{ letterSpacing: "0.36em", color: palette.inkSoft, fontWeight: 500 }}
+                  >
+                    {str.rsvp.side}
+                  </p>
+                  <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label={str.rsvp.side}>
+                    {(
+                      [
+                        ["bride", str.rsvp.sideBride],
+                        ["groom", str.rsvp.sideGroom],
+                        ["both", str.rsvp.sideBoth],
+                      ] as const
+                    ).map(([val, label]) => {
+                      const active = side === val;
+                      return (
+                        <button
+                          key={val}
+                          type="button"
+                          role="radio"
+                          aria-checked={active}
+                          onClick={() => setSide(active ? null : val)}
+                          className="rounded-full py-3 text-[11px] font-semibold uppercase transition"
+                          style={{
+                            letterSpacing: "0.28em",
+                            border: `1px solid ${active ? palette.accent : `${palette.ink}30`}`,
+                            backgroundColor: active ? palette.accent : "transparent",
+                            color: active ? bestTextOn(palette.accent) : palette.ink,
+                          }}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <p
+                    className="mb-3 text-[10px] uppercase"
+                    style={{ letterSpacing: "0.36em", color: palette.inkSoft, fontWeight: 500 }}
+                  >
+                    {str.rsvp.guestCount}
+                  </p>
+                  <div
+                    className="inline-flex items-center gap-5 rounded-full px-4 py-2"
+                    style={{ border: `1px solid ${palette.ink}30` }}
+                  >
+                    <button
+                      type="button"
+                      aria-label="−"
+                      onClick={() => setGuestCount((n) => Math.max(1, n - 1))}
+                      className="flex h-8 w-8 items-center justify-center rounded-full text-[18px] transition hover:scale-110 disabled:opacity-30"
+                      disabled={guestCount <= 1}
+                      style={{ color: palette.accent }}
+                    >
+                      −
+                    </button>
+                    <span
+                      aria-live="polite"
+                      className="min-w-[2ch] text-center font-display"
+                      style={{ fontSize: 20, color: palette.ink }}
+                    >
+                      {guestCount}
+                    </span>
+                    <button
+                      type="button"
+                      aria-label="+"
+                      onClick={() => setGuestCount((n) => Math.min(20, n + 1))}
+                      className="flex h-8 w-8 items-center justify-center rounded-full text-[18px] transition hover:scale-110 disabled:opacity-30"
+                      disabled={guestCount >= 20}
+                      style={{ color: palette.accent }}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
             <div>
               <label
                 className="flex items-center gap-3"
@@ -245,7 +338,7 @@ export function RsvpForm({ meta, slug }: Props) {
                   animate={{ opacity: 1, height: "auto" }}
                   value={plusOneName}
                   onChange={(e) => setPlusOneName(e.target.value)}
-                  placeholder="Misafirin adı"
+                  placeholder={str.rsvp.plusOnePlaceholder}
                   className="mt-3 w-full bg-transparent pb-2 outline-none placeholder:opacity-40"
                   style={{
                     borderBottom: `1px solid ${palette.ink}40`,
@@ -257,8 +350,25 @@ export function RsvpForm({ meta, slug }: Props) {
               )}
             </div>
 
+            {attendance !== "no" && (
+              <Field label={str.rsvp.dietary} ink={palette.ink} inkSoft={palette.inkSoft}>
+                <input
+                  value={dietary}
+                  onChange={(e) => setDietary(e.target.value)}
+                  placeholder={str.rsvp.dietaryPlaceholder}
+                  className="w-full bg-transparent pb-2 outline-none placeholder:opacity-40"
+                  style={{
+                    borderBottom: `1px solid ${palette.ink}40`,
+                    fontFamily: "var(--font-display), serif",
+                    fontSize: 16,
+                    color: palette.ink,
+                  }}
+                />
+              </Field>
+            )}
+
             <Field
-              label="Not (alerji, mesaj vs.)"
+              label={str.rsvp.note}
               ink={palette.ink}
               inkSoft={palette.inkSoft}
             >
@@ -266,7 +376,7 @@ export function RsvpForm({ meta, slug }: Props) {
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 rows={3}
-                placeholder="İletmek istediğiniz herhangi bir şey…"
+                placeholder={str.rsvp.notePlaceholder}
                 className="w-full resize-none bg-transparent p-3 outline-none placeholder:opacity-40"
                 style={{
                   border: `1px solid ${palette.ink}24`,
@@ -302,6 +412,56 @@ export function RsvpForm({ meta, slug }: Props) {
         )}
       </div>
     </section>
+  );
+}
+
+/* ── Konfeti kutlaması — "evet" yanıtında bir kez patlar ─────────────────
+ * GPU-dostu: yalnız transform+opacity, span başına CSS yok, framer ile
+ * tek seferlik animasyon. useEffect'te üretilir (SSR/hydration güvenli);
+ * reduced-motion'da çağıran taraf hiç render etmez. */
+function ConfettiBurst({ accent, ink }: { accent: string; ink: string }) {
+  const [pieces, setPieces] = useState<
+    { style: CSSProperties; x: number; y: number; rotate: number; duration: number; delay: number }[]
+  >([]);
+
+  useEffect(() => {
+    const colors = [accent, ink, `${accent}99`, "#E8C77D"];
+    setPieces(
+      Array.from({ length: 28 }, (_, i) => {
+        const angle = (i / 28) * Math.PI * 2 + Math.random() * 0.35;
+        const dist = 80 + Math.random() * 140;
+        return {
+          style: {
+            left: "50%",
+            top: "38%",
+            width: 5 + Math.random() * 5,
+            height: 8 + Math.random() * 6,
+            backgroundColor: colors[i % colors.length],
+            borderRadius: Math.random() > 0.5 ? "50%" : 1,
+          } as CSSProperties,
+          x: Math.cos(angle) * dist,
+          y: Math.sin(angle) * dist - 70,
+          rotate: 300 + Math.random() * 480,
+          duration: 0.9 + Math.random() * 0.7,
+          delay: 0.25 + Math.random() * 0.15,
+        };
+      }),
+    );
+  }, [accent, ink]);
+
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0">
+      {pieces.map((p, i) => (
+        <motion.span
+          key={i}
+          className="absolute"
+          style={p.style}
+          initial={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
+          animate={{ x: p.x, y: p.y, rotate: p.rotate, opacity: 0 }}
+          transition={{ duration: p.duration, delay: p.delay, ease: [0.2, 0.6, 0.4, 1] }}
+        />
+      ))}
+    </div>
   );
 }
 
