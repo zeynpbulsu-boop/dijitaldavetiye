@@ -16,6 +16,17 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
       countdownBg: "#5F6E57", // accent ile birebir aynıydı; derin adaçayı → countdownInk 4.69 (AA)
       countdownInk: "#F4EDE5",
     },
+
+    // Gece fazı — sıcak orman-adaçayı ailesi (K1), kontrastlar doğrulandı (K3)
+    night: {
+      bg: "#20261D",
+      paper: "#2A3226",
+      ink: "#F0EAD9",
+      inkSoft: "#C4BBA4",
+      accent: "#9DB08F",
+      countdownBg: "#171C15",
+      countdownInk: "#E8E2CE",
+    },
   },
   polaroid: {
     slug: "polaroid",
@@ -47,6 +58,16 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
       accent: "#A7BBC9",
       countdownBg: "#5C6B76",
       countdownInk: "#FBF8F2",
+    },
+    // Gece fazı — gece mavisi-gri ailesi (K1), kontrastlar doğrulandı (K3)
+    night: {
+      bg: "#1C242B",
+      paper: "#252E37",
+      ink: "#EDF1F2",
+      inkSoft: "#B8C4CC",
+      accent: "#A7BBC9",
+      countdownBg: "#141B21",
+      countdownInk: "#DCE4E8",
     },
   },
   fener: {

@@ -522,3 +522,15 @@ html {
     opacity: 0;
   }
 }
+
+/* Gece/Gündüz faz geçişi — yalnız swap anında (1.6s) aktif olan yumuşatma;
+   kalıcı global transition diğer animasyonlarla çakışırdı. */
+[data-phase-swap],
+[data-phase-swap] * {
+  transition:
+    background-color 1.2s ease,
+    color 1.5s ease,
+    border-color 1.2s ease,
+    fill 1.2s ease,
+    stroke 1.2s ease !important;
+}

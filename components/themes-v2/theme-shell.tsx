@@ -18,6 +18,7 @@ import { AtmosphereDefs } from "./primitives/atmosphere";
 import { Reveal } from "./primitives/reveal";
 import { AmbientToggle, useAmbientAudio } from "./primitives/opening-ceremony";
 import { EnvelopeCeremony } from "./primitives/envelope-ceremony";
+import { PhaseToggle } from "./primitives/phase-toggle";
 import { THEME_MUSIC } from "@/lib/themes-v2/assets";
 import { MusicEmbedSection } from "./primitives/music-embed";
 import { YouTubeMusic } from "./primitives/youtube-music";
@@ -29,6 +30,10 @@ interface Props extends ThemeV2Props {
   rsvpSlug?: string;
   /** Per-invitation music override; falls back to the theme's default track. */
   musicSrc?: string | null;
+  /** Gece fazı aktif mi (renderer yönetir). */
+  isNight?: boolean;
+  /** Tanımlıysa güneş/ay toggle'ı render edilir. */
+  onToggleNight?: () => void;
 }
 
 export function ThemeShell({
@@ -38,6 +43,8 @@ export function ThemeShell({
   showBuyBadge = false,
   rsvpSlug,
   musicSrc,
+  isNight = false,
+  onToggleNight,
 }: Props) {
   const { palette } = meta;
   const reduced = useReducedMotion();
@@ -83,6 +90,17 @@ export function ThemeShell({
   // state. Rendering the animated tree only after mount guarantees those
   // entrances play. The themed background is server-rendered, so there is no
   // flash — the night sky is already there when the content fades in.
+  // Faz swap'ı sırasında bg/color'a geçici CSS transition uygula (globals:
+  // [data-phase-swap]); kalıcı bırakmıyoruz ki diğer animasyonlarla çakışmasın.
+  const [phaseSwapping, setPhaseSwapping] = useState(false);
+  const handleToggleNight = onToggleNight
+    ? () => {
+        setPhaseSwapping(true);
+        onToggleNight();
+        window.setTimeout(() => setPhaseSwapping(false), 1600);
+      }
+    : undefined;
+
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
@@ -116,6 +134,8 @@ export function ThemeShell({
     <div
       className="relative min-h-screen overflow-hidden"
       style={{ backgroundColor: palette.bg, color: palette.ink }}
+      data-phase-swap={phaseSwapping ? "" : undefined}
+      data-phase={isNight ? "night" : "day"}
     >
       {/* A11y: her davetiyede tek anlamsal başlık. Görsel isim dekoratif
           calligraphy olduğundan ekran-okuyucu + heading yapısı için
@@ -145,6 +165,9 @@ export function ThemeShell({
 
       {hydrated && (
         <>
+          {handleToggleNight && opened && (
+            <PhaseToggle isNight={isNight} onToggle={handleToggleNight} palette={palette} />
+          )}
           {hero}
 
           {showCountdown && (

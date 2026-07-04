@@ -26,6 +26,10 @@ export interface ThemeV2Meta {
   mood: string;
   signature: string;
   palette: ThemeV2Palette;
+  /** Gece fazı — tanımlıysa davetiyede güneş/ay toggle'ı görünür ve palet
+   *  bu değerlerle harmanlanır (K1: aynı sıcaklık ailesi, K3: kontrast
+   *  doğrulanmış). Tanımsız temalarda toggle render edilmez. */
+  night?: Partial<ThemeV2Palette>;
 }
 
 export interface InvitationDate {

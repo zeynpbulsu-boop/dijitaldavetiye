@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import type { ThemeV2Props, ThemeV2Slug } from "@/lib/themes-v2/types";
 import { ThemeShell } from "./theme-shell";
 import { CelenkHero } from "./heroes/celenk-hero";
@@ -28,14 +29,28 @@ interface Props extends ThemeV2Props {
 
 export function ThemeRenderer({ meta, data, rsvpSlug, showBuyBadge, musicSrc }: Props) {
   const Hero = HERO_BY_SLUG[meta.slug];
+
+  // Gece/Gündüz fazı — palet swap burada yaşar ki hem hero hem shell aynı
+  // birleşik paleti görsün. Gece paleti tanımsız temalarda toggle yoktur.
+  const [night, setNight] = useState(false);
+  const activeMeta = useMemo(
+    () =>
+      night && meta.night
+        ? { ...meta, palette: { ...meta.palette, ...meta.night } }
+        : meta,
+    [night, meta],
+  );
+
   return (
     <ThemeShell
-      meta={meta}
+      meta={activeMeta}
       data={data}
-      hero={<Hero meta={meta} data={data} />}
+      hero={<Hero meta={activeMeta} data={data} />}
       rsvpSlug={rsvpSlug}
       showBuyBadge={showBuyBadge}
       musicSrc={musicSrc}
+      isNight={night}
+      onToggleNight={meta.night ? () => setNight((v) => !v) : undefined}
     />
   );
 }
