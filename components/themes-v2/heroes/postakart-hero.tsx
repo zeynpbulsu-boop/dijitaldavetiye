@@ -238,6 +238,23 @@ export function PostakartHero({ meta, data }: ThemeV2Props) {
       >
         {flipped ? str.hero.flipBack : str.hero.flipHint}
       </motion.p>
+
+      {/* Alt bölge kartpostal altyazısı — hero'nun alt boşluğunu (QA turu,
+          küçük) anlamlı dolduran damga-mürekkebi satırı: tarih · şehir */}
+      <motion.p
+        initial={reduced ? false : { opacity: 0, y: 10 }}
+        animate={{ opacity: 0.78, y: 0 }}
+        transition={{ delay: 1.2, duration: 1 }}
+        className="absolute bottom-20 z-10 text-center text-[10px] uppercase"
+        style={{
+          color: palette.ink,
+          letterSpacing: "0.4em",
+          filter: "url(#ink-bleed)",
+        }}
+      >
+        {data.date.day} {data.date.month} {data.date.year}
+        {data.venue.city ? ` · ${data.venue.city.split("·")[0].trim()}` : ""}
+      </motion.p>
     </section>
   );
 }

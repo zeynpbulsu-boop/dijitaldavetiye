@@ -1,14 +1,20 @@
+import { THEMES_V2 } from "@/lib/themes-v2/registry";
+
+// Palet registry'den — thumb kopya hex'leri senkron riskiydi (P2-10);
+// sahneye özgü renkler (gök, ışık) bilinçli hardcoded kalır.
+const P = THEMES_V2.celenk.palette;
+
 export function CelenkThumb() {
   return (
     <svg viewBox="0 0 300 400" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-      <rect width="300" height="400" fill="#F4EDE5" />
+      <rect width="300" height="400" fill={P.bg} />
       {/* Watercolor washes */}
       <ellipse cx="60" cy="60" rx="80" ry="40" fill="#A8C4D6" opacity="0.18" />
-      <ellipse cx="250" cy="350" rx="100" ry="50" fill="#7A8870" opacity="0.16" />
+      <ellipse cx="250" cy="350" rx="100" ry="50" fill={P.accent} opacity="0.16" />
 
       {/* Wreath */}
       <g transform="translate(150 180)">
-        <g stroke="#7A8870" strokeWidth="0.8" fill="none">
+        <g stroke={P.accent} strokeWidth="0.8" fill="none">
           <path d="M -80 0 Q -68 -50 -36 -72 T 24 -98" />
           <path d="M 80 0 Q 68 -50 36 -72 T -24 -98" />
           <path d="M -80 0 Q -68 50 -36 72 T 24 98" />
@@ -22,7 +28,7 @@ export function CelenkThumb() {
           [60, 32, -30], [48, 52, -45], [30, 72, -55], [12, 88, -65],
         ].map(([x, y, a], i) => (
           <g key={i} transform={`translate(${x} ${y}) rotate(${a})`}>
-            <ellipse cx="0" cy="0" rx="6" ry="2.5" fill="#7A8870" fillOpacity="0.7" />
+            <ellipse cx="0" cy="0" rx="6" ry="2.5" fill={P.accent} fillOpacity="0.7" />
           </g>
         ))}
         {/* Gypsophila */}
@@ -36,7 +42,7 @@ export function CelenkThumb() {
                   cy={Math.sin((a * Math.PI) / 180) * 2.5}
                   r="2"
                   fill="#FBFAF5"
-                  stroke="#3A2A1F"
+                  stroke={P.ink}
                   strokeWidth="0.2"
                   strokeOpacity="0.3"
                 />
@@ -53,7 +59,7 @@ export function CelenkThumb() {
           textAnchor="middle"
           fontFamily="'Pinyon Script', cursive"
           fontSize="34"
-          fill="#3A2A1F"
+          fill={P.ink}
         >
           Elif
         </text>
@@ -64,7 +70,7 @@ export function CelenkThumb() {
           fontFamily="serif"
           fontStyle="italic"
           fontSize="11"
-          fill="#7A8870"
+          fill={P.accent}
         >
           ve
         </text>
@@ -74,7 +80,7 @@ export function CelenkThumb() {
           textAnchor="middle"
           fontFamily="'Pinyon Script', cursive"
           fontSize="34"
-          fill="#3A2A1F"
+          fill={P.ink}
         >
           Can
         </text>
@@ -88,7 +94,7 @@ export function CelenkThumb() {
         fontFamily="serif"
         fontStyle="italic"
         fontSize="12"
-        fill="#3A2A1F"
+        fill={P.ink}
       >
         15 Haziran 2026
       </text>
@@ -97,7 +103,7 @@ export function CelenkThumb() {
         y="368"
         textAnchor="middle"
         fontSize="8"
-        fill="#6B5847"
+        fill={P.inkSoft}
         letterSpacing="3"
       >
         CUNDA ADASI

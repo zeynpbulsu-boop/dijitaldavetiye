@@ -105,6 +105,21 @@ export function ThemeShell({
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
+  // BuyBadge, RSVP formu görünürken nazikçe çekilir — pill stepper'ın üstüne
+  // biniyordu (QA turu, küçük). Form ekrandan çıkınca geri gelir.
+  const rsvpZoneRef = useRef<HTMLDivElement>(null);
+  const [rsvpInView, setRsvpInView] = useState(false);
+  useEffect(() => {
+    const el = rsvpZoneRef.current;
+    if (!el || !showBuyBadge) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setRsvpInView(entry.isIntersecting),
+      { threshold: 0.05 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [showBuyBadge, hydrated]);
+
   // YouTube müziğini mühre-basma JESTİNİN İÇİNDE doğrudan başlatmak için.
   // (Effect gecikmesi yerine senkron çağrı → iOS dahil sesli autoplay en güvenilir.)
   const musicPlayRef = useRef<(() => void) | null>(null);
@@ -162,7 +177,7 @@ export function ThemeShell({
           : eventHeading(data.locale, data.eventType)}
       </h1>
       <AtmosphereDefs />
-      {showBuyBadge && <BuyBadge meta={meta} />}
+      {showBuyBadge && <BuyBadge meta={meta} hidden={rsvpInView} />}
 
       {hydrated && (
         <>
@@ -216,9 +231,11 @@ export function ThemeShell({
               <ExtraInfo meta={meta} text={data.extraInfo} />
             </Reveal>
           )}
-          <Reveal>
-            <RsvpForm meta={meta} slug={rsvpSlug} />
-          </Reveal>
+          <div ref={rsvpZoneRef}>
+            <Reveal>
+              <RsvpForm meta={meta} slug={rsvpSlug} />
+            </Reveal>
+          </div>
 
           <ThemeFooter meta={meta} data={data} reduced={!!reduced} />
 
@@ -345,7 +362,7 @@ function ThemeFooter({
   );
 }
 
-function BuyBadge({ meta }: { meta: ThemeV2Props["meta"] }) {
+function BuyBadge({ meta, hidden = false }: { meta: ThemeV2Props["meta"]; hidden?: boolean }) {
   // Pill zemini her temada beyaza yakın → metin daima KOYU olmalı. palette.ink
   // koyu temalarda (geceyarisi) krem olduğundan 'Satın Al' CTA'sı beyaz pill
   // üstünde görünmez oluyordu (QA turu bulgusu) — bestTextOn garantisi.
@@ -355,6 +372,9 @@ function BuyBadge({ meta }: { meta: ThemeV2Props["meta"] }) {
       href={`/order/${meta.slug}`}
       className="fixed left-4 top-4 z-50 flex items-center gap-2 rounded-full px-4 py-2 text-[11px] backdrop-blur transition hover:scale-[1.02]"
       style={{
+        opacity: hidden ? 0 : 1,
+        pointerEvents: hidden ? "none" : "auto",
+        transition: "opacity 0.45s ease",
         backgroundColor: "rgba(255,255,255,0.82)",
         border: `1px solid ${pillInk}1a`,
         color: pillInk,

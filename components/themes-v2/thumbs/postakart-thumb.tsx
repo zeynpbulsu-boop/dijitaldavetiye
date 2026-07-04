@@ -1,11 +1,17 @@
+import { THEMES_V2 } from "@/lib/themes-v2/registry";
+
+// Palet registry'den — thumb kopya hex'leri senkron riskiydi (P2-10);
+// sahneye özgü renkler (gök, ışık) bilinçli hardcoded kalır.
+const P = THEMES_V2.postakart.palette;
+
 export function PostakartThumb() {
   return (
     <svg viewBox="0 0 300 400" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-      <rect width="300" height="400" fill="#E3D5B5" />
+      <rect width="300" height="400" fill={P.bg} />
 
       {/* Postcard tilted */}
       <g transform="translate(20 80) rotate(-3 130 100)">
-        <rect width="260" height="200" fill="#F5E8C9" stroke="#3A291830" />
+        <rect width="260" height="200" fill={P.paper} stroke="#3A291830" />
 
         {/* Landscape */}
         <defs>
@@ -23,37 +29,37 @@ export function PostakartThumb() {
         <text x="22" y="34" fontFamily="serif" fontStyle="italic" fontSize="11" fill="#3A291890">
           Greetings from
         </text>
-        <text x="22" y="56" fontFamily="serif" fontSize="20" fill="#3A2918" letterSpacing="1.5">
+        <text x="22" y="56" fontFamily="serif" fontSize="20" fill={P.ink} letterSpacing="1.5">
           AYVALIK
         </text>
 
         {/* Bottom title block */}
-        <rect x="22" y="160" width="216" height="34" fill="#F5E8C9" stroke="#3A291830" />
-        <text x="130" y="171" textAnchor="middle" fontSize="6" fill="#A8463A" letterSpacing="3">
+        <rect x="22" y="160" width="216" height="34" fill={P.paper} stroke="#3A291830" />
+        <text x="130" y="171" textAnchor="middle" fontSize="6" fill={P.accent} letterSpacing="3">
           SAVE THE DATE
         </text>
-        <text x="130" y="186" textAnchor="middle" fontFamily="'Pinyon Script', cursive" fontSize="16" fill="#3A2918">
-          Elif <tspan fill="#A8463A" fontStyle="italic">&amp;</tspan> Can
+        <text x="130" y="186" textAnchor="middle" fontFamily="'Pinyon Script', cursive" fontSize="16" fill={P.ink}>
+          Elif <tspan fill={P.accent} fontStyle="italic">&amp;</tspan> Can
         </text>
       </g>
 
       {/* Stamp */}
       <g transform="translate(220 320) rotate(-6)">
-        <rect width="50" height="65" fill="#A8463A" stroke="#3A2918" strokeDasharray="2 2" />
-        <text x="25" y="22" textAnchor="middle" fontSize="6" fill="#F5E8C9">NUVE</text>
-        <text x="25" y="40" textAnchor="middle" fontFamily="serif" fontStyle="italic" fontSize="14" fill="#F5E8C9">
+        <rect width="50" height="65" fill={P.accent} stroke={P.ink} strokeDasharray="2 2" />
+        <text x="25" y="22" textAnchor="middle" fontSize="6" fill={P.paper}>NUVE</text>
+        <text x="25" y="40" textAnchor="middle" fontFamily="serif" fontStyle="italic" fontSize="14" fill={P.paper}>
           E&amp;C
         </text>
-        <text x="25" y="56" textAnchor="middle" fontSize="6" fill="#F5E8C9">2026</text>
+        <text x="25" y="56" textAnchor="middle" fontSize="6" fill={P.paper}>2026</text>
       </g>
 
       {/* Postmark */}
       <g transform="translate(40 320) rotate(-12)">
-        <circle cx="36" cy="36" r="32" fill="none" stroke="#3A2918" strokeWidth="1" opacity="0.55" />
-        <circle cx="36" cy="36" r="26" fill="none" stroke="#3A2918" strokeWidth="1" opacity="0.55" />
-        <text x="36" y="26" textAnchor="middle" fontSize="5" fill="#3A2918" letterSpacing="1">HAZİRAN</text>
-        <text x="36" y="46" textAnchor="middle" fontFamily="serif" fontSize="18" fill="#3A2918">15</text>
-        <text x="36" y="58" textAnchor="middle" fontSize="5" fill="#3A2918" letterSpacing="1">2026</text>
+        <circle cx="36" cy="36" r="32" fill="none" stroke={P.ink} strokeWidth="1" opacity="0.55" />
+        <circle cx="36" cy="36" r="26" fill="none" stroke={P.ink} strokeWidth="1" opacity="0.55" />
+        <text x="36" y="26" textAnchor="middle" fontSize="5" fill={P.ink} letterSpacing="1">HAZİRAN</text>
+        <text x="36" y="46" textAnchor="middle" fontFamily="serif" fontSize="18" fill={P.ink}>15</text>
+        <text x="36" y="58" textAnchor="middle" fontSize="5" fill={P.ink} letterSpacing="1">2026</text>
       </g>
     </svg>
   );
