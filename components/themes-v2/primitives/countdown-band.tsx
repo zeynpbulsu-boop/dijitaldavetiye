@@ -6,6 +6,7 @@ import type { ThemeV2Meta, InvitationDate } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
 import { SlotDate } from "./slot-date";
 import { contrastRatio } from "@/lib/themes-v2/contrast";
+import { H2, LEAD } from "./type-scale";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -132,7 +133,7 @@ export function CountdownBand({ meta, date }: Props) {
             className="mt-6 font-display"
             style={{
               fontWeight: 300,
-              fontSize: "clamp(30px, 5vw, 50px)",
+              fontSize: H2,
               color: ink,
               lineHeight: 1.1,
               letterSpacing: "0.01em",
@@ -198,7 +199,7 @@ export function CountdownBand({ meta, date }: Props) {
             {...reveal(0.3)}
             className="mt-10 font-display italic"
             style={{
-              fontSize: "clamp(15px, 1.9vw, 19px)",
+              fontSize: LEAD,
               opacity: 0.86,
               letterSpacing: "0.01em",
               color: ink,

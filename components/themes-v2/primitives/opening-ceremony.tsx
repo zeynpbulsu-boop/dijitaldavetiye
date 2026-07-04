@@ -6,6 +6,7 @@ import type { ThemeV2Meta, ThemeV2Data } from "@/lib/themes-v2/types";
 import { DustParticles } from "./atmosphere";
 import { THEME_CEREMONY } from "@/lib/themes-v2/assets";
 import { useInvitationT } from "../i18n-context";
+import { ornamentColor } from "@/lib/themes-v2/contrast";
 
 const CURTAIN_MS = 1250;
 /** Seal-crack micro-animation length — curtain waits for it, so the ritual
@@ -105,13 +106,13 @@ export function AmbientToggle({
       className="fixed bottom-5 right-5 z-40 flex h-11 w-11 items-center justify-center rounded-full backdrop-blur transition hover:scale-105"
       style={{
         backgroundColor: `${palette.paper}d9`,
-        border: `1px solid ${palette.accent}55`,
-        color: palette.accent,
+        border: `1px solid ${ornamentColor(palette)}55`,
+        color: ornamentColor(palette),
         boxShadow: "0 6px 22px -8px rgba(0,0,0,0.4)",
       }}
     >
       <SoundIcon muted={muted} />
-      {!muted && !reduced && <PulseRing color={palette.accent} />}
+      {!muted && !reduced && <PulseRing color={ornamentColor(palette)} />}
     </button>
   );
 }

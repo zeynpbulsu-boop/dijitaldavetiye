@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
 import type { MusicEmbed } from "@/lib/themes-v2/music-embed";
 import { useInvitationT } from "../i18n-context";
+import { H2 } from "./type-scale";
 
 const ALLOW: Record<MusicEmbed["platform"], string> = {
   spotify: "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture",
@@ -62,7 +63,7 @@ export function MusicEmbedSection({
           className="mt-6 font-display"
           style={{
             fontWeight: 300,
-            fontSize: "clamp(28px, 4.6vw, 46px)",
+            fontSize: H2,
             color: palette.ink,
             lineHeight: 1.12,
           }}

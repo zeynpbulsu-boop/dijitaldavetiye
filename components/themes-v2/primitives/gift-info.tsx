@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, GiftInfo as GiftData } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
+import { H2, LEAD } from "./type-scale";
 
 export function GiftInfo({
   meta,
@@ -60,7 +61,7 @@ export function GiftInfo({
         <motion.h2
           {...reveal(0.05)}
           className="mt-6 font-display"
-          style={{ fontWeight: 300, fontSize: "clamp(28px, 4.6vw, 46px)", color: palette.ink, lineHeight: 1.12 }}
+          style={{ fontWeight: 300, fontSize: H2, color: palette.ink, lineHeight: 1.12 }}
         >
           {str.gift.headline}
         </motion.h2>
@@ -78,7 +79,7 @@ export function GiftInfo({
           <motion.p
             {...reveal(0.16)}
             className="mx-auto max-w-[52ch] font-display italic"
-            style={{ fontSize: "clamp(15px, 1.9vw, 19px)", color: palette.inkSoft, lineHeight: 1.7 }}
+            style={{ fontSize: LEAD, color: palette.inkSoft, lineHeight: 1.7 }}
           >
             {gift.note}
           </motion.p>

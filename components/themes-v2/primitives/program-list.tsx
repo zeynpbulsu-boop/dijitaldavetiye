@@ -3,6 +3,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, ScheduleItem } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
+import { H2, LEAD } from "./type-scale";
+import { ornamentColor } from "@/lib/themes-v2/contrast";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -109,7 +111,7 @@ export function ProgramList({ meta, items }: Props) {
             className="mt-6 font-display"
             style={{
               fontWeight: 300,
-              fontSize: "clamp(30px, 5vw, 50px)",
+              fontSize: H2,
               color: palette.ink,
               lineHeight: 1.1,
               letterSpacing: "0.01em",
@@ -122,12 +124,12 @@ export function ProgramList({ meta, items }: Props) {
             {...reveal(0.12)}
             className="mx-auto my-7 flex items-center justify-center gap-3"
           >
-            <span className="block h-px w-10" style={{ background: palette.accent, opacity: 0.6 }} />
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={palette.accent} strokeWidth="1.4">
+            <span className="block h-px w-10" style={{ background: ornamentColor(palette), opacity: 0.6 }} />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={ornamentColor(palette)} strokeWidth="1.4">
               <circle cx="12" cy="12" r="9" />
               <path d="M12 7v5l3 2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span className="block h-px w-10" style={{ background: palette.accent, opacity: 0.6 }} />
+            <span className="block h-px w-10" style={{ background: ornamentColor(palette), opacity: 0.6 }} />
           </motion.div>
         </div>
 
@@ -175,7 +177,7 @@ export function ProgramList({ meta, items }: Props) {
               <span
                 className="shrink-0 pt-[2px] font-display tabular-nums"
                 style={{
-                  fontSize: "clamp(15px, 1.9vw, 19px)",
+                  fontSize: LEAD,
                   color: palette.accent,
                   fontVariantNumeric: "tabular-nums",
                   letterSpacing: "0.06em",

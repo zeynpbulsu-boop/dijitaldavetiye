@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
 import { bestTextOn, relativeLuminance } from "@/lib/themes-v2/contrast";
 import { useInvitationT } from "../i18n-context";
+import { H2 } from "./type-scale";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -90,7 +91,7 @@ export function RsvpForm({ meta, slug }: Props) {
           <p
             className="mt-4 font-display italic"
             style={{
-              fontSize: "clamp(32px, 4vw, 50px)",
+              fontSize: H2,
               color: palette.ink,
               letterSpacing: "0.005em",
               filter: "url(#ink-bleed)",

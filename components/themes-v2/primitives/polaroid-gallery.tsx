@@ -5,6 +5,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, PolaroidPhoto } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, PaperGrain, makeRng, r3 } from "./atmosphere";
 import { useInvitationT } from "../i18n-context";
+import { H2, LEAD } from "./type-scale";
+import { ornamentColor } from "@/lib/themes-v2/contrast";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -86,7 +88,7 @@ export function PolaroidGallery({
             className="mt-5 font-display"
             style={{
               fontWeight: 300,
-              fontSize: "clamp(30px, 5vw, 50px)",
+              fontSize: H2,
               color: palette.ink,
               lineHeight: 1.12,
               letterSpacing: "0.01em",
@@ -99,19 +101,19 @@ export function PolaroidGallery({
             {...reveal(0.12)}
             className="mx-auto my-7 flex items-center justify-center gap-3"
           >
-            <span className="block h-px w-10" style={{ background: palette.accent, opacity: 0.55 }} />
+            <span className="block h-px w-10" style={{ background: ornamentColor(palette), opacity: 0.55 }} />
             <svg
               width="15"
               height="15"
               viewBox="0 0 24 24"
               fill="none"
-              stroke={palette.accent}
+              stroke={ornamentColor(palette)}
               strokeWidth="1.4"
               aria-hidden
             >
               <path d="M12 20.5s-7-4.6-7-10.2a4.2 4.2 0 0 1 7-3.1 4.2 4.2 0 0 1 7 3.1c0 5.6-7 10.2-7 10.2z" />
             </svg>
-            <span className="block h-px w-10" style={{ background: palette.accent, opacity: 0.55 }} />
+            <span className="block h-px w-10" style={{ background: ornamentColor(palette), opacity: 0.55 }} />
           </motion.div>
 
           {intro && (
@@ -119,7 +121,7 @@ export function PolaroidGallery({
               {...reveal(0.18)}
               className="mx-auto mt-4 max-w-[600px] font-display italic"
               style={{
-                fontSize: "clamp(15px, 1.8vw, 19px)",
+                fontSize: LEAD,
                 lineHeight: 1.85,
                 color: palette.inkSoft,
                 letterSpacing: "0.006em",

@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
+import { H2, LEAD } from "./type-scale";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -47,7 +48,7 @@ export function ExtraInfo({ meta, text, title }: Props) {
           {...reveal(0.06)}
           className="mt-5 font-display italic"
           style={{
-            fontSize: "clamp(28px, 3.6vw, 44px)",
+            fontSize: H2,
             color: palette.ink,
             lineHeight: 1.12,
             letterSpacing: "0.005em",
@@ -106,7 +107,7 @@ export function ExtraInfo({ meta, text, title }: Props) {
           {...reveal(0.18)}
           className="mx-auto max-w-[60ch] whitespace-pre-line break-words font-display italic"
           style={{
-            fontSize: "clamp(16px, 1.8vw, 20px)",
+            fontSize: LEAD,
             lineHeight: 1.85,
             color: palette.inkSoft,
             letterSpacing: "0.006em",

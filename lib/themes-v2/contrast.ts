@@ -39,3 +39,20 @@ export function bestTextOn(bg: string): string {
     ? DARK_INK
     : LIGHT;
 }
+
+/**
+ * Süs/ayraç rengi güvencesi (K3) — accent zemin üstünde ≥2.2 kontrast
+ * veriyorsa accent, vermiyorsa inkSoft döner. Kurdele'nin soluk saten
+ * mavisi (#A7BBC9, bg üstünde ~1.3) gibi paletlerde divider/ikon süsleri
+ * fiilen görünmez oluyordu; accent'in kendisi (kurdele dolgusu vb.) bu
+ * karardan etkilenmez, yalnız FONKSİYONEL süsler düşer.
+ */
+export function ornamentColor(palette: {
+  bg: string;
+  accent: string;
+  inkSoft: string;
+}): string {
+  return contrastRatio(palette.accent, palette.bg) >= 2.2
+    ? palette.accent
+    : palette.inkSoft;
+}

@@ -2,8 +2,9 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, ThemeV2Data } from "@/lib/themes-v2/types";
-import { bestTextOn } from "@/lib/themes-v2/contrast";
+import { bestTextOn, ornamentColor } from "@/lib/themes-v2/contrast";
 import { useInvitationT } from "../i18n-context";
+import { H2, LEAD } from "./type-scale";
 
 /* Calendar stamp from a FIXED iso → deterministic (no Date.now), hydration-safe. */
 function calStamp(iso: string, addHours = 0): string {
@@ -88,7 +89,7 @@ export function VenueMap({
           className="mt-6 font-display"
           style={{
             fontWeight: 300,
-            fontSize: "clamp(30px, 5vw, 50px)",
+            fontSize: H2,
             color: palette.ink,
             lineHeight: 1.1,
             letterSpacing: "0.01em",
@@ -101,19 +102,19 @@ export function VenueMap({
           {...reveal(0.12)}
           className="mx-auto my-7 flex items-center justify-center gap-3"
         >
-          <span className="block h-px w-10" style={{ background: palette.accent, opacity: 0.6 }} />
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={palette.accent} strokeWidth="1.4">
+          <span className="block h-px w-10" style={{ background: ornamentColor(palette), opacity: 0.6 }} />
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={ornamentColor(palette)} strokeWidth="1.4">
             <path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z" />
             <circle cx="12" cy="10" r="2.4" />
           </svg>
-          <span className="block h-px w-10" style={{ background: palette.accent, opacity: 0.6 }} />
+          <span className="block h-px w-10" style={{ background: ornamentColor(palette), opacity: 0.6 }} />
         </motion.div>
 
         {(v.address || v.city) && (
           <motion.p
             {...reveal(0.16)}
             className="font-display italic"
-            style={{ fontSize: "clamp(15px, 1.9vw, 19px)", color: palette.inkSoft }}
+            style={{ fontSize: LEAD, color: palette.inkSoft }}
           >
             {[v.address, v.city].filter(Boolean).join(" · ")}
           </motion.p>

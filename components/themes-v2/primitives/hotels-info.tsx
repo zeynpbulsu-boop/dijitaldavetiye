@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, HotelEntry } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
+import { CARD_TITLE, H2 } from "./type-scale";
 
 /**
  * HotelsInfo — çiftin önerdiği konaklama listesi (şehir dışı misafirler için).
@@ -58,7 +59,7 @@ export function HotelsInfo({
           className="mt-6 font-display"
           style={{
             fontWeight: 300,
-            fontSize: "clamp(28px, 4.6vw, 46px)",
+            fontSize: H2,
             color: palette.ink,
             lineHeight: 1.12,
           }}
@@ -108,7 +109,7 @@ export function HotelsInfo({
                 <span
                   className="font-display"
                   style={{
-                    fontSize: "clamp(17px, 2.2vw, 21px)",
+                    fontSize: CARD_TITLE,
                     color: palette.ink,
                   }}
                 >

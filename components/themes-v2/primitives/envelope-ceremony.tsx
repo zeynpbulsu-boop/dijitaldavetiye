@@ -265,7 +265,9 @@ export function EnvelopeCeremony({
                 boxShadow: `0 30px 60px -24px ${palette.ink}47, 0 6px 16px ${palette.ink}1c`,
               }}
             >
-              {/* Davetiye kartı — kapak açılınca içinden yükselir */}
+              {/* Davetiye kartı — zarfın içinde BOŞ bekler (üstü cep+mühürle
+                  örtülü, yazı koysak çakışır); mühür kırılıp kart yükselirken
+                  isimler kartın üstünde belirir — "içinden çıkan sürpriz". */}
               <motion.div
                 className="absolute inset-x-[7%] bottom-[8%] top-[14%] flex flex-col items-center justify-center rounded-[3px] px-4 text-center"
                 style={{
@@ -274,32 +276,39 @@ export function EnvelopeCeremony({
                   boxShadow: `0 -8px 24px -14px ${palette.ink}40`,
                 }}
                 initial={false}
-                animate={opening ? { y: "-34%" } : { y: 0 }}
+                animate={opening ? { y: "-38%" } : { y: 0 }}
                 transition={{ duration: CARD_S, delay: CRACK_S + 0.15, ease: [0.22, 1, 0.36, 1] }}
               >
-                <span
-                  className="text-[9px] uppercase"
-                  style={{ color: palette.inkSoft, letterSpacing: "0.4em" }}
+                <motion.span
+                  className="flex flex-col items-center"
+                  initial={false}
+                  animate={{ opacity: opening ? 1 : 0 }}
+                  transition={{ duration: 0.6, delay: opening ? CRACK_S + 0.45 : 0 }}
                 >
-                  {data.eyebrow}
-                </span>
-                <span
-                  className="mt-2"
-                  style={{
-                    fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
-                    fontSize: "clamp(22px, 6vw, 32px)",
-                    color: palette.ink,
-                    lineHeight: 1.25,
-                  }}
-                >
-                  {data.partnerOne} <span style={{ color: palette.accent }}>&</span> {data.partnerTwo}
-                </span>
-                <span
-                  className="mt-1.5 font-display"
-                  style={{ fontSize: 13, color: palette.inkSoft, letterSpacing: "0.08em" }}
-                >
-                  {data.date.day} {data.date.month} {data.date.year}
-                </span>
+                  <span
+                    className="text-[9px] uppercase"
+                    style={{ color: palette.inkSoft, letterSpacing: "0.4em" }}
+                  >
+                    {data.eyebrow}
+                  </span>
+                  <span
+                    className="mt-2"
+                    style={{
+                      fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
+                      fontSize: "clamp(22px, 6vw, 32px)",
+                      color: palette.ink,
+                      lineHeight: 1.25,
+                    }}
+                  >
+                    {data.partnerOne} <span style={{ color: palette.accent }}>&</span> {data.partnerTwo}
+                  </span>
+                  <span
+                    className="mt-1.5 font-display"
+                    style={{ fontSize: 13, color: palette.inkSoft, letterSpacing: "0.08em" }}
+                  >
+                    {data.date.day} {data.date.month} {data.date.year}
+                  </span>
+                </motion.span>
               </motion.div>
 
               {/* Zarf gövdesinin alt cebi — kartın "içeride" durduğu hissi */}
