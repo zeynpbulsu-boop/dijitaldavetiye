@@ -3,7 +3,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, ThemeV2Data } from "@/lib/themes-v2/types";
-import { THEME_CEREMONY } from "@/lib/themes-v2/assets";
+import { THEME_CEREMONY, THEME_THUMB } from "@/lib/themes-v2/assets";
 import { DustParticles } from "./atmosphere";
 import { useInvitationT } from "../i18n-context";
 
@@ -111,9 +111,11 @@ export function EnvelopeCeremony({
 
   if (gone) return null;
 
+  // Zarf malzemesi: doku BASKIN (K: 'doku fısıltı değil, malzeme') — açık
+  // paper tülü yalnız metin okunurluğu için ince; keten/kağıt lifleri görünür.
   const paperSurface: CSSProperties = ceremony?.coverTexture
     ? {
-        backgroundImage: `linear-gradient(180deg, ${palette.paper}cc, ${palette.paper}b8), url(${ceremony.coverTexture})`,
+        backgroundImage: `linear-gradient(180deg, ${palette.paper}6b, ${palette.paper}52), url(${ceremony.coverTexture})`,
         backgroundSize: "cover, cover",
         backgroundPosition: "center, center",
       }
@@ -173,7 +175,13 @@ export function EnvelopeCeremony({
 
       {/* Zarf — 3D sahne */}
       <div className="absolute inset-0 flex flex-col items-center justify-center px-6">
-        <div style={{ perspective: 1400, width: "min(86vw, 400px)" }}>
+        <div className="relative" style={{ perspective: 1400, width: "min(86vw, 400px)" }}>
+          {/* Zemin gölgesi — zarf havada değil, masada duruyor */}
+          <span
+            aria-hidden
+            className="absolute left-1/2 top-full mt-6 h-6 w-[78%] -translate-x-1/2 rounded-[50%]"
+            style={{ background: palette.ink, opacity: 0.16, filter: "blur(14px)" }}
+          />
           <motion.div
             className="relative w-full"
             style={{ aspectRatio: "10 / 7", transformStyle: "preserve-3d" }}
@@ -194,26 +202,72 @@ export function EnvelopeCeremony({
                 boxShadow: `0 30px 60px -24px ${palette.ink}47, 0 6px 16px ${palette.ink}1c`,
               }}
             >
-              {/* Pul köşesi — perfore kenar + kontur kalp */}
+              {/* Kabartmalı kapak çizgileri — zarfın ön yüzünde katlama izi */}
               <span
                 aria-hidden
-                className="absolute right-4 top-4 flex h-14 w-12 items-center justify-center"
+                className="absolute inset-x-0 top-0 h-1/2"
                 style={{
-                  border: `1.5px dashed ${palette.accent}88`,
-                  backgroundColor: `${palette.accent}14`,
+                  clipPath: "polygon(0 0, 100% 0, 50% 96%)",
+                  background: `linear-gradient(180deg, ${palette.ink}0a, transparent 65%)`,
+                  borderBottom: `1px solid ${palette.ink}12`,
+                }}
+              />
+              {/* Gerçek pul: tema sanatı perfore çerçevede (kendi fal.ai render'ımız) */}
+              <span
+                aria-hidden
+                className="absolute right-4 top-4 h-16 w-[52px] rotate-[2deg] overflow-hidden p-[3px]"
+                style={{
+                  backgroundColor: "#FDFBF6",
+                  boxShadow: `0 2px 8px ${palette.ink}30`,
+                  // perfore kenar: nokta maskesi
+                  maskImage:
+                    "radial-gradient(circle 2.2px at 2.5px 2.5px, transparent 2.2px, black 2.3px)",
+                  maskSize: "7px 7px",
+                  maskPosition: "-1px -1px",
+                  WebkitMaskImage:
+                    "radial-gradient(circle 2.2px at 2.5px 2.5px, transparent 2.2px, black 2.3px)",
+                  WebkitMaskSize: "7px 7px",
+                  WebkitMaskPosition: "-1px -1px",
                   borderRadius: 2,
                 }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={palette.accent} strokeWidth="1.4" aria-hidden>
-                  <path d="M12 20c-4-3.4-8-6.4-8-10a4.4 4.4 0 0 1 8-2.5A4.4 4.4 0 0 1 20 10c0 3.6-4 6.6-8 10z" />
-                </svg>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={THEME_THUMB[meta.slug]}
+                  alt=""
+                  className="h-full w-full object-cover"
+                  style={{ borderRadius: 1 }}
+                />
               </span>
-              {/* Posta damgası izlenimi */}
+              {/* Posta damgası — pulun üstüne taşan mürekkep halkası + dalga */}
+              <svg
+                aria-hidden
+                className="absolute right-10 top-9 rotate-[-14deg]"
+                width="72"
+                height="46"
+                viewBox="0 0 72 46"
+                fill="none"
+                style={{ opacity: 0.5 }}
+              >
+                <circle cx="23" cy="23" r="19" stroke={palette.inkSoft} strokeWidth="1.2" />
+                <circle cx="23" cy="23" r="14.5" stroke={palette.inkSoft} strokeWidth="0.7" />
+                <path d="M46 14 Q52 10 58 14 T70 14" stroke={palette.inkSoft} strokeWidth="1" />
+                <path d="M46 22 Q52 18 58 22 T70 22" stroke={palette.inkSoft} strokeWidth="1" />
+                <path d="M46 30 Q52 26 58 30 T70 30" stroke={palette.inkSoft} strokeWidth="1" />
+              </svg>
+              {/* İade adresi: çift monogramı, sol üst */}
               <span
                 aria-hidden
-                className="absolute right-14 top-6 h-12 w-12 rounded-full"
-                style={{ border: `1px solid ${palette.inkSoft}44`, transform: "rotate(-12deg)" }}
-              />
+                className="absolute left-5 top-5"
+                style={{
+                  fontFamily: "var(--font-calligraphy), 'Pinyon Script', cursive",
+                  fontSize: 19,
+                  color: palette.inkSoft,
+                  opacity: 0.85,
+                }}
+              >
+                {data.monogram}
+              </span>
 
               {/* Adres bloğu */}
               <span className="absolute inset-x-6 top-1/2 block -translate-y-1/2 text-center">
