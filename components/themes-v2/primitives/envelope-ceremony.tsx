@@ -111,15 +111,14 @@ export function EnvelopeCeremony({
 
   if (gone) return null;
 
-  // Zarf malzemesi: doku BASKIN (K: 'doku fısıltı değil, malzeme') — açık
-  // paper tülü yalnız metin okunurluğu için ince; keten/kağıt lifleri görünür.
-  const paperSurface: CSSProperties = ceremony?.coverTexture
-    ? {
-        backgroundImage: `linear-gradient(180deg, ${palette.paper}6b, ${palette.paper}52), url(${ceremony.coverTexture})`,
-        backgroundSize: "cover, cover",
-        backgroundPosition: "center, center",
-      }
-    : { backgroundColor: palette.paper };
+  // Zarf malzemesi: GERÇEK keten fotoğrafı (Pexels, ücretsiz ticari lisans)
+  // + tema rengine çarpma (multiply) tonu. Alfa yıkama YOK — lif, düğüm ve
+  // dokuma detayı tam kontrastla kalır; tema yalnız rengi verir.
+  const paperSurface: CSSProperties = {
+    backgroundImage: `linear-gradient(180deg, ${palette.paper}cf, ${palette.paper}bd), linear-gradient(0deg, ${palette.bg}30, ${palette.bg}30), url(/themes-v2/shared/linen-weave.jpg)`,
+    backgroundSize: "cover, cover, cover",
+    backgroundPosition: "center, center, center",
+  };
 
   const opening = phase === "opening" || phase === "fading";
 
@@ -319,11 +318,21 @@ export function EnvelopeCeremony({
                 boxShadow: `0 30px 60px -24px ${palette.ink}47, 0 6px 16px ${palette.ink}1c`,
               }}
             >
+              {/* Zarf astarı — kart ve kapak arasında görünen iç yüz;
+                  kapaktaki accent-noktalı desenin devamı (bilinçli, boş değil) */}
+              <span
+                aria-hidden
+                className="absolute inset-0 rounded-[6px]"
+                style={{
+                  backgroundImage: `radial-gradient(circle at 6px 6px, ${palette.accent}38 1.5px, transparent 1.5px), linear-gradient(0deg, ${palette.paper}, ${palette.paper})`,
+                  backgroundSize: "22px 22px, cover",
+                }}
+              />
               {/* Davetiye kartı — zarfın içinde BOŞ bekler (üstü cep+mühürle
                   örtülü, yazı koysak çakışır); mühür kırılıp kart yükselirken
                   isimler kartın üstünde belirir — "içinden çıkan sürpriz". */}
               <motion.div
-                className="absolute inset-x-[7%] bottom-[8%] top-[14%] flex flex-col items-center justify-center rounded-[3px] px-4 text-center"
+                className="absolute inset-x-[13%] bottom-[10%] top-[30%] flex flex-col items-center justify-center rounded-[3px] px-4 text-center"
                 style={{
                   backgroundColor: palette.paper,
                   border: `1px solid ${palette.ink}1c`,
@@ -384,8 +393,8 @@ export function EnvelopeCeremony({
                   transformOrigin: "top center",
                   transformStyle: "preserve-3d",
                   clipPath: "polygon(0 0, 100% 0, 50% 100%)",
-                  backgroundImage: `linear-gradient(180deg, ${palette.paper}f2, ${palette.paper}e0), radial-gradient(circle at 6px 6px, ${palette.accent}42 1.5px, transparent 1.5px)`,
-                  backgroundSize: "cover, 22px 22px",
+                  backgroundImage: `radial-gradient(circle at 6px 6px, ${palette.accent}38 1.5px, transparent 1.5px), linear-gradient(180deg, ${palette.paper}cf, ${palette.paper}bd), url(/themes-v2/shared/linen-weave.jpg)`,
+                  backgroundSize: "22px 22px, cover, cover",
                   borderBottom: `1px solid ${palette.ink}1a`,
                   boxShadow: `inset 0 -2px 6px ${palette.ink}1f`,
                 }}
