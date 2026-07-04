@@ -16,11 +16,8 @@ import { ExtraInfo } from "./primitives/extra-info";
 import { RsvpForm } from "./primitives/rsvp-form";
 import { AtmosphereDefs } from "./primitives/atmosphere";
 import { Reveal } from "./primitives/reveal";
-import {
-  OpeningCeremony,
-  AmbientToggle,
-  useAmbientAudio,
-} from "./primitives/opening-ceremony";
+import { AmbientToggle, useAmbientAudio } from "./primitives/opening-ceremony";
+import { EnvelopeCeremony } from "./primitives/envelope-ceremony";
 import { THEME_MUSIC } from "@/lib/themes-v2/assets";
 import { MusicEmbedSection } from "./primitives/music-embed";
 import { YouTubeMusic } from "./primitives/youtube-music";
@@ -94,16 +91,21 @@ export function ThemeShell({
   const musicPlayRef = useRef<(() => void) | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  const handleOpen = () => {
-    setOpened(true);
+  // Zarf töreni iki jestli: İLK dokunuş (zarf çevrilir) müziği başlatır —
+  // autoplay penceresi; mühür kırılıp kart çıkarken davetiye "açılır".
+  const handleEngage = () => {
     audio.start();
     musicPlayRef.current?.();
+  };
+
+  const handleOpen = () => {
+    setOpened(true);
     try {
       window.sessionStorage.setItem(openedKey, "1");
     } catch {
       /* ignore */
     }
-    // A11y: perde açılınca odağı davetiye başlığına taşı → klavye/ekran-okuyucu
+    // A11y: tören çözülünce odağı davetiye başlığına taşı → klavye/ekran-okuyucu
     // kullanıcısı kapanan perdede sıkışmadan içeriğe geçer (modal-açılış deseni).
     window.setTimeout(() => headingRef.current?.focus(), 350);
   };
@@ -197,7 +199,13 @@ export function ThemeShell({
           <ThemeFooter meta={meta} data={data} reduced={!!reduced} />
 
           {!ceremonySkipped && (
-            <OpeningCeremony meta={meta} data={data} opened={opened} onOpen={handleOpen} />
+            <EnvelopeCeremony
+              meta={meta}
+              data={data}
+              opened={opened}
+              onEngage={handleEngage}
+              onOpen={handleOpen}
+            />
           )}
           {!embed && audio.available && (
             <AmbientToggle muted={audio.muted} onToggle={audio.toggle} palette={palette} />

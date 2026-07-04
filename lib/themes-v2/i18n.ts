@@ -11,7 +11,7 @@ import type { Locale } from "@/lib/i18n/types";
  */
 
 export interface InvitationStrings {
-  ceremony: { tapToOpen: string; skip: string };
+  ceremony: { tapToOpen: string; skip: string; dear: string; guestFallback: string; breakSeal: string };
   hero: {
     saveTheDate: string;
     awaitsYou: string;
@@ -80,7 +80,7 @@ export interface InvitationStrings {
 }
 
 const tr: InvitationStrings = {
-  ceremony: { tapToOpen: "Açmak için dokun", skip: "Atla" },
+  ceremony: { tapToOpen: "Açmak için dokun", skip: "Atla", dear: "Sevgili", guestFallback: "Kıymetli Misafirimiz", breakSeal: "Mührü kırmak için dokunun" },
   hero: {
     saveTheDate: "Save the Date",
     awaitsYou: "Bir davet sizi bekliyor",
@@ -153,7 +153,7 @@ const tr: InvitationStrings = {
 };
 
 const en: InvitationStrings = {
-  ceremony: { tapToOpen: "Tap to open", skip: "Skip" },
+  ceremony: { tapToOpen: "Tap to open", skip: "Skip", dear: "Dear", guestFallback: "Our Cherished Guest", breakSeal: "Tap to break the seal" },
   hero: {
     saveTheDate: "Save the Date",
     awaitsYou: "An invitation awaits you",
@@ -226,7 +226,7 @@ const en: InvitationStrings = {
 };
 
 const sr: InvitationStrings = {
-  ceremony: { tapToOpen: "Dodirnite da otvorite", skip: "Preskoči" },
+  ceremony: { tapToOpen: "Dodirnite da otvorite", skip: "Preskoči", dear: "Dragi", guestFallback: "Naši dragi gosti", breakSeal: "Dodirnite da slomite pečat" },
   hero: {
     saveTheDate: "Save the Date",
     awaitsYou: "Pozivnica vas čeka",
