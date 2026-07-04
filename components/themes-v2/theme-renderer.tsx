@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ThemeV2Props, ThemeV2Slug } from "@/lib/themes-v2/types";
 import { ThemeShell } from "./theme-shell";
 import { CelenkHero } from "./heroes/celenk-hero";
@@ -30,6 +30,20 @@ interface Props extends ThemeV2Props {
 export function ThemeRenderer({ meta, data, rsvpSlug, showBuyBadge, musicSrc }: Props) {
   const Hero = HERO_BY_SLUG[meta.slug];
 
+  // Demo/QA: /themes önizlemesinde ?etkinlik=std ile save-the-date modunu
+  // (kazı-kazan tarih) gezmek için — sayfa force-static olduğundan override
+  // client'ta yapılır; canlı davetiyede eventType DB'den gelir.
+  const [eventOverride, setEventOverride] = useState<string | null>(null);
+  useEffect(() => {
+    try {
+      const q = new URLSearchParams(window.location.search).get("etkinlik");
+      if (q === "std") setEventOverride("save_the_date");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+  const activeData = eventOverride ? { ...data, eventType: eventOverride } : data;
+
   // Gece/Gündüz fazı — palet swap burada yaşar ki hem hero hem shell aynı
   // birleşik paleti görsün. Gece paleti tanımsız temalarda toggle yoktur.
   const [night, setNight] = useState(false);
@@ -44,8 +58,8 @@ export function ThemeRenderer({ meta, data, rsvpSlug, showBuyBadge, musicSrc }: 
   return (
     <ThemeShell
       meta={activeMeta}
-      data={data}
-      hero={<Hero meta={activeMeta} data={data} />}
+      data={activeData}
+      hero={<Hero meta={activeMeta} data={activeData} />}
       rsvpSlug={rsvpSlug}
       showBuyBadge={showBuyBadge}
       musicSrc={musicSrc}

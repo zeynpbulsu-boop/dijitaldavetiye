@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Palette } from "@/lib/themes-v2/types";
+import { useInvitationT } from "../i18n-context";
 
 /**
  * Gece/Gündüz faz düğmesi — sağ üstte cam pill (72×36). Güneş ve ay
@@ -18,13 +19,14 @@ export function PhaseToggle({
   palette: ThemeV2Palette;
 }) {
   const reduced = useReducedMotion();
+  const str = useInvitationT();
   const dur = reduced ? 0 : 0.5;
 
   return (
     <button
       type="button"
       onClick={onToggle}
-      aria-label={isNight ? "Gündüz görünümüne geç" : "Gece görünümüne geç"}
+      aria-label={isNight ? str.phase.toDay : str.phase.toNight}
       aria-pressed={isNight}
       className="fixed right-4 top-16 z-40 flex h-9 w-[72px] items-center rounded-full px-1 backdrop-blur-md transition hover:scale-105"
       style={{

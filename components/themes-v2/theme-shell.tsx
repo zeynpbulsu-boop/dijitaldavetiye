@@ -172,7 +172,7 @@ export function ThemeShell({
 
           {showCountdown && (
             <Reveal>
-              <CountdownBand meta={meta} date={data.date} />
+              <CountdownBand meta={meta} date={data.date} eventType={data.eventType} />
             </Reveal>
           )}
           {showGallery && (

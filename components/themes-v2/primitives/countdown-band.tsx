@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { ThemeV2Meta, InvitationDate } from "@/lib/themes-v2/types";
 import { useInvitationT } from "../i18n-context";
 import { SlotDate } from "./slot-date";
+import { ScratchDate } from "./scratch-date";
 import { contrastRatio } from "@/lib/themes-v2/contrast";
 import { H2, LEAD } from "./type-scale";
 
@@ -12,6 +13,8 @@ interface Props {
   meta: ThemeV2Meta;
   date: InvitationDate;
   label?: string;
+  /** save_the_date'te tarih kazı-kazanla, düğünde slot makinesiyle bulunur. */
+  eventType?: string;
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -29,7 +32,7 @@ function diff(iso: string | undefined) {
   return { d, h, m, s, expired: false };
 }
 
-export function CountdownBand({ meta, date }: Props) {
+export function CountdownBand({ meta, date, eventType }: Props) {
   // Start from a deterministic placeholder so server and first client render
   // match exactly — calling Date.now() during render makes the static SSR
   // markup ("07") differ from the live client value ("06"), which forces
@@ -127,7 +130,7 @@ export function CountdownBand({ meta, date }: Props) {
         {/* Tarih önce kalpli slot makinesiyle "bulunur" (görünüme girince
             makaralar döner, kalpler süzülür), sonra bu sakin serif ifadeye
             çözülür. Reduced-motion / iso yoksa doğrudan serif gösterilir. */}
-        <SlotDate meta={meta} date={date}>
+        <DateReveal meta={meta} date={date} eventType={eventType}>
           <motion.h2
             {...reveal(0.05)}
             className="mt-6 font-display"
@@ -142,7 +145,7 @@ export function CountdownBand({ meta, date }: Props) {
           >
             {date.day} {date.month} {date.year}
           </motion.h2>
-        </SlotDate>
+        </DateReveal>
 
         {/* Divider with a small diamond ornament — same motif as VenueMap */}
         <motion.div
@@ -308,5 +311,26 @@ function Cell({
         </span>
       )}
     </div>
+  );
+}
+
+/** Tarih "bulma" oyunu seçimi — saf ve test edilebilir. */
+export function dateRevealMode(eventType?: string): "scratch" | "slot" {
+  return eventType === "save_the_date" ? "scratch" : "slot";
+}
+
+function DateReveal({
+  meta,
+  date,
+  eventType,
+  children,
+}: Props & { children: React.ReactNode }) {
+  if (dateRevealMode(eventType) === "scratch") {
+    return <ScratchDate meta={meta}>{children}</ScratchDate>;
+  }
+  return (
+    <SlotDate meta={meta} date={date}>
+      {children}
+    </SlotDate>
   );
 }

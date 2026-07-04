@@ -22,6 +22,8 @@ export interface InvitationStrings {
   };
   music: { label: string; sub: string; tapToPlay: string };
   gallery: { title: string };
+  scratch: { hint: string };
+  phase: { toNight: string; toDay: string };
   extra: { title: string };
   countdown: {
     title: string;
@@ -91,6 +93,8 @@ const tr: InvitationStrings = {
   },
   music: { label: "Bizim Şarkımız", sub: "İlk dansımıza eşlik edin", tapToPlay: "çalmak için dokunun" },
   gallery: { title: "Anılarımız" },
+  scratch: { hint: "Görmek için kazıyın" },
+  phase: { toNight: "Gece görünümüne geç", toDay: "Gündüz görünümüne geç" },
   extra: { title: "Ek Bilgiler" },
   countdown: {
     title: "Geri Sayım",
@@ -164,6 +168,8 @@ const en: InvitationStrings = {
   },
   music: { label: "Our Song", sub: "Join us for our first dance", tapToPlay: "tap to play" },
   gallery: { title: "Our Memories" },
+  scratch: { hint: "Scratch to reveal" },
+  phase: { toNight: "Switch to night view", toDay: "Switch to day view" },
   extra: { title: "Details" },
   countdown: {
     title: "Countdown",
@@ -237,6 +243,8 @@ const sr: InvitationStrings = {
   },
   music: { label: "Naša pesma", sub: "Pridružite nam se za prvi ples", tapToPlay: "dodirnite za reprodukciju" },
   gallery: { title: "Naše uspomene" },
+  scratch: { hint: "Ogrebite da otkrijete" },
+  phase: { toNight: "Pređi na noćni prikaz", toDay: "Pređi na dnevni prikaz" },
   extra: { title: "Dodatne informacije" },
   countdown: {
     title: "Odbrojavanje",
