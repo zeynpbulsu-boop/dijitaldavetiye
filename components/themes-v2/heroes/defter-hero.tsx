@@ -269,7 +269,7 @@ export function DefterHero({ meta, data }: ThemeV2Props) {
               {/* Pressed wildflower tucked at spine — gentle perpetual sway */}
               <motion.div
                 className="pointer-events-none absolute"
-                style={{ left: -22, top: "25%", transformOrigin: "70% 20%" }}
+                style={{ left: -26, top: "4%", transformOrigin: "70% 20%" }}
                 animate={reduced ? undefined : { rotate: [-12, -8.5, -12], y: [0, -4, 0] }}
                 transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
               >
@@ -280,7 +280,7 @@ export function DefterHero({ meta, data }: ThemeV2Props) {
                     src={THEME_ASSETS.defter.accent}
                     alt=""
                     aria-hidden
-                    className="h-32 w-auto opacity-90"
+                    className="h-24 w-auto opacity-90"
                   />
                 </picture>
               </motion.div>

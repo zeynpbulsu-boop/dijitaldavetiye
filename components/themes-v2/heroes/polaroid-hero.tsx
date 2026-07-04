@@ -201,7 +201,12 @@ export function PolaroidHero({ meta, data }: ThemeV2Props) {
             <Doodle accent={palette.accent} />
             <p
               className="mt-4 text-[10.5px] uppercase"
-              style={{ color: palette.inkSoft, letterSpacing: "0.42em", fontWeight: 500 }}
+              style={{
+                color: palette.ink,
+                letterSpacing: "0.42em",
+                fontWeight: 500,
+                textShadow: `0 0 12px ${palette.bg}e6, 0 1px 3px ${palette.bg}`,
+              }}
             >
               {data.eyebrow}
             </p>

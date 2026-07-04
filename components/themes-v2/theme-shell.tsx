@@ -23,6 +23,7 @@ import { THEME_MUSIC } from "@/lib/themes-v2/assets";
 import { MusicEmbedSection } from "./primitives/music-embed";
 import { YouTubeMusic } from "./primitives/youtube-music";
 import { parseMusicEmbed } from "@/lib/themes-v2/music-embed";
+import { bestTextOn } from "@/lib/themes-v2/contrast";
 
 interface Props extends ThemeV2Props {
   hero: ReactNode;
@@ -345,14 +346,18 @@ function ThemeFooter({
 }
 
 function BuyBadge({ meta }: { meta: ThemeV2Props["meta"] }) {
+  // Pill zemini her temada beyaza yakın → metin daima KOYU olmalı. palette.ink
+  // koyu temalarda (geceyarisi) krem olduğundan 'Satın Al' CTA'sı beyaz pill
+  // üstünde görünmez oluyordu (QA turu bulgusu) — bestTextOn garantisi.
+  const pillInk = bestTextOn("#FFFFFF");
   return (
     <a
       href={`/order/${meta.slug}`}
       className="fixed left-4 top-4 z-50 flex items-center gap-2 rounded-full px-4 py-2 text-[11px] backdrop-blur transition hover:scale-[1.02]"
       style={{
         backgroundColor: "rgba(255,255,255,0.82)",
-        border: `1px solid ${meta.palette.ink}1a`,
-        color: meta.palette.ink,
+        border: `1px solid ${pillInk}1a`,
+        color: pillInk,
         letterSpacing: "0.04em",
         boxShadow: "0 4px 16px -6px rgba(0,0,0,0.18)",
       }}

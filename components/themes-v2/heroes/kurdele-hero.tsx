@@ -225,6 +225,7 @@ export function KurdeleHero({ meta, data }: ThemeV2Props) {
         style={{
           fontSize: "clamp(15px, 1.6vw, 18px)",
           color: palette.ink,
+          textShadow: `0 0 12px ${palette.bg}e6, 0 1px 3px ${palette.bg}`,
         }}
       >
         {str.hero.awaitsYou}
@@ -346,7 +347,7 @@ function LivingLetter({
           </g>
         </svg>
 
-        <p className="text-[10.5px] uppercase" style={{ color: accent, letterSpacing: "0.42em" }}>
+        <p className="text-[10.5px] uppercase" style={{ color: inkSoft, letterSpacing: "0.42em", fontWeight: 500 }}>
           {str.hero.saveTheDate}
         </p>
 
@@ -436,7 +437,7 @@ function LivingLetter({
 
         <p
           className="mt-7 text-[10px] uppercase"
-          style={{ color: accent, letterSpacing: "0.36em" }}
+          style={{ color: inkSoft, letterSpacing: "0.36em", fontWeight: 500 }}
         >
           {venue}
         </p>

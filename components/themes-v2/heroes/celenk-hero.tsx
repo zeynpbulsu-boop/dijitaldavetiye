@@ -206,9 +206,11 @@ export function CelenkHero({ meta, data }: ThemeV2Props) {
           transition={{ delay: 0.4, duration: 1 }}
           className="mb-10 text-[10.5px] uppercase"
           style={{
-            color: palette.inkSoft,
+            color: palette.ink,
             letterSpacing: "0.46em",
             fontWeight: 500,
+            // Video zemin üstünde okunabilirlik: zemin-tonlu ışık halkası
+            textShadow: `0 0 12px ${palette.bg}e6, 0 1px 3px ${palette.bg}`,
           }}
         >
           {data.eyebrow}
