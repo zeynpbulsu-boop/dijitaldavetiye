@@ -56,3 +56,20 @@ export function ornamentColor(palette: {
     ? palette.accent
     : palette.inkSoft;
 }
+
+/** Rengi beyaza doğru k (0..1) oranında açar. */
+export function tint(hex: string, k: number): string {
+  const m = hex.replace("#", "");
+  const c = (i: number) => parseInt(m.slice(i, i + 2), 16);
+  const mix = (v: number) =>
+    Math.round(v + (255 - v) * k).toString(16).padStart(2, "0");
+  return `#${mix(c(0))}${mix(c(2))}${mix(c(4))}`;
+}
+
+/** Rengi siyaha doğru k (0..1) oranında koyulaştırır. */
+export function shade(hex: string, k: number): string {
+  const m = hex.replace("#", "");
+  const c = (i: number) => parseInt(m.slice(i, i + 2), 16);
+  const mix = (v: number) => Math.round(v * (1 - k)).toString(16).padStart(2, "0");
+  return `#${mix(c(0))}${mix(c(2))}${mix(c(4))}`;
+}

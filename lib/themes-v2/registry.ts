@@ -43,6 +43,16 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
       countdownBg: "#7A6149",
       countdownInk: "#FCF8EF",
     },
+    // Gece fazı — kraft/terracotta ailesi (K1), WCAG doğrulandı (K3)
+    night: {
+      bg: "#241B12",
+      paper: "#2E251A",
+      ink: "#F2E8D6",
+      inkSoft: "#C9B698",
+      accent: "#D28B62",
+      countdownBg: "#1A130C",
+      countdownInk: "#EBDFC8",
+    },
   },
   kurdele: {
     slug: "kurdele",
@@ -85,6 +95,16 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
       countdownBg: "#2A1F14",
       countdownInk: "#E8B05D",
     },
+    // Gece fazı — altın bağ ailesi (K1), WCAG doğrulandı (K3)
+    night: {
+      bg: "#201709",
+      paper: "#2A1F0F",
+      ink: "#F5E8C9",
+      inkSoft: "#CDB98F",
+      accent: "#E8B05D",
+      countdownBg: "#171006",
+      countdownInk: "#F0DFB6",
+    },
   },
   defter: {
     slug: "defter",
@@ -100,6 +120,16 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
       accent: "#8B6F3F",
       countdownBg: "#665542",
       countdownInk: "#F5EEDE",
+    },
+    // Gece fazı — keten/sepya ailesi (K1), WCAG doğrulandı (K3)
+    night: {
+      bg: "#231D12",
+      paper: "#2D2618",
+      ink: "#F0E8D2",
+      inkSoft: "#C6B996",
+      accent: "#C0A060",
+      countdownBg: "#191408",
+      countdownInk: "#E8DFC4",
     },
   },
   geceyarisi: {
@@ -133,7 +163,19 @@ export const THEMES_V2: Record<ThemeV2Slug, ThemeV2Meta> = {
       countdownBg: "#7A5E3B",
       countdownInk: "#F5E8C9",
     },
+    // Gece fazı — nar/amber ailesi (K1), WCAG doğrulandı (K3)
+    night: {
+      bg: "#251A10",
+      paper: "#2F2316",
+      ink: "#F3E6C8",
+      inkSoft: "#CBB392",
+      accent: "#D26A54",
+      countdownBg: "#1B1209",
+      countdownInk: "#EADCBB",
+    },
   },
+  // NOT: geceyarisi'ne night TANIMLANMADI — kimliği zaten gece (bg #0E1730);
+  // "gündüz varyantı" güneş/ay düğmesinin anlamını tersine çevirirdi.
 };
 
 export const SAMPLE_DATA: ThemeV2Data = {

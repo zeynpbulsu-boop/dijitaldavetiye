@@ -6,7 +6,7 @@ import type { ThemeV2Meta, PolaroidPhoto } from "@/lib/themes-v2/types";
 import { AtmosphereDefs, PaperGrain, makeRng, r3 } from "./atmosphere";
 import { useInvitationT } from "../i18n-context";
 import { H2, LEAD } from "./type-scale";
-import { ornamentColor } from "@/lib/themes-v2/contrast";
+import { ornamentColor, relativeLuminance, tint, shade } from "@/lib/themes-v2/contrast";
 
 interface Props {
   meta: ThemeV2Meta;
@@ -17,14 +17,29 @@ interface Props {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/* Pre-set scene tones so each polaroid is visually distinct. */
-const SCENE_TONES: ReadonlyArray<readonly [string, string]> = [
-  ["#E8C998", "#A86E40"],
-  ["#B8C5A5", "#5A6B4A"],
-  ["#D9B59E", "#7A4F38"],
-  ["#9CB5C5", "#3F5566"],
-  ["#E5C5A8", "#8B5E3D"],
-];
+/* Sahne duotone'ları PALETTEN türetilir — eski sabit sıcak-toprak tonları
+   soğuk paletlerde (kurdele mavisi) yabancı kalıyordu (P2-8). accent ve
+   inkSoft'un tint/shade karışımlarından 5 ayırt edilebilir çift; koyu
+   zeminde (gece fazı dahil) daha derin 'ay ışığı' varyantı. */
+function sceneTones(palette: ThemeV2Meta["palette"]): ReadonlyArray<readonly [string, string]> {
+  const { accent, inkSoft, bg } = palette;
+  if (relativeLuminance(bg) < 0.5) {
+    return [
+      [shade(accent, 0.15), shade(accent, 0.55)],
+      [shade(inkSoft, 0.1), shade(inkSoft, 0.5)],
+      [shade(accent, 0.3), shade(inkSoft, 0.6)],
+      [shade(inkSoft, 0.25), shade(accent, 0.65)],
+      [shade(accent, 0.05), shade(accent, 0.45)],
+    ];
+  }
+  return [
+    [tint(accent, 0.45), shade(accent, 0.2)],
+    [tint(inkSoft, 0.5), shade(inkSoft, 0.15)],
+    [tint(accent, 0.25), shade(accent, 0.4)],
+    [tint(inkSoft, 0.3), shade(inkSoft, 0.35)],
+    [tint(accent, 0.6), shade(inkSoft, 0.25)],
+  ];
+}
 
 export function PolaroidGallery({
   meta,
@@ -36,6 +51,7 @@ export function PolaroidGallery({
   const reduced = useReducedMotion();
   const str = useInvitationT();
   const heading = title ?? str.gallery.title;
+  const tones = sceneTones(palette);
 
   /* Seeded, render-stable per-photo geometry: a base tilt that feels
      hand-placed, plus a gentle perpetual sway phase. Deterministic →
@@ -158,7 +174,7 @@ export function PolaroidGallery({
             style={{ WebkitOverflowScrolling: "touch" }}
           >
             {photos.map((photo, i) => {
-              const [c1, c2] = SCENE_TONES[i % SCENE_TONES.length];
+              const [c1, c2] = tones[i % tones.length];
               const s = sway[i];
               return (
                 <li
