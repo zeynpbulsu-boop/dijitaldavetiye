@@ -165,10 +165,14 @@ python3 scripts/transparent-bg.py                # Aethel için
 # Git + Deploy
 git add -A && git commit -m "..." && git push origin main
 
-# Coolify Redeploy URL'i (browser):
-# https://coolify.bulsulabs.xyz/project/awm4k3kh9chfcdmxdjo0uz6o/environment/w1w5qgscs3rz3yqoeom0lbsg/application/b9ba0lj82z1m88uwltdc1w85
-# → sağ üst "Redeploy" butonu (~1262, 155 koordinatı)
-# Build ~90sn, total ~2-3 dk
+# Coolify deploy — API üzerinden (tarayıcı GEREKMEZ). Token: .coolify.env (gitignore'lu)
+bash scripts/coolify.sh status         # uygulama + canlı HTTP durumu
+bash scripts/coolify.sh env-list       # env anahtarları
+bash scripts/coolify.sh env-set KEY V  # env ekle/güncelle (NEXT_PUBLIC_* otomatik build-time)
+bash scripts/coolify.sh deploy         # deploy tetikle + bitene kadar izle
+bash scripts/coolify.sh deploy force   # cache'siz yeniden kur
+# Build ~90sn, total ~2-3 dk. Deploy 'main' branch'inden çeker → önce origin/main güncel olmalı.
+# Eski yöntem (tarayıcı koordinatı / cookie hack) ARTIK KULLANILMIYOR.
 ```
 
 ### Live URL'ler
@@ -236,9 +240,10 @@ git add -A && git commit -m "..." && git push origin main
 - **Environment:** `w1w5qgscs3rz3yqoeom0lbsg`
 - **App UUID:** `b9ba0lj82z1m88uwltdc1w85`
 - **Build:** Dockerfile (multi-stage Next.js standalone)
-- **Auto-deploy:** GitHub push tetiklemiyor güvenilir şekilde → manuel Redeploy gerek
-- **Env vars:** Supabase URL/keys, Dodo test keys, Resend key Coolify panelinde set edili
-- **VPS:** 72.62.39.172
+- **Deploy branch:** `main` — deploy `main`'i çeker, feature branch'leri DEĞİL. Yeni iş için önce main'e merge + origin'e push şart.
+- **Auto-deploy:** GitHub push güvenilir tetiklemiyor → `bash scripts/coolify.sh deploy` ile API'den tetikle (token: `.coolify.env`, gitignore'lu).
+- **Env vars:** `bash scripts/coolify.sh env-list` ile anahtarları gör, `env-set KEY VALUE` ile yaz. Değerler API'de maskeli okunur.
+- **VPS:** 72.62.39.172 (Hetzner, küçük — build sırasında OOM riski)
 
 **Domain bağlama yapılacak:**
 - Cloudflare DNS A record → 72.62.39.172

@@ -158,7 +158,16 @@ git commit -m "Add watercolor backgrounds"
 git push
 ```
 
-Coolify auto-detects the push and rebuilds.
+Coolify auto-detects the push and rebuilds. If it doesn't trigger reliably,
+force a deploy from the terminal via the API (no browser needed):
+
+```bash
+bash scripts/coolify.sh deploy        # trigger + watch until finished
+```
+
+This reads the API token from `.coolify.env` (gitignored — never commit).
+Deploy pulls the **`main`** branch, so make sure your work is merged to main
+and pushed to origin first.
 
 ---
 
